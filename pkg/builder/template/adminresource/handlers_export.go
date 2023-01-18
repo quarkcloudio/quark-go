@@ -24,7 +24,7 @@ func (p *ExportRequest) Handle(request *builder.Request, templateInstance interf
 	}).ExportFields(request, templateInstance)
 
 	f := excelize.NewFile()
-	index := f.NewSheet("Sheet1")
+	index, _ := f.NewSheet("Sheet1")
 	rowData := map[string]interface{}{}
 
 	var a = 'a'

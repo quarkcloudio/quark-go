@@ -30,7 +30,7 @@ func (p *ImportTemplateRequest) Handle(request *builder.Request, templateInstanc
 
 	f := excelize.NewFile()
 	// 创建一个工作表
-	index := f.NewSheet("Sheet1")
+	index, _ := f.NewSheet("Sheet1")
 
 	//定义一个字符 变量a 是一个byte类型的 表示单个字符
 	var a = 'a'

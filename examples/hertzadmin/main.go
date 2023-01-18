@@ -11,7 +11,7 @@ func main() {
 	h := server.Default(server.WithHostPorts(":3000"))
 
 	// 静态文件目录
-	fs := &app.FS{Root: "/website", IndexNames: []string{"index.html"}}
+	fs := &app.FS{Root: "./website", IndexNames: []string{"index.html"}}
 	h.StaticFS("/", fs)
 
 	// 注册路由

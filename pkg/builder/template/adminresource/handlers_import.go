@@ -134,7 +134,7 @@ func (p *ImportRequest) Handle(request *builder.Request, templateInstance interf
 
 		f := excelize.NewFile()
 		// Create a new sheet.
-		index := f.NewSheet("Sheet1")
+		index, _ := f.NewSheet("Sheet1")
 
 		//定义一个字符 变量a 是一个byte类型的 表示单个字符
 		var a = 'a'
