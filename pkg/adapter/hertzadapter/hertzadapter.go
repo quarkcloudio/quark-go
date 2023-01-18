@@ -46,6 +46,10 @@ func ResponseAdapter(r *builder.Resource, responseType string, ctx *app.RequestC
 		ctx.JSON(200, result)
 	case IMAGE_RESPONSE:
 		ctx.Write(result.([]byte))
+	case EXCEL_RESPONSE:
+		ctx.Response.Header.Set("Content-Disposition", "attachment; filename=data_"+time.Now().Format("20060102150405")+".xlsx")
+		ctx.Response.Header.Set("Content-Type", "application/octet-stream")
+		ctx.Write(result.([]byte))
 	}
 }
 
