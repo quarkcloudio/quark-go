@@ -17,12 +17,15 @@ import (
 func main() {
 	h := server.Default(server.WithHostPorts(":3000"))
 
+	// 注册路由
+	register(h)
+
+	// 静态文件
+	h.StaticFile("/admin/", "./website/admin/index.html")
+
 	// 静态文件目录
 	fs := &app.FS{Root: "./website", IndexNames: []string{"index.html"}}
 	h.StaticFS("/", fs)
-
-	// 注册路由
-	register(h)
 
 	// 数据库配置信息
 	dsn := "root:Bc5HQFJc4bLjZCcC@tcp(127.0.0.1:3306)/quarkgo?charset=utf8&parseTime=True&loc=Local"
