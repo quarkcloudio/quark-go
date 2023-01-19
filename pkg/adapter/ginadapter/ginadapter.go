@@ -58,8 +58,8 @@ func ResponseAdapter(r *builder.Resource, responseType string, ctx *gin.Context)
 		ctx.Writer.Write(result.([]byte))
 		return
 	case EXCEL_RESPONSE:
-		ctx.Request.Response.Header.Set("Content-Disposition", "attachment; filename=data_"+time.Now().Format("20060102150405")+".xlsx")
-		ctx.Request.Response.Header.Set("Content-Type", "application/octet-stream")
+		ctx.Header("Content-Disposition", "attachment; filename=data_"+time.Now().Format("20060102150405")+".xlsx")
+		ctx.Header("Content-Type", "application/octet-stream")
 		ctx.Writer.Write(result.([]byte))
 		return
 	}
@@ -119,8 +119,8 @@ func RouteAdapter(b *builder.Resource, responseType string, ctx *gin.Context) {
 		ctx.Writer.Write(result.([]byte))
 		return
 	case EXCEL_RESPONSE:
-		ctx.Request.Response.Header.Set("Content-Disposition", "attachment; filename=data_"+time.Now().Format("20060102150405")+".xlsx")
-		ctx.Request.Response.Header.Set("Content-Type", "application/octet-stream")
+		ctx.Header("Content-Disposition", "attachment; filename=data_"+time.Now().Format("20060102150405")+".xlsx")
+		ctx.Header("Content-Type", "application/octet-stream")
 		ctx.Writer.Write(result.([]byte))
 		return
 	}
