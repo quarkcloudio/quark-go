@@ -15,7 +15,7 @@ const JSON_RESPONSE = "json"   // json类型响应
 const IMAGE_RESPONSE = "image" // 图片类型响应
 const EXCEL_RESPONSE = "excel" // Excel文件类型响应
 
-// 将gofiber框架的Ctx转换为builder框架Request
+// 将gin框架的Ctx转换为builder框架Request
 func RequestAdapter(ctx *gin.Context) (*builder.Request, error) {
 	body, err := ioutil.ReadAll(ctx.Request.Body)
 	if err != nil {
@@ -41,7 +41,7 @@ func RequestAdapter(ctx *gin.Context) (*builder.Request, error) {
 	}, nil
 }
 
-// 适配gofiber框架响应
+// 适配gin框架响应
 func ResponseAdapter(r *builder.Resource, responseType string, ctx *gin.Context) {
 	result, err := r.Run()
 	if err != nil {
@@ -65,7 +65,7 @@ func ResponseAdapter(r *builder.Resource, responseType string, ctx *gin.Context)
 	}
 }
 
-// 适配gofiber框架路由
+// 适配gin框架路由
 func RouteAdapter(b *builder.Resource, responseType string, ctx *gin.Context) {
 	body, err := ioutil.ReadAll(ctx.Request.Body)
 	if err != nil {
@@ -126,7 +126,7 @@ func RouteAdapter(b *builder.Resource, responseType string, ctx *gin.Context) {
 	}
 }
 
-// 适配gofiber框架
+// 适配gin框架
 func Adapter(b *builder.Resource, app *gin.Engine) {
 
 	// 后台路由组
