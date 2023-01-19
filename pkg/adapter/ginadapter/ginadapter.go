@@ -194,4 +194,9 @@ func Adapter(b *builder.Resource, app *gin.Engine) {
 	rg.GET("/:resource/:uriKey/form", func(ctx *gin.Context) {
 		RouteAdapter(b, JSON_RESPONSE, ctx)
 	})
+
+	// 文件上传
+	rg.POST("/upload/:resource/handle", func(ctx *gin.Context) {
+		RouteAdapter(b, JSON_RESPONSE, ctx)
+	})
 }

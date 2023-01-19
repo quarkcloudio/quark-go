@@ -18,7 +18,7 @@ func (p *Image) Init() *Image {
 		"image/jpeg",
 		"image/png",
 	}
-	p.Api = "/api/admin/picture/upload"
+	p.Api = "/api/admin/upload/image/handle"
 	p.LimitWH = map[string]int{
 		"width":  0,
 		"height": 0,

@@ -19,7 +19,7 @@ func (p *File) Init() *File {
 		"doc",
 		"docx",
 	}
-	p.Api = "/api/admin/file/upload"
+	p.Api = "/api/admin/upload/file/handle"
 
 	return p
 }

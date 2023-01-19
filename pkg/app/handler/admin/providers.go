@@ -4,6 +4,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/dashboards"
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/login"
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/resources"
+	"github.com/quarkcms/quark-go/pkg/app/handler/admin/uploads"
 )
 
 // 注册服务
@@ -20,4 +21,6 @@ var Providers = []interface{}{
 	&resources.Picture{},
 	&resources.WebConfig{},
 	&resources.Account{},
+	&uploads.File{},
+	&uploads.Image{},
 }
