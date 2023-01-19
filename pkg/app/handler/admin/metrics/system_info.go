@@ -32,8 +32,8 @@ func (p *SystemInfo) Calculate() *descriptions.Component {
 	cpuPercent, _ := cpu.Percent(time.Second, false)
 
 	return p.Init().Result([]interface{}{
-		field.Text("系统版本").SetValue("1.0.0"),
-		field.Text("Fiber版本").SetValue("1.0.0"),
+		field.Text("应用名称").SetValue("QuarkGo"),
+		field.Text("应用版本").SetValue("1.0.1"),
 		field.Text("Golang版本").SetValue(runtime.Version()),
 		field.Text("服务器操作系统").SetValue(runtime.GOOS + " " + runtime.GOARCH),
 		field.Text("内存信息").SetValue(strconv.FormatUint(memory.Total/(1024*1024), 10) + "MB / " + fmt.Sprintf("%.0f", memory.UsedPercent) + "%"),
