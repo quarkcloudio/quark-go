@@ -98,11 +98,6 @@ func Adapter(b *builder.Resource, app *fiber.App) {
 	rg.Get("/login/:resource/index", func(ctx *fiber.Ctx) error {
 		return RouteAdapter(b, JSON_RESPONSE, ctx)
 	})
-
-	// 登录
-	rg.Get("/login/:resource/index", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, JSON_RESPONSE, ctx)
-	})
 	rg.Post("/login/:resource/handle", func(ctx *fiber.Ctx) error {
 		return RouteAdapter(b, JSON_RESPONSE, ctx)
 	})
