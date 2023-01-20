@@ -104,6 +104,8 @@ func (p *Admin) Fields(request *builder.Request) []interface{} {
 				},
 			),
 
+		field.Editor("abc", "内容"),
+
 		field.Text("email", "邮箱").
 			SetRules(
 				[]string{

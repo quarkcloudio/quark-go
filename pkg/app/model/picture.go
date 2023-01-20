@@ -2,6 +2,7 @@ package model
 
 import (
 	"encoding/json"
+	"strconv"
 	"strings"
 	"time"
 
@@ -28,6 +29,44 @@ type Picture struct {
 	UpdatedAt         time.Time `json:"updated_at"`
 }
 
+// 获取列表
+func (model *Picture) GetListBySearch(authValue string, categoryId interface{}, name interface{}, startDate interface{}, endDate interface{}, page int) (list []*Picture, total int64, Error error) {
+	pictures := []*Picture{}
+
+	adminInfo, err := (&Admin{}).GetAuthUser(authValue)
+	if err != nil {
+		return pictures, 0, err
+	}
+
+	query := db.Client.Model(&Picture{})
+	if categoryId != "" {
+		query.Where("picture_category_id =?", categoryId)
+	}
+	if name != "" {
+		query.Where("name LIKE %?%", name)
+	}
+	if startDate != "" && endDate != "" {
+		query.Where("created_at BETWEEN ? AND ?", startDate, endDate)
+	}
+
+	query.Count(&total)
+	query.
+		Where("status =?", 1).
+		Where("obj_type = ?", "ADMINID").
+		Where("obj_id", adminInfo.Id).
+		Order("id desc").
+		Limit(8).
+		Offset((page - 1) * 8).
+		Find(&pictures)
+
+	for k, v := range pictures {
+		v.Url = model.GetPath(v.Url) + "?timestamp=" + strconv.Itoa(int(time.Now().Unix()))
+		pictures[k] = v
+	}
+
+	return pictures, total, nil
+}
+
 // 插入数据并返回ID
 func (model *Picture) InsertGetId(picture *Picture) (id int, Error error) {
 	err := db.Client.Create(&picture).Error
@@ -36,6 +75,12 @@ func (model *Picture) InsertGetId(picture *Picture) (id int, Error error) {
 	}
 
 	return picture.Id, nil
+}
+
+// 通过Id删除记录
+func (model *Picture) DeleteById(id interface{}) error {
+
+	return db.Client.Model(Picture{}).Where("id =?", id).Delete("").Error
 }
 
 // 根据hash查询文件信息

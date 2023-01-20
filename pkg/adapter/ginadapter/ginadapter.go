@@ -199,4 +199,13 @@ func Adapter(b *builder.Resource, app *gin.Engine) {
 	rg.POST("/upload/:resource/handle", func(ctx *gin.Context) {
 		RouteAdapter(b, JSON_RESPONSE, ctx)
 	})
+	rg.GET("/upload/:resource/getList", func(ctx *gin.Context) {
+		RouteAdapter(b, JSON_RESPONSE, ctx)
+	})
+	rg.POST("/upload/:resource/delete", func(ctx *gin.Context) {
+		RouteAdapter(b, JSON_RESPONSE, ctx)
+	})
+	rg.POST("/upload/:resource/crop", func(ctx *gin.Context) {
+		RouteAdapter(b, JSON_RESPONSE, ctx)
+	})
 }

@@ -84,7 +84,7 @@ func (p *File) AfterHandle(request *builder.Request, templateInstance interface{
 
 	// 插入数据库
 	(&model.File{}).InsertGetId(&model.File{
-		ObjType: "admin",
+		ObjType: "ADMINID",
 		ObjId:   adminInfo.Id,
 		Name:    result.Name,
 		Size:    result.Size,
