@@ -11,11 +11,18 @@ import (
 	_ "image/jpeg"
 	_ "image/png"
 	"io"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
 
+	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/quarkcms/quark-go/pkg/rand"
+)
+
+var (
+	OssDriver   = "oss"
+	LocalDriver = "local"
 )
 
 // OSS配置
@@ -75,7 +82,7 @@ type FileSystem struct {
 // 初始化对象
 func New(config *Config) *FileSystem {
 	if config.Driver == "" {
-		config.Driver = "local"
+		config.Driver = LocalDriver
 	}
 
 	return &FileSystem{
@@ -88,10 +95,8 @@ func (p *FileSystem) Reader(file *File) *FileSystem {
 	if file.Size == 0 {
 		file.Size = int64(len(file.Content))
 	}
-	if file.ContentType == "" && file.Header != nil {
-		if file.Header["Content-Type"] != nil {
-			file.ContentType = file.Header["Content-Type"][0]
-		}
+	if file.ContentType == "" {
+		file.ContentType = http.DetectContentType(file.Content)
 	}
 
 	p.File = file
@@ -116,12 +121,6 @@ func (p *FileSystem) FileName(fileName string) *FileSystem {
 // 设置二进制内容
 func (p *FileSystem) FileContent(fileContent []byte) *FileSystem {
 	p.File.Content = fileContent
-
-	return p
-}
-
-// 设置base64文件
-func (p *FileSystem) FileBase64(fileContent string) *FileSystem {
 
 	return p
 }
@@ -252,16 +251,14 @@ func (p *FileSystem) checkFileType() error {
 	if len(p.Config.LimitType) == 0 {
 		return err
 	}
-	for _, v := range p.File.Header["Content-Type"] {
-		for _, limit := range p.Config.LimitType {
-			if v == limit {
-				checkReuslt = true
-			}
-		}
-	}
 	for _, v := range p.Config.LimitType {
+		if v == http.DetectContentType(p.File.Content) {
+			checkReuslt = true
+		}
+
 		limitText = limitText + "," + v
 	}
+
 	limitText = strings.Trim(limitText, ",")
 	if !checkReuslt {
 		return errors.New("只能上传 " + limitText + " 格式文件")
@@ -325,10 +322,12 @@ func (p *FileSystem) SaveToLocal() error {
 		p.Config.SaveName = p.File.Name
 	}
 
-	fileNames := strings.Split(p.File.Name, ".")
-	if len(fileNames) <= 1 {
+	// 获取文件扩展名
+	fileExt := ContentTypeList[p.File.ContentType]
+	if fileExt == "" {
 		return errors.New("无法获取文件扩展名！")
 	}
+	p.File.Ext = fileExt
 
 	// 检查文件合法性
 	err := p.CheckFile()
@@ -336,7 +335,6 @@ func (p *FileSystem) SaveToLocal() error {
 		return err
 	}
 
-	p.File.Ext = fileNames[len(fileNames)-1]
 	if p.Config.SaveRandName {
 		p.Config.SaveName = rand.MakeAlphanumeric(40) + "." + p.File.Ext
 	}
@@ -374,24 +372,91 @@ func (p *FileSystem) SaveToLocal() error {
 
 // 保存文件到OSS
 func (p *FileSystem) SaveToOSS() error {
+	if p.Config.OSSConfig == nil {
+		return errors.New("请配置OSS信息")
+	}
+
+	savePath := p.Config.SavePath
+	if savePath == "" {
+		return errors.New("请设置保存路径")
+	}
+
+	if p.Config.SaveName == "" {
+		p.Config.SaveName = p.File.Name
+	}
+
+	// 获取文件扩展名
+	fileExt := ContentTypeList[p.File.ContentType]
+	if fileExt == "" {
+		return errors.New("无法获取文件扩展名！")
+	}
+	p.File.Ext = fileExt
+
+	// 检查文件合法性
+	err := p.CheckFile()
+	if err != nil {
+		return err
+	}
+
+	if p.Config.SaveRandName {
+		p.Config.SaveName = rand.MakeAlphanumeric(40) + "." + p.File.Ext
+	}
+
+	saveName := p.Config.SaveName
+
+	// 计算文件哈希值
+	fileHash, err := p.sumFileHash()
+	if err != nil {
+		return err
+	}
+	p.File.Hash = fileHash
+
+	client, err := oss.New(p.Config.OSSConfig.Endpoint, p.Config.OSSConfig.AccessKeyID, p.Config.OSSConfig.AccessKeySecret)
+	if err != nil {
+		return err
+	}
+
+	bucket, err := client.Bucket(p.Config.OSSConfig.BucketName)
+	if err != nil {
+		return err
+	}
+
+	// 指定Object访问权限
+	objectAcl := oss.ObjectACL(oss.ACLPublicRead)
+	byteReader := bytes.NewReader(p.File.Content)
+	err = bucket.PutObject(savePath+saveName, byteReader, objectAcl)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
 
 // 保存文件
 func (p *FileSystem) Save() (fileInfo *FileInfo, err error) {
+	var fileUrl = ""
 
 	switch p.Config.Driver {
-	case "local":
+	case LocalDriver:
 		err = p.SaveToLocal()
-	case "oss":
-		err = p.SaveToOSS()
-	default:
-		err = errors.New("上传驱动未知")
-	}
+		if err != nil {
+			return fileInfo, err
+		}
 
-	if err != nil {
-		return fileInfo, err
+		fileUrl = p.Config.SavePath + p.Config.SaveName
+	case OssDriver:
+		err = p.SaveToOSS()
+		if err != nil {
+			return fileInfo, err
+		}
+
+		if p.Config.OSSConfig.Domain != "" {
+			fileUrl = "//" + p.Config.OSSConfig.Domain + "/" + p.Config.SavePath + p.Config.SaveName
+		} else {
+			fileUrl = "//" + p.Config.OSSConfig.BucketName + "." + p.Config.OSSConfig.Endpoint + "/" + p.Config.SavePath + p.Config.SaveName
+		}
+	default:
+		return fileInfo, errors.New("上传驱动未知")
 	}
 
 	fileInfo = &FileInfo{
@@ -400,7 +465,7 @@ func (p *FileSystem) Save() (fileInfo *FileInfo, err error) {
 		p.File.Ext,
 		p.File.ContentType,
 		p.Config.SavePath,
-		p.Config.SavePath + p.Config.SaveName,
+		fileUrl,
 		p.File.Hash,
 		p.File.Width,
 		p.File.Height,
