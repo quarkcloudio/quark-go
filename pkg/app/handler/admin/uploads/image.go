@@ -120,6 +120,19 @@ func (p *Image) Crop(request *builder.Request, resource *builder.Resource, templ
 		return msg.Error("参数错误！", "")
 	}
 
+	pictureInfo, err := (&model.Picture{}).GetInfoById(data["id"])
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+	if pictureInfo.Id == 0 {
+		return msg.Error("文件不存在", "")
+	}
+
+	adminInfo, err := (&model.Admin{}).GetAuthUser(request.Token())
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+
 	limitW := request.Query("limitW", "")
 	limitH := request.Query("limitH", "")
 
@@ -203,14 +216,25 @@ func (p *Image) Crop(request *builder.Request, resource *builder.Resource, templ
 		return msg.Error(err.Error(), "")
 	}
 	if fileInfo != nil {
-		return templateInstance.(interface {
-			AfterHandle(request *builder.Request, templateInstance interface{}, result *storage.FileInfo) interface{}
-		}).AfterHandle(request, templateInstance, fileInfo)
+		// 更新数据库
+		(&model.Picture{}).UpdateById(pictureInfo.Id, &model.Picture{
+			ObjType: "ADMINID",
+			ObjId:   adminInfo.Id,
+			Name:    fileInfo.Name,
+			Size:    fileInfo.Size,
+			Width:   fileInfo.Width,
+			Height:  fileInfo.Height,
+			Ext:     fileInfo.Ext,
+			Path:    fileInfo.Path,
+			Url:     fileInfo.Url,
+			Hash:    fileInfo.Hash,
+			Status:  1,
+		})
 	}
 
 	result, err = getFileSystem.
 		WithImageWH().
-		RandName().
+		FileName(pictureInfo.Name).
 		Path(savePath).
 		Save()
 
@@ -223,13 +247,8 @@ func (p *Image) Crop(request *builder.Request, resource *builder.Resource, templ
 		result.Url = (&model.Picture{}).GetPath(result.Url)
 	}
 
-	adminInfo, err := (&model.Admin{}).GetAuthUser(request.Token())
-	if err != nil {
-		return msg.Error(err.Error(), "")
-	}
-
-	// 插入数据库
-	(&model.Picture{}).InsertGetId(&model.Picture{
+	// 更新数据库
+	(&model.Picture{}).UpdateById(pictureInfo.Id, &model.Picture{
 		ObjType: "ADMINID",
 		ObjId:   adminInfo.Id,
 		Name:    result.Name,

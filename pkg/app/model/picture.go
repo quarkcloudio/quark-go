@@ -83,6 +83,20 @@ func (model *Picture) DeleteById(id interface{}) error {
 	return db.Client.Model(Picture{}).Where("id =?", id).Delete("").Error
 }
 
+// 根据id查询文件信息
+func (model *Picture) GetInfoById(id interface{}) (picture *Picture, Error error) {
+	err := db.Client.Where("status = ?", 1).Where("id = ?", id).First(&picture).Error
+
+	return picture, err
+}
+
+// 根据id更新文件信息
+func (model *Picture) UpdateById(id interface{}, data *Picture) (Error error) {
+	err := db.Client.Where("status = ?", 1).Where("id = ?", id).Updates(&data).Error
+
+	return err
+}
+
 // 根据hash查询文件信息
 func (model *Picture) GetInfoByHash(hash string) (picture *Picture, Error error) {
 	err := db.Client.Where("status = ?", 1).Where("hash = ?", hash).First(&picture).Error
