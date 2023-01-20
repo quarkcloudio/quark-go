@@ -127,7 +127,7 @@ func (p *Template) Handle(request *builder.Request, resource *builder.Resource, 
 	for p, err := multipartReader.NextPart(); err != io.EOF; p, err = multipartReader.NextPart() {
 		if p.FormName() == "file" {
 			fileData, _ := ioutil.ReadAll(p)
-			result, err = storage.
+			fileSystem := storage.
 				New(&storage.Config{
 					LimitSize:        limitSize,
 					LimitType:        limitType.([]string),
@@ -140,7 +140,22 @@ func (p *Template) Handle(request *builder.Request, resource *builder.Resource, 
 					Header:  p.Header,
 					Name:    p.FileName(),
 					Content: fileData,
-				}).
+				})
+
+			// 上传前回调
+			getFileSystem, fileInfo, err := templateInstance.(interface {
+				BeforeHandle(request *builder.Request, templateInstance interface{}, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error)
+			}).BeforeHandle(request, templateInstance, fileSystem)
+			if err != nil {
+				return msg.Error(err.Error(), "")
+			}
+			if fileInfo != nil {
+				return templateInstance.(interface {
+					AfterHandle(request *builder.Request, templateInstance interface{}, result *storage.FileInfo) interface{}
+				}).AfterHandle(request, templateInstance, fileInfo)
+			}
+
+			result, err = getFileSystem.
 				WithImageWH().
 				RandName().
 				Path(savePath).
@@ -234,7 +249,7 @@ func (p *Template) HandleFromBase64(request *builder.Request, resource *builder.
 		Elem().
 		FieldByName("OSSConfig").Interface()
 
-	result, err = storage.
+	fileSystem := storage.
 		New(&storage.Config{
 			LimitSize:        limitSize,
 			LimitType:        limitType.([]string),
@@ -245,7 +260,22 @@ func (p *Template) HandleFromBase64(request *builder.Request, resource *builder.
 		}).
 		Reader(&storage.File{
 			Content: fileData,
-		}).
+		})
+
+	// 上传前回调
+	getFileSystem, fileInfo, err := templateInstance.(interface {
+		BeforeHandle(request *builder.Request, templateInstance interface{}, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error)
+	}).BeforeHandle(request, templateInstance, fileSystem)
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+	if fileInfo != nil {
+		return templateInstance.(interface {
+			AfterHandle(request *builder.Request, templateInstance interface{}, result *storage.FileInfo) interface{}
+		}).AfterHandle(request, templateInstance, fileInfo)
+	}
+
+	result, err = getFileSystem.
 		WithImageWH().
 		RandName().
 		Path(savePath).
@@ -258,6 +288,12 @@ func (p *Template) HandleFromBase64(request *builder.Request, resource *builder.
 	return templateInstance.(interface {
 		AfterHandle(request *builder.Request, templateInstance interface{}, result *storage.FileInfo) interface{}
 	}).AfterHandle(request, templateInstance, result)
+}
+
+// 上传前回调
+func (p *Template) BeforeHandle(request *builder.Request, templateInstance interface{}, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error) {
+
+	return fileSystem, nil, nil
 }
 
 // 执行上传

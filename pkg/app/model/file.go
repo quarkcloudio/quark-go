@@ -19,10 +19,11 @@ type File struct {
 	FileCategoryId int       `json:"file_category_id" gorm:"size:11;default:0"`
 	Sort           int       `json:"sort" gorm:"size:11;default:0"`
 	Name           string    `json:"name" gorm:"size:255;not null"`
-	Size           string    `json:"size" gorm:"size:20;default:0"`
+	Size           int64     `json:"size" gorm:"size:20;default:0"`
 	Ext            string    `json:"ext" gorm:"size:255"`
 	Path           string    `json:"path" gorm:"size:255;not null"`
-	Md5            string    `json:"md5" gorm:"size:255;not null"`
+	Url            string    `json:"url" gorm:"size:255;not null"`
+	Hash           string    `json:"hash" gorm:"size:255;not null"`
 	Status         int       `json:"status" gorm:"size:1;not null;default:1"`
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
@@ -33,6 +34,13 @@ func (model *File) InsertGetId(data *File) (id int, Error error) {
 	err := db.Client.Create(&data).Error
 
 	return data.Id, err
+}
+
+// 根据hash查询文件信息
+func (model *File) GetInfoByHash(hash string) (file *File, Error error) {
+	err := db.Client.Where("status = ?", 1).Where("hash = ?", hash).First(&file).Error
+
+	return file, err
 }
 
 // 获取文件路径

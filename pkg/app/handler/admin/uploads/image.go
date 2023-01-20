@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminupload"
 	"github.com/quarkcms/quark-go/pkg/msg"
@@ -32,9 +33,39 @@ func (p *Image) Init() interface{} {
 		"image/gif",
 	}
 
+	// 设置文件上传路径
 	p.SavePath = "./website/storage/images/" + time.Now().Format("20060102") + "/"
 
 	return p
+}
+
+// 上传前回调
+func (p *Image) BeforeHandle(request *builder.Request, templateInstance interface{}, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error) {
+	fileHash, err := fileSystem.GetFileHash()
+	if err != nil {
+		return fileSystem, nil, err
+	}
+
+	pictureInfo, _ := (&model.Picture{}).GetInfoByHash(fileHash)
+	if err != nil {
+		return fileSystem, nil, err
+	}
+	if pictureInfo.Id != 0 {
+		fileInfo := &storage.FileInfo{
+			Name:   pictureInfo.Name,
+			Size:   pictureInfo.Size,
+			Width:  pictureInfo.Width,
+			Height: pictureInfo.Height,
+			Ext:    pictureInfo.Ext,
+			Path:   pictureInfo.Path,
+			Url:    pictureInfo.Url,
+			Hash:   pictureInfo.Hash,
+		}
+
+		return fileSystem, fileInfo, err
+	}
+
+	return fileSystem, nil, err
 }
 
 // 上传完成后回调
@@ -48,6 +79,26 @@ func (p *Image) AfterHandle(request *builder.Request, templateInstance interface
 	if driver == storage.LocalDriver {
 		result.Url = strings.ReplaceAll(result.Url, "./website/", "/")
 	}
+
+	adminInfo, err := (&model.Admin{}).GetAuthUser(request.Token())
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+
+	// 插入数据库
+	(&model.Picture{}).InsertGetId(&model.Picture{
+		ObjType: "admin",
+		ObjId:   adminInfo.Id,
+		Name:    result.Name,
+		Size:    result.Size,
+		Width:   result.Width,
+		Height:  result.Height,
+		Ext:     result.Ext,
+		Path:    result.Path,
+		Url:     result.Url,
+		Hash:    result.Hash,
+		Status:  1,
+	})
 
 	return msg.Success("上传成功", "", result)
 }

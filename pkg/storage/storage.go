@@ -209,7 +209,7 @@ func (p *FileSystem) isExist(path string) bool {
 }
 
 // 计算文件哈希值
-func (p *FileSystem) sumFileHash() (string, error) {
+func (p *FileSystem) GetFileHash() (string, error) {
 	var (
 		hashValue string
 		err       error
@@ -352,7 +352,7 @@ func (p *FileSystem) SaveToLocal() error {
 	}
 
 	// 计算文件哈希值
-	fileHash, err := p.sumFileHash()
+	fileHash, err := p.GetFileHash()
 	if err != nil {
 		return err
 	}
@@ -405,7 +405,7 @@ func (p *FileSystem) SaveToOSS() error {
 	saveName := p.Config.SaveName
 
 	// 计算文件哈希值
-	fileHash, err := p.sumFileHash()
+	fileHash, err := p.GetFileHash()
 	if err != nil {
 		return err
 	}
