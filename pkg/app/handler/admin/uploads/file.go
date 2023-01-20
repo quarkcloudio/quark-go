@@ -1,6 +1,8 @@
 package uploads
 
 import (
+	"time"
+
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminupload"
 )
 
@@ -25,7 +27,7 @@ func (p *File) Init() interface{} {
 		"image/gif",
 	}
 
-	p.SavePath = "./storage/files/"
+	p.SavePath = "./website/storage/files/" + time.Now().Format("20060102") + "/"
 
 	return p
 }

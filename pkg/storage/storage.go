@@ -2,9 +2,17 @@ package storage
 
 import (
 	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
+	"fmt"
+	"image"
+	_ "image/gif"
+	_ "image/jpeg"
+	_ "image/png"
 	"io"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/quarkcms/quark-go/pkg/rand"
@@ -21,7 +29,7 @@ type OSSConfig struct {
 
 // 配置
 type Config struct {
-	LimitSize        int        // 限制文件大小
+	LimitSize        int64      // 限制文件大小
 	LimitType        []string   // 限制文件类型
 	LimitImageWidth  int        // 限制图片宽度
 	LimitImageHeight int        // 限制图片高度
@@ -32,14 +40,30 @@ type Config struct {
 	OSSConfig        *OSSConfig // OSS配置
 }
 
-// 文件信息
+// 文件结构体
 type File struct {
 	Header      map[string][]string // map[Content-Disposition:[form-data; name="file"; filename="demo.jpg"] Content-Type:[image/jpeg]]
 	Name        string              // 文件名称
-	Size        int                 // 文件大小
+	Size        int64               // 文件大小
 	Ext         string              // 文件扩展名
 	ContentType string              // 文件类型
 	Content     []byte              // 文件内容
+	Hash        string              // 文件哈希值
+	Width       int                 // 如果为图片，则返回宽度
+	Height      int                 // 如果为图片，则返回高度
+}
+
+// 文件信息
+type FileInfo struct {
+	Name        string `json:"name"`        // 文件名称
+	Size        int64  `json:"size"`        // 文件大小
+	Ext         string `json:"ext"`         // 文件扩展名
+	ContentType string `json:"contentType"` // 文件类型
+	Path        string `json:"path"`        // 上传路径
+	Url         string `json:"url"`         // Url路径
+	Hash        string `json:"hash"`        // 文件哈希值
+	Width       int    `json:"width"`       // 如果为图片，则返回宽度
+	Height      int    `json:"height"`      // 如果为图片，则返回高度
 }
 
 // 结构体
@@ -50,6 +74,9 @@ type FileSystem struct {
 
 // 初始化对象
 func New(config *Config) *FileSystem {
+	if config.Driver == "" {
+		config.Driver = "local"
+	}
 
 	return &FileSystem{
 		Config: config,
@@ -58,6 +85,15 @@ func New(config *Config) *FileSystem {
 
 // 设置文件信息
 func (p *FileSystem) Reader(file *File) *FileSystem {
+	if file.Size == 0 {
+		file.Size = int64(len(file.Content))
+	}
+	if file.ContentType == "" && file.Header != nil {
+		if file.Header["Content-Type"] != nil {
+			file.ContentType = file.Header["Content-Type"][0]
+		}
+	}
+
 	p.File = file
 
 	return p
@@ -91,99 +127,78 @@ func (p *FileSystem) FileBase64(fileContent string) *FileSystem {
 }
 
 // 限制文件大小
-func (p *FileSystem) SetLimitSize(limitSize int) *FileSystem {
+func (p *FileSystem) LimitSize(limitSize int64) *FileSystem {
+	p.Config.LimitSize = limitSize
 
 	return p
 }
 
 // 限制文件类型
-func (p *FileSystem) SetLimitType(limitType []string) *FileSystem {
+func (p *FileSystem) LimitType(limitType []string) *FileSystem {
+	p.Config.LimitType = limitType
+
+	return p
+}
+
+// 限制图片宽度
+func (p *FileSystem) LimitImageWidth(limitImageWidth int) *FileSystem {
+	p.Config.LimitImageWidth = limitImageWidth
+
+	return p
+}
+
+// 限制图片高度
+func (p *FileSystem) LimitImageHeight(limitImageHeight int) *FileSystem {
+	p.Config.LimitImageHeight = limitImageHeight
+
+	return p
+}
+
+// 读取图片宽高
+func (p *FileSystem) WithImageWH() *FileSystem {
+	byteReader := bytes.NewReader(p.File.Content)
+	imageConfig, _, err := image.DecodeConfig(byteReader)
+	if err != nil {
+		fmt.Println(err)
+		return p
+	}
+
+	p.File.Width = imageConfig.Width
+	p.File.Height = imageConfig.Height
 
 	return p
 }
 
 // 存储驱动
-func (p *FileSystem) SetDriver(driver string) *FileSystem {
+func (p *FileSystem) Driver(driver string) *FileSystem {
+	p.Config.Driver = driver
 
 	return p
 }
 
 // 保存路径
-func (p *FileSystem) SetSavePath(path string) *FileSystem {
+func (p *FileSystem) Path(path string) *FileSystem {
 	p.Config.SavePath = path
 
 	return p
 }
 
 // 随机保存文件名称
-func (p *FileSystem) SetSaveRandName(randName bool) *FileSystem {
-	p.Config.SaveRandName = randName
+func (p *FileSystem) RandName() *FileSystem {
+	p.Config.SaveRandName = true
 
 	return p
 }
 
 // 保存文件名称
-func (p *FileSystem) SetSaveName(name string) *FileSystem {
+func (p *FileSystem) Name(name string) *FileSystem {
 	p.Config.SaveName = name
 
 	return p
 }
 
-// 保存文件到本地
-func (p *FileSystem) SaveToLocal(path string, name string) (interface{}, error) {
-
-	return p, nil
-}
-
-// 保存文件到OSS
-func (p *FileSystem) SaveToOSS(path string, name string) (interface{}, error) {
-
-	return p, nil
-}
-
-// 保存文件
-func (p *FileSystem) Save() (interface{}, error) {
-	savePath := p.Config.SavePath
-	if savePath == "" {
-		return nil, errors.New("请设置保存路径")
-	}
-
-	saveName := p.Config.SaveName
-	if saveName == "" {
-		saveName = p.File.Name
-	}
-
-	fileNames := strings.Split(saveName, ".")
-	if len(fileNames) <= 1 {
-		return nil, errors.New("无法获取文件扩展名！")
-	}
-
-	p.File.Ext = fileNames[len(fileNames)-1]
-	if p.Config.SaveRandName {
-		saveName = rand.MakeAlphanumeric(40) + "." + p.File.Ext
-	}
-
-	if !PathExist(savePath) {
-		err := os.MkdirAll(savePath, os.ModeDir)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	f, err := os.OpenFile(savePath+saveName, os.O_WRONLY|os.O_CREATE, 0666) //根据文件名创建文件路径
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	byteReader := bytes.NewReader(p.File.Content)
-	io.Copy(f, byteReader)
-
-	return p, nil
-}
-
-// 判断路径是否存在
-func PathExist(path string) bool {
+// 检查路径是否存在
+func (p *FileSystem) isExist(path string) bool {
 	_, err := os.Stat(path) //os.Stat获取文件信息
 	if err != nil {
 		if os.IsExist(err) {
@@ -192,4 +207,204 @@ func PathExist(path string) bool {
 		return false
 	}
 	return true
+}
+
+// 计算文件哈希值
+func (p *FileSystem) sumFileHash() (string, error) {
+	var (
+		hashValue string
+		err       error
+	)
+
+	sha256New := sha256.New()
+	byteReader := bytes.NewReader(p.File.Content)
+	_, err = io.Copy(sha256New, byteReader)
+	if err != nil {
+		return hashValue, err
+	}
+
+	hashValue = hex.EncodeToString(sha256New.Sum(nil))
+
+	return hashValue, nil
+}
+
+// 检查文件大小
+func (p *FileSystem) checkFileSize() error {
+	var err error
+	if p.Config.LimitSize == 0 {
+		return err
+	}
+
+	if p.File.Size > p.Config.LimitSize {
+		err = errors.New("上传文件大小超出限制！")
+	}
+
+	return err
+}
+
+// 检查文件类型
+func (p *FileSystem) checkFileType() error {
+	var (
+		err         error
+		checkReuslt bool
+		limitText   string
+	)
+	if len(p.Config.LimitType) == 0 {
+		return err
+	}
+	for _, v := range p.File.Header["Content-Type"] {
+		for _, limit := range p.Config.LimitType {
+			if v == limit {
+				checkReuslt = true
+			}
+		}
+	}
+	for _, v := range p.Config.LimitType {
+		limitText = limitText + "," + v
+	}
+	limitText = strings.Trim(limitText, ",")
+	if !checkReuslt {
+		return errors.New("只能上传 " + limitText + " 格式文件")
+	}
+
+	return err
+}
+
+// 检查图片文件宽高
+func (p *FileSystem) checkImageWH() error {
+	var err error
+	if p.Config.LimitImageHeight == 0 || p.Config.LimitImageWidth == 0 {
+		return err
+	}
+
+	byteReader := bytes.NewReader(p.File.Content)
+	imageConfig, _, err := image.DecodeConfig(byteReader)
+	if err != nil {
+		return err
+	}
+
+	if imageConfig.Width != p.Config.LimitImageWidth || imageConfig.Height != p.Config.LimitImageHeight {
+		limitW := strconv.Itoa(p.Config.LimitImageWidth)
+		limitH := strconv.Itoa(p.Config.LimitImageHeight)
+
+		err = errors.New("请上传 " + limitW + "*" + limitH + " 尺寸的图片")
+	}
+
+	return err
+}
+
+// 检测文件合法性
+func (p *FileSystem) CheckFile() error {
+	var err error
+	err = p.checkFileSize()
+	if err != nil {
+		return err
+	}
+
+	err = p.checkFileType()
+	if err != nil {
+		return err
+	}
+
+	err = p.checkImageWH()
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+
+// 保存文件到本地
+func (p *FileSystem) SaveToLocal() error {
+	savePath := p.Config.SavePath
+	if savePath == "" {
+		return errors.New("请设置保存路径")
+	}
+
+	if p.Config.SaveName == "" {
+		p.Config.SaveName = p.File.Name
+	}
+
+	fileNames := strings.Split(p.File.Name, ".")
+	if len(fileNames) <= 1 {
+		return errors.New("无法获取文件扩展名！")
+	}
+
+	// 检查文件合法性
+	err := p.CheckFile()
+	if err != nil {
+		return err
+	}
+
+	p.File.Ext = fileNames[len(fileNames)-1]
+	if p.Config.SaveRandName {
+		p.Config.SaveName = rand.MakeAlphanumeric(40) + "." + p.File.Ext
+	}
+
+	if !p.isExist(savePath) {
+		err := os.MkdirAll(savePath, os.ModeDir)
+		if err != nil {
+			return err
+		}
+	}
+
+	saveName := p.Config.SaveName
+	if p.isExist(savePath + saveName) {
+		return errors.New("文件已存在：" + savePath + saveName)
+	}
+
+	// 计算文件哈希值
+	fileHash, err := p.sumFileHash()
+	if err != nil {
+		return err
+	}
+	p.File.Hash = fileHash
+
+	f, err := os.OpenFile(savePath+saveName, os.O_WRONLY|os.O_CREATE, 0666) //根据文件名创建文件路径
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	byteReader := bytes.NewReader(p.File.Content)
+	io.Copy(f, byteReader)
+
+	return nil
+}
+
+// 保存文件到OSS
+func (p *FileSystem) SaveToOSS() error {
+
+	return nil
+}
+
+// 保存文件
+func (p *FileSystem) Save() (fileInfo *FileInfo, err error) {
+
+	switch p.Config.Driver {
+	case "local":
+		err = p.SaveToLocal()
+	case "oss":
+		err = p.SaveToOSS()
+	default:
+		err = errors.New("上传驱动未知")
+	}
+
+	if err != nil {
+		return fileInfo, err
+	}
+
+	fileInfo = &FileInfo{
+		p.Config.SaveName,
+		p.File.Size,
+		p.File.Ext,
+		p.File.ContentType,
+		p.Config.SavePath,
+		p.Config.SavePath + p.Config.SaveName,
+		p.File.Hash,
+		p.File.Width,
+		p.File.Height,
+	}
+
+	return fileInfo, err
 }

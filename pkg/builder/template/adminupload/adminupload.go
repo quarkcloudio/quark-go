@@ -18,11 +18,11 @@ import (
 // 文件上传
 type Template struct {
 	template.AdminTemplate
-	LimitSize        int      // 限制文件大小
-	LimitType        []string // 限制文件类型
-	LimitImageWidth  int      // 限制图片宽度
-	LimitImageHeight int      // 限制图片高度
-	SavePath         string   // 保存路径
+	LimitSize        int64       // 限制文件大小
+	LimitType        interface{} // 限制文件类型
+	LimitImageWidth  int64       // 限制图片宽度
+	LimitImageHeight int64       // 限制图片高度
+	SavePath         string      // 保存路径
 }
 
 // 初始化
@@ -49,6 +49,11 @@ func (p *Template) TemplateInit() interface{} {
 
 // 执行上传
 func (p *Template) Handle(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
+	var (
+		result *storage.FileInfo
+		err    error
+	)
+
 	contentTypes := strings.Split(request.Header("Content-Type"), "; ")
 	if len(contentTypes) != 2 {
 		return msg.Error("Content-Type error", "")
@@ -56,6 +61,26 @@ func (p *Template) Handle(request *builder.Request, resource *builder.Resource, 
 	if contentTypes[0] != "multipart/form-data" {
 		return msg.Error("Content-Type must use multipart/form-data", "")
 	}
+
+	limitSize := reflect.
+		ValueOf(templateInstance).
+		Elem().
+		FieldByName("LimitSize").Int()
+
+	limitType := reflect.
+		ValueOf(templateInstance).
+		Elem().
+		FieldByName("LimitType").Interface()
+
+	limitImageWidth := reflect.
+		ValueOf(templateInstance).
+		Elem().
+		FieldByName("LimitImageWidth").Int()
+
+	limitImageHeight := reflect.
+		ValueOf(templateInstance).
+		Elem().
+		FieldByName("LimitImageHeight").Int()
 
 	savePath := reflect.
 		ValueOf(templateInstance).
@@ -67,18 +92,39 @@ func (p *Template) Handle(request *builder.Request, resource *builder.Resource, 
 	for p, err := multipartReader.NextPart(); err != io.EOF; p, err = multipartReader.NextPart() {
 		if p.FormName() == "file" {
 			fileData, _ := ioutil.ReadAll(p)
-			storage.
-				New(&storage.Config{}).
+			result, err = storage.
+				New(&storage.Config{
+					LimitSize:        limitSize,
+					LimitType:        limitType.([]string),
+					LimitImageWidth:  int(limitImageWidth),
+					LimitImageHeight: int(limitImageHeight),
+				}).
 				Reader(&storage.File{
 					Header:  p.Header,
 					Name:    p.FileName(),
 					Content: fileData,
 				}).
-				SetSavePath(savePath).
-				SetSaveRandName(true).
+				WithImageWH().
+				RandName().
+				Path(savePath).
 				Save()
 		}
 	}
 
-	return msg.Success("上传成功", "", "")
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+
+	return templateInstance.(interface {
+		AfterHandle(request *builder.Request, result *storage.FileInfo) interface{}
+	}).AfterHandle(request, result)
+}
+
+// 执行上传
+func (p *Template) AfterHandle(request *builder.Request, result *storage.FileInfo) interface{} {
+
+	// 重写url
+	result.Url = strings.ReplaceAll(result.Url, "./website/", "/")
+
+	return msg.Success("上传成功", "", result)
 }
