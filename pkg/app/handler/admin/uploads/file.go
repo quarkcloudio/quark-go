@@ -2,7 +2,6 @@ package uploads
 
 import (
 	"reflect"
-	"strings"
 	"time"
 
 	"github.com/quarkcms/quark-go/pkg/app/model"
@@ -75,7 +74,7 @@ func (p *File) AfterHandle(request *builder.Request, templateInstance interface{
 
 	// 重写url
 	if driver == storage.LocalDriver {
-		result.Url = strings.ReplaceAll(result.Url, "./website/", "/")
+		result.Url = (&model.File{}).GetPath(result.Url)
 	}
 
 	adminInfo, err := (&model.Admin{}).GetAuthUser(request.Token())

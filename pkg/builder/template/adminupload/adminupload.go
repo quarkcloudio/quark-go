@@ -298,15 +298,6 @@ func (p *Template) BeforeHandle(request *builder.Request, templateInstance inter
 
 // 执行上传
 func (p *Template) AfterHandle(request *builder.Request, templateInstance interface{}, result *storage.FileInfo) interface{} {
-	driver := reflect.
-		ValueOf(templateInstance).
-		Elem().
-		FieldByName("Driver").String()
-
-	// 重写url
-	if driver == storage.LocalDriver {
-		result.Url = strings.ReplaceAll(result.Url, "./website/", "/")
-	}
 
 	return msg.Success("上传成功", "", result)
 }
