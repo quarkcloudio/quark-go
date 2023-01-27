@@ -44,6 +44,7 @@ type Config struct {
 	SavePath         string     // 保存路径
 	SaveName         string     // 保存文件名称
 	SaveRandName     bool       // 随机保存文件名称
+	CheckFileExist   bool       // 检测文件是否已存在
 	OSSConfig        *OSSConfig // OSS配置
 }
 
@@ -164,6 +165,13 @@ func (p *FileSystem) WithImageWH() *FileSystem {
 
 	p.File.Width = imageConfig.Width
 	p.File.Height = imageConfig.Height
+
+	return p
+}
+
+// 检测文件是否已存在
+func (p *FileSystem) CheckFileExist() *FileSystem {
+	p.Config.CheckFileExist = true
 
 	return p
 }
@@ -347,8 +355,10 @@ func (p *FileSystem) SaveToLocal() error {
 	}
 
 	saveName := p.Config.SaveName
-	if p.isExist(savePath + saveName) {
-		return errors.New("文件已存在：" + savePath + saveName)
+	if p.Config.CheckFileExist {
+		if p.isExist(savePath + saveName) {
+			return errors.New("文件已存在：" + savePath + saveName)
+		}
 	}
 
 	// 计算文件哈希值

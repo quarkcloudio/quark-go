@@ -161,4 +161,18 @@ func Adapter(b *builder.Resource, r *server.Hertz) {
 	rg.GET("/:resource/:uriKey/form", func(c context.Context, ctx *app.RequestContext) {
 		RouteAdapter(b, JSON_RESPONSE, ctx)
 	})
+
+	// 文件上传
+	rg.POST("/upload/:resource/handle", func(c context.Context, ctx *app.RequestContext) {
+		RouteAdapter(b, JSON_RESPONSE, ctx)
+	})
+	rg.GET("/upload/:resource/getList", func(c context.Context, ctx *app.RequestContext) {
+		RouteAdapter(b, JSON_RESPONSE, ctx)
+	})
+	rg.POST("/upload/:resource/delete", func(c context.Context, ctx *app.RequestContext) {
+		RouteAdapter(b, JSON_RESPONSE, ctx)
+	})
+	rg.POST("/upload/:resource/crop", func(c context.Context, ctx *app.RequestContext) {
+		RouteAdapter(b, JSON_RESPONSE, ctx)
+	})
 }

@@ -122,7 +122,7 @@ func (model *Picture) GetPath(id interface{}) string {
 			return getId
 		}
 		if strings.Contains(getId, "./") && !strings.Contains(getId, "{") {
-			return http + webSiteDomain + strings.Replace(getId, "./website", "./", -1)
+			return http + webSiteDomain + strings.Replace(getId, "./website/", "/", -1)
 		}
 		if strings.Contains(getId, "/") && !strings.Contains(getId, "{") {
 			return http + webSiteDomain + getId
@@ -145,7 +145,7 @@ func (model *Picture) GetPath(id interface{}) string {
 			return path
 		}
 		if strings.Contains(path, "./") {
-			path = strings.Replace(path, "./website", "./", -1)
+			path = strings.Replace(path, "./website/", "/", -1)
 		}
 		if path != "" {
 			// 如果设置域名，则加上域名前缀
@@ -161,7 +161,7 @@ func (model *Picture) GetPath(id interface{}) string {
 			return path
 		}
 		if strings.Contains(path, "./") {
-			path = strings.Replace(path, "./website", "./", -1)
+			path = strings.Replace(path, "./website/", "/", -1)
 		}
 	}
 	if path != "" {

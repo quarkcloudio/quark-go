@@ -134,6 +134,7 @@ func (p *Template) Handle(request *builder.Request, resource *builder.Resource, 
 					LimitImageWidth:  limitImageWidth,
 					LimitImageHeight: limitImageHeight,
 					Driver:           driver,
+					CheckFileExist:   true,
 					OSSConfig:        ossConfig.(*storage.OSSConfig),
 				}).
 				Reader(&storage.File{
@@ -256,6 +257,7 @@ func (p *Template) HandleFromBase64(request *builder.Request, resource *builder.
 			LimitImageWidth:  limitImageWidth,
 			LimitImageHeight: limitImageHeight,
 			Driver:           driver,
+			CheckFileExist:   true,
 			OSSConfig:        ossConfig.(*storage.OSSConfig),
 		}).
 		Reader(&storage.File{

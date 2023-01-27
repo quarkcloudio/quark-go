@@ -157,4 +157,17 @@ func Adapter(b *builder.Resource, app *fiber.App) {
 		return RouteAdapter(b, JSON_RESPONSE, ctx)
 	})
 
+	// 文件上传
+	rg.Post("/upload/:resource/handle", func(ctx *fiber.Ctx) error {
+		return RouteAdapter(b, JSON_RESPONSE, ctx)
+	})
+	rg.Get("/upload/:resource/getList", func(ctx *fiber.Ctx) error {
+		return RouteAdapter(b, JSON_RESPONSE, ctx)
+	})
+	rg.Post("/upload/:resource/delete", func(ctx *fiber.Ctx) error {
+		return RouteAdapter(b, JSON_RESPONSE, ctx)
+	})
+	rg.Post("/upload/:resource/crop", func(ctx *fiber.Ctx) error {
+		return RouteAdapter(b, JSON_RESPONSE, ctx)
+	})
 }
