@@ -20,7 +20,7 @@ func (p *ActionRequest) Handle(request *builder.Request, templateInstance interf
 		FieldByName("Model").Interface()
 	model := db.Client.Model(&modelInstance)
 
-	id := request.Query("id")
+	id := request.Query("id", "")
 	if id != "" {
 		if strings.Contains(id.(string), ",") {
 			model.Where("id IN ?", strings.Split(id.(string), ","))
