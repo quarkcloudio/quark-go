@@ -34,7 +34,7 @@ func (p *WebConfig) Init() interface{} {
 // 表单接口
 func (p *WebConfig) FormApi(request *builder.Request) string {
 
-	return "admin/webConfig/action/change-web-config"
+	return "/api/admin/webConfig/action/change-web-config"
 }
 
 // 字段

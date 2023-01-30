@@ -28,10 +28,20 @@ func RequestAdapter(ctx *gin.Context) (*builder.Request, error) {
 	//把读过的字节流重新放到body
 	ctx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data))
 
+	headerString := ""
+	for hk, hvs := range ctx.Request.Header {
+		tmp := ""
+		for _, v := range hvs {
+			tmp = tmp + "," + v
+		}
+		tmp = strings.Trim(tmp, ",")
+		headerString = headerString + hk + ": " + tmp + "\r\n"
+	}
+
 	// 将框架请求转换为builder框架请求
 	return &builder.Request{
 		IPString:       ctx.ClientIP(),
-		HeaderString:   ctx.GetHeader(""),
+		HeaderString:   headerString,
 		MethodString:   ctx.Request.Method,
 		FullPathString: ctx.FullPath(),
 		HostString:     ctx.Request.Host,

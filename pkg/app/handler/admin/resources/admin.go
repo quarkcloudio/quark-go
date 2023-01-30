@@ -104,8 +104,6 @@ func (p *Admin) Fields(request *builder.Request) []interface{} {
 				},
 			),
 
-		field.Editor("abc", "内容"),
-
 		field.Text("email", "邮箱").
 			SetRules(
 				[]string{
@@ -267,7 +265,6 @@ func (p *Admin) AfterSaved(request *builder.Request, model *gorm.DB) interface{}
 		return msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", request.Param("resource"), -1), "")
 	}
 
-	var result *gorm.DB
 	if request.IsCreating() {
 		last := map[string]interface{}{}
 		model.Order("id desc").First(&last) // hack
@@ -282,7 +279,10 @@ func (p *Admin) AfterSaved(request *builder.Request, model *gorm.DB) interface{}
 		}
 		if len(roleData) > 0 {
 			// 同步角色
-			result = db.Client.Model(&models.ModelHasRole{}).Create(roleData)
+			err := db.Client.Model(&models.ModelHasRole{}).Create(roleData).Error
+			if err != nil {
+				return msg.Error(err.Error(), "")
+			}
 		}
 	} else {
 
@@ -302,12 +302,11 @@ func (p *Admin) AfterSaved(request *builder.Request, model *gorm.DB) interface{}
 		}
 		if len(roleData) > 0 {
 			// 同步角色
-			result = db.Client.Model(&models.ModelHasRole{}).Create(roleData)
+			err := db.Client.Model(&models.ModelHasRole{}).Create(roleData).Error
+			if err != nil {
+				return msg.Error(err.Error(), "")
+			}
 		}
-	}
-
-	if result.Error != nil {
-		return msg.Error(result.Error.Error(), "")
 	}
 
 	return msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", request.Param("resource"), -1), "")
