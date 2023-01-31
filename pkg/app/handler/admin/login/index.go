@@ -96,7 +96,7 @@ func (p *Index) Handle(request *builder.Request, resource *builder.Resource, tem
 	// 获取token字符串
 	tokenString, err := token.SignedString([]byte(config.AppKey))
 
-	return msg.Success("获取成功", "", map[string]string{
+	return msg.Success("登录成功", "", map[string]string{
 		"token": tokenString,
 	})
 }
