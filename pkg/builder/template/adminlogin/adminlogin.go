@@ -2,7 +2,6 @@ package adminlogin
 
 import (
 	"reflect"
-	"time"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template"
@@ -14,13 +13,11 @@ import (
 // 后台登录模板
 type Template struct {
 	template.AdminTemplate
-	Api         string                   // 登录接口
-	Redirect    string                   // 登录后跳转地址
-	Logo        interface{}              // 登录页面Logo
-	Title       string                   // 标题
-	Description string                   // 描述
-	Copyright   string                   // 版权信息
-	Links       []map[string]interface{} // 友情链接
+	Api      string      // 登录接口
+	Redirect string      // 登录后跳转地址
+	Logo     interface{} // 登录页面Logo
+	Title    string      // 标题
+	SubTitle string      // 子标题
 }
 
 // 初始化
@@ -52,27 +49,8 @@ func (p *Template) TemplateInit() interface{} {
 	// 跳转地址
 	p.Redirect = "/index?api=/api/admin/dashboard/index/index"
 
-	// 描述
-	p.Description = "信息丰富的世界里，唯一稀缺的就是人类的注意力"
-
-	// 版权
-	p.Copyright = time.Now().Format("2006") + " QuarkGo"
-
-	// 友情链接
-	p.Links = []map[string]interface{}{
-		{
-			"title": "Quark",
-			"href":  "http://www.quarkcms.com/",
-		},
-		{
-			"title": "爱小圈",
-			"href":  "http://www.ixiaoquan.com",
-		},
-		{
-			"title": "Github",
-			"href":  "https://github.com/quarkcms",
-		},
-	}
+	// 子标题
+	p.SubTitle = "信息丰富的世界里，唯一稀缺的就是人类的注意力"
 
 	return p
 }
@@ -134,11 +112,11 @@ func (p *Template) Render(request *builder.Request, resource *builder.Resource, 
 		Elem().
 		FieldByName("Title").String()
 
-	// 描述
-	description := reflect.
+	// 子标题
+	subTitle := reflect.
 		ValueOf(templateInstance).
 		Elem().
-		FieldByName("Description").String()
+		FieldByName("SubTitle").String()
 
 	// 获取验证码ID链接
 	captchaIdUrl := resource.RouteToResourceUrl("/api/admin/login/:resource/captchaId")
@@ -146,28 +124,15 @@ func (p *Template) Render(request *builder.Request, resource *builder.Resource, 
 	// 验证码链接
 	captchaUrl := resource.RouteToResourceUrl("/api/admin/login/:resource/captcha/:id")
 
-	// 版权信息
-	copyright := reflect.
-		ValueOf(templateInstance).
-		Elem().
-		FieldByName("Copyright").String()
-
-	// 友情链接
-	links := reflect.
-		ValueOf(templateInstance).
-		Elem().
-		FieldByName("Links").Interface()
-
 	component := (&login.Component{}).
+		Init().
 		SetApi(defaultLoginApi).
 		SetRedirect(redirect).
 		SetLogo(logo).
 		SetTitle(title).
-		SetDescription(description).
+		SetSubTitle(subTitle).
 		SetCaptchaIdUrl(captchaIdUrl).
 		SetCaptchaUrl(captchaUrl).
-		SetCopyright(copyright).
-		SetLinks(links.([]map[string]interface{})).
 		JsonSerialize()
 
 	return component
