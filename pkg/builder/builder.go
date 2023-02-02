@@ -29,6 +29,23 @@ type Config struct {
 	Routes      []string      // 路由列表
 }
 
+type AdminLayout struct {
+	Title        string                   // layout 的左上角 的 title
+	Logo         interface{}              // layout 的左上角 的 logo
+	Actions      interface{}              // layout 的头部行为
+	Layout       string                   // layout 的菜单模式,side：右侧导航，top：顶部导航，mix：混合模式
+	SplitMenus   bool                     // layout 的菜单模式为mix时，是否自动分割菜单
+	ContentWidth string                   // layout 的内容模式,Fluid：定宽 1200px，Fixed：自适应
+	PrimaryColor string                   // 主题色,"#1890ff"
+	FixedHeader  bool                     // 是否固定 header 到顶部
+	FixSiderbar  bool                     // 是否固定导航
+	IconfontUrl  string                   // 使用 IconFont 的图标配置
+	Locale       string                   // 当前 layout 的语言设置，'zh-CN' | 'zh-TW' | 'en-US'
+	SiderWidth   int                      // 侧边菜单宽度
+	Copyright    string                   // 网站版权 time.Now().Format("2006") + " QuarkGo"
+	Links        []map[string]interface{} // 友情链接
+}
+
 // 全局配置
 var AppConfig *Config
 
@@ -141,23 +158,10 @@ func getDefaultAdminLayout(adminLayout *AdminLayout) *AdminLayout {
 	defalutAdminLayout := &AdminLayout{
 		"QuarkGo",
 		false,
-		[]map[string]interface{}{
-			{
-				"component": "icon",
-				"icon":      "icon-question-circle",
-				"tooltip":   "使用文档",
-				"href":      "https://www.quarkcms.com/",
-				"target":    "_blank",
-				"style": map[string]interface{}{
-					"color": "#000",
-				},
-			},
-		},
-		"side",
+		nil,
+		"mix",
 		false,
-		"dark",
 		"Fluid",
-		"dark",
 		"#1890ff",
 		true,
 		true,
@@ -167,14 +171,17 @@ func getDefaultAdminLayout(adminLayout *AdminLayout) *AdminLayout {
 		time.Now().Format("2006") + " QuarkGo",
 		[]map[string]interface{}{
 			{
+				"key":   "1",
 				"title": "Quark",
 				"href":  "http://www.quarkcms.com/",
 			},
 			{
+				"key":   "2",
 				"title": "爱小圈",
 				"href":  "http://www.ixiaoquan.com",
 			},
 			{
+				"key":   "3",
 				"title": "Github",
 				"href":  "https://github.com/quarkcms",
 			},

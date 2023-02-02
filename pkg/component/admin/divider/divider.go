@@ -14,9 +14,10 @@ type Component struct {
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "divider"
-	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 	p.Type = "horizontal"
 	p.Orientation = "center"
+
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
 }

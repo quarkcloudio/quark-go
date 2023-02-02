@@ -4,27 +4,25 @@ import "github.com/quarkcms/quark-go/pkg/component/admin/component"
 
 type Component struct {
 	component.Element
-	ComponentKey  string                   `json:"componentKey"`
-	Cache         bool                     `json:"cache"`
-	Title         string                   `json:"title"`
-	Logo          interface{}              `json:"logo"`
-	Loading       bool                     `json:"loading"`
-	ContentStyle  map[string]string        `json:"contentStyle"`
-	HeaderActions []map[string]interface{} `json:"headerActions"`
-	Layout        string                   `json:"layout"`
-	HeaderTheme   string                   `json:"headerTheme"`
-	SplitMenus    bool                     `json:"splitMenus"`
-	ContentWidth  string                   `json:"contentWidth"`
-	NavTheme      string                   `json:"navTheme"`
-	PrimaryColor  string                   `json:"primaryColor"`
-	FixedHeader   bool                     `json:"fixedHeader"`
-	FixSiderbar   bool                     `json:"fixSiderbar"`
-	IconfontUrl   string                   `json:"iconfontUrl"`
-	Locale        string                   `json:"locale"`
-	SiderWidth    int                      `json:"siderWidth"`
-	Menu          interface{}              `json:"menu"`
-	Footer        interface{}              `json:"footer"`
-	Body          interface{}              `json:"body"`
+	ComponentKey string            `json:"componentKey"`
+	Cache        bool              `json:"cache"`
+	Title        string            `json:"title"`
+	Logo         interface{}       `json:"logo"`
+	Loading      bool              `json:"loading"`
+	ContentStyle map[string]string `json:"contentStyle"`
+	Actions      interface{}       `json:"actions"`
+	Layout       string            `json:"layout"`
+	SplitMenus   bool              `json:"splitMenus"`
+	ContentWidth string            `json:"contentWidth"`
+	PrimaryColor string            `json:"primaryColor"`
+	FixedHeader  bool              `json:"fixedHeader"`
+	FixSiderbar  bool              `json:"fixSiderbar"`
+	IconfontUrl  string            `json:"iconfontUrl"`
+	Locale       string            `json:"locale"`
+	SiderWidth   int               `json:"siderWidth"`
+	Menu         interface{}       `json:"menu"`
+	Footer       interface{}       `json:"footer"`
+	Body         interface{}       `json:"body"`
 }
 
 // 初始化
@@ -33,7 +31,6 @@ func (p *Component) Init() *Component {
 	p.Cache = true
 
 	p.SetKey("layout", component.DEFAULT_CRYPT)
-	p.ComponentKey = p.Key
 
 	return p
 }
@@ -76,8 +73,8 @@ func (p *Component) SetContentStyle(contentStyle map[string]string) *Component {
 }
 
 // layout 的头部行为
-func (p *Component) SetHeaderActions(headerActions []map[string]interface{}) *Component {
-	p.HeaderActions = headerActions
+func (p *Component) SetActions(actions interface{}) *Component {
+	p.Actions = actions
 	return p
 }
 
@@ -87,21 +84,9 @@ func (p *Component) SetLayout(layout string) *Component {
 	return p
 }
 
-// layout为mix时，顶部主题 dark | light
-func (p *Component) SetHeaderTheme(headerTheme string) *Component {
-	p.HeaderTheme = headerTheme
-	return p
-}
-
 // layout 的内容模式,Fluid：定宽 1200px，Fixed：自适应
 func (p *Component) SetContentWidth(contentWidth string) *Component {
 	p.ContentWidth = contentWidth
-	return p
-}
-
-// 导航的主题，'light' | 'dark'
-func (p *Component) SetNavTheme(navTheme string) *Component {
-	p.NavTheme = navTheme
 	return p
 }
 

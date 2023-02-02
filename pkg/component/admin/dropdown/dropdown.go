@@ -26,8 +26,9 @@ type Component struct {
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "dropdown"
-	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 	p.Visible = true
+
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
 }

@@ -21,7 +21,6 @@ type Component struct {
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "menu"
-	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 	p.InlineIndent = 24
 	p.Mode = "vertical"
 	p.Selectable = true
@@ -29,6 +28,8 @@ func (p *Component) Init() *Component {
 	p.SubMenuOpenDelay = 0
 	p.Theme = "light"
 	p.TriggerSubMenuAction = "hover"
+
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
 }

@@ -27,7 +27,6 @@ func (p *Component) Init() *Component {
 	p.Layout = "default"
 	p.ColSpan = 24
 	p.Gutter = 0
-
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p

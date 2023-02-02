@@ -86,12 +86,10 @@ func (p *AdminTemplate) LayoutComponentRender(request *builder.Request, template
 		Init().
 		SetTitle(adminLayout.Title).
 		SetLogo(adminLayout.Logo).
-		SetHeaderActions(adminLayout.HeaderActions).
+		SetActions(adminLayout.Actions).
 		SetLayout(adminLayout.Layout).
 		SetSplitMenus(adminLayout.SplitMenus).
-		SetHeaderTheme(adminLayout.HeaderTheme).
 		SetContentWidth(adminLayout.ContentWidth).
-		SetNavTheme(adminLayout.NavTheme).
 		SetPrimaryColor(adminLayout.PrimaryColor).
 		SetFixSiderbar(adminLayout.FixSiderbar).
 		SetFixedHeader(adminLayout.FixedHeader).

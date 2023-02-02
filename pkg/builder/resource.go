@@ -11,25 +11,6 @@ type Route struct {
 	HandlerName string
 }
 
-type AdminLayout struct {
-	Title         string                   // layout 的左上角 的 title
-	Logo          interface{}              // layout 的左上角 的 logo
-	HeaderActions []map[string]interface{} // layout 的头部行为
-	Layout        string                   // layout 的菜单模式,side：右侧导航，top：顶部导航，mix：混合模式
-	SplitMenus    bool                     // layout 的菜单模式为mix时，是否自动分割菜单
-	HeaderTheme   string                   // layout 的菜单模式为mix时，顶部主题 'dark' | 'light'
-	ContentWidth  string                   // layout 的内容模式,Fluid：定宽 1200px，Fixed：自适应
-	NavTheme      string                   // 导航的主题，'light' | 'dark'
-	PrimaryColor  string                   // 主题色,"#1890ff"
-	FixedHeader   bool                     // 是否固定 header 到顶部
-	FixSiderbar   bool                     // 是否固定导航
-	IconfontUrl   string                   // 使用 IconFont 的图标配置
-	Locale        string                   // 当前 layout 的语言设置，'zh-CN' | 'zh-TW' | 'en-US'
-	SiderWidth    int                      // 侧边菜单宽度
-	Copyright     string                   // 网站版权 time.Now().Format("2006") + " QuarkGo"
-	Links         []map[string]interface{} // 友情链接
-}
-
 type Resource struct {
 	Providers        []interface{}                  // 服务列表
 	Request          *Request                       // 请求数据

@@ -40,18 +40,14 @@ type Component struct {
 
 // 设置Key
 func (p *Component) SetKey(key string, crypt bool) *Component {
-
 	if key == "" {
 		key = uuid.New()
 	}
-
 	if crypt {
 		h := md5.New()
 		h.Write([]byte(key))
 		key = hex.EncodeToString(h.Sum(nil))
 	}
-
-	p.Key = key
 	p.ComponentKey = key
 
 	return p
@@ -78,6 +74,7 @@ func (p *Component) Init() *Component {
 		"span":   20,
 	}
 	p.ApiType = "POST"
+
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p

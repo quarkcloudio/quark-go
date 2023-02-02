@@ -48,8 +48,6 @@ func (p *Meta) SetTitle(title string) *Meta {
  * @return p
  */
 func (p *Meta) SetAttribute(attribute string) *Meta {
-	p.SetKey(attribute, false)
-	p.ComponentKey = attribute
 	p.DataIndex = attribute
 	p.Attribute = attribute
 

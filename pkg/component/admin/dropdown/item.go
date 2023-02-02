@@ -33,6 +33,7 @@ type Item struct {
 // 初始化
 func (p *Item) Init() *Item {
 	p.Component = "itemStyle"
+
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
