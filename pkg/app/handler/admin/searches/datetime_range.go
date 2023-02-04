@@ -21,11 +21,10 @@ func (p *DateTimeRange) Init(column string, name string) *DateTimeRange {
 
 // 执行查询
 func (p *DateTimeRange) Apply(request *builder.Request, query *gorm.DB, value interface{}) *gorm.DB {
-	values, ok := value.(map[string]interface{})
-
-	if ok == false {
+	values, ok := value.([]interface{})
+	if !ok {
 		return query
 	}
 
-	return query.Where(p.Column+" BETWEEN ? AND ?", values["0"], values["1"])
+	return query.Where(p.Column+" BETWEEN ? AND ?", values[0], values[1])
 }
