@@ -15,7 +15,7 @@ type Component struct {
 	Type               string                 `json:"type"`
 	Arrow              bool                   `json:"arrow"`
 	DestroyPopupOnHide bool                   `json:"destroyPopupOnHide"`
-	Overlay            interface{}            `json:"overlay"`
+	Menu               interface{}            `json:"menu"`
 	OverlayClassName   string                 `json:"overlayClassName"`
 	OverlayStyle       map[string]interface{} `json:"overlayStyle"`
 	Placement          string                 `json:"placement"`
@@ -119,8 +119,8 @@ func (p *Component) SetDestroyPopupOnHide(destroyPopupOnHide bool) *Component {
 }
 
 // 菜单
-func (p *Component) SetOverlay(overlay interface{}) *Component {
-	p.Overlay = overlay
+func (p *Component) SetMenu(menu interface{}) *Component {
+	p.Menu = menu
 
 	return p
 }

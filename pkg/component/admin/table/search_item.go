@@ -12,14 +12,13 @@ type SearchItem struct {
 	Api          string      `json:"api"`
 	Rules        interface{} `json:"rules"`
 	RuleMessages interface{} `json:"ruleMessages"`
-	Operator     string      `json:"operator"`
 	Placeholder  interface{} `json:"placeholder"`
 	Load         interface{} `json:"load"`
 }
 
 // 初始化
 func (p *SearchItem) Init() *SearchItem {
-	p.Component = "input"
+	p.Component = "textField"
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
@@ -95,22 +94,6 @@ func (p *SearchItem) SetDefault(value interface{}) *SearchItem {
 }
 
 /**
- * 操作符
- *
- * @param string
- * @return p
- */
-func (p *SearchItem) SetOperator(operator string) *SearchItem {
-	p.Operator = operator
-
-	if p.Operator == "between" {
-		p.Placeholder = []string{"开始" + p.Label, "结束" + p.Label}
-	}
-
-	return p
-}
-
-/**
  * placeholder
  *
  * @param string placeholder
@@ -172,7 +155,7 @@ func (p *SearchItem) SetLoad(field string, api string) *SearchItem {
  * @return object
  */
 func (p *SearchItem) Input(options map[interface{}]interface{}) *SearchItem {
-	p.Component = "input"
+	p.Component = "textField"
 
 	return p
 }
@@ -184,38 +167,7 @@ func (p *SearchItem) Input(options map[interface{}]interface{}) *SearchItem {
  * @return object
  */
 func (p *SearchItem) Select(options map[interface{}]interface{}) *SearchItem {
-	p.Component = "select"
-
-	var data []map[string]interface{}
-
-	for k, v := range options {
-		option := map[string]interface{}{
-			"label": v,
-			"value": k,
-		}
-
-		data = append(data, option)
-	}
-
-	p.Options = data
-
-	if p.Operator == "between" {
-		p.Placeholder = []string{"开始" + p.Label, "结束" + p.Label}
-	} else {
-		p.Placeholder = "请选择" + p.Label
-	}
-
-	return p
-}
-
-/**
- * 多选下拉菜单控件
- *
- * @param array options
- * @return object
- */
-func (p *SearchItem) MultipleSelect(options map[interface{}]interface{}) *SearchItem {
-	p.Component = "multipleSelect"
+	p.Component = "selectField"
 
 	var data []map[string]interface{}
 
@@ -235,13 +187,27 @@ func (p *SearchItem) MultipleSelect(options map[interface{}]interface{}) *Search
 }
 
 /**
- * 时间控件
+ * 多选下拉菜单控件
  *
- * @param string options
+ * @param array options
  * @return object
  */
-func (p *SearchItem) Datetime(options map[interface{}]interface{}) *SearchItem {
-	p.Component = "datetime"
+func (p *SearchItem) MultipleSelect(options map[interface{}]interface{}) *SearchItem {
+	p.Component = "multipleSelectField"
+
+	var data []map[string]interface{}
+
+	for k, v := range options {
+		option := map[string]interface{}{
+			"label": v,
+			"value": k,
+		}
+
+		data = append(data, option)
+	}
+
+	p.Options = data
+	p.Placeholder = "请选择" + p.Label
 
 	return p
 }
@@ -253,7 +219,45 @@ func (p *SearchItem) Datetime(options map[interface{}]interface{}) *SearchItem {
  * @return object
  */
 func (p *SearchItem) Date(options map[interface{}]interface{}) *SearchItem {
-	p.Component = "date"
+	p.Component = "dateField"
+
+	return p
+}
+
+/**
+ * 时间控件
+ *
+ * @param string options
+ * @return object
+ */
+func (p *SearchItem) Datetime(options map[interface{}]interface{}) *SearchItem {
+	p.Component = "datetimeField"
+
+	return p
+}
+
+/**
+ * 日期范围控件
+ *
+ * @param string options
+ * @return object
+ */
+func (p *SearchItem) DateRange(options map[interface{}]interface{}) *SearchItem {
+	p.Component = "dateRangeField"
+	p.Placeholder = []string{"请选择开始" + p.Label, "请选择结束" + p.Label}
+
+	return p
+}
+
+/**
+ * 时间范围控件
+ *
+ * @param string options
+ * @return object
+ */
+func (p *SearchItem) DatetimeRange(options map[interface{}]interface{}) *SearchItem {
+	p.Component = "datetimeRangeField"
+	p.Placeholder = []string{"请选择开始" + p.Label, "请选择结束" + p.Label}
 
 	return p
 }
@@ -265,10 +269,9 @@ func (p *SearchItem) Date(options map[interface{}]interface{}) *SearchItem {
  * @return object
  */
 func (p *SearchItem) Cascader(options map[interface{}]interface{}) *SearchItem {
-	p.Component = "cascader"
+	p.Component = "cascaderField"
 
 	var data []map[string]interface{}
-
 	for k, v := range options {
 		option := map[string]interface{}{
 			"label": v,
@@ -286,7 +289,7 @@ func (p *SearchItem) Cascader(options map[interface{}]interface{}) *SearchItem {
 
 // 组件json序列化
 func (p *SearchItem) JsonSerialize() *SearchItem {
-	p.Component = "input"
+	p.Component = "textField"
 
 	return p
 }

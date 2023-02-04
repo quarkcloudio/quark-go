@@ -6,8 +6,7 @@ type DatetimeRange struct {
 
 // 初始化
 func (p *DatetimeRange) ParentInit() interface{} {
-	p.Component = "datetime"
-	p.Operator = "between"
+	p.Component = "datetimeRangeField"
 
 	return p
 }

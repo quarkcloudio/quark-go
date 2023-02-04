@@ -30,8 +30,7 @@ func (p *Template) IndexSearches(request *builder.Request, templateInstance inte
 		column := v.(interface {
 			GetColumn(search interface{}) string
 		}).GetColumn(v) // 字段名，支持数组
-		operator := v.(interface{ GetOperator() string }).GetOperator() // 获取操作符
-		api := v.(interface{ GetApi() string }).GetApi()                // 获取接口
+		api := v.(interface{ GetApi() string }).GetApi() // 获取接口
 		options := v.(interface {
 			Options(request *builder.Request) map[interface{}]interface{}
 		}).Options(request) // 获取属性
@@ -44,26 +43,27 @@ func (p *Template) IndexSearches(request *builder.Request, templateInstance inte
 			Init().
 			SetName(column).
 			SetLabel(name).
-			SetOperator(operator).
 			SetApi(api)
 
 		switch component {
-		case "input":
+		case "textField":
 			item = item.Input(options)
-		case "select":
-
+		case "selectField":
 			if load != nil {
 				item.SetLoad(load["field"], load["api"])
 			}
-
 			item = item.Select(options)
-		case "multipleSelect":
+		case "multipleSelectField":
 			item = item.MultipleSelect(options)
-		case "datetime":
-			item = item.Datetime(options)
-		case "date":
+		case "dateField":
 			item = item.Date(options)
-		case "cascader":
+		case "datetimeField":
+			item = item.Datetime(options)
+		case "dateRangeField":
+			item = item.DateRange(options)
+		case "datetimeRangeField":
+			item = item.DatetimeRange(options)
+		case "cascaderField":
 			item = item.Cascader(options)
 		}
 

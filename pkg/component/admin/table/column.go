@@ -36,6 +36,7 @@ func (p *Column) Init() *Column {
 	p.Editable = false
 	p.Actions = false
 	p.Filters = false
+	p.HideInSearch = true
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 

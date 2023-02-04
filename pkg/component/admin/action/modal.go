@@ -14,7 +14,7 @@ type Modal struct {
 	Mask                   bool          `json:"mask"`
 	MaskClosable           bool          `json:"maskClosable"`
 	MaskStyle              interface{}   `json:"maskStyle"`
-	Visible                bool          `json:"visible"`
+	Open                   bool          `json:"open"`
 	Width                  int           `json:"width"`
 	ZIndex                 int           `json:"zIndex"`
 	Actions                []interface{} `json:"actions"`
@@ -120,8 +120,8 @@ func (p *Modal) SetMaskStyle(style map[string]interface{}) *Modal {
 }
 
 // 对话框是否可见
-func (p *Modal) SetVisible(visible bool) *Modal {
-	p.Visible = visible
+func (p *Modal) SetOpen(open bool) *Modal {
+	p.Open = open
 
 	return p
 }

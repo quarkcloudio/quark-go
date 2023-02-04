@@ -6,7 +6,7 @@ type Date struct {
 
 // 初始化
 func (p *Date) ParentInit() interface{} {
-	p.Component = "date"
+	p.Component = "dateField"
 
 	return p
 }

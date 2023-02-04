@@ -13,13 +13,12 @@ type Search struct {
 	Column    string `json:"column"`
 	Name      string `json:"name"`
 	Component string `json:"component"`
-	Operator  string `json:"operator"`
 	Api       string `json:"api"`
 }
 
 // 初始化
 func (p *Search) ParentInit() interface{} {
-	p.Component = "input"
+	p.Component = "textField"
 
 	return p
 }
@@ -65,15 +64,6 @@ func (p *Search) GetComponent() string {
  */
 func (p *Search) GetApi() string {
 	return p.Api
-}
-
-/**
- * 获取操作符
- *
- * @return string
- */
-func (p *Search) GetOperator() string {
-	return p.Operator
 }
 
 /**

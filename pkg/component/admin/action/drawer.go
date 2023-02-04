@@ -16,7 +16,7 @@ type Drawer struct {
 	Mask                bool          `json:"mask"`
 	MaskClosable        bool          `json:"maskClosable"`
 	MaskStyle           interface{}   `json:"maskStyle"`
-	Visible             bool          `json:"visible"`
+	Open                bool          `json:"open"`
 	Width               int           `json:"width"`
 	ZIndex              int           `json:"zIndex"`
 	Actions             []interface{} `json:"actions"`
@@ -149,8 +149,8 @@ func (p *Drawer) SetPlacement(placement string) *Drawer {
 }
 
 // 对话框是否可见
-func (p *Drawer) SetVisible(visible bool) *Drawer {
-	p.Visible = visible
+func (p *Drawer) SetOpen(open bool) *Drawer {
+	p.Open = open
 
 	return p
 }

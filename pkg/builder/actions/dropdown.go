@@ -47,7 +47,7 @@ func (p *Dropdown) GetOverlayStyle() map[string]interface{} {
 }
 
 // 菜单
-func (p *Dropdown) GetOverlay(request *builder.Request, templateInstance interface{}) interface{} {
+func (p *Dropdown) GetMenu(request *builder.Request, templateInstance interface{}) interface{} {
 	actions := p.GetActions()
 	items := []interface{}{}
 

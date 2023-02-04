@@ -191,8 +191,8 @@ func (p *Template) buildAction(request *builder.Request, item interface{}, templ
 
 	if actionType == "dropdown" {
 		overlay := item.(interface {
-			GetOverlay(request *builder.Request, templateInstance interface{}) interface{}
-		}).GetOverlay(request, templateInstance)
+			GetMenu(request *builder.Request, templateInstance interface{}) interface{}
+		}).GetMenu(request, templateInstance)
 
 		overlayStyle := item.(interface {
 			GetOverlayStyle() map[string]interface{}
@@ -213,7 +213,7 @@ func (p *Template) buildAction(request *builder.Request, item interface{}, templ
 		getAction := (&dropdown.Component{}).
 			Init().
 			SetLabel(name).
-			SetOverlay(overlay).
+			SetMenu(overlay).
 			SetOverlayStyle(overlayStyle).
 			SetPlacement(placement).
 			SetTrigger(trigger).

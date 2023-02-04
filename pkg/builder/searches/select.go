@@ -6,7 +6,7 @@ type Select struct {
 
 // 初始化
 func (p *Select) ParentInit() interface{} {
-	p.Component = "select"
+	p.Component = "selectField"
 
 	return p
 }
