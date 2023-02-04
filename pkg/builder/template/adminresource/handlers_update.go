@@ -20,7 +20,6 @@ func (p *UpdateRequest) Handle(request *builder.Request, templateInstance interf
 		ValueOf(templateInstance).
 		Elem().
 		FieldByName("Model").Interface()
-	model := db.Client.Model(&modelInstance)
 
 	// 获取字段
 	fields := templateInstance.(interface {
@@ -37,7 +36,7 @@ func (p *UpdateRequest) Handle(request *builder.Request, templateInstance interf
 		BeforeSaving(request *builder.Request, data map[string]interface{}) (map[string]interface{}, error)
 	}).BeforeSaving(request, data)
 	if err != nil {
-		msg.Error(err.Error(), "")
+		return msg.Error(err.Error(), "")
 	}
 
 	validator := templateInstance.(interface {
@@ -47,9 +46,7 @@ func (p *UpdateRequest) Handle(request *builder.Request, templateInstance interf
 		return validator
 	}
 
-	zeroValues := map[string]interface{}{}
 	for _, v := range fields.([]interface{}) {
-
 		name := reflect.
 			ValueOf(v).
 			Elem().
@@ -71,72 +68,53 @@ func (p *UpdateRequest) Handle(request *builder.Request, templateInstance interf
 
 		if name != "" && formValue != nil {
 			fieldName := stringy.New(name).CamelCase("?", "")
-
 			reflectFieldName := reflect.
 				ValueOf(modelInstance).
 				Elem().
 				FieldByName(fieldName)
-
-			var reflectValue reflect.Value
-
-			switch reflectFieldName.Type().String() {
-			case "int":
-				if value, ok := formValue.(bool); ok {
-					if value == true {
-						reflectValue = reflect.ValueOf(1)
-					} else {
-						reflectValue = reflect.ValueOf(0)
-						zeroValues[fieldName] = 0
+			if reflectFieldName.IsValid() {
+				var reflectValue reflect.Value
+				switch reflectFieldName.Type().String() {
+				case "int":
+					if value, ok := formValue.(bool); ok {
+						if value {
+							reflectValue = reflect.ValueOf(1)
+						} else {
+							reflectValue = reflect.ValueOf(0)
+						}
+					}
+					if value, ok := formValue.(float64); ok {
+						reflectValue = reflect.ValueOf(int(value))
+					}
+				case "float64":
+					if value, ok := formValue.(float64); ok {
+						reflectValue = reflect.ValueOf(float64(value))
+					}
+				case "float32":
+					if value, ok := formValue.(float64); ok {
+						reflectValue = reflect.ValueOf(float32(value))
+					}
+				case "time.Time":
+					getTime, _ := time.ParseInLocation("2006-01-02 15:04:05", formValue.(string), time.Local)
+					reflectValue = reflect.ValueOf(getTime)
+				default:
+					reflectValue = reflect.ValueOf(formValue)
+					if reflect.ValueOf(formValue).Type().String() == "[]uint8" {
+						reflectValue = reflect.ValueOf(string(formValue.([]uint8)))
 					}
 				}
 
-				if value, ok := formValue.(float64); ok {
-					reflectValue = reflect.ValueOf(int(value))
+				if reflectFieldName.Type().String() != reflectValue.Type().String() {
+					return msg.Error("结构体类型与传参类型不一致！", "")
+				}
 
-					// 因为gorm结构体不更新零值，使用map记录零值，单独更新
-					if int(value) == 0 {
-						zeroValues[fieldName] = 0
-					}
-				}
-			case "float64":
-				if value, ok := formValue.(float64); ok {
-					reflectValue = reflect.ValueOf(float64(value))
-
-					// 因为gorm结构体不更新零值，使用map记录零值，单独更新
-					if int(value) == 0 {
-						zeroValues[fieldName] = 0
-					}
-				}
-			case "float32":
-				if value, ok := formValue.(float64); ok {
-					reflectValue = reflect.ValueOf(float32(value))
-				}
-			case "time.Time":
-				getTime, _ := time.ParseInLocation("2006-01-02 15:04:05", formValue.(string), time.Local)
-				reflectValue = reflect.ValueOf(getTime)
-			default:
-				reflectValue = reflect.ValueOf(formValue)
-
-				if reflect.ValueOf(formValue).Type().String() == "[]uint8" {
-					reflectValue = reflect.ValueOf(string(formValue.([]uint8)))
-				}
+				reflectFieldName.Set(reflectValue)
 			}
-
-			if reflectFieldName.Type().String() != reflectValue.Type().String() {
-				return msg.Error("结构体类型与传参类型不一致！", "")
-			}
-
-			reflectFieldName.Set(reflectValue)
 		}
 	}
 
 	// 获取对象
-	getModel := model.Where("id = ?", data["id"]).Updates(modelInstance)
-
-	// 因为gorm使用结构体，不更新零值，需要使用map更新零值
-	if len(zeroValues) > 0 {
-		getModel = model.Where("id = ?", data["id"]).Updates(zeroValues)
-	}
+	getModel := db.Client.Model(&modelInstance).Select("*").Where("id = ?", data["id"]).Updates(modelInstance)
 
 	return templateInstance.(interface {
 		AfterSaved(request *builder.Request, model *gorm.DB) interface{}

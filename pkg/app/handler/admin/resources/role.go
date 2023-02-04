@@ -3,6 +3,7 @@ package resources
 import (
 	"encoding/json"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/actions"
@@ -11,6 +12,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
+	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
@@ -129,9 +131,7 @@ func (p *Role) BeforeEditing(request *builder.Request, data map[string]interface
 }
 
 // 保存数据前回调
-func (p *Role) BeforeSaving(request *builder.Request, submitData map[string]interface{}) interface{} {
-
-	// 根据菜单id获取所有权限
+func (p *Role) BeforeSaving(request *builder.Request, submitData map[string]interface{}) (map[string]interface{}, error) {
 	var permissionIds []int
 	db.Client.
 		Model(&models.Permission{}).
@@ -139,12 +139,12 @@ func (p *Role) BeforeSaving(request *builder.Request, submitData map[string]inte
 		Pluck("id", &permissionIds)
 
 	if len(permissionIds) == 0 {
-		return errors.New("获取的权限为空，请在菜单管理中绑定权限")
+		return submitData, errors.New("获取的权限为空，请在菜单管理中绑定权限")
 	}
 
 	delete(submitData, "menu_ids")
 
-	return submitData
+	return submitData, nil
 }
 
 // 保存后回调
@@ -160,10 +160,10 @@ func (p *Role) AfterSaved(request *builder.Request, model *gorm.DB) interface{} 
 		Pluck("id", &permissionIds)
 
 	if len(permissionIds) == 0 {
-		return errors.New("获取的权限为空，请先在菜单管理中绑定权限")
+		return msg.Error("获取的权限为空，请先在菜单管理中绑定权限", "")
 	}
 
-	var result interface{}
+	var result *gorm.DB
 
 	if request.IsCreating() {
 		lastRole := map[string]interface{}{}
@@ -178,7 +178,11 @@ func (p *Role) AfterSaved(request *builder.Request, model *gorm.DB) interface{} 
 		result = p.syncPermissions(int(id), permissionIds)
 	}
 
-	return result
+	if result.Error != nil {
+		return msg.Error(result.Error.Error(), "")
+	}
+
+	return msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", request.Param("resource"), -1), "")
 }
 
 // 保存后回调

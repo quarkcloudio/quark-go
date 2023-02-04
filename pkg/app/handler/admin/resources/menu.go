@@ -166,12 +166,12 @@ func (p *Menu) BeforeEditing(request *builder.Request, data map[string]interface
 }
 
 // 保存数据前回调
-func (p *Menu) BeforeSaving(request *builder.Request, submitData map[string]interface{}) interface{} {
+func (p *Menu) BeforeSaving(request *builder.Request, submitData map[string]interface{}) (map[string]interface{}, error) {
 
 	// 暂时清理permission_ids
 	delete(submitData, "permission_ids")
 
-	return submitData
+	return submitData, nil
 }
 
 // 保存后回调

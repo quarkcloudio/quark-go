@@ -33,7 +33,7 @@ func (p *StoreRequest) Handle(request *builder.Request, templateInstance interfa
 		BeforeSaving(request *builder.Request, data map[string]interface{}) (map[string]interface{}, error)
 	}).BeforeSaving(request, data)
 	if err != nil {
-		msg.Error(err.Error(), "")
+		return msg.Error(err.Error(), "")
 	}
 
 	validator := templateInstance.(interface {
@@ -44,12 +44,10 @@ func (p *StoreRequest) Handle(request *builder.Request, templateInstance interfa
 	}
 
 	for _, v := range fields.([]interface{}) {
-
 		name := reflect.
 			ValueOf(v).
 			Elem().
 			FieldByName("Name").String()
-
 		formValue := data[name]
 		if getValue, ok := formValue.([]interface{}); ok {
 			formValue, _ = json.Marshal(getValue)
@@ -66,42 +64,44 @@ func (p *StoreRequest) Handle(request *builder.Request, templateInstance interfa
 				ValueOf(modelInstance).
 				Elem().
 				FieldByName(fieldName)
-			var reflectValue reflect.Value
-			switch reflectFieldName.Type().String() {
-			case "int":
-				if value, ok := formValue.(bool); ok {
-					if value == true {
-						reflectValue = reflect.ValueOf(1)
-					} else {
-						reflectValue = reflect.ValueOf(0)
+
+			if reflectFieldName.IsValid() {
+				var reflectValue reflect.Value
+				switch reflectFieldName.Type().String() {
+				case "int":
+					if value, ok := formValue.(bool); ok {
+						if value {
+							reflectValue = reflect.ValueOf(1)
+						} else {
+							reflectValue = reflect.ValueOf(0)
+						}
+					}
+					if value, ok := formValue.(float64); ok {
+						reflectValue = reflect.ValueOf(int(value))
+					}
+				case "float64":
+					if value, ok := formValue.(float64); ok {
+						reflectValue = reflect.ValueOf(float64(value))
+					}
+				case "float32":
+					if value, ok := formValue.(float64); ok {
+						reflectValue = reflect.ValueOf(float32(value))
+					}
+				case "time.Time":
+					getTime, _ := time.ParseInLocation("2006-01-02 15:04:05", formValue.(string), time.Local)
+					reflectValue = reflect.ValueOf(getTime)
+				default:
+					reflectValue = reflect.ValueOf(formValue)
+					if reflect.ValueOf(formValue).Type().String() == "[]uint8" {
+						reflectValue = reflect.ValueOf(string(formValue.([]uint8)))
 					}
 				}
-				if value, ok := formValue.(float64); ok {
-					reflectValue = reflect.ValueOf(int(value))
+				if reflectFieldName.Type().String() != reflectValue.Type().String() {
+					return msg.Error("结构体类型与传参类型不一致！", "")
 				}
-			case "float64":
-				if value, ok := formValue.(float64); ok {
-					reflectValue = reflect.ValueOf(float64(value))
-				}
-			case "float32":
-				if value, ok := formValue.(float64); ok {
-					reflectValue = reflect.ValueOf(float32(value))
-				}
-			case "time.Time":
-				getTime, _ := time.ParseInLocation("2006-01-02 15:04:05", formValue.(string), time.Local)
-				reflectValue = reflect.ValueOf(getTime)
-			default:
-				reflectValue = reflect.ValueOf(formValue)
-				if reflect.ValueOf(formValue).Type().String() == "[]uint8" {
-					reflectValue = reflect.ValueOf(string(formValue.([]uint8)))
-				}
-			}
 
-			if reflectFieldName.Type().String() != reflectValue.Type().String() {
-				return msg.Error("结构体类型与传参类型不一致！", "")
+				reflectFieldName.Set(reflectValue)
 			}
-
-			reflectFieldName.Set(reflectValue)
 		}
 	}
 
