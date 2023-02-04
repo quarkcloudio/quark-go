@@ -4,40 +4,26 @@ import "github.com/quarkcms/quark-go/pkg/component/admin/component"
 
 type Search struct {
 	component.Element
-	DateFormatter     string        `json:"dateFormatter"`
-	LabelAlign        string        `json:"labelAlign"`
-	Size              string        `json:"size"`
-	DefaultCollapsed  bool          `json:"defaultCollapsed"`
-	HideRequiredMark  bool          `json:"hideRequiredMark"`
-	DefaultColsNumber int           `json:"defaultColsNumber"`
-	LabelWidth        int           `json:"labelWidth"`
-	Span              int           `json:"span"`
-	Split             bool          `json:"split"`
-	ShowSubmitButton  bool          `json:"showSubmitButton"`
-	ShowResetButton   bool          `json:"showResetButton"`
-	ShowExportButton  bool          `json:"showExportButton"`
-	ResetButton       string        `json:"resetButton"`
-	SubmitButton      string        `json:"submitButton"`
-	ExportButton      string        `json:"exportButton"`
-	ExportApi         string        `json:"exportApi"`
-	Items             []interface{} `json:"items"`
+	FilterType       string        `json:"filterType,omitempty"`
+	SearchText       string        `json:"searchText,omitempty"`
+	ResetText        string        `json:"resetText,omitempty"`
+	SubmitText       string        `json:"submitText,omitempty"`
+	LabelWidth       int           `json:"labelWidth,omitempty"`
+	Span             int           `json:"span,omitempty"`
+	ClassName        string        `json:"className,omitempty"`
+	DefaultCollapsed bool          `json:"defaultCollapsed,omitempty"`
+	ShowHiddenNum    bool          `json:"showHiddenNum,omitempty"`
+	ExportText       string        `json:"exportText,omitempty"`
+	ExportApi        string        `json:"exportApi,omitempty"`
+	Items            []interface{} `json:"items"`
 }
 
 // 初始化
 func (p *Search) Init() *Search {
 	p.Component = "search"
-	p.DateFormatter = "string"
-	p.LabelAlign = "right"
-	p.Size = "default"
 	p.DefaultCollapsed = true
-	p.HideRequiredMark = true
-	p.DefaultColsNumber = 2
-	p.LabelWidth = 98
-	p.ShowSubmitButton = true
-	p.ShowResetButton = true
-	p.ResetButton = "重置"
-	p.SubmitButton = "查询"
-	p.ExportButton = "导出数据"
+	p.ResetText = "重置"
+	p.SearchText = "查询"
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
@@ -52,13 +38,13 @@ func (p *Search) SetStyle(style map[string]interface{}) *Search {
 }
 
 /**
- * 自动格式数据，例如 moment 的表单,支持 string 和 number 两种模式
+ * 过滤表单类型，'query' | 'light'
  *
- * @param string dateFormatter
+ * @param string filterType
  * @return p
  */
-func (p *Search) SetDateFormatter(dateFormatter string) *Search {
-	p.DateFormatter = dateFormatter
+func (p *Search) SetFilterType(filterType string) *Search {
+	p.FilterType = filterType
 
 	return p
 }
@@ -76,49 +62,49 @@ func (p *Search) SetCollapsed(collapsed bool) *Search {
 }
 
 /**
- * label 标签的文本对齐方式，left | right
+ * 查询按钮的文本
  *
- * @param string labelAlign
+ * @param string searchText
  * @return p
  */
-func (p *Search) SetLabelAlign(labelAlign string) *Search {
-	p.LabelAlign = labelAlign
+func (p *Search) SetSearchText(searchText string) *Search {
+	p.SearchText = searchText
 
 	return p
 }
 
 /**
- * 设置字段组件的尺寸（仅限 antd 组件）,small | middle | large
+ * 重置按钮的文本
  *
- * @param string size
+ * @param string resetText
  * @return p
  */
-func (p *Search) SetSize(size string) *Search {
-	p.Size = size
+func (p *Search) SetResetText(resetText string) *Search {
+	p.ResetText = resetText
 
 	return p
 }
 
 /**
- * 隐藏所有表单项的必选标记，默认隐藏
+ * 提交按钮的文本
  *
- * @param bool hideRequiredMark
+ * @param string submitText
  * @return p
  */
-func (p *Search) SetHideRequiredMark(hideRequiredMark bool) *Search {
-	p.HideRequiredMark = hideRequiredMark
+func (p *Search) SetSubmitText(submitText string) *Search {
+	p.SubmitText = submitText
 
 	return p
 }
 
 /**
- * 自定义折叠状态下默认显示的表单控件数量，没有设置或小于 0，则显示一行控件 数量大于等于控件数量则隐藏展开按钮
+ * 封装的搜索 Form 的 className
  *
- * @param number defaultColsNumber
+ * @param string className
  * @return p
  */
-func (p *Search) SetDefaultColsNumber(defaultColsNumber int) *Search {
-	p.DefaultColsNumber = defaultColsNumber
+func (p *Search) SetClassName(className string) *Search {
+	p.ClassName = className
 
 	return p
 }
@@ -148,73 +134,13 @@ func (p *Search) SetSpan(span int) *Search {
 }
 
 /**
- * 每一行是否有分割线
+ * 是否显示收起之后显示隐藏个数
  *
- * @param bool split
+ * @param bool showHiddenNum
  * @return p
  */
-func (p *Search) SetSplit(split bool) *Search {
-	p.Split = split
-
-	return p
-}
-
-/**
- * 是否显示提交按钮
- *
- * @param bool showSubmitButton
- * @return p
- */
-func (p *Search) SetShowSubmitButton(showSubmitButton bool) *Search {
-	p.ShowSubmitButton = showSubmitButton
-
-	return p
-}
-
-/**
- * 是否显示重置按钮
- *
- * @param bool showResetButton
- * @return p
- */
-func (p *Search) SetShowResetButton(showResetButton bool) *Search {
-	p.ShowResetButton = showResetButton
-
-	return p
-}
-
-/**
- * 是否显示导出按钮
- *
- * @param bool showExportButton
- * @return p
- */
-func (p *Search) SetShowExportButton(showExportButton bool) *Search {
-	p.ShowExportButton = showExportButton
-
-	return p
-}
-
-/**
- * 提交按钮文字
- *
- * @param string submitButton
- * @return p
- */
-func (p *Search) SetSubmitButton(submitButton string) *Search {
-	p.SubmitButton = submitButton
-
-	return p
-}
-
-/**
- * 重置按钮文字
- *
- * @param string resetButton
- * @return p
- */
-func (p *Search) SetResetButton(resetButton string) *Search {
-	p.ResetButton = resetButton
+func (p *Search) SetSplit(showHiddenNum bool) *Search {
+	p.ShowHiddenNum = showHiddenNum
 
 	return p
 }
@@ -222,11 +148,11 @@ func (p *Search) SetResetButton(resetButton string) *Search {
 /**
  * 导出按钮文字
  *
- * @param string exportButton
+ * @param string exportText
  * @return p
  */
-func (p *Search) SetExportButton(exportButton string) *Search {
-	p.ExportButton = exportButton
+func (p *Search) SetExportText(exportText string) *Search {
+	p.ExportText = exportText
 
 	return p
 }

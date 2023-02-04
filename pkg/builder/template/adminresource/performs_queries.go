@@ -1,6 +1,7 @@
 package adminresource
 
 import (
+	"encoding/json"
 	"reflect"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
@@ -103,21 +104,21 @@ func (p *Template) initializeQuery(request *builder.Request, templateInstance in
 
 // 执行搜索表单查询
 func (p *Template) applySearch(request *builder.Request, query *gorm.DB, search []interface{}) *gorm.DB {
-	data := request.AllQuerys()
-	result, ok := data["search"].(map[string]interface{})
-	if ok == false {
+	querys := request.AllQuerys()
+	var data map[string]interface{}
+	if querys["search"] == nil {
 		return query
 	}
-
+	err := json.Unmarshal([]byte(querys["search"].(string)), &data)
+	if err != nil {
+		return query
+	}
 	for _, v := range search {
-
 		// 获取字段
 		column := v.(interface {
 			GetColumn(search interface{}) string
 		}).GetColumn(v) // 字段名，支持数组
-
-		value := result[column]
-
+		value := data[column]
 		if value != nil {
 			query = v.(interface {
 				Apply(*builder.Request, *gorm.DB, interface{}) *gorm.DB
@@ -130,20 +131,12 @@ func (p *Template) applySearch(request *builder.Request, query *gorm.DB, search 
 
 // 执行表格列上过滤器查询
 func (p *Template) applyColumnFilters(query *gorm.DB, filters map[string]interface{}) *gorm.DB {
-
-	if len(filters) == 0 {
+	if len(filters) == 0 || filters == nil {
 		return query
 	}
-
 	for k, v := range filters {
-		if v != "" {
-
-			values := []string{}
-			for _, subValue := range v.(map[string]interface{}) {
-				values = append(values, subValue.(string))
-			}
-
-			query = query.Where(k+" IN ?", values)
+		if v != nil {
+			query = query.Where(k+" IN ?", v)
 		}
 	}
 
@@ -158,22 +151,19 @@ func (p *Template) applyFilters(query *gorm.DB, filters []interface{}) *gorm.DB 
 
 // 执行排序查询
 func (p *Template) applyOrderings(query *gorm.DB, orderings map[string]interface{}, defaultOrder string) *gorm.DB {
-
-	if len(orderings) == 0 {
+	if len(orderings) == 0 || orderings == nil {
 		return query.Order(defaultOrder)
 	}
-
 	var order clause.OrderByColumn
-
 	for key, v := range orderings {
-
-		if v == "descend" {
-			order = clause.OrderByColumn{Column: clause.Column{Name: key}, Desc: true}
-		} else {
-			order = clause.OrderByColumn{Column: clause.Column{Name: key}, Desc: false}
+		if v != nil {
+			if v == "descend" {
+				order = clause.OrderByColumn{Column: clause.Column{Name: key}, Desc: true}
+			} else {
+				order = clause.OrderByColumn{Column: clause.Column{Name: key}, Desc: false}
+			}
+			query = query.Order(order)
 		}
-
-		query = query.Order(order)
 	}
 
 	return query

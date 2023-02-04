@@ -196,13 +196,17 @@ func (p *ExportRequest) QueryData(request *builder.Request, templateInstance int
  * @return array
  */
 func (p *ExportRequest) columnFilters(request *builder.Request) map[string]interface{} {
-	data := request.AllQuerys()
-	result, ok := data["filter"].(map[string]interface{})
-	if ok == false {
-		return map[string]interface{}{}
+	querys := request.AllQuerys()
+	var data map[string]interface{}
+	if querys["filter"] == nil {
+		return data
+	}
+	err := json.Unmarshal([]byte(querys["filter"].(string)), &data)
+	if err != nil {
+		return data
 	}
 
-	return result
+	return data
 }
 
 /**
@@ -211,13 +215,17 @@ func (p *ExportRequest) columnFilters(request *builder.Request) map[string]inter
  * @return array
  */
 func (p *ExportRequest) orderings(request *builder.Request) map[string]interface{} {
-	data := request.AllQuerys()
-	result, ok := data["sorter"].(map[string]interface{})
-	if ok == false {
-		return map[string]interface{}{}
+	querys := request.AllQuerys()
+	var data map[string]interface{}
+	if querys["sorter"] == nil {
+		return data
+	}
+	err := json.Unmarshal([]byte(querys["sorter"].(string)), &data)
+	if err != nil {
+		return data
 	}
 
-	return result
+	return data
 }
 
 // 处理列表

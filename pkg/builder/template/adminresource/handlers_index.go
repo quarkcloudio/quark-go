@@ -1,8 +1,8 @@
 package adminresource
 
 import (
+	"encoding/json"
 	"reflect"
-	"strconv"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
@@ -49,24 +49,32 @@ func (p *IndexRequest) QueryData(request *builder.Request, templateInstance inte
 	}
 
 	var total int64
-	page := request.Query("page", "1")
-	pageSize := request.Query("pageSize", "10")
-	if pageSize != "" {
-		perPage, _ = strconv.Atoi(pageSize.(string))
+	var data map[string]interface{}
+	page := 1
+	querys := request.AllQuerys()
+	if querys["search"] != nil {
+		err := json.Unmarshal([]byte(querys["search"].(string)), &data)
+		if err == nil {
+			if data["current"] != nil {
+				page = int(data["current"].(float64))
+			}
+			if data["pageSize"] != nil {
+				perPage = int(data["pageSize"].(float64))
+			}
+		}
 	}
-	getPage, _ := strconv.Atoi(page.(string))
 
 	// 获取总数量
 	query.Count(&total)
 
 	// 获取列表
-	query.Limit(perPage.(int)).Offset((getPage - 1) * perPage.(int)).Find(&lists)
+	query.Limit(perPage.(int)).Offset((page - 1) * perPage.(int)).Find(&lists)
 
 	// 解析列表
 	result := p.performsList(request, templateInstance, lists)
 
 	return map[string]interface{}{
-		"currentPage": getPage,
+		"currentPage": page,
 		"perPage":     perPage,
 		"total":       total,
 		"items":       result,
@@ -79,13 +87,17 @@ func (p *IndexRequest) QueryData(request *builder.Request, templateInstance inte
  * @return array
  */
 func (p *IndexRequest) columnFilters(request *builder.Request) map[string]interface{} {
-	data := request.AllQuerys()
-	result, ok := data["filter"].(map[string]interface{})
-	if ok == false {
-		return map[string]interface{}{}
+	querys := request.AllQuerys()
+	var data map[string]interface{}
+	if querys["filter"] == nil {
+		return data
+	}
+	err := json.Unmarshal([]byte(querys["filter"].(string)), &data)
+	if err != nil {
+		return data
 	}
 
-	return result
+	return data
 }
 
 /**
@@ -94,13 +106,17 @@ func (p *IndexRequest) columnFilters(request *builder.Request) map[string]interf
  * @return array
  */
 func (p *IndexRequest) orderings(request *builder.Request) map[string]interface{} {
-	data := request.AllQuerys()
-	result, ok := data["sorter"].(map[string]interface{})
-	if ok == false {
-		return map[string]interface{}{}
+	querys := request.AllQuerys()
+	var data map[string]interface{}
+	if querys["sorter"] == nil {
+		return data
+	}
+	err := json.Unmarshal([]byte(querys["sorter"].(string)), &data)
+	if err != nil {
+		return data
 	}
 
-	return result
+	return data
 }
 
 // 处理列表
