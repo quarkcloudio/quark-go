@@ -29,7 +29,6 @@ func (model *Permission) List() (list []map[string]interface{}, Error error) {
 			"label": v.Name,
 			"value": v.Id,
 		}
-
 		list = append(list, option)
 	}
 

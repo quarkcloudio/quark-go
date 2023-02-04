@@ -36,7 +36,7 @@ type ModelHasPermission struct {
 }
 
 // 获取角色列表
-func (model *Role) List() (list map[interface{}]interface{}, Error error) {
+func (model *Role) List() (list []map[string]interface{}, Error error) {
 	roles := []Role{}
 	err := db.Client.Find(&roles).Error
 	if err != nil {
@@ -44,7 +44,11 @@ func (model *Role) List() (list map[interface{}]interface{}, Error error) {
 	}
 
 	for _, v := range roles {
-		list[v.Id] = v.Name
+		option := map[string]interface{}{
+			"label": v.Name,
+			"value": v.Id,
+		}
+		list = append(list, option)
 	}
 
 	return list, nil
