@@ -1,9 +1,3 @@
 {
-  "api": "/api/admin/login/index/index",
-  "apps": [
-    {
-      "name": "app",
-      "entry": "/apps/app.html"
-    }
-  ]
+  "api": "/api/admin/login/index/index"
 }

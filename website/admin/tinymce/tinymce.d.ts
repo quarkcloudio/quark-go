@@ -1099,7 +1099,7 @@ interface CardTextSpec {
   classes?: string[];
 }
 declare type CardItemSpec = CardContainerSpec | CardImageSpec | CardTextSpec;
-interface CardMenuItemInstanceApi extends CommonMenuItemInstanceApi {}
+type CardMenuItemInstanceApi = CommonMenuItemInstanceApi;
 interface CardMenuItemSpec
   extends Omit<CommonMenuItemSpec, 'text' | 'shortcut'> {
   type: 'cardmenuitem';
@@ -1174,7 +1174,7 @@ interface ToolbarButtonSpec
   type?: 'button';
   onAction: (api: ToolbarButtonInstanceApi) => void;
 }
-interface ToolbarButtonInstanceApi extends BaseToolbarButtonInstanceApi {}
+type ToolbarButtonInstanceApi = BaseToolbarButtonInstanceApi;
 interface BaseToolbarToggleButtonSpec<I extends BaseToolbarButtonInstanceApi>
   extends BaseToolbarButtonSpec<I> {
   active?: boolean;
@@ -1189,8 +1189,7 @@ interface ToolbarToggleButtonSpec
   type?: 'togglebutton';
   onAction: (api: ToolbarToggleButtonInstanceApi) => void;
 }
-interface ToolbarToggleButtonInstanceApi
-  extends BaseToolbarToggleButtonInstanceApi {}
+type ToolbarToggleButtonInstanceApi = BaseToolbarToggleButtonInstanceApi;
 interface ContextFormLaunchButtonApi
   extends BaseToolbarButtonSpec<BaseToolbarButtonInstanceApi> {
   type: 'contextformbutton';
@@ -1199,9 +1198,8 @@ interface ContextFormLaunchToggleButtonSpec
   extends BaseToolbarToggleButtonSpec<BaseToolbarToggleButtonInstanceApi> {
   type: 'contextformtogglebutton';
 }
-interface ContextFormButtonInstanceApi extends BaseToolbarButtonInstanceApi {}
-interface ContextFormToggleButtonInstanceApi
-  extends BaseToolbarToggleButtonInstanceApi {}
+type ContextFormButtonInstanceApi = BaseToolbarButtonInstanceApi;
+type ContextFormToggleButtonInstanceApi = BaseToolbarToggleButtonInstanceApi;
 interface ContextFormButtonSpec
   extends BaseToolbarButtonSpec<ContextFormButtonInstanceApi> {
   type?: 'contextformbutton';
@@ -1298,7 +1296,7 @@ interface MenuItemSpec extends CommonMenuItemSpec {
   onSetup?: (api: MenuItemInstanceApi) => (api: MenuItemInstanceApi) => void;
   onAction?: (api: MenuItemInstanceApi) => void;
 }
-interface MenuItemInstanceApi extends CommonMenuItemInstanceApi {}
+type MenuItemInstanceApi = CommonMenuItemInstanceApi;
 declare type NestedMenuItemContents =
   | string
   | MenuItemSpec
@@ -1314,7 +1312,7 @@ interface NestedMenuItemSpec extends CommonMenuItemSpec {
     api: NestedMenuItemInstanceApi,
   ) => (api: NestedMenuItemInstanceApi) => void;
 }
-interface NestedMenuItemInstanceApi extends CommonMenuItemInstanceApi {}
+type NestedMenuItemInstanceApi = CommonMenuItemInstanceApi;
 interface ToggleMenuItemSpec extends CommonMenuItemSpec {
   type?: 'togglemenuitem';
   icon?: string;
@@ -1526,7 +1524,7 @@ interface ToolbarGroupSetting {
   items: string[];
 }
 declare type ToolbarConfig = string | ToolbarGroupSetting[];
-interface GroupToolbarButtonInstanceApi extends BaseToolbarButtonInstanceApi {}
+type GroupToolbarButtonInstanceApi = BaseToolbarButtonInstanceApi;
 interface GroupToolbarButtonSpec
   extends BaseToolbarButtonSpec<GroupToolbarButtonInstanceApi> {
   type?: 'grouptoolbarbutton';
@@ -1555,7 +1553,7 @@ interface ToolbarMenuButtonSpec extends BaseMenuButtonSpec {
     api: ToolbarMenuButtonInstanceApi,
   ) => (api: ToolbarMenuButtonInstanceApi) => void;
 }
-interface ToolbarMenuButtonInstanceApi extends BaseMenuButtonInstanceApi {}
+type ToolbarMenuButtonInstanceApi = BaseMenuButtonInstanceApi;
 declare type ToolbarSplitButtonItemTypes =
   | ChoiceMenuItemSpec
   | SeparatorMenuItemSpec;
@@ -2456,7 +2454,7 @@ interface DomSerializerImpl {
   addTempAttr: (name: string) => void;
   getTempAttrs: () => string[];
 }
-interface DomSerializer extends DomSerializerImpl {}
+type DomSerializer = DomSerializerImpl;
 interface EditorSelection {
   bookmarkManager: BookmarkManager;
   controlSelection: ControlSelection;
@@ -2498,7 +2496,7 @@ interface EditorSelection {
       active: boolean,
       args: {
         node: Node;
-        selector: String;
+        selector: string;
         parents: Element[];
       },
     ) => void,
@@ -2509,7 +2507,7 @@ interface EditorSelection {
       active: boolean,
       args: {
         node: Node;
-        selector: String;
+        selector: string;
         parents: Element[];
       },
     ) => void,
