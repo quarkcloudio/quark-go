@@ -5,8 +5,6 @@ package main
 import (
 	"bytes"
 	"context"
-	"io"
-	"net/http"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -47,9 +45,9 @@ func main() {
 	b := builder.New(config)
 
 	h.GET("/test", func(c context.Context, ctx *app.RequestContext) {
-		r, _ := http.NewRequest(string(ctx.Method()), ctx.URI().String(), bytes.NewReader(ctx.Request.Body()))
-		w := netHTTPResponseWriter{w: ctx.Response.BodyWriter()}
-		lightCtx := builder.NewContext(r, &w)
+		r := builder.NewRequest(string(ctx.Method()), ctx.URI().String(), bytes.NewReader(ctx.Request.Body()))
+		w := builder.NewResponse(ctx.Response.BodyWriter())
+		lightCtx := builder.NewContext(r, w)
 		lightCtx.Write([]byte(lightCtx.Method()))
 	})
 
@@ -59,33 +57,3 @@ func main() {
 	// 启动服务
 	h.Spin()
 }
-
-type netHTTPResponseWriter struct {
-	statusCode int
-	h          http.Header
-	w          io.Writer
-}
-
-func (w *netHTTPResponseWriter) StatusCode() int {
-	if w.statusCode == 0 {
-		return http.StatusOK
-	}
-	return w.statusCode
-}
-
-func (w *netHTTPResponseWriter) Header() http.Header {
-	if w.h == nil {
-		w.h = make(http.Header)
-	}
-	return w.h
-}
-
-func (w *netHTTPResponseWriter) WriteHeader(statusCode int) {
-	w.statusCode = statusCode
-}
-
-func (w *netHTTPResponseWriter) Write(p []byte) (int, error) {
-	return w.w.Write(p)
-}
-
-func (w *netHTTPResponseWriter) Flush() {}
