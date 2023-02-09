@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/derekstavis/go-qs"
+	"github.com/gobeam/stringy"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -33,9 +34,10 @@ func (c *Context) SetFullPath(fullPath string) *Context {
 
 // FullPath returns a matched route full path. For not found routes
 // returns an empty string.
-//     router.GET("/user/:id", func(c *gin.Context) {
-//         c.FullPath() == "/user/:id" // true
-//     })
+//
+//	router.GET("/user/:id", func(c *gin.Context) {
+//	    c.FullPath() == "/user/:id" // true
+//	})
 func (c *Context) FullPath() string {
 	return c.fullPath
 }
@@ -128,7 +130,31 @@ func (p *Context) AllQuerys() map[string]interface{} {
 //
 //	resourceName := p.ResourceName() // resourceName = "index"
 func (p *Context) ResourceName() string {
-	return p.Param("resource")
+	type ParamValue struct {
+		Key   int
+		Value string
+	}
+
+	params := map[string]string{}
+	fullPaths := strings.Split(p.FullPath(), "/")
+	paramValues := []*ParamValue{}
+	for k, v := range fullPaths {
+		if strings.Contains(v, ":") {
+			v = stringy.New(v).ReplaceFirst(":", "")
+			mapValue := &ParamValue{
+				Key:   k,
+				Value: v,
+			}
+			paramValues = append(paramValues, mapValue)
+		}
+	}
+
+	paths := strings.Split(p.Path(), "/")
+	for _, v := range paramValues {
+		params[v.Value] = paths[v.Key]
+	}
+
+	return params["resource"]
 }
 
 // 替换路由中的资源参数
@@ -180,7 +206,7 @@ func (p *Context) IsIndex() bool {
 	return (uri[len(uri)-1] == "index")
 }
 
-//判断当前页面是否为创建页面
+// 判断当前页面是否为创建页面
 func (p *Context) IsCreating() bool {
 	uri := strings.Split(p.Path(), "/")
 
@@ -239,11 +265,9 @@ func (p *Context) useHandlerParser() error {
 	return err
 }
 
-// TODO
 // 初始化模板实例
-func (p *Context) initTemplateInstance() (interface{}, error) {
+func (p *Context) InitTemplateInstance() error {
 	var (
-		result           interface{}
 		err              error
 		templateInstance interface{}
 	)
@@ -251,45 +275,13 @@ func (p *Context) initTemplateInstance() (interface{}, error) {
 	// 获取模板实例
 	templateInstance, err = p.getTemplateInstance()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// 设置模板实例
 	p.setTemplateInstance(templateInstance)
 
-	return result, err
-}
-
-// 解析路由方法
-func (p *Context) routeParser() (interface{}, error) {
-	var (
-		result           interface{}
-		err              error
-		templateInstance interface{}
-	)
-
-	// 获取模板实例
-	templateInstance, err = p.getTemplateInstance()
-	if err != nil {
-		return nil, err
-	}
-
-	// 设置模板实例
-	p.setTemplateInstance(templateInstance)
-
-	// 执行挂载的方法
-	templateInstanceRoutes := templateInstance.(interface {
-		GetRouteMapping() []*RouteMapping
-	}).GetRouteMapping()
-
-	for _, v := range templateInstanceRoutes {
-		handle, params, result := p.Engine.Router.Lookup(v.Method, p.FullPath())
-		if result {
-			handle(p.Writer, p.Request, params)
-		}
-	}
-
-	return result, err
+	return nil
 }
 
 // 获取当前模板实例
@@ -329,16 +321,4 @@ func (p *Context) getTemplateInstance() (interface{}, error) {
 func (p *Context) setTemplateInstance(templateInstance interface{}) {
 	// 设置实例
 	p.Template = templateInstance
-}
-
-// 渲染
-func (p *Context) Render() (interface{}, error) {
-	// 解析UseHandler方法
-	err := p.useHandlerParser()
-	if err != nil {
-		return nil, err
-	}
-
-	// 解析路由
-	return p.routeParser()
 }

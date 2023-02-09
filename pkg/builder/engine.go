@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"reflect"
@@ -75,6 +76,7 @@ func New(config *Config) *Engine {
 
 	// 初始化路由对象
 	router := httprouter.New()
+	router.RedirectTrailingSlash = true
 
 	// 初始化数据库
 	if config.DBConfig != nil {
@@ -85,7 +87,7 @@ func New(config *Config) *Engine {
 	config.AdminLayout = initAdminLayout(config.AdminLayout)
 
 	// 定义结构体
-	Engine := &Engine{
+	engine := &Engine{
 		Router:    router,
 		providers: config.Providers,
 		config:    config,
@@ -94,8 +96,14 @@ func New(config *Config) *Engine {
 	// 下载静态文件
 	github.Download(RespositoryURL, config.StaticPath)
 
+	// 初始化路由列表
+	engine.initRouterPaths()
+
+	// 处理模版上的路由映射关系
+	engine.routeMappingParser()
+
 	// 调用初始化方法
-	return Engine
+	return engine
 }
 
 // 初始化后台布局
@@ -159,7 +167,7 @@ func (p *Engine) NewContext(Writer http.ResponseWriter, Request *http.Request) *
 }
 
 // 转换Request、Response对象
-func (p *Engine) Transform(method string, url string, body io.Reader, writer io.Writer) *Context {
+func (p *Engine) TransformContext(fullPath string, method string, url string, body io.Reader, writer io.Writer) *Context {
 	// 转换为http.ResponseWriter
 	w := NewResponse(writer)
 
@@ -169,8 +177,8 @@ func (p *Engine) Transform(method string, url string, body io.Reader, writer io.
 	// 创建上下文
 	ctx := p.NewContext(w, r)
 
-	// 初始化路由列表
-	p.initRouterPaths()
+	// 设置当前路由
+	ctx.SetFullPath(fullPath)
 
 	// 返回对象
 	return ctx
@@ -257,8 +265,54 @@ func (p *Engine) Use(args interface{}) {
 	}
 }
 
-//
-func (p *Engine) initRouterTree() {
+// 解析模版方法
+func (p *Engine) templateHandleParser(ctx *Context) (interface{}, error) {
+	var (
+		result           interface{}
+		err              error
+		templateInstance interface{}
+	)
+
+	// 获取模板实例
+	templateInstance = ctx.Template
+
+	// 执行挂载的方法
+	templateInstanceRoutes := templateInstance.(interface {
+		GetRouteMapping() []*RouteMapping
+	}).GetRouteMapping()
+
+	for _, v := range templateInstanceRoutes {
+		handle, params, result := p.Router.Lookup(v.Method, ctx.FullPath())
+
+		fmt.Println(result)
+		if result {
+			handle(ctx.Writer, ctx.Request, params)
+		}
+	}
+
+	return result, err
+}
+
+// 渲染
+func (p *Engine) Render(ctx *Context) (interface{}, error) {
+	// 初始化模板
+	err := ctx.InitTemplateInstance()
+	if err != nil {
+		return nil, err
+	}
+
+	// 解析UseHandler方法
+	err = ctx.useHandlerParser()
+	if err != nil {
+		return nil, err
+	}
+
+	// 解析模版方法
+	return p.templateHandleParser(ctx)
+}
+
+// 处理模版上的路由映射关系
+func (p *Engine) routeMappingParser() {
 	for _, provider := range p.providers {
 
 		// 初始化
@@ -275,6 +329,7 @@ func (p *Engine) initRouterTree() {
 
 			// 匿名函数
 			handle := func(ctx *Context) {
+
 				handlerResult := reflect.
 					ValueOf(provider).
 					MethodByName(v.HandlerName).
@@ -318,6 +373,15 @@ func (p *Engine) GET(path string, handle Handle) {
 		// 设置Params
 		ctx.SetParams(ps)
 
+		// 初始化模板
+		ctx.InitTemplateInstance()
+
+		// 解析UseHandler方法
+		err := ctx.useHandlerParser()
+		if err != nil {
+			panic(err)
+		}
+
 		// 执行方法
 		handle(ctx)
 	})
@@ -333,6 +397,15 @@ func (p *Engine) HEAD(path string, handle Handle) {
 
 		// 设置Params
 		ctx.SetParams(ps)
+
+		// 初始化模板
+		ctx.InitTemplateInstance()
+
+		// 解析UseHandler方法
+		err := ctx.useHandlerParser()
+		if err != nil {
+			panic(err)
+		}
 
 		// 执行方法
 		handle(ctx)
@@ -350,6 +423,15 @@ func (p *Engine) OPTIONS(path string, handle Handle) {
 		// 设置Params
 		ctx.SetParams(ps)
 
+		// 初始化模板
+		ctx.InitTemplateInstance()
+
+		// 解析UseHandler方法
+		err := ctx.useHandlerParser()
+		if err != nil {
+			panic(err)
+		}
+
 		// 执行方法
 		handle(ctx)
 	})
@@ -365,6 +447,15 @@ func (p *Engine) POST(path string, handle Handle) {
 
 		// 设置Params
 		ctx.SetParams(ps)
+
+		// 初始化模板
+		ctx.InitTemplateInstance()
+
+		// 解析UseHandler方法
+		err := ctx.useHandlerParser()
+		if err != nil {
+			panic(err)
+		}
 
 		// 执行方法
 		handle(ctx)
@@ -382,6 +473,15 @@ func (p *Engine) PUT(path string, handle Handle) {
 		// 设置Params
 		ctx.SetParams(ps)
 
+		// 初始化模板
+		ctx.InitTemplateInstance()
+
+		// 解析UseHandler方法
+		err := ctx.useHandlerParser()
+		if err != nil {
+			panic(err)
+		}
+
 		// 执行方法
 		handle(ctx)
 	})
@@ -398,6 +498,15 @@ func (p *Engine) PATCH(path string, handle Handle) {
 		// 设置Params
 		ctx.SetParams(ps)
 
+		// 初始化模板
+		ctx.InitTemplateInstance()
+
+		// 解析UseHandler方法
+		err := ctx.useHandlerParser()
+		if err != nil {
+			panic(err)
+		}
+
 		// 执行方法
 		handle(ctx)
 	})
@@ -413,6 +522,15 @@ func (p *Engine) DELETE(path string, handle Handle) {
 
 		// 设置Params
 		ctx.SetParams(ps)
+
+		// 初始化模板
+		ctx.InitTemplateInstance()
+
+		// 解析UseHandler方法
+		err := ctx.useHandlerParser()
+		if err != nil {
+			panic(err)
+		}
 
 		// 执行方法
 		handle(ctx)

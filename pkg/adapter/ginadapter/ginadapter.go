@@ -42,12 +42,15 @@ func RouteAdapter(b *builder.Engine, responseType string, ctx *gin.Context) {
 	ctx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data))
 
 	// 转换Request对象
-	result, err := b.Transform(
+	context := b.TransformContext(
+		ctx.FullPath(),
 		ctx.Request.Method,
 		ctx.Request.URL.RawQuery,
 		bytes.NewReader(body),
 		ctx.Writer,
-	).Render()
+	)
+
+	result, err := b.Render(context)
 	if err != nil {
 		ctx.JSON(200, msg.Error(err.Error(), ""))
 		return

@@ -24,12 +24,15 @@ func RouteAdapter(b *builder.Engine, responseType string, ctx *app.RequestContex
 	}
 
 	// 转换Request对象
-	result, err := b.Transform(
+	context := b.TransformContext(
+		ctx.FullPath(),
 		string(ctx.Request.Method()),
 		ctx.URI().String(),
 		bytes.NewReader(body),
 		ctx.Response.BodyWriter(),
-	).Render()
+	)
+
+	result, err := b.Render(context)
 	if err != nil {
 		ctx.JSON(200, msg.Error(err.Error(), ""))
 		return

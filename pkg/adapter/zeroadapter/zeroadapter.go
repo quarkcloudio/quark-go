@@ -20,7 +20,12 @@ func RouteAdapter(b *builder.Engine, routePath string, responseType string) http
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		// 转换Request对象
-		result, err := b.NewContext(w, r).Render()
+		context := b.NewContext(w, r)
+
+		// 设置路由
+		context.SetFullPath(routePath)
+
+		result, err := b.Render(context)
 		if err != nil {
 			httpx.OkJson(w, msg.Error(err.Error(), ""))
 			return

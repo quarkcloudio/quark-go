@@ -18,13 +18,15 @@ func RouteAdapter(b *builder.Engine, responseType string, ctx *fiber.Ctx) error 
 	var responseError error
 
 	// 转换Request对象
-	result, err := b.Transform(
+	context := b.TransformContext(
+		ctx.Route().Path,
 		string(ctx.Method()),
 		ctx.OriginalURL(),
 		bytes.NewReader(ctx.Body()),
 		ctx.Response().BodyWriter(),
-	).Render()
+	)
 
+	result, err := b.Render(context)
 	if err != nil {
 		return ctx.JSON(msg.Error(err.Error(), ""))
 	}

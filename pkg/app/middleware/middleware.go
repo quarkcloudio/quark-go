@@ -14,8 +14,8 @@ func Handle(ctx *builder.Context) error {
 
 	// 获取登录模板定义的路由
 	loginIndexRoutes := loginIndex.(interface {
-		GetRoutes() []*builder.RouteMapping
-	}).GetRoutes()
+		GetRouteMapping() []*builder.RouteMapping
+	}).GetRouteMapping()
 
 	inLoginRoute := false
 	for _, v := range loginIndexRoutes {
