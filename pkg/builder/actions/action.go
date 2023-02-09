@@ -85,7 +85,7 @@ func (p *Action) GetApiParams() []string {
  *
  * @return string
  */
-func (p *Action) GetApi(request *builder.Request) string {
+func (p *Action) GetApi(ctx *builder.Context) string {
 
 	return ""
 }

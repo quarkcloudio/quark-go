@@ -33,7 +33,7 @@ func (p *Permission) Init() interface{} {
 }
 
 // 字段
-func (p *Permission) Fields(request *builder.Request) []interface{} {
+func (p *Permission) Fields(ctx *builder.Context) []interface{} {
 	field := &builder.AdminField{}
 
 	return []interface{}{
@@ -68,14 +68,14 @@ func (p *Permission) Fields(request *builder.Request) []interface{} {
 }
 
 // 搜索
-func (p *Permission) Searches(request *builder.Request) []interface{} {
+func (p *Permission) Searches(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&searches.Input{}).Init("name", "名称"),
 	}
 }
 
 // 行为
-func (p *Permission) Actions(request *builder.Request) []interface{} {
+func (p *Permission) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&actions.SyncPermission{}).Init(),
 		(&actions.CreateModal{}).Init(p.Title),

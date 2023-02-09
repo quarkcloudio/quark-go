@@ -54,7 +54,7 @@ func (p *Delete) GetApiParams() []string {
 }
 
 // 执行行为句柄
-func (p *Delete) Handle(request *builder.Request, model *gorm.DB) interface{} {
+func (p *Delete) Handle(ctx *builder.Context, model *gorm.DB) interface{} {
 	err := model.Delete("").Error
 	if err != nil {
 		return msg.Error(err.Error(), "")

@@ -42,30 +42,30 @@ func (p *Template) TemplateInit() interface{} {
 	// 初始化数据对象
 	p.DB = db.Client
 
-	// 清空路由
-	p.Routes = nil
-
 	// 默认本地上传
 	p.Driver = storage.LocalDriver
 
-	// 注册路由
-	p.AddRoute("/api/admin/upload/:resource/handle", "Handle")
-	p.AddRoute("/api/admin/upload/:resource/base64Handle", "HandleFromBase64")
+	// 清空路由映射
+	p.ClearRouteMapping()
+
+	// 注册路由映射
+	p.POST("/api/admin/upload/:resource/handle", "Handle")
+	p.POST("/api/admin/upload/:resource/base64Handle", "HandleFromBase64")
 
 	return p
 }
 
 // 执行上传
-func (p *Template) Handle(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
+func (p *Template) Handle(ctx *builder.Context) interface{} {
 	var (
 		result *storage.FileInfo
 		err    error
 	)
 
-	limitW := request.Query("limitW", "")
-	limitH := request.Query("limitH", "")
+	limitW := ctx.Query("limitW", "")
+	limitH := ctx.Query("limitH", "")
 
-	contentTypes := strings.Split(request.Header("Content-Type"), "; ")
+	contentTypes := strings.Split(ctx.Header("Content-Type"), "; ")
 	if len(contentTypes) != 2 {
 		return msg.Error("Content-Type error", "")
 	}
@@ -74,17 +74,17 @@ func (p *Template) Handle(request *builder.Request, resource *builder.Resource, 
 	}
 
 	limitSize := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("LimitSize").Int()
 
 	limitType := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("LimitType").Interface()
 
 	limitImageWidth := int(reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("LimitImageWidth").Int())
 
@@ -96,7 +96,7 @@ func (p *Template) Handle(request *builder.Request, resource *builder.Resource, 
 	}
 
 	limitImageHeight := int(reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("LimitImageHeight").Int())
 
@@ -108,21 +108,21 @@ func (p *Template) Handle(request *builder.Request, resource *builder.Resource, 
 	}
 
 	driver := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("Driver").String()
 
 	ossConfig := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("OSSConfig").Interface()
 
 	savePath := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("SavePath").String()
 
-	byteReader := bytes.NewReader(request.Body())
+	byteReader := bytes.NewReader(ctx.Body())
 	multipartReader := multipart.NewReader(byteReader, strings.TrimLeft(contentTypes[1], "boundary="))
 	for p, err := multipartReader.NextPart(); err != io.EOF; p, err = multipartReader.NextPart() {
 		if p.FormName() == "file" {
@@ -144,16 +144,16 @@ func (p *Template) Handle(request *builder.Request, resource *builder.Resource, 
 				})
 
 			// 上传前回调
-			getFileSystem, fileInfo, err := templateInstance.(interface {
-				BeforeHandle(request *builder.Request, templateInstance interface{}, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error)
-			}).BeforeHandle(request, templateInstance, fileSystem)
+			getFileSystem, fileInfo, err := ctx.Template.(interface {
+				BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error)
+			}).BeforeHandle(ctx, fileSystem)
 			if err != nil {
 				return msg.Error(err.Error(), "")
 			}
 			if fileInfo != nil {
-				return templateInstance.(interface {
-					AfterHandle(request *builder.Request, templateInstance interface{}, result *storage.FileInfo) interface{}
-				}).AfterHandle(request, templateInstance, fileInfo)
+				return ctx.Template.(interface {
+					AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
+				}).AfterHandle(ctx, fileInfo)
 			}
 
 			result, err = getFileSystem.
@@ -168,23 +168,23 @@ func (p *Template) Handle(request *builder.Request, resource *builder.Resource, 
 		return msg.Error(err.Error(), "")
 	}
 
-	return templateInstance.(interface {
-		AfterHandle(request *builder.Request, templateInstance interface{}, result *storage.FileInfo) interface{}
-	}).AfterHandle(request, templateInstance, result)
+	return ctx.Template.(interface {
+		AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
+	}).AfterHandle(ctx, result)
 }
 
 // 通过Base64执行上传
-func (p *Template) HandleFromBase64(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
+func (p *Template) HandleFromBase64(ctx *builder.Context) interface{} {
 	var (
 		result *storage.FileInfo
 		err    error
 	)
 
-	limitW := request.Query("limitW", "")
-	limitH := request.Query("limitH", "")
+	limitW := ctx.Query("limitW", "")
+	limitH := ctx.Query("limitH", "")
 
 	data := map[string]interface{}{}
-	if err := request.BodyParser(&data); err != nil {
+	if err := ctx.BodyParser(&data); err != nil {
 		return msg.Error(err.Error(), "")
 	}
 	if data["file"] == nil {
@@ -202,17 +202,17 @@ func (p *Template) HandleFromBase64(request *builder.Request, resource *builder.
 	}
 
 	limitSize := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("LimitSize").Int()
 
 	limitType := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("LimitType").Interface()
 
 	limitImageWidth := int(reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("LimitImageWidth").Int())
 
@@ -224,7 +224,7 @@ func (p *Template) HandleFromBase64(request *builder.Request, resource *builder.
 	}
 
 	limitImageHeight := int(reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("LimitImageHeight").Int())
 
@@ -236,17 +236,17 @@ func (p *Template) HandleFromBase64(request *builder.Request, resource *builder.
 	}
 
 	savePath := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("SavePath").String()
 
 	driver := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("Driver").String()
 
 	ossConfig := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("OSSConfig").Interface()
 
@@ -265,16 +265,16 @@ func (p *Template) HandleFromBase64(request *builder.Request, resource *builder.
 		})
 
 	// 上传前回调
-	getFileSystem, fileInfo, err := templateInstance.(interface {
-		BeforeHandle(request *builder.Request, templateInstance interface{}, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error)
-	}).BeforeHandle(request, templateInstance, fileSystem)
+	getFileSystem, fileInfo, err := ctx.Template.(interface {
+		BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error)
+	}).BeforeHandle(ctx, fileSystem)
 	if err != nil {
 		return msg.Error(err.Error(), "")
 	}
 	if fileInfo != nil {
-		return templateInstance.(interface {
-			AfterHandle(request *builder.Request, templateInstance interface{}, result *storage.FileInfo) interface{}
-		}).AfterHandle(request, templateInstance, fileInfo)
+		return ctx.Template.(interface {
+			AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
+		}).AfterHandle(ctx, fileInfo)
 	}
 
 	result, err = getFileSystem.
@@ -287,19 +287,19 @@ func (p *Template) HandleFromBase64(request *builder.Request, resource *builder.
 		return msg.Error(err.Error(), "")
 	}
 
-	return templateInstance.(interface {
-		AfterHandle(request *builder.Request, templateInstance interface{}, result *storage.FileInfo) interface{}
-	}).AfterHandle(request, templateInstance, result)
+	return ctx.Template.(interface {
+		AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
+	}).AfterHandle(ctx, result)
 }
 
 // 上传前回调
-func (p *Template) BeforeHandle(request *builder.Request, templateInstance interface{}, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error) {
+func (p *Template) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error) {
 
 	return fileSystem, nil, nil
 }
 
 // 执行上传
-func (p *Template) AfterHandle(request *builder.Request, templateInstance interface{}, result *storage.FileInfo) interface{} {
+func (p *Template) AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{} {
 
 	return msg.Success("上传成功", "", result)
 }

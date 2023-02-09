@@ -20,6 +20,6 @@ func (p *Input) Init(column string, name string) *Input {
 }
 
 // 执行查询
-func (p *Input) Apply(request *builder.Request, query *gorm.DB, value interface{}) *gorm.DB {
+func (p *Input) Apply(ctx *builder.Context, query *gorm.DB, value interface{}) *gorm.DB {
 	return query.Where(p.Column+" LIKE ?", "%"+value.(string)+"%")
 }

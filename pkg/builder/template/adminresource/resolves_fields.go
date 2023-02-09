@@ -11,8 +11,8 @@ import (
 )
 
 // 列表字段
-func (p *Template) IndexFields(request *builder.Request, templateInstance interface{}) interface{} {
-	fields := p.getFields(request, templateInstance)
+func (p *Template) IndexFields(ctx *builder.Context) interface{} {
+	fields := p.getFields(ctx)
 	var items []interface{}
 	for _, v := range fields.([]interface{}) {
 		if v, ok := v.(interface {
@@ -30,15 +30,15 @@ func (p *Template) IndexFields(request *builder.Request, templateInstance interf
 }
 
 // 表格列
-func (p *Template) IndexColumns(request *builder.Request, templateInstance interface{}) interface{} {
-	fields := p.IndexFields(request, templateInstance)
+func (p *Template) IndexColumns(ctx *builder.Context) interface{} {
+	fields := p.IndexFields(ctx)
 	var columns []interface{}
 	for _, v := range fields.([]interface{}) {
 		isShownOnIndex := v.(interface {
 			IsShownOnIndex() bool
 		}).IsShownOnIndex()
 		if isShownOnIndex {
-			getColumn := p.fieldToColumn(request, v)
+			getColumn := p.fieldToColumn(ctx, v)
 
 			if getColumn != nil {
 				columns = append(columns, getColumn)
@@ -47,9 +47,9 @@ func (p *Template) IndexColumns(request *builder.Request, templateInstance inter
 	}
 
 	// 行内行为
-	indexTableRowActions := templateInstance.(interface {
-		IndexTableRowActions(request *builder.Request, templateInstance interface{}) interface{}
-	}).IndexTableRowActions(request, templateInstance)
+	indexTableRowActions := ctx.Template.(interface {
+		IndexTableRowActions(ctx *builder.Context) interface{}
+	}).IndexTableRowActions(ctx)
 	if len(indexTableRowActions.([]interface{})) > 0 {
 		column := (&table.Column{}).
 			Init().
@@ -65,7 +65,7 @@ func (p *Template) IndexColumns(request *builder.Request, templateInstance inter
 }
 
 // 将表单项转换为表格列
-func (p *Template) fieldToColumn(request *builder.Request, field interface{}) interface{} {
+func (p *Template) fieldToColumn(ctx *builder.Context, field interface{}) interface{} {
 	reflectElem := reflect.
 		ValueOf(field).
 		Elem()
@@ -144,7 +144,7 @@ func (p *Template) fieldToColumn(request *builder.Request, field interface{}) in
 			Interface()
 
 		// 可编辑api地址
-		editableApi := strings.Replace(request.Path(), "/index", "/editable", -1)
+		editableApi := strings.Replace(ctx.Path(), "/index", "/editable", -1)
 
 		// 设置编辑项
 		column = column.SetEditable(component, options, editableApi)
@@ -154,8 +154,8 @@ func (p *Template) fieldToColumn(request *builder.Request, field interface{}) in
 }
 
 // 创建页字段
-func (p *Template) CreationFields(request *builder.Request, templateInstance interface{}) interface{} {
-	fields := p.getFields(request, templateInstance)
+func (p *Template) CreationFields(ctx *builder.Context) interface{} {
+	fields := p.getFields(ctx)
 	var items []interface{}
 	for _, v := range fields.([]interface{}) {
 		isShownOnCreation := v.(interface {
@@ -172,8 +172,8 @@ func (p *Template) CreationFields(request *builder.Request, templateInstance int
 }
 
 // 不包含When组件内字段的创建页字段
-func (p *Template) CreationFieldsWithoutWhen(request *builder.Request, templateInstance interface{}) interface{} {
-	fields := p.getFieldsWithoutWhen(request, templateInstance)
+func (p *Template) CreationFieldsWithoutWhen(ctx *builder.Context) interface{} {
+	fields := p.getFieldsWithoutWhen(ctx)
 	var items []interface{}
 	for _, v := range fields.([]interface{}) {
 		isShownOnCreation := v.(interface {
@@ -188,10 +188,10 @@ func (p *Template) CreationFieldsWithoutWhen(request *builder.Request, templateI
 }
 
 // 包裹在组件内的创建页字段
-func (p *Template) CreationFieldsWithinComponents(request *builder.Request, templateInstance interface{}) interface{} {
-	fields := templateInstance.(interface {
-		Fields(request *builder.Request) []interface{}
-	}).Fields(request)
+func (p *Template) CreationFieldsWithinComponents(ctx *builder.Context) interface{} {
+	fields := ctx.Template.(interface {
+		Fields(ctx *builder.Context) []interface{}
+	}).Fields(ctx)
 	var items []interface{}
 	for _, v := range fields {
 		component := reflect.
@@ -211,7 +211,7 @@ func (p *Template) CreationFieldsWithinComponents(request *builder.Request, temp
 				if isShownOnCreation {
 					sv.(interface {
 						BuildFrontendRules(string) interface{}
-					}).BuildFrontendRules(request.Path())
+					}).BuildFrontendRules(ctx.Path())
 					subItems = append(subItems, sv)
 				}
 			}
@@ -227,7 +227,7 @@ func (p *Template) CreationFieldsWithinComponents(request *builder.Request, temp
 			if isShownOnCreation {
 				v.(interface {
 					BuildFrontendRules(string) interface{}
-				}).BuildFrontendRules(request.Path())
+				}).BuildFrontendRules(ctx.Path())
 				items = append(items, v)
 			}
 		}
@@ -237,8 +237,8 @@ func (p *Template) CreationFieldsWithinComponents(request *builder.Request, temp
 }
 
 // 编辑页字段
-func (p *Template) UpdateFields(request *builder.Request, templateInstance interface{}) interface{} {
-	fields := p.getFields(request, templateInstance)
+func (p *Template) UpdateFields(ctx *builder.Context) interface{} {
+	fields := p.getFields(ctx)
 	var items []interface{}
 
 	for _, v := range fields.([]interface{}) {
@@ -254,8 +254,8 @@ func (p *Template) UpdateFields(request *builder.Request, templateInstance inter
 }
 
 // 不包含When组件内字段的编辑页字段
-func (p *Template) UpdateFieldsWithoutWhen(request *builder.Request, templateInstance interface{}) interface{} {
-	fields := p.getFieldsWithoutWhen(request, templateInstance)
+func (p *Template) UpdateFieldsWithoutWhen(ctx *builder.Context) interface{} {
+	fields := p.getFieldsWithoutWhen(ctx)
 	var items []interface{}
 
 	for _, v := range fields.([]interface{}) {
@@ -271,10 +271,10 @@ func (p *Template) UpdateFieldsWithoutWhen(request *builder.Request, templateIns
 }
 
 // 包裹在组件内的编辑页字段
-func (p *Template) UpdateFieldsWithinComponents(request *builder.Request, templateInstance interface{}) interface{} {
-	fields := templateInstance.(interface {
-		Fields(request *builder.Request) []interface{}
-	}).Fields(request)
+func (p *Template) UpdateFieldsWithinComponents(ctx *builder.Context) interface{} {
+	fields := ctx.Template.(interface {
+		Fields(ctx *builder.Context) []interface{}
+	}).Fields(ctx)
 	var items []interface{}
 
 	for _, v := range fields {
@@ -295,7 +295,7 @@ func (p *Template) UpdateFieldsWithinComponents(request *builder.Request, templa
 				if isShownOnUpdate {
 					sv.(interface {
 						BuildFrontendRules(string) interface{}
-					}).BuildFrontendRules(request.Path())
+					}).BuildFrontendRules(ctx.Path())
 					subItems = append(subItems, sv)
 				}
 			}
@@ -311,7 +311,7 @@ func (p *Template) UpdateFieldsWithinComponents(request *builder.Request, templa
 			if isShownOnUpdate {
 				v.(interface {
 					BuildFrontendRules(string) interface{}
-				}).BuildFrontendRules(request.Path())
+				}).BuildFrontendRules(ctx.Path())
 				items = append(items, v)
 			}
 		}
@@ -321,8 +321,8 @@ func (p *Template) UpdateFieldsWithinComponents(request *builder.Request, templa
 }
 
 // 详情页字段
-func (p *Template) DetailFields(request *builder.Request, templateInstance interface{}) interface{} {
-	fields := p.getFields(request, templateInstance)
+func (p *Template) DetailFields(ctx *builder.Context) interface{} {
+	fields := p.getFields(ctx)
 	var items []interface{}
 
 	for _, v := range fields.([]interface{}) {
@@ -338,12 +338,12 @@ func (p *Template) DetailFields(request *builder.Request, templateInstance inter
 }
 
 // 包裹在组件内的详情页字段
-func (p *Template) DetailFieldsWithinComponents(request *builder.Request, templateInstance interface{}, data map[string]interface{}) interface{} {
+func (p *Template) DetailFieldsWithinComponents(ctx *builder.Context, data map[string]interface{}) interface{} {
 	componentType := "description"
 
-	fields := templateInstance.(interface {
-		Fields(request *builder.Request) []interface{}
-	}).Fields(request)
+	fields := ctx.Template.(interface {
+		Fields(ctx *builder.Context) []interface{}
+	}).Fields(ctx)
 	var items []interface{}
 
 	for _, v := range fields {
@@ -367,7 +367,7 @@ func (p *Template) DetailFieldsWithinComponents(request *builder.Request, templa
 				}).IsShownOnDetail()
 
 				if isShownOnDetail {
-					getColumn := p.fieldToColumn(request, sv)
+					getColumn := p.fieldToColumn(ctx, sv)
 					subItems = append(subItems, getColumn)
 				}
 			}
@@ -379,7 +379,7 @@ func (p *Template) DetailFieldsWithinComponents(request *builder.Request, templa
 				SetColumn(2).
 				SetColumns(subItems).
 				SetDataSource(data).
-				SetActions(p.DetailActions(request, templateInstance))
+				SetActions(p.DetailActions(ctx))
 
 			v.(interface{ SetBody(interface{}) interface{} }).SetBody(descriptions)
 			items = append(items, v)
@@ -389,7 +389,7 @@ func (p *Template) DetailFieldsWithinComponents(request *builder.Request, templa
 			}).IsShownOnDetail()
 
 			if isShownOnDetail {
-				getColumn := p.fieldToColumn(request, v)
+				getColumn := p.fieldToColumn(ctx, v)
 				items = append(items, getColumn)
 			}
 		}
@@ -405,15 +405,15 @@ func (p *Template) DetailFieldsWithinComponents(request *builder.Request, templa
 			SetColumn(2).
 			SetColumns(items).
 			SetDataSource(data).
-			SetActions(p.DetailActions(request, templateInstance))
+			SetActions(p.DetailActions(ctx))
 	} else {
 		return items
 	}
 }
 
 // 导出字段
-func (p *Template) ExportFields(request *builder.Request, templateInstance interface{}) interface{} {
-	fields := p.getFields(request, templateInstance)
+func (p *Template) ExportFields(ctx *builder.Context) interface{} {
+	fields := p.getFields(ctx)
 	var items []interface{}
 	for _, v := range fields.([]interface{}) {
 		isShownOnExport := v.(interface {
@@ -428,8 +428,8 @@ func (p *Template) ExportFields(request *builder.Request, templateInstance inter
 }
 
 // 导入字段
-func (p *Template) ImportFields(request *builder.Request, templateInstance interface{}) interface{} {
-	fields := p.getFields(request, templateInstance)
+func (p *Template) ImportFields(ctx *builder.Context) interface{} {
+	fields := p.getFields(ctx)
 	var items []interface{}
 	for _, v := range fields.([]interface{}) {
 		isShownOnImport := v.(interface {
@@ -444,8 +444,8 @@ func (p *Template) ImportFields(request *builder.Request, templateInstance inter
 }
 
 // 不包含When组件内字段的导入字段
-func (p *Template) ImportFieldsWithoutWhen(request *builder.Request, templateInstance interface{}) interface{} {
-	fields := p.getFieldsWithoutWhen(request, templateInstance)
+func (p *Template) ImportFieldsWithoutWhen(ctx *builder.Context) interface{} {
+	fields := p.getFieldsWithoutWhen(ctx)
 	var items []interface{}
 	for _, v := range fields.([]interface{}) {
 
@@ -462,20 +462,20 @@ func (p *Template) ImportFieldsWithoutWhen(request *builder.Request, templateIns
 }
 
 // 获取字段
-func (p *Template) getFields(request *builder.Request, templateInstance interface{}) interface{} {
-	fields := templateInstance.(interface {
-		Fields(request *builder.Request) []interface{}
-	}).Fields(request)
+func (p *Template) getFields(ctx *builder.Context) interface{} {
+	fields := ctx.Template.(interface {
+		Fields(ctx *builder.Context) []interface{}
+	}).Fields(ctx)
 
 	return p.findFields(fields, true)
 }
 
 // 获取不包含When组件的字段
-func (p *Template) getFieldsWithoutWhen(request *builder.Request, templateInstance interface{}) interface{} {
+func (p *Template) getFieldsWithoutWhen(ctx *builder.Context) interface{} {
 
-	fields := templateInstance.(interface {
-		Fields(request *builder.Request) []interface{}
-	}).Fields(request)
+	fields := ctx.Template.(interface {
+		Fields(ctx *builder.Context) []interface{}
+	}).Fields(ctx)
 
 	return p.findFields(fields, false)
 }

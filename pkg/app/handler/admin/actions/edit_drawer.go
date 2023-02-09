@@ -38,19 +38,19 @@ func (p *EditDrawer) Init(name string) *EditDrawer {
 }
 
 // 内容
-func (p *EditDrawer) GetBody(request *builder.Request, resourceInstance interface{}) interface{} {
+func (p *EditDrawer) GetBody(ctx *builder.Context) interface{} {
 
-	api := resourceInstance.(interface {
-		UpdateApi(*builder.Request, interface{}) string
-	}).UpdateApi(request, resourceInstance)
+	api := ctx.Template.(interface {
+		UpdateApi(*builder.Context) string
+	}).UpdateApi(ctx)
 
-	initApi := resourceInstance.(interface {
-		EditValueApi(*builder.Request) string
-	}).EditValueApi(request)
+	initApi := ctx.Template.(interface {
+		EditValueApi(*builder.Context) string
+	}).EditValueApi(ctx)
 
-	fields := resourceInstance.(interface {
-		UpdateFieldsWithinComponents(*builder.Request, interface{}) interface{}
-	}).UpdateFieldsWithinComponents(request, resourceInstance)
+	fields := ctx.Template.(interface {
+		UpdateFieldsWithinComponents(*builder.Context) interface{}
+	}).UpdateFieldsWithinComponents(ctx)
 
 	return (&form.Component{}).
 		Init().
@@ -67,7 +67,7 @@ func (p *EditDrawer) GetBody(request *builder.Request, resourceInstance interfac
 }
 
 // 弹窗行为
-func (p *EditDrawer) GetActions(request *builder.Request, resourceInstance interface{}) []interface{} {
+func (p *EditDrawer) GetActions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		(&action.Component{}).

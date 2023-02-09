@@ -19,7 +19,7 @@ func (p *Status) Init() *Status {
 }
 
 // 执行查询
-func (p *Status) Apply(request *builder.Request, query *gorm.DB, value interface{}) *gorm.DB {
+func (p *Status) Apply(ctx *builder.Context, query *gorm.DB, value interface{}) *gorm.DB {
 
 	var status int
 
@@ -33,7 +33,7 @@ func (p *Status) Apply(request *builder.Request, query *gorm.DB, value interface
 }
 
 // 属性
-func (p *Status) Options(request *builder.Request) map[interface{}]interface{} {
+func (p *Status) Options(ctx *builder.Context) map[interface{}]interface{} {
 	return map[interface{}]interface{}{
 		"on":  "正常",
 		"off": "禁用",

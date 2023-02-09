@@ -15,33 +15,33 @@ import (
 type UpdateRequest struct{}
 
 // 执行行为
-func (p *UpdateRequest) Handle(request *builder.Request, templateInstance interface{}) interface{} {
+func (p *UpdateRequest) Handle(ctx *builder.Context) interface{} {
 	modelInstance := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("Model").Interface()
 
 	// 获取字段
-	fields := templateInstance.(interface {
-		UpdateFields(request *builder.Request, templateInstance interface{}) interface{}
-	}).UpdateFields(request, templateInstance)
+	fields := ctx.Template.(interface {
+		UpdateFields(ctx *builder.Context) interface{}
+	}).UpdateFields(ctx)
 
 	data := map[string]interface{}{}
-	json.Unmarshal(request.Body(), &data)
+	json.Unmarshal(ctx.Body(), &data)
 	if data["id"] == "" {
 		return msg.Error("参数错误！", "")
 	}
 
-	data, err := templateInstance.(interface {
-		BeforeSaving(request *builder.Request, data map[string]interface{}) (map[string]interface{}, error)
-	}).BeforeSaving(request, data)
+	data, err := ctx.Template.(interface {
+		BeforeSaving(ctx *builder.Context, data map[string]interface{}) (map[string]interface{}, error)
+	}).BeforeSaving(ctx, data)
 	if err != nil {
 		return msg.Error(err.Error(), "")
 	}
 
-	validator := templateInstance.(interface {
-		ValidatorForUpdate(request *builder.Request, templateInstance interface{}, data map[string]interface{}) error
-	}).ValidatorForUpdate(request, templateInstance, data)
+	validator := ctx.Template.(interface {
+		ValidatorForUpdate(ctx *builder.Context, data map[string]interface{}) error
+	}).ValidatorForUpdate(ctx, data)
 	if validator != nil {
 		return validator
 	}
@@ -116,7 +116,7 @@ func (p *UpdateRequest) Handle(request *builder.Request, templateInstance interf
 	// 获取对象
 	getModel := db.Client.Model(&modelInstance).Select("*").Where("id = ?", data["id"]).Updates(modelInstance)
 
-	return templateInstance.(interface {
-		AfterSaved(request *builder.Request, model *gorm.DB) interface{}
-	}).AfterSaved(request, getModel)
+	return ctx.Template.(interface {
+		AfterSaved(ctx *builder.Context, model *gorm.DB) interface{}
+	}).AfterSaved(ctx, getModel)
 }

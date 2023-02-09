@@ -11,14 +11,14 @@ import (
 type EditableRequest struct{}
 
 // 执行行为
-func (p *EditableRequest) Handle(request *builder.Request, templateInstance interface{}) interface{} {
+func (p *EditableRequest) Handle(ctx *builder.Context) interface{} {
 	modelInstance := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("Model").Interface()
 	model := db.Client.Model(&modelInstance)
 
-	data := request.AllQuerys()
+	data := ctx.AllQuerys()
 	for k, v := range data {
 		if v == "true" {
 			v = 1

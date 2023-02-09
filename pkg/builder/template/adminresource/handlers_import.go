@@ -21,9 +21,9 @@ import (
 type ImportRequest struct{}
 
 // 执行行为
-func (p *ImportRequest) Handle(request *builder.Request, templateInstance interface{}) interface{} {
+func (p *ImportRequest) Handle(ctx *builder.Context) interface{} {
 	data := map[string]interface{}{}
-	json.Unmarshal(request.Body(), &data)
+	json.Unmarshal(ctx.Body(), &data)
 	fileId := data["fileId"]
 	getFileId := 0
 
@@ -40,7 +40,7 @@ func (p *ImportRequest) Handle(request *builder.Request, templateInstance interf
 	}
 
 	modelInstance := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("Model").Interface()
 	model := db.Client.Model(&modelInstance)
@@ -57,9 +57,9 @@ func (p *ImportRequest) Handle(request *builder.Request, templateInstance interf
 	importData = importData[1:]
 
 	// 导入前回调
-	lists := templateInstance.(interface {
-		BeforeImporting(request *builder.Request, list [][]interface{}) [][]interface{}
-	}).BeforeImporting(request, importData)
+	lists := ctx.Template.(interface {
+		BeforeImporting(ctx *builder.Context, list [][]interface{}) [][]interface{}
+	}).BeforeImporting(ctx, importData)
 
 	importResult := true
 	importTotalNum := len(lists)
@@ -68,17 +68,17 @@ func (p *ImportRequest) Handle(request *builder.Request, templateInstance interf
 	importFailedData := [][]interface{}{}
 
 	// 获取字段
-	fields := templateInstance.(interface {
-		ImportFields(request *builder.Request, templateInstance interface{}) interface{}
-	}).ImportFields(request, templateInstance)
+	fields := ctx.Template.(interface {
+		ImportFields(ctx *builder.Context) interface{}
+	}).ImportFields(ctx)
 
 	for _, item := range lists {
 
 		formValues := p.transformFormValues(fields, item)
 
-		validator := templateInstance.(interface {
-			ValidatorForImport(request *builder.Request, templateInstance interface{}, data map[string]interface{}) error
-		}).ValidatorForImport(request, templateInstance, formValues)
+		validator := ctx.Template.(interface {
+			ValidatorForImport(ctx *builder.Context, data map[string]interface{}) error
+		}).ValidatorForImport(ctx, formValues)
 
 		if validator != nil {
 
@@ -90,9 +90,9 @@ func (p *ImportRequest) Handle(request *builder.Request, templateInstance interf
 			importFailedData = append(importFailedData, item)
 		}
 
-		submitData := templateInstance.(interface {
-			BeforeSaving(request *builder.Request, data map[string]interface{}) interface{}
-		}).BeforeSaving(request, formValues) // 保存前回调
+		submitData := ctx.Template.(interface {
+			BeforeSaving(ctx *builder.Context, data map[string]interface{}) interface{}
+		}).BeforeSaving(ctx, formValues) // 保存前回调
 
 		if value, ok := submitData.(error); ok {
 			importResult = false
@@ -119,16 +119,16 @@ func (p *ImportRequest) Handle(request *builder.Request, templateInstance interf
 			//记录错误数据
 			importFailedData = append(importFailedData, item)
 		} else {
-			templateInstance.(interface {
-				AfterSaved(request *builder.Request, model *gorm.DB) interface{}
-			}).AfterSaved(request, getModel)
+			ctx.Template.(interface {
+				AfterSaved(ctx *builder.Context, model *gorm.DB) interface{}
+			}).AfterSaved(ctx, getModel)
 
 			importSuccessedNum = importSuccessedNum + 1
 		}
 	}
 
 	if importResult {
-		return msg.Success("操作成功！", strings.Replace("/index?api="+IndexRoute, ":resource", request.Param("resource"), -1), "")
+		return msg.Success("操作成功！", strings.Replace("/index?api="+IndexRoute, ":resource", ctx.Param("resource"), -1), "")
 	} else {
 		importHead = append(importHead, "错误信息")
 
@@ -185,7 +185,7 @@ func (p *ImportRequest) Handle(request *builder.Request, templateInstance interf
 
 		importFailedNumTpl := (&tpl.Component{}).
 			Init().
-			SetBody("失败数量: <span style='color:#ff4d4f'>" + strconv.Itoa(importFailedNum) + "</span> <a href='" + request.Host() + "/storage/failImports/" + fileName + "' target='_blank'>下载失败数据</a>")
+			SetBody("失败数量: <span style='color:#ff4d4f'>" + strconv.Itoa(importFailedNum) + "</span> <a href='" + ctx.Host() + "/storage/failImports/" + fileName + "' target='_blank'>下载失败数据</a>")
 
 		component := (&space.Component{}).
 			Init().

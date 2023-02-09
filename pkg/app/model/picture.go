@@ -30,10 +30,10 @@ type Picture struct {
 }
 
 // 获取列表
-func (model *Picture) GetListBySearch(authValue string, categoryId interface{}, name interface{}, startDate interface{}, endDate interface{}, page int) (list []*Picture, total int64, Error error) {
+func (model *Picture) GetListBySearch(appKey string, tokenString string, categoryId interface{}, name interface{}, startDate interface{}, endDate interface{}, page int) (list []*Picture, total int64, Error error) {
 	pictures := []*Picture{}
 
-	adminInfo, err := (&Admin{}).GetAuthUser(authValue)
+	adminInfo, err := (&Admin{}).GetAuthUser(appKey, tokenString)
 	if err != nil {
 		return pictures, 0, err
 	}

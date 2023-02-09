@@ -9,19 +9,19 @@ import (
 )
 
 // 列表页搜索表单
-func (p *Template) IndexSearches(request *builder.Request, templateInstance interface{}) interface{} {
-	searches := templateInstance.(interface {
-		Searches(*builder.Request) []interface{}
-	}).Searches(request)
+func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
+	searches := ctx.Template.(interface {
+		Searches(*builder.Context) []interface{}
+	}).Searches(ctx)
 	search := (&table.Search{}).Init()
 
 	withExport := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("WithExport").Bool()
 
 	if withExport {
-		search = search.SetExportText("导出").SetExportApi(strings.Replace(ExportRoute, ":resource", request.Param("resource"), -1))
+		search = search.SetExportText("导出").SetExportApi(strings.Replace(ExportRoute, ":resource", ctx.Param("resource"), -1))
 	}
 
 	for _, v := range searches {
@@ -32,11 +32,11 @@ func (p *Template) IndexSearches(request *builder.Request, templateInstance inte
 		}).GetColumn(v) // 字段名，支持数组
 		api := v.(interface{ GetApi() string }).GetApi() // 获取接口
 		options := v.(interface {
-			Options(request *builder.Request) map[interface{}]interface{}
-		}).Options(request) // 获取属性
+			Options(ctx *builder.Context) map[interface{}]interface{}
+		}).Options(ctx) // 获取属性
 		load := v.(interface {
-			Load(request *builder.Request) map[string]string
-		}).Load(request) // 获取接口
+			Load(ctx *builder.Context) map[string]string
+		}).Load(ctx) // 获取接口
 
 		// 搜索栏表单项
 		item := (&table.SearchItem{}).

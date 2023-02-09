@@ -10,18 +10,18 @@ import (
 )
 
 // 创建列表查询
-func (p *Template) BuildIndexQuery(request *builder.Request, templateInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB {
+func (p *Template) BuildIndexQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB {
 
 	// 初始化查询
-	query = p.initializeQuery(request, templateInstance, query)
+	query = p.initializeQuery(ctx, query)
 
 	// 执行列表查询，这里使用的是透传的实例
-	query = templateInstance.(interface {
-		IndexQuery(*builder.Request, *gorm.DB) *gorm.DB
-	}).IndexQuery(request, query)
+	query = ctx.Template.(interface {
+		IndexQuery(*builder.Context, *gorm.DB) *gorm.DB
+	}).IndexQuery(ctx, query)
 
 	// 执行搜索查询
-	query = p.applySearch(request, query, search)
+	query = p.applySearch(ctx, query, search)
 
 	// 执行过滤器查询
 	query = p.applyFilters(query, filters)
@@ -31,7 +31,7 @@ func (p *Template) BuildIndexQuery(request *builder.Request, templateInstance in
 
 	// 获取默认排序
 	defaultOrder := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("IndexOrder").String()
 
@@ -46,31 +46,31 @@ func (p *Template) BuildIndexQuery(request *builder.Request, templateInstance in
 }
 
 // 创建详情页查询
-func (p *Template) BuildDetailQuery(request *builder.Request, templateInstance interface{}, query *gorm.DB) *gorm.DB {
+func (p *Template) BuildDetailQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 	// 初始化查询
-	query = p.initializeQuery(request, templateInstance, query)
+	query = p.initializeQuery(ctx, query)
 
 	// 执行列表查询，这里使用的是透传的实例
-	query = templateInstance.(interface {
-		DetailQuery(*builder.Request, *gorm.DB) *gorm.DB
-	}).DetailQuery(request, query)
+	query = ctx.Template.(interface {
+		DetailQuery(*builder.Context, *gorm.DB) *gorm.DB
+	}).DetailQuery(ctx, query)
 
 	return query
 }
 
 // 创建导出查询
-func (p *Template) BuildExportQuery(request *builder.Request, templateInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB {
+func (p *Template) BuildExportQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB {
 
 	// 初始化查询
-	query = p.initializeQuery(request, templateInstance, query)
+	query = p.initializeQuery(ctx, query)
 
 	// 执行列表查询，这里使用的是透传的实例
-	query = templateInstance.(interface {
-		ExportQuery(*builder.Request, *gorm.DB) *gorm.DB
-	}).ExportQuery(request, query)
+	query = ctx.Template.(interface {
+		ExportQuery(*builder.Context, *gorm.DB) *gorm.DB
+	}).ExportQuery(ctx, query)
 
 	// 执行搜索查询
-	query = p.applySearch(request, query, search)
+	query = p.applySearch(ctx, query, search)
 
 	// 执行过滤器查询
 	query = p.applyFilters(query, filters)
@@ -80,7 +80,7 @@ func (p *Template) BuildExportQuery(request *builder.Request, templateInstance i
 
 	// 获取默认排序
 	defaultOrder := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("IndexOrder").String()
 
@@ -95,16 +95,16 @@ func (p *Template) BuildExportQuery(request *builder.Request, templateInstance i
 }
 
 // 初始化查询
-func (p *Template) initializeQuery(request *builder.Request, templateInstance interface{}, query *gorm.DB) *gorm.DB {
+func (p *Template) initializeQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 
-	return templateInstance.(interface {
-		Query(*builder.Request, *gorm.DB) *gorm.DB
-	}).Query(request, query)
+	return ctx.Template.(interface {
+		Query(*builder.Context, *gorm.DB) *gorm.DB
+	}).Query(ctx, query)
 }
 
 // 执行搜索表单查询
-func (p *Template) applySearch(request *builder.Request, query *gorm.DB, search []interface{}) *gorm.DB {
-	querys := request.AllQuerys()
+func (p *Template) applySearch(ctx *builder.Context, query *gorm.DB, search []interface{}) *gorm.DB {
+	querys := ctx.AllQuerys()
 	var data map[string]interface{}
 	if querys["search"] == nil {
 		return query
@@ -121,8 +121,8 @@ func (p *Template) applySearch(request *builder.Request, query *gorm.DB, search 
 		value := data[column]
 		if value != nil {
 			query = v.(interface {
-				Apply(*builder.Request, *gorm.DB, interface{}) *gorm.DB
-			}).Apply(request, query, value)
+				Apply(*builder.Context, *gorm.DB, interface{}) *gorm.DB
+			}).Apply(ctx, query, value)
 		}
 	}
 
@@ -170,25 +170,25 @@ func (p *Template) applyOrderings(query *gorm.DB, orderings map[string]interface
 }
 
 // 全局查询
-func (p *Template) Query(request *builder.Request, query *gorm.DB) *gorm.DB {
+func (p *Template) Query(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 
 	return query
 }
 
 // 列表查询
-func (p *Template) IndexQuery(request *builder.Request, query *gorm.DB) *gorm.DB {
+func (p *Template) IndexQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 
 	return query
 }
 
 // 详情查询
-func (p *Template) DetailQuery(request *builder.Request, query *gorm.DB) *gorm.DB {
+func (p *Template) DetailQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 
 	return query
 }
 
 // 导出查询
-func (p *Template) ExportQuery(request *builder.Request, query *gorm.DB) *gorm.DB {
+func (p *Template) ExportQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 
 	return query
 }

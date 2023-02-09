@@ -1,6 +1,7 @@
 package template
 
 import (
+	"net/http"
 	"reflect"
 
 	"github.com/quarkcms/quark-go/pkg/app/model"
@@ -15,34 +16,88 @@ import (
 
 // 模板
 type AdminTemplate struct {
-	DB     *gorm.DB    // DB对象
-	Model  interface{} // DB模型结构体
-	Routes []*builder.Route
+	DB           *gorm.DB                // DB对象
+	Model        interface{}             // DB模型结构体
+	RouteMapping []*builder.RouteMapping // 路由映射
 }
 
 // 获取路由
-func (p *AdminTemplate) GetRoutes() []*builder.Route {
-	return p.Routes
+func (p *AdminTemplate) GetRouteMapping() []*builder.RouteMapping {
+	return p.RouteMapping
 }
 
 // 注册路由
-func (p *AdminTemplate) AddRoute(path string, handlerName string) *AdminTemplate {
-	getRoute := &builder.Route{
+func (p *AdminTemplate) AddRouteMapping(method string, path string, handlerName string) *AdminTemplate {
+	getRoute := &builder.RouteMapping{
+		Method:      method,
 		Path:        path,
 		HandlerName: handlerName,
 	}
-	p.Routes = append(p.Routes, getRoute)
+	p.RouteMapping = append(p.RouteMapping, getRoute)
 
 	return p
 }
 
+// 清除路由
+func (p *AdminTemplate) ClearRouteMapping() *AdminTemplate {
+	p.RouteMapping = nil
+
+	return p
+}
+
+// ANY is a shortcut for router.Handle(http.MethodGet, path, handle)
+func (p *AdminTemplate) ANY(path string, handlerName string) {
+	p.GET(path, handlerName)
+	p.HEAD(path, handlerName)
+	p.OPTIONS(path, handlerName)
+	p.POST(path, handlerName)
+	p.PUT(path, handlerName)
+	p.PATCH(path, handlerName)
+	p.DELETE(path, handlerName)
+}
+
+// GET is a shortcut for router.Handle(http.MethodGet, path, handle)
+func (p *AdminTemplate) GET(path string, handlerName string) {
+	p.AddRouteMapping(http.MethodGet, path, handlerName)
+}
+
+// HEAD is a shortcut for router.Handle(http.MethodHead, path, handle)
+func (p *AdminTemplate) HEAD(path string, handlerName string) {
+	p.AddRouteMapping(http.MethodHead, path, handlerName)
+}
+
+// OPTIONS is a shortcut for router.Handle(http.MethodOptions, path, handle)
+func (p *AdminTemplate) OPTIONS(path string, handlerName string) {
+	p.AddRouteMapping(http.MethodOptions, path, handlerName)
+}
+
+// POST is a shortcut for router.Handle(http.MethodPost, path, handle)
+func (p *AdminTemplate) POST(path string, handlerName string) {
+	p.AddRouteMapping(http.MethodPost, path, handlerName)
+}
+
+// PUT is a shortcut for router.Handle(http.MethodPut, path, handle)
+func (p *AdminTemplate) PUT(path string, handlerName string) {
+	p.AddRouteMapping(http.MethodPut, path, handlerName)
+}
+
+// PATCH is a shortcut for router.Handle(http.MethodPatch, path, handle)
+func (p *AdminTemplate) PATCH(path string, handlerName string) {
+	p.AddRouteMapping(http.MethodPatch, path, handlerName)
+}
+
+// DELETE is a shortcut for router.Handle(http.MethodDelete, path, handle)
+func (p *AdminTemplate) DELETE(path string, handlerName string) {
+	p.AddRouteMapping(http.MethodDelete, path, handlerName)
+}
+
 // 页面组件渲染
-func (p *AdminTemplate) PageComponentRender(request *builder.Request, templateInstance interface{}, body interface{}) interface{} {
+func (p *AdminTemplate) PageComponentRender(ctx *builder.Context, body interface{}) interface{} {
 
 	// Layout组件
-	layoutComponent := templateInstance.(interface {
-		LayoutComponentRender(request *builder.Request, templateInstance interface{}, body interface{}) interface{}
-	}).LayoutComponentRender(request, templateInstance, body)
+	layoutComponent := ctx.Template.(interface {
+		LayoutComponentRender(ctx *builder.Context, body interface{}) interface{}
+	}).LayoutComponentRender(ctx, body)
 
 	return (&page.Component{}).
 		Init().
@@ -54,11 +109,12 @@ func (p *AdminTemplate) PageComponentRender(request *builder.Request, templateIn
 }
 
 // 页面布局组件渲染
-func (p *AdminTemplate) LayoutComponentRender(request *builder.Request, templateInstance interface{}, body interface{}) interface{} {
+func (p *AdminTemplate) LayoutComponentRender(ctx *builder.Context, body interface{}) interface{} {
 	admin := &model.Admin{}
+	config := ctx.Engine.GetConfig()
 
 	// 获取登录管理员信息
-	adminInfo, err := admin.GetAuthUser(request.Token())
+	adminInfo, err := admin.GetAuthUser(config.AppKey, ctx.Token())
 	if err != nil {
 		return msg.Error(err.Error(), "")
 	}
@@ -69,7 +125,7 @@ func (p *AdminTemplate) LayoutComponentRender(request *builder.Request, template
 		return msg.Error(err.Error(), "")
 	}
 
-	adminLayout := builder.GetAdminLayoutConfig()
+	adminLayout := ctx.Engine.GetAdminLayout()
 
 	// 页脚
 	footer := (&footer.Component{}).
@@ -78,9 +134,9 @@ func (p *AdminTemplate) LayoutComponentRender(request *builder.Request, template
 		SetLinks(adminLayout.Links)
 
 	// 页面容器组件渲染
-	pageContainerComponent := templateInstance.(interface {
-		PageContainerComponentRender(request *builder.Request, templateInstance interface{}, body interface{}) interface{}
-	}).PageContainerComponentRender(request, templateInstance, body)
+	pageContainerComponent := ctx.Template.(interface {
+		PageContainerComponentRender(ctx *builder.Context, body interface{}) interface{}
+	}).PageContainerComponentRender(ctx, body)
 
 	return (&layout.Component{}).
 		Init().
@@ -102,8 +158,8 @@ func (p *AdminTemplate) LayoutComponentRender(request *builder.Request, template
 }
 
 // 页面容器组件渲染
-func (p *AdminTemplate) PageContainerComponentRender(request *builder.Request, templateInstance interface{}, body interface{}) interface{} {
-	value := reflect.ValueOf(templateInstance).Elem()
+func (p *AdminTemplate) PageContainerComponentRender(ctx *builder.Context, body interface{}) interface{} {
+	value := reflect.ValueOf(ctx.Template).Elem()
 	title := value.FieldByName("Title").String()
 	subTitle := value.FieldByName("SubTitle").String()
 
@@ -117,7 +173,7 @@ func (p *AdminTemplate) PageContainerComponentRender(request *builder.Request, t
 }
 
 // 默认组件渲染
-func (p *AdminTemplate) Render(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
+func (p *AdminTemplate) Render(ctx *builder.Context) interface{} {
 
 	return msg.Error("请实现组件渲染方法", "")
 }

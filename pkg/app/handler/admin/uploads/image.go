@@ -39,25 +39,26 @@ func (p *Image) Init() interface{} {
 	// 设置文件上传路径
 	p.SavePath = "./website/storage/images/" + time.Now().Format("20060102") + "/"
 
-	// 注册路由
-	p.AddRoute("/api/admin/upload/:resource/getList", "GetList")
-	p.AddRoute("/api/admin/upload/:resource/delete", "Delete")
-	p.AddRoute("/api/admin/upload/:resource/crop", "Crop")
+	// 添加路由映射关系
+	p.AddRouteMapping("GET", "/api/admin/upload/:resource/getList", "GetList")
+	p.AddRouteMapping("GET", "/api/admin/upload/:resource/delete", "Delete")
+	p.AddRouteMapping("POST", "/api/admin/upload/:resource/crop", "Crop")
 
 	return p
 }
 
 // 获取文件列表
-func (p *Image) GetList(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
-	page := request.Query("page", "1")
-	categoryId := request.Query("pictureCategoryId", "")
-	searchName := request.Query("pictureSearchName", "")
-	searchDateStart := request.Query("pictureSearchDate[0]", "")
-	searchDateEnd := request.Query("pictureSearchDate[1]", "")
+func (p *Image) GetList(ctx *builder.Context) interface{} {
+	page := ctx.Query("page", "1")
+	categoryId := ctx.Query("pictureCategoryId", "")
+	searchName := ctx.Query("pictureSearchName", "")
+	searchDateStart := ctx.Query("pictureSearchDate[0]", "")
+	searchDateEnd := ctx.Query("pictureSearchDate[1]", "")
 	currentPage, _ := strconv.Atoi(page.(string))
 
 	pictures, total, err := (&model.Picture{}).GetListBySearch(
-		request.Token(),
+		ctx.Engine.GetConfig().AppKey,
+		ctx.Token(),
 		categoryId, searchName,
 		searchDateStart,
 		searchDateEnd,
@@ -74,7 +75,7 @@ func (p *Image) GetList(request *builder.Request, resource *builder.Resource, te
 		"total":          total,
 	}
 
-	categorys, err := (&model.PictureCategory{}).GetAuthList(request.Token())
+	categorys, err := (&model.PictureCategory{}).GetAuthList(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
 		return msg.Error(err.Error(), "")
 	}
@@ -87,9 +88,9 @@ func (p *Image) GetList(request *builder.Request, resource *builder.Resource, te
 }
 
 // 图片删除
-func (p *Image) Delete(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
+func (p *Image) Delete(ctx *builder.Context) interface{} {
 	data := map[string]interface{}{}
-	json.Unmarshal(request.Body(), &data)
+	json.Unmarshal(ctx.Body(), &data)
 	if data["id"] == "" {
 		return msg.Error("参数错误！", "")
 	}
@@ -103,14 +104,14 @@ func (p *Image) Delete(request *builder.Request, resource *builder.Resource, tem
 }
 
 // 图片裁剪
-func (p *Image) Crop(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
+func (p *Image) Crop(ctx *builder.Context) interface{} {
 	var (
 		result *storage.FileInfo
 		err    error
 	)
 
 	data := map[string]interface{}{}
-	if err := request.BodyParser(&data); err != nil {
+	if err := ctx.BodyParser(&data); err != nil {
 		return msg.Error(err.Error(), "")
 	}
 	if data["id"] == "" {
@@ -128,13 +129,13 @@ func (p *Image) Crop(request *builder.Request, resource *builder.Resource, templ
 		return msg.Error("文件不存在", "")
 	}
 
-	adminInfo, err := (&model.Admin{}).GetAuthUser(request.Token())
+	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
 		return msg.Error(err.Error(), "")
 	}
 
-	limitW := request.Query("limitW", "")
-	limitH := request.Query("limitH", "")
+	limitW := ctx.Query("limitW", "")
+	limitH := ctx.Query("limitH", "")
 
 	files := strings.Split(data["file"].(string), ",")
 	if len(files) != 2 {
@@ -147,17 +148,17 @@ func (p *Image) Crop(request *builder.Request, resource *builder.Resource, templ
 	}
 
 	limitSize := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("LimitSize").Int()
 
 	limitType := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("LimitType").Interface()
 
 	limitImageWidth := int(reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("LimitImageWidth").Int())
 
@@ -169,7 +170,7 @@ func (p *Image) Crop(request *builder.Request, resource *builder.Resource, templ
 	}
 
 	limitImageHeight := int(reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("LimitImageHeight").Int())
 
@@ -181,17 +182,17 @@ func (p *Image) Crop(request *builder.Request, resource *builder.Resource, templ
 	}
 
 	savePath := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("SavePath").String()
 
 	driver := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("Driver").String()
 
 	ossConfig := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("OSSConfig").Interface()
 
@@ -209,9 +210,9 @@ func (p *Image) Crop(request *builder.Request, resource *builder.Resource, templ
 		})
 
 	// 上传前回调
-	getFileSystem, fileInfo, err := templateInstance.(interface {
-		BeforeHandle(request *builder.Request, templateInstance interface{}, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error)
-	}).BeforeHandle(request, templateInstance, fileSystem)
+	getFileSystem, fileInfo, err := ctx.Template.(interface {
+		BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error)
+	}).BeforeHandle(ctx, fileSystem)
 	if err != nil {
 		return msg.Error(err.Error(), "")
 	}
@@ -266,7 +267,7 @@ func (p *Image) Crop(request *builder.Request, resource *builder.Resource, templ
 }
 
 // 上传前回调
-func (p *Image) BeforeHandle(request *builder.Request, templateInstance interface{}, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error) {
+func (p *Image) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error) {
 	fileHash, err := fileSystem.GetFileHash()
 	if err != nil {
 		return fileSystem, nil, err
@@ -295,9 +296,9 @@ func (p *Image) BeforeHandle(request *builder.Request, templateInstance interfac
 }
 
 // 上传完成后回调
-func (p *Image) AfterHandle(request *builder.Request, templateInstance interface{}, result *storage.FileInfo) interface{} {
+func (p *Image) AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{} {
 	driver := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("Driver").String()
 
@@ -306,7 +307,7 @@ func (p *Image) AfterHandle(request *builder.Request, templateInstance interface
 		result.Url = (&model.Picture{}).GetPath(result.Url)
 	}
 
-	adminInfo, err := (&model.Admin{}).GetAuthUser(request.Token())
+	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
 		return msg.Error(err.Error(), "")
 	}

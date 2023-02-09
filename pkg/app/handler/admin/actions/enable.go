@@ -49,7 +49,7 @@ func (p *Enable) GetApiParams() []string {
 }
 
 // 执行行为句柄
-func (p *Enable) Handle(request *builder.Request, model *gorm.DB) interface{} {
+func (p *Enable) Handle(ctx *builder.Context, model *gorm.DB) interface{} {
 	err := model.Update("status", 1).Error
 	if err != nil {
 		return msg.Error(err.Error(), "")

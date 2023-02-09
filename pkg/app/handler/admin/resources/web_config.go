@@ -32,13 +32,13 @@ func (p *WebConfig) Init() interface{} {
 }
 
 // 表单接口
-func (p *WebConfig) FormApi(request *builder.Request) string {
+func (p *WebConfig) FormApi(ctx *builder.Context) string {
 
 	return "/api/admin/webConfig/action/change-web-config"
 }
 
 // 字段
-func (p *WebConfig) Fields(request *builder.Request) []interface{} {
+func (p *WebConfig) Fields(ctx *builder.Context) []interface{} {
 	field := &builder.AdminField{}
 	groupNames := []string{}
 
@@ -116,7 +116,7 @@ func (p *WebConfig) Fields(request *builder.Request) []interface{} {
 }
 
 // 行为
-func (p *WebConfig) Actions(request *builder.Request) []interface{} {
+func (p *WebConfig) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&actions.ChangeWebConfig{}),
 		(&actions.FormSubmit{}).Init(),
@@ -127,7 +127,7 @@ func (p *WebConfig) Actions(request *builder.Request) []interface{} {
 }
 
 // 创建页面显示前回调
-func (p *WebConfig) BeforeCreating(request *builder.Request) map[string]interface{} {
+func (p *WebConfig) BeforeCreating(ctx *builder.Context) map[string]interface{} {
 	configs := []map[string]interface{}{}
 	data := map[string]interface{}{}
 

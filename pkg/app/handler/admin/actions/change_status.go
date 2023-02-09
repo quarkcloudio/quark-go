@@ -50,8 +50,8 @@ func (p *ChangeStatus) GetApiParams() []string {
 }
 
 // 执行行为句柄
-func (p *ChangeStatus) Handle(request *builder.Request, model *gorm.DB) interface{} {
-	status := request.Query("status")
+func (p *ChangeStatus) Handle(ctx *builder.Context, model *gorm.DB) interface{} {
+	status := ctx.Query("status")
 	if status == "" {
 		return msg.Error("参数错误！", "")
 	}

@@ -34,7 +34,7 @@ func (p *File) Init() interface{} {
 }
 
 // 字段
-func (p *File) Fields(request *builder.Request) []interface{} {
+func (p *File) Fields(ctx *builder.Context) []interface{} {
 	field := &builder.AdminField{}
 
 	return []interface{}{
@@ -56,7 +56,7 @@ func (p *File) Fields(request *builder.Request) []interface{} {
 }
 
 // 搜索
-func (p *File) Searches(request *builder.Request) []interface{} {
+func (p *File) Searches(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&searches.Input{}).Init("name", "名称"),
 		(&searches.DateTimeRange{}).Init("created_at", "上传时间"),
@@ -64,7 +64,7 @@ func (p *File) Searches(request *builder.Request) []interface{} {
 }
 
 // 行为
-func (p *File) Actions(request *builder.Request) []interface{} {
+func (p *File) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&actions.Delete{}).Init("批量删除"),
 		(&actions.Delete{}).Init("删除"),

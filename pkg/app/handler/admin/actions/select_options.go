@@ -12,9 +12,9 @@ type SelectOptions struct {
 }
 
 // 执行行为句柄
-func (p *SelectOptions) Handle(request *builder.Request, model *gorm.DB) interface{} {
-	resource := request.Param("resource")
-	search := request.Query("search")
+func (p *SelectOptions) Handle(ctx *builder.Context, model *gorm.DB) interface{} {
+	resource := ctx.Param("resource")
+	search := ctx.Query("search")
 	lists := []map[string]interface{}{}
 	results := []map[string]interface{}{}
 

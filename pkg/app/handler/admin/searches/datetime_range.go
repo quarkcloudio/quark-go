@@ -20,7 +20,7 @@ func (p *DateTimeRange) Init(column string, name string) *DateTimeRange {
 }
 
 // 执行查询
-func (p *DateTimeRange) Apply(request *builder.Request, query *gorm.DB, value interface{}) *gorm.DB {
+func (p *DateTimeRange) Apply(ctx *builder.Context, query *gorm.DB, value interface{}) *gorm.DB {
 	values, ok := value.([]interface{})
 	if !ok {
 		return query

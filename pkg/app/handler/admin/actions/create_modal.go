@@ -38,20 +38,20 @@ func (p *CreateModal) Init(name string) *CreateModal {
 }
 
 // 内容
-func (p *CreateModal) GetBody(request *builder.Request, resourceInstance interface{}) interface{} {
+func (p *CreateModal) GetBody(ctx *builder.Context) interface{} {
 
-	api := resourceInstance.(interface {
-		CreationApi(*builder.Request, interface{}) string
-	}).CreationApi(request, resourceInstance)
+	api := ctx.Template.(interface {
+		CreationApi(*builder.Context) string
+	}).CreationApi(ctx)
 
-	fields := resourceInstance.(interface {
-		CreationFieldsWithinComponents(*builder.Request, interface{}) interface{}
-	}).CreationFieldsWithinComponents(request, resourceInstance)
+	fields := ctx.Template.(interface {
+		CreationFieldsWithinComponents(*builder.Context) interface{}
+	}).CreationFieldsWithinComponents(ctx)
 
 	// 断言BeforeCreating方法，获取初始数据
-	data := resourceInstance.(interface {
-		BeforeCreating(*builder.Request) map[string]interface{}
-	}).BeforeCreating(request)
+	data := ctx.Template.(interface {
+		BeforeCreating(*builder.Context) map[string]interface{}
+	}).BeforeCreating(ctx)
 
 	return (&form.Component{}).
 		Init().
@@ -68,7 +68,7 @@ func (p *CreateModal) GetBody(request *builder.Request, resourceInstance interfa
 }
 
 // 弹窗行为
-func (p *CreateModal) GetActions(request *builder.Request, resourceInstance interface{}) []interface{} {
+func (p *CreateModal) GetActions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		(&action.Component{}).

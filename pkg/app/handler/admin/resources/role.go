@@ -39,7 +39,7 @@ func (p *Role) Init() interface{} {
 }
 
 // 字段
-func (p *Role) Fields(request *builder.Request) []interface{} {
+func (p *Role) Fields(ctx *builder.Context) []interface{} {
 	field := &builder.AdminField{}
 	treeData, _ := (&models.Menu{}).Tree()
 
@@ -76,14 +76,14 @@ func (p *Role) Fields(request *builder.Request) []interface{} {
 }
 
 // 搜索
-func (p *Role) Searches(request *builder.Request) []interface{} {
+func (p *Role) Searches(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&searches.Input{}).Init("name", "名称"),
 	}
 }
 
 // 行为
-func (p *Role) Actions(request *builder.Request) []interface{} {
+func (p *Role) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&actions.CreateLink{}).Init(p.Title),
 		(&actions.Delete{}).Init("批量删除"),
@@ -97,8 +97,8 @@ func (p *Role) Actions(request *builder.Request) []interface{} {
 }
 
 // 编辑页面显示前回调
-func (p *Role) BeforeEditing(request *builder.Request, data map[string]interface{}) map[string]interface{} {
-	id := request.Query("id", "")
+func (p *Role) BeforeEditing(ctx *builder.Context, data map[string]interface{}) map[string]interface{} {
+	id := ctx.Query("id", "")
 	menus := []map[string]interface{}{}
 
 	db.Client.Model(&models.Menu{}).Find(&menus)
@@ -131,7 +131,7 @@ func (p *Role) BeforeEditing(request *builder.Request, data map[string]interface
 }
 
 // 保存数据前回调
-func (p *Role) BeforeSaving(request *builder.Request, submitData map[string]interface{}) (map[string]interface{}, error) {
+func (p *Role) BeforeSaving(ctx *builder.Context, submitData map[string]interface{}) (map[string]interface{}, error) {
 	var permissionIds []int
 	db.Client.
 		Model(&models.Permission{}).
@@ -148,9 +148,9 @@ func (p *Role) BeforeSaving(request *builder.Request, submitData map[string]inte
 }
 
 // 保存后回调
-func (p *Role) AfterSaved(request *builder.Request, model *gorm.DB) interface{} {
+func (p *Role) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
 	data := map[string]interface{}{}
-	json.Unmarshal(request.Body(), &data)
+	json.Unmarshal(ctx.Body(), &data)
 
 	// 根据菜单id获取所有权限
 	var permissionIds []int
@@ -165,7 +165,7 @@ func (p *Role) AfterSaved(request *builder.Request, model *gorm.DB) interface{} 
 
 	var result *gorm.DB
 
-	if request.IsCreating() {
+	if ctx.IsCreating() {
 		lastRole := map[string]interface{}{}
 		model.Order("id desc").First(&lastRole) // hack
 
@@ -182,7 +182,7 @@ func (p *Role) AfterSaved(request *builder.Request, model *gorm.DB) interface{} 
 		return msg.Error(result.Error.Error(), "")
 	}
 
-	return msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", request.Param("resource"), -1), "")
+	return msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), "")
 }
 
 // 保存后回调

@@ -14,13 +14,13 @@ import (
 )
 
 // 创建请求的验证器
-func (p *Template) ValidatorForCreation(request *builder.Request, templateInstance interface{}, data map[string]interface{}) error {
-	rules, messages := p.RulesForCreation(request, templateInstance)
+func (p *Template) ValidatorForCreation(ctx *builder.Context, data map[string]interface{}) error {
+	rules, messages := p.RulesForCreation(ctx)
 
 	validator := p.Validator(rules, messages, data)
 
-	p.afterValidation(request, validator)
-	p.afterCreationValidation(request, validator)
+	p.afterValidation(ctx, validator)
+	p.afterCreationValidation(ctx, validator)
 
 	return validator
 }
@@ -128,17 +128,17 @@ func (p *Template) getRuleMessage(messages []interface{}, key string) string {
 }
 
 // 创建请求的验证规则
-func (p *Template) RulesForCreation(request *builder.Request, templateInstance interface{}) ([]interface{}, []interface{}) {
+func (p *Template) RulesForCreation(ctx *builder.Context) ([]interface{}, []interface{}) {
 
-	fields := templateInstance.(interface {
-		CreationFieldsWithoutWhen(*builder.Request, interface{}) interface{}
-	}).CreationFieldsWithoutWhen(request, templateInstance)
+	fields := ctx.Template.(interface {
+		CreationFieldsWithoutWhen(*builder.Context) interface{}
+	}).CreationFieldsWithoutWhen(ctx)
 
 	rules := []interface{}{}
 	ruleMessages := []interface{}{}
 
 	for _, v := range fields.([]interface{}) {
-		getResult := p.getRulesForCreation(request, v)
+		getResult := p.getRulesForCreation(ctx, v)
 
 		if len(getResult["rules"].(map[string]interface{})) > 0 {
 			rules = append(rules, getResult["rules"])
@@ -161,14 +161,14 @@ func (p *Template) RulesForCreation(request *builder.Request, templateInstance i
 
 			if whenItems != nil {
 				for _, vi := range whenItems.([]map[string]interface{}) {
-					if p.needValidateWhenRules(request, vi) {
+					if p.needValidateWhenRules(ctx, vi) {
 						body := vi["body"]
 						if body != nil {
 							// 如果为数组
 							getBody, ok := body.([]interface{})
 							if ok {
 								for _, bv := range getBody {
-									whenItemResult := p.getRulesForCreation(request, bv)
+									whenItemResult := p.getRulesForCreation(ctx, bv)
 
 									if len(whenItemResult["rules"].(map[string]interface{})) > 0 {
 										rules = append(rules, whenItemResult["rules"])
@@ -179,7 +179,7 @@ func (p *Template) RulesForCreation(request *builder.Request, templateInstance i
 									}
 								}
 							} else {
-								whenItemResult := p.getRulesForCreation(request, getBody)
+								whenItemResult := p.getRulesForCreation(ctx, getBody)
 
 								if len(whenItemResult["rules"].(map[string]interface{})) > 0 {
 									rules = append(rules, whenItemResult["rules"])
@@ -201,13 +201,13 @@ func (p *Template) RulesForCreation(request *builder.Request, templateInstance i
 }
 
 // 判断是否需要验证When组件里的规则
-func (p *Template) needValidateWhenRules(request *builder.Request, when map[string]interface{}) bool {
+func (p *Template) needValidateWhenRules(ctx *builder.Context, when map[string]interface{}) bool {
 	conditionName := when["condition_name"].(string)
 	conditionOption := when["condition_option"]
 	conditionOperator := when["condition_operator"].(string)
 	result := false
 
-	data, error := qs.Unmarshal(request.OriginalURL())
+	data, error := qs.Unmarshal(ctx.OriginalURL())
 	if error != nil {
 		return false
 	}
@@ -262,7 +262,7 @@ func (p *Template) needValidateWhenRules(request *builder.Request, when map[stri
 }
 
 // 获取创建请求资源规则
-func (p *Template) getRulesForCreation(request *builder.Request, field interface{}) map[string]interface{} {
+func (p *Template) getRulesForCreation(ctx *builder.Context, field interface{}) map[string]interface{} {
 	getRules := map[string]interface{}{}
 	getRuleMessages := map[string]interface{}{}
 
@@ -293,7 +293,7 @@ func (p *Template) getRulesForCreation(request *builder.Request, field interface
 
 	items := []interface{}{}
 
-	for _, v := range p.formatRules(request, rules.([]string)) {
+	for _, v := range p.formatRules(ctx, rules.([]string)) {
 		items = append(items, v)
 	}
 
@@ -301,7 +301,7 @@ func (p *Template) getRulesForCreation(request *builder.Request, field interface
 		getRuleMessages[name+"."+key] = v
 	}
 
-	for _, v := range p.formatRules(request, creationRules.([]string)) {
+	for _, v := range p.formatRules(ctx, creationRules.([]string)) {
 		items = append(items, v)
 	}
 
@@ -320,29 +320,29 @@ func (p *Template) getRulesForCreation(request *builder.Request, field interface
 }
 
 // 更新请求的验证器
-func (p *Template) ValidatorForUpdate(request *builder.Request, templateInstance interface{}, data map[string]interface{}) error {
-	rules, messages := p.RulesForUpdate(request, templateInstance)
+func (p *Template) ValidatorForUpdate(ctx *builder.Context, data map[string]interface{}) error {
+	rules, messages := p.RulesForUpdate(ctx)
 
 	validator := p.Validator(rules, messages, data)
 
-	p.afterValidation(request, validator)
-	p.afterCreationValidation(request, validator)
+	p.afterValidation(ctx, validator)
+	p.afterCreationValidation(ctx, validator)
 
 	return validator
 }
 
 // 更新请求的验证规则
-func (p *Template) RulesForUpdate(request *builder.Request, templateInstance interface{}) ([]interface{}, []interface{}) {
+func (p *Template) RulesForUpdate(ctx *builder.Context) ([]interface{}, []interface{}) {
 
-	fields := templateInstance.(interface {
-		UpdateFieldsWithoutWhen(*builder.Request, interface{}) interface{}
-	}).UpdateFieldsWithoutWhen(request, templateInstance)
+	fields := ctx.Template.(interface {
+		UpdateFieldsWithoutWhen(*builder.Context) interface{}
+	}).UpdateFieldsWithoutWhen(ctx)
 
 	rules := []interface{}{}
 	ruleMessages := []interface{}{}
 
 	for _, v := range fields.([]interface{}) {
-		getResult := p.getRulesForUpdate(request, v)
+		getResult := p.getRulesForUpdate(ctx, v)
 
 		if len(getResult["rules"].(map[string]interface{})) > 0 {
 			rules = append(rules, getResult["rules"])
@@ -365,7 +365,7 @@ func (p *Template) RulesForUpdate(request *builder.Request, templateInstance int
 
 			if whenItems != nil {
 				for _, vi := range whenItems.([]map[string]interface{}) {
-					if p.needValidateWhenRules(request, vi) {
+					if p.needValidateWhenRules(ctx, vi) {
 						body := vi["body"]
 
 						if body != nil {
@@ -374,7 +374,7 @@ func (p *Template) RulesForUpdate(request *builder.Request, templateInstance int
 							getBody, ok := body.([]interface{})
 							if ok {
 								for _, bv := range getBody {
-									whenItemResult := p.getRulesForUpdate(request, bv)
+									whenItemResult := p.getRulesForUpdate(ctx, bv)
 
 									if len(whenItemResult["rules"].(map[string]interface{})) > 0 {
 										rules = append(rules, whenItemResult["rules"])
@@ -385,7 +385,7 @@ func (p *Template) RulesForUpdate(request *builder.Request, templateInstance int
 									}
 								}
 							} else {
-								whenItemResult := p.getRulesForUpdate(request, getBody)
+								whenItemResult := p.getRulesForUpdate(ctx, getBody)
 
 								if len(whenItemResult["rules"].(map[string]interface{})) > 0 {
 									rules = append(rules, whenItemResult["rules"])
@@ -407,7 +407,7 @@ func (p *Template) RulesForUpdate(request *builder.Request, templateInstance int
 }
 
 // 获取更新请求资源规则
-func (p *Template) getRulesForUpdate(request *builder.Request, field interface{}) map[string]interface{} {
+func (p *Template) getRulesForUpdate(ctx *builder.Context, field interface{}) map[string]interface{} {
 
 	getRules := map[string]interface{}{}
 	getRuleMessages := map[string]interface{}{}
@@ -439,7 +439,7 @@ func (p *Template) getRulesForUpdate(request *builder.Request, field interface{}
 
 	items := []interface{}{}
 
-	for _, v := range p.formatRules(request, rules.([]string)) {
+	for _, v := range p.formatRules(ctx, rules.([]string)) {
 		items = append(items, v)
 	}
 
@@ -447,7 +447,7 @@ func (p *Template) getRulesForUpdate(request *builder.Request, field interface{}
 		getRuleMessages[name+"."+key] = v
 	}
 
-	for _, v := range p.formatRules(request, updateRules.([]string)) {
+	for _, v := range p.formatRules(ctx, updateRules.([]string)) {
 		items = append(items, v)
 	}
 
@@ -466,29 +466,29 @@ func (p *Template) getRulesForUpdate(request *builder.Request, field interface{}
 }
 
 // 导入请求的验证器
-func (p *Template) ValidatorForImport(request *builder.Request, templateInstance interface{}, data map[string]interface{}) error {
-	rules, messages := p.RulesForImport(request, templateInstance)
+func (p *Template) ValidatorForImport(ctx *builder.Context, data map[string]interface{}) error {
+	rules, messages := p.RulesForImport(ctx)
 
 	validator := p.Validator(rules, messages, data)
 
-	p.afterValidation(request, validator)
-	p.afterCreationValidation(request, validator)
+	p.afterValidation(ctx, validator)
+	p.afterCreationValidation(ctx, validator)
 
 	return validator
 }
 
 // 创建请求的验证规则
-func (p *Template) RulesForImport(request *builder.Request, templateInstance interface{}) ([]interface{}, []interface{}) {
+func (p *Template) RulesForImport(ctx *builder.Context) ([]interface{}, []interface{}) {
 
-	fields := templateInstance.(interface {
-		ImportFieldsWithoutWhen(*builder.Request, interface{}) interface{}
-	}).ImportFieldsWithoutWhen(request, templateInstance)
+	fields := ctx.Template.(interface {
+		ImportFieldsWithoutWhen(*builder.Context) interface{}
+	}).ImportFieldsWithoutWhen(ctx)
 
 	rules := []interface{}{}
 	ruleMessages := []interface{}{}
 
 	for _, v := range fields.([]interface{}) {
-		getResult := p.getRulesForCreation(request, v)
+		getResult := p.getRulesForCreation(ctx, v)
 
 		if len(getResult["rules"].(map[string]interface{})) > 0 {
 			rules = append(rules, getResult["rules"])
@@ -511,7 +511,7 @@ func (p *Template) RulesForImport(request *builder.Request, templateInstance int
 
 			if whenItems != nil {
 				for _, vi := range whenItems.([]map[string]interface{}) {
-					if p.needValidateWhenRules(request, vi) {
+					if p.needValidateWhenRules(ctx, vi) {
 						body := vi["body"]
 
 						if body != nil {
@@ -520,7 +520,7 @@ func (p *Template) RulesForImport(request *builder.Request, templateInstance int
 							getBody, ok := body.([]interface{})
 							if ok {
 								for _, bv := range getBody {
-									whenItemResult := p.getRulesForCreation(request, bv)
+									whenItemResult := p.getRulesForCreation(ctx, bv)
 
 									if len(whenItemResult["rules"].(map[string]interface{})) > 0 {
 										rules = append(rules, whenItemResult["rules"])
@@ -531,7 +531,7 @@ func (p *Template) RulesForImport(request *builder.Request, templateInstance int
 									}
 								}
 							} else {
-								whenItemResult := p.getRulesForCreation(request, getBody)
+								whenItemResult := p.getRulesForCreation(ctx, getBody)
 
 								if len(whenItemResult["rules"].(map[string]interface{})) > 0 {
 									rules = append(rules, whenItemResult["rules"])
@@ -553,12 +553,12 @@ func (p *Template) RulesForImport(request *builder.Request, templateInstance int
 }
 
 // 格式化规则
-func (p *Template) formatRules(request *builder.Request, rules []string) []string {
+func (p *Template) formatRules(ctx *builder.Context, rules []string) []string {
 	data := map[string]interface{}{}
-	json.Unmarshal(request.Body(), &data)
+	json.Unmarshal(ctx.Body(), &data)
 
 	formId := data["id"]
-	requestId := request.Query("id", "")
+	requestId := ctx.Query("id", "")
 	if requestId.(string) == "" && formId == nil {
 		return rules
 	}
@@ -578,21 +578,21 @@ func (p *Template) formatRules(request *builder.Request, rules []string) []strin
 }
 
 // 验证完成后回调
-func (p *Template) afterValidation(request *builder.Request, validator interface{}) {
+func (p *Template) afterValidation(ctx *builder.Context, validator interface{}) {
 	//
 }
 
 // 创建请求验证完成后回调
-func (p *Template) afterCreationValidation(request *builder.Request, validator interface{}) {
+func (p *Template) afterCreationValidation(ctx *builder.Context, validator interface{}) {
 	//
 }
 
 // 更新请求验证完成后回调
-func (p *Template) afterUpdateValidation(request *builder.Request, validator interface{}) {
+func (p *Template) afterUpdateValidation(ctx *builder.Context, validator interface{}) {
 	//
 }
 
 // 创建请求验证完成后回调
-func (p *Template) afterImportValidation(request *builder.Request, validator interface{}) {
+func (p *Template) afterImportValidation(ctx *builder.Context, validator interface{}) {
 	//
 }

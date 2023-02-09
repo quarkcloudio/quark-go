@@ -21,7 +21,7 @@ func (p *Link) ParentInit() interface{} {
  *
  * @return string
  */
-func (p *Link) GetHref(request *builder.Request) string {
+func (p *Link) GetHref(ctx *builder.Context) string {
 	return p.Href
 }
 
@@ -30,6 +30,6 @@ func (p *Link) GetHref(request *builder.Request) string {
  *
  * @return string
  */
-func (p *Link) GetTarget(request *builder.Request) string {
+func (p *Link) GetTarget(ctx *builder.Context) string {
 	return p.Target
 }

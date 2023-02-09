@@ -12,11 +12,10 @@ import (
 type ImportTemplateRequest struct{}
 
 // 导入数据模板
-func (p *ImportTemplateRequest) Handle(request *builder.Request, templateInstance interface{}) interface{} {
-
-	fields := templateInstance.(interface {
-		ImportFields(request *builder.Request, templateInstance interface{}) interface{}
-	}).ImportFields(request, templateInstance)
+func (p *ImportTemplateRequest) Handle(ctx *builder.Context) interface{} {
+	fields := ctx.Template.(interface {
+		ImportFields(ctx *builder.Context) interface{}
+	}).ImportFields(ctx)
 
 	exportTitles := []string{}
 	for _, v := range fields.([]interface{}) {

@@ -37,7 +37,7 @@ func (p *ActionLog) Init() interface{} {
 }
 
 // 列表查询
-func (p *ActionLog) Query(request *builder.Request, query *gorm.DB) *gorm.DB {
+func (p *ActionLog) Query(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 
 	return query.
 		Select("action_logs.*,admins.username").
@@ -46,7 +46,7 @@ func (p *ActionLog) Query(request *builder.Request, query *gorm.DB) *gorm.DB {
 }
 
 // 字段
-func (p *ActionLog) Fields(request *builder.Request) []interface{} {
+func (p *ActionLog) Fields(ctx *builder.Context) []interface{} {
 	field := &builder.AdminField{}
 
 	return []interface{}{
@@ -68,7 +68,7 @@ func (p *ActionLog) Fields(request *builder.Request) []interface{} {
 }
 
 // 搜索
-func (p *ActionLog) Searches(request *builder.Request) []interface{} {
+func (p *ActionLog) Searches(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&searches.Input{}).Init("url", "行为"),
 		(&searches.Input{}).Init("ip", "IP"),
@@ -76,7 +76,7 @@ func (p *ActionLog) Searches(request *builder.Request) []interface{} {
 }
 
 // 行为
-func (p *ActionLog) Actions(request *builder.Request) []interface{} {
+func (p *ActionLog) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&actions.Delete{}).Init("批量删除"),
 		(&actions.Delete{}).Init("删除"),

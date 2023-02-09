@@ -27,11 +27,11 @@ func (p *Modal) GetDestroyOnClose() bool {
 }
 
 // 内容
-func (p *Modal) GetBody(request *builder.Request, templateInstance interface{}) interface{} {
+func (p *Modal) GetBody(ctx *builder.Context) interface{} {
 	return nil
 }
 
 // 弹窗行为
-func (p *Modal) GetActions(request *builder.Request, templateInstance interface{}) []interface{} {
+func (p *Modal) GetActions(ctx *builder.Context) []interface{} {
 	return []interface{}{}
 }

@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"github.com/quarkcms/quark-go/pkg/hash"
 	"gorm.io/gorm"
@@ -75,10 +74,9 @@ func (model *Admin) GetClaims(adminInfo *Admin) (adminClaims *AdminClaims) {
 }
 
 // 获取当前认证的用户信息，默认参数为tokenString
-func (model *Admin) GetAuthUser(authValue interface{}) (adminClaims *AdminClaims, Error error) {
-	config := builder.GetConfig()
-	token, err := jwt.ParseWithClaims(authValue.(string), &AdminClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(config.AppKey), nil
+func (model *Admin) GetAuthUser(appKey string, tokenString string) (adminClaims *AdminClaims, Error error) {
+	token, err := jwt.ParseWithClaims(tokenString, &AdminClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(appKey), nil
 	})
 	if err != nil {
 		if ve, ok := err.(*jwt.ValidationError); ok {

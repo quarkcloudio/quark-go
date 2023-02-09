@@ -8,22 +8,22 @@ import (
 )
 
 //更新表单的接口
-func (p *Template) UpdateApi(request *builder.Request, templateInstance interface{}) string {
-	formApi := templateInstance.(interface{ FormApi(*builder.Request) string }).FormApi(request)
+func (p *Template) UpdateApi(ctx *builder.Context) string {
+	formApi := ctx.Template.(interface{ FormApi(*builder.Context) string }).FormApi(ctx)
 	if formApi != "" {
 		return formApi
 	}
 
-	uri := strings.Split(request.Path(), "/")
+	uri := strings.Split(ctx.Path(), "/")
 	if uri[len(uri)-1] == "index" {
-		return stringy.New(request.Path()).ReplaceLast("/index", "/save")
+		return stringy.New(ctx.Path()).ReplaceLast("/index", "/save")
 	}
 
-	return stringy.New(request.Path()).ReplaceLast("/edit", "/save")
+	return stringy.New(ctx.Path()).ReplaceLast("/edit", "/save")
 }
 
 // 编辑页面获取表单数据接口
-func (p *Template) EditValueApi(request *builder.Request) string {
+func (p *Template) EditValueApi(request *builder.Context) string {
 	uri := strings.Split(request.Path(), "/")
 	if uri[len(uri)-1] == "index" {
 		return stringy.New(request.Path()).ReplaceLast("/index", "/edit/values?id=${id}")
@@ -33,16 +33,15 @@ func (p *Template) EditValueApi(request *builder.Request) string {
 }
 
 // 渲染编辑页组件
-func (p *Template) UpdateComponentRender(request *builder.Request, templateInstance interface{}, data map[string]interface{}) interface{} {
-	title := p.FormTitle(request, templateInstance)
-	formExtraActions := p.FormExtraActions(request, templateInstance)
-	api := p.UpdateApi(request, templateInstance)
-	fields := p.UpdateFieldsWithinComponents(request, templateInstance)
-	formActions := p.FormActions(request, templateInstance)
+func (p *Template) UpdateComponentRender(ctx *builder.Context, data map[string]interface{}) interface{} {
+	title := p.FormTitle(ctx)
+	formExtraActions := p.FormExtraActions(ctx)
+	api := p.UpdateApi(ctx)
+	fields := p.UpdateFieldsWithinComponents(ctx)
+	formActions := p.FormActions(ctx)
 
 	return p.FormComponentRender(
-		request,
-		templateInstance,
+		ctx,
 		title,
 		formExtraActions,
 		api,
@@ -53,6 +52,6 @@ func (p *Template) UpdateComponentRender(request *builder.Request, templateInsta
 }
 
 // 编辑页面显示前回调
-func (p *Template) BeforeEditing(request *builder.Request, data map[string]interface{}) map[string]interface{} {
+func (p *Template) BeforeEditing(request *builder.Context, data map[string]interface{}) map[string]interface{} {
 	return data
 }

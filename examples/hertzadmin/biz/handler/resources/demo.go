@@ -19,19 +19,19 @@ func (p *Demo) Init() interface{} {
 }
 
 // 字段
-func (p *Demo) Fields(request *builder.Request) []interface{} {
+func (p *Demo) Fields(ctx *builder.Context) []interface{} {
 
 	return []interface{}{}
 }
 
 // 搜索
-func (p *Demo) Searches(request *builder.Request) []interface{} {
+func (p *Demo) Searches(ctx *builder.Context) []interface{} {
 
 	return []interface{}{}
 }
 
 // 行为
-func (p *Demo) Actions(request *builder.Request) []interface{} {
+func (p *Demo) Actions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{}
 }

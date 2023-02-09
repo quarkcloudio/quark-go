@@ -28,11 +28,11 @@ func (p *Import) Init() *Import {
 }
 
 // 内容
-func (p *Import) GetBody(request *builder.Request, resourceInstance interface{}) interface{} {
-	api := "admin/" + request.Param("resource") + "/import"
+func (p *Import) GetBody(ctx *builder.Context) interface{} {
+	api := "admin/" + ctx.Param("resource") + "/import"
 	getTpl := (&tpl.Component{}).
 		Init().
-		SetBody("模板文件: <a href='/api/admin/" + request.Param("resource") + "/import/template?token=" + request.Token() + "' target='_blank'>下载模板</a>").
+		SetBody("模板文件: <a href='/api/admin/" + ctx.Param("resource") + "/import/template?token=" + ctx.Token() + "' target='_blank'>下载模板</a>").
 		SetStyle(map[string]interface{}{
 			"marginLeft": "50px",
 		})
@@ -70,7 +70,7 @@ func (p *Import) GetBody(request *builder.Request, resourceInstance interface{})
 }
 
 // 弹窗行为
-func (p *Import) GetActions(request *builder.Request, resourceInstance interface{}) []interface{} {
+func (p *Import) GetActions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		(&action.Component{}).

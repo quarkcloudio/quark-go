@@ -15,68 +15,8 @@ const JSON_RESPONSE = "json"   // json类型响应
 const IMAGE_RESPONSE = "image" // 图片类型响应
 const EXCEL_RESPONSE = "excel" // Excel文件类型响应
 
-// 将gin框架的Ctx转换为builder框架Request
-func RequestAdapter(ctx *gin.Context) (*builder.Request, error) {
-	body, err := ioutil.ReadAll(ctx.Request.Body)
-	if err != nil {
-		return nil, err
-	}
-	data, err := ctx.GetRawData()
-	if err != nil {
-		return nil, err
-	}
-	//把读过的字节流重新放到body
-	ctx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data))
-
-	headerString := ""
-	for hk, hvs := range ctx.Request.Header {
-		tmp := ""
-		for _, v := range hvs {
-			tmp = tmp + "," + v
-		}
-		tmp = strings.Trim(tmp, ",")
-		headerString = headerString + hk + ": " + tmp + "\r\n"
-	}
-
-	// 将框架请求转换为builder框架请求
-	return &builder.Request{
-		IPString:       ctx.ClientIP(),
-		HeaderString:   headerString,
-		MethodString:   ctx.Request.Method,
-		FullPathString: ctx.FullPath(),
-		HostString:     ctx.Request.Host,
-		PathString:     ctx.Request.URL.Path,
-		QueryString:    ctx.Request.Response.Request.URL.RawQuery,
-		BodyBuffer:     body,
-	}, nil
-}
-
-// 适配gin框架响应
-func ResponseAdapter(r *builder.Resource, responseType string, ctx *gin.Context) {
-	result, err := r.Run()
-	if err != nil {
-		ctx.JSON(200, msg.Error(err.Error(), ""))
-		return
-	}
-
-	// 响应结果
-	switch responseType {
-	case JSON_RESPONSE:
-		ctx.JSON(200, result)
-		return
-	case IMAGE_RESPONSE:
-		ctx.Writer.Write(result.([]byte))
-		return
-	case EXCEL_RESPONSE:
-		ctx.Header("Content-Disposition", "attachment; filename=data_"+time.Now().Format("20060102150405")+".xlsx")
-		ctx.Header("Content-Type", "application/octet-stream")
-		ctx.Writer.Write(result.([]byte))
-		return
-	}
-}
-
 // 适配gin框架路由
-func RouteAdapter(b *builder.Resource, responseType string, ctx *gin.Context) {
+func RouteAdapter(b *builder.Engine, responseType string, ctx *gin.Context) {
 	body, err := ioutil.ReadAll(ctx.Request.Body)
 	if err != nil {
 		ctx.JSON(200, msg.Error(err.Error(), ""))
@@ -100,21 +40,14 @@ func RouteAdapter(b *builder.Resource, responseType string, ctx *gin.Context) {
 
 	//把读过的字节流重新放到body
 	ctx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data))
-
-	// 将框架请求转换为builder框架请求
-	request := &builder.Request{
-		IPString:       ctx.ClientIP(),
-		HeaderString:   headerString,
-		MethodString:   ctx.Request.Method,
-		FullPathString: ctx.FullPath(),
-		HostString:     ctx.Request.Host,
-		PathString:     ctx.Request.URL.Path,
-		QueryString:    ctx.Request.URL.RawQuery,
-		BodyBuffer:     body,
-	}
 
 	// 转换Request对象
-	result, err := b.TransformRequest(request).Run()
+	result, err := b.Transform(
+		ctx.Request.Method,
+		ctx.Request.URL.RawQuery,
+		bytes.NewReader(body),
+		ctx.Writer,
+	).Render()
 	if err != nil {
 		ctx.JSON(200, msg.Error(err.Error(), ""))
 		return
@@ -137,7 +70,7 @@ func RouteAdapter(b *builder.Resource, responseType string, ctx *gin.Context) {
 }
 
 // 适配gin框架
-func Adapter(b *builder.Resource, app *gin.Engine) {
+func Adapter(b *builder.Engine, app *gin.Engine) {
 
 	// 后台路由组
 	rg := app.Group("/api/admin")

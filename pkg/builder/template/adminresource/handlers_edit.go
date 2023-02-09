@@ -11,27 +11,27 @@ import (
 type EditRequest struct{}
 
 // 表单数据
-func (p *EditRequest) FillData(request *builder.Request, templateInstance interface{}) map[string]interface{} {
+func (p *EditRequest) FillData(ctx *builder.Context) map[string]interface{} {
 	result := map[string]interface{}{}
-	id := request.Query("id", "")
+	id := ctx.Query("id", "")
 	if id == "" {
 		return result
 	}
 
 	modelInstance := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("Model").Interface()
 	model := db.Client.Model(&modelInstance)
 	model.Where("id = ?", id).First(&result)
 
 	// 获取列表字段
-	updateFields := templateInstance.(interface {
-		UpdateFields(request *builder.Request, templateInstance interface{}) interface{}
-	}).UpdateFields(request, templateInstance)
+	updateFields := ctx.Template.(interface {
+		UpdateFields(ctx *builder.Context) interface{}
+	}).UpdateFields(ctx)
 
 	// 给实例的Field属性赋值
-	templateInstance.(interface {
+	ctx.Template.(interface {
 		SetField(fieldData map[string]interface{}) interface{}
 	}).SetField(result)
 
@@ -53,13 +53,13 @@ func (p *EditRequest) FillData(request *builder.Request, templateInstance interf
 }
 
 // 获取表单初始化数据
-func (p *EditRequest) Values(request *builder.Request, templateInstance interface{}) interface{} {
-	data := p.FillData(request, templateInstance)
+func (p *EditRequest) Values(ctx *builder.Context) interface{} {
+	data := p.FillData(ctx)
 
 	// 断言BeforeEditing方法，获取初始数据
-	data = templateInstance.(interface {
-		BeforeEditing(*builder.Request, map[string]interface{}) map[string]interface{}
-	}).BeforeEditing(request, data)
+	data = ctx.Template.(interface {
+		BeforeEditing(*builder.Context, map[string]interface{}) map[string]interface{}
+	}).BeforeEditing(ctx, data)
 
 	return msg.Success("获取成功", "", data)
 }

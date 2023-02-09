@@ -32,6 +32,6 @@ func (p *EditLink) Init(name string) *EditLink {
 }
 
 // 跳转链接
-func (p *EditLink) GetHref(request *builder.Request) string {
-	return "#/index?api=" + strings.Replace(request.Path(), "/index", "/edit&id=${id}", -1)
+func (p *EditLink) GetHref(ctx *builder.Context) string {
+	return "#/index?api=" + strings.Replace(ctx.Path(), "/index", "/edit&id=${id}", -1)
 }

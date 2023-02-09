@@ -48,23 +48,23 @@ func (p *Template) TemplateInit() interface{} {
 	// 初始化数据对象
 	p.DB = db.Client
 
-	// 清空路由
-	p.Routes = nil
+	// 清空路由映射
+	p.ClearRouteMapping()
 
-	// 注册路由
-	p.AddRoute(IndexRoute, "Render")          // 后台增删改查，列表路由
-	p.AddRoute(EditableRoute, "Render")       // 后台增删改查，表格行内编辑路由
-	p.AddRoute(ActionRoute, "Render")         // 后台增删改查，执行行为路由
-	p.AddRoute(CreateRoute, "Render")         // 后台增删改查，创建页面路由
-	p.AddRoute(StoreRoute, "Render")          // 后台增删改查，创建方法路由
-	p.AddRoute(EditRoute, "Render")           // 后台增删改查，编辑页面路由
-	p.AddRoute(EditValuesRoute, "Render")     // 后台增删改查，获取编辑表单值路由
-	p.AddRoute(SaveRoute, "Render")           // 后台增删改查，保存编辑值路由
-	p.AddRoute(DetailRoute, "Render")         // 后台增删改查，详情页面路由
-	p.AddRoute(ExportRoute, "Render")         // 后台增删改查，导出数据路由
-	p.AddRoute(ImportRoute, "Render")         // 后台增删改查，导入数据路由
-	p.AddRoute(ImportTemplateRoute, "Render") // 后台增删改查，导入模板路由
-	p.AddRoute(FormRoute, "Render")           // 后台增删改查，通用表单资源
+	// 注册路由映射
+	p.GET(IndexRoute, "Render")          // 后台增删改查，列表路由
+	p.GET(EditableRoute, "Render")       // 后台增删改查，表格行内编辑路由
+	p.ANY(ActionRoute, "Render")         // 后台增删改查，执行行为路由
+	p.GET(CreateRoute, "Render")         // 后台增删改查，创建页面路由
+	p.POST(StoreRoute, "Render")         // 后台增删改查，创建方法路由
+	p.GET(EditRoute, "Render")           // 后台增删改查，编辑页面路由
+	p.GET(EditValuesRoute, "Render")     // 后台增删改查，获取编辑表单值路由
+	p.POST(SaveRoute, "Render")          // 后台增删改查，保存编辑值路由
+	p.GET(DetailRoute, "Render")         // 后台增删改查，详情页面路由
+	p.GET(ExportRoute, "Render")         // 后台增删改查，导出数据路由
+	p.POST(ImportRoute, "Render")        // 后台增删改查，导入数据路由
+	p.GET(ImportTemplateRoute, "Render") // 后台增删改查，导入模板路由
+	p.GET(FormRoute, "Render")           // 后台增删改查，通用表单资源
 
 	return p
 }
@@ -77,7 +77,7 @@ func (p *Template) SetField(fieldData map[string]interface{}) interface{} {
 }
 
 // 数据导出前回调
-func (p *Template) BeforeExporting(request *builder.Request, list []map[string]interface{}) []interface{} {
+func (p *Template) BeforeExporting(ctx *builder.Context, list []map[string]interface{}) []interface{} {
 	result := []interface{}{}
 	for _, v := range list {
 		result = append(result, v)
@@ -87,102 +87,102 @@ func (p *Template) BeforeExporting(request *builder.Request, list []map[string]i
 }
 
 // 数据导入前回调
-func (p *Template) BeforeImporting(request *builder.Request, list [][]interface{}) [][]interface{} {
+func (p *Template) BeforeImporting(ctx *builder.Context, list [][]interface{}) [][]interface{} {
 	return list
 }
 
 // 组件渲染
-func (p *Template) Render(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
+func (p *Template) Render(ctx *builder.Context) interface{} {
 	var result interface{}
-	switch request.FullPath() {
+	switch ctx.FullPath() {
 	case IndexRoute: // 列表
-		data := (&IndexRequest{}).QueryData(request, templateInstance)
-		body := p.IndexComponentRender(request, templateInstance, data)
+		data := (&IndexRequest{}).QueryData(ctx)
+		body := p.IndexComponentRender(ctx, data)
 
-		result = templateInstance.(interface {
-			PageComponentRender(request *builder.Request, templateInstance interface{}, body interface{}) interface{}
-		}).PageComponentRender(request, templateInstance, body)
+		result = ctx.Template.(interface {
+			PageComponentRender(ctx *builder.Context, body interface{}) interface{}
+		}).PageComponentRender(ctx, body)
 	case EditableRoute: // 表格行内编辑
-		result = (&EditableRequest{}).Handle(request, templateInstance)
+		result = (&EditableRequest{}).Handle(ctx)
 	case ActionRoute: // 执行行为路由
-		result = (&ActionRequest{}).Handle(request, templateInstance)
+		result = (&ActionRequest{}).Handle(ctx)
 	case CreateRoute: // 创建页面路由
 
 		// 断言BeforeCreating方法，获取初始数据
-		data := templateInstance.(interface {
-			BeforeCreating(request *builder.Request) map[string]interface{}
-		}).BeforeCreating(request)
+		data := ctx.Template.(interface {
+			BeforeCreating(ctx *builder.Context) map[string]interface{}
+		}).BeforeCreating(ctx)
 
 		// 断言CreationComponentRender方法
-		body := templateInstance.(interface {
-			CreationComponentRender(*builder.Request, interface{}, map[string]interface{}) interface{}
-		}).CreationComponentRender(request, templateInstance, data)
+		body := ctx.Template.(interface {
+			CreationComponentRender(*builder.Context, map[string]interface{}) interface{}
+		}).CreationComponentRender(ctx, data)
 
-		result = templateInstance.(interface {
-			PageComponentRender(request *builder.Request, templateInstance interface{}, body interface{}) interface{}
-		}).PageComponentRender(request, templateInstance, body)
+		result = ctx.Template.(interface {
+			PageComponentRender(ctx *builder.Context, body interface{}) interface{}
+		}).PageComponentRender(ctx, body)
 	case StoreRoute: // 创建方法路由
-		result = (&StoreRequest{}).Handle(request, templateInstance)
+		result = (&StoreRequest{}).Handle(ctx)
 	case EditRoute: // 编辑页面路由
 
 		// 获取数据
-		data := (&EditRequest{}).FillData(request, templateInstance)
+		data := (&EditRequest{}).FillData(ctx)
 
 		// 断言BeforeEditing方法，获取初始数据
-		data = templateInstance.(interface {
-			BeforeEditing(*builder.Request, map[string]interface{}) map[string]interface{}
-		}).BeforeEditing(request, data)
+		data = ctx.Template.(interface {
+			BeforeEditing(*builder.Context, map[string]interface{}) map[string]interface{}
+		}).BeforeEditing(ctx, data)
 
 		// 断言UpdateComponentRender方法
-		body := templateInstance.(interface {
-			UpdateComponentRender(*builder.Request, interface{}, map[string]interface{}) interface{}
-		}).UpdateComponentRender(request, templateInstance, data)
+		body := ctx.Template.(interface {
+			UpdateComponentRender(*builder.Context, map[string]interface{}) interface{}
+		}).UpdateComponentRender(ctx, data)
 
-		result = templateInstance.(interface {
-			PageComponentRender(request *builder.Request, templateInstance interface{}, body interface{}) interface{}
-		}).PageComponentRender(request, templateInstance, body)
+		result = ctx.Template.(interface {
+			PageComponentRender(ctx *builder.Context, body interface{}) interface{}
+		}).PageComponentRender(ctx, body)
 	case EditValuesRoute: // 获取编辑表单值
 
-		result = (&EditRequest{}).Values(request, templateInstance)
+		result = (&EditRequest{}).Values(ctx)
 	case SaveRoute: // 保存编辑值
 
-		result = (&UpdateRequest{}).Handle(request, templateInstance)
+		result = (&UpdateRequest{}).Handle(ctx)
 	case DetailRoute: // 详情页面
-		data := (&DetailRequest{}).FillData(request, templateInstance)
+		data := (&DetailRequest{}).FillData(ctx)
 
 		// 断言方法，获取初始数据
-		data = templateInstance.(interface {
-			BeforeDetailShowing(*builder.Request, map[string]interface{}) map[string]interface{}
-		}).BeforeDetailShowing(request, data)
+		data = ctx.Template.(interface {
+			BeforeDetailShowing(*builder.Context, map[string]interface{}) map[string]interface{}
+		}).BeforeDetailShowing(ctx, data)
 
 		// 断言方法
-		body := templateInstance.(interface {
-			DetailComponentRender(*builder.Request, interface{}, map[string]interface{}) interface{}
-		}).DetailComponentRender(request, templateInstance, data)
+		body := ctx.Template.(interface {
+			DetailComponentRender(*builder.Context, map[string]interface{}) interface{}
+		}).DetailComponentRender(ctx, data)
 
-		result = templateInstance.(interface {
-			PageComponentRender(request *builder.Request, templateInstance interface{}, body interface{}) interface{}
-		}).PageComponentRender(request, templateInstance, body)
+		result = ctx.Template.(interface {
+			PageComponentRender(ctx *builder.Context, body interface{}) interface{}
+		}).PageComponentRender(ctx, body)
 	case ExportRoute: // 导出数据
-		result = (&ExportRequest{}).Handle(request, templateInstance)
+		result = (&ExportRequest{}).Handle(ctx)
 	case ImportRoute: // 导入数据
-		result = (&ImportRequest{}).Handle(request, templateInstance)
+		result = (&ImportRequest{}).Handle(ctx)
 	case ImportTemplateRoute: // 导入模板
-		result = (&ImportTemplateRequest{}).Handle(request, templateInstance)
+		result = (&ImportTemplateRequest{}).Handle(ctx)
 	case FormRoute: // 通用表单资源
 		// 断言BeforeCreating方法，获取初始数据
-		data := templateInstance.(interface {
-			BeforeCreating(request *builder.Request) map[string]interface{}
-		}).BeforeCreating(request)
+		data := ctx.Template.(interface {
+			BeforeCreating(ctx *builder.Context) map[string]interface{}
+		}).BeforeCreating(ctx)
 
 		// 断言CreationComponentRender方法
-		body := templateInstance.(interface {
-			CreationComponentRender(*builder.Request, interface{}, map[string]interface{}) interface{}
-		}).CreationComponentRender(request, templateInstance, data)
+		body := ctx.Template.(interface {
+			CreationComponentRender(*builder.Context, map[string]interface{}) interface{}
+		}).CreationComponentRender(ctx, data)
 
-		result = templateInstance.(interface {
-			PageComponentRender(request *builder.Request, templateInstance interface{}, body interface{}) interface{}
-		}).PageComponentRender(request, templateInstance, body)
+		result = ctx.Template.(interface {
+			PageComponentRender(ctx *builder.Context, body interface{}) interface{}
+		}).PageComponentRender(ctx, body)
 	}
 
 	return result

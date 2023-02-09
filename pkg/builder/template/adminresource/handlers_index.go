@@ -12,31 +12,31 @@ import (
 type IndexRequest struct{}
 
 // 列表查询
-func (p *IndexRequest) QueryData(request *builder.Request, templateInstance interface{}) interface{} {
+func (p *IndexRequest) QueryData(ctx *builder.Context) interface{} {
 	var lists []map[string]interface{}
 	modelInstance := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("Model").Interface()
 	model := db.Client.Model(&modelInstance)
 
 	// 搜索项
-	searches := templateInstance.(interface {
-		Searches(request *builder.Request) []interface{}
-	}).Searches(request)
+	searches := ctx.Template.(interface {
+		Searches(ctx *builder.Context) []interface{}
+	}).Searches(ctx)
 
 	// 过滤项，预留
-	filters := templateInstance.(interface {
-		Filters(request *builder.Request) []interface{}
-	}).Filters(request)
+	filters := ctx.Template.(interface {
+		Filters(ctx *builder.Context) []interface{}
+	}).Filters(ctx)
 
-	query := templateInstance.(interface {
-		BuildIndexQuery(request *builder.Request, templateInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB
-	}).BuildIndexQuery(request, templateInstance, model, searches, filters, p.columnFilters(request), p.orderings(request))
+	query := ctx.Template.(interface {
+		BuildIndexQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB
+	}).BuildIndexQuery(ctx, model, searches, filters, p.columnFilters(ctx), p.orderings(ctx))
 
 	// 获取分页
 	perPage := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("PerPage").Interface()
 
@@ -45,13 +45,13 @@ func (p *IndexRequest) QueryData(request *builder.Request, templateInstance inte
 		query.Find(&lists)
 
 		// 返回解析列表
-		return p.performsList(request, templateInstance, lists)
+		return p.performsList(ctx, lists)
 	}
 
 	var total int64
 	var data map[string]interface{}
 	page := 1
-	querys := request.AllQuerys()
+	querys := ctx.AllQuerys()
 	if querys["search"] != nil {
 		err := json.Unmarshal([]byte(querys["search"].(string)), &data)
 		if err == nil {
@@ -71,7 +71,7 @@ func (p *IndexRequest) QueryData(request *builder.Request, templateInstance inte
 	query.Limit(perPage.(int)).Offset((page - 1) * perPage.(int)).Find(&lists)
 
 	// 解析列表
-	result := p.performsList(request, templateInstance, lists)
+	result := p.performsList(ctx, lists)
 
 	return map[string]interface{}{
 		"currentPage": page,
@@ -86,8 +86,8 @@ func (p *IndexRequest) QueryData(request *builder.Request, templateInstance inte
  *
  * @return array
  */
-func (p *IndexRequest) columnFilters(request *builder.Request) map[string]interface{} {
-	querys := request.AllQuerys()
+func (p *IndexRequest) columnFilters(ctx *builder.Context) map[string]interface{} {
+	querys := ctx.AllQuerys()
 	var data map[string]interface{}
 	if querys["filter"] == nil {
 		return data
@@ -105,8 +105,8 @@ func (p *IndexRequest) columnFilters(request *builder.Request) map[string]interf
  *
  * @return array
  */
-func (p *IndexRequest) orderings(request *builder.Request) map[string]interface{} {
-	querys := request.AllQuerys()
+func (p *IndexRequest) orderings(ctx *builder.Context) map[string]interface{} {
+	querys := ctx.AllQuerys()
 	var data map[string]interface{}
 	if querys["sorter"] == nil {
 		return data
@@ -120,19 +120,19 @@ func (p *IndexRequest) orderings(request *builder.Request) map[string]interface{
 }
 
 // 处理列表
-func (p *IndexRequest) performsList(request *builder.Request, templateInstance interface{}, lists []map[string]interface{}) []interface{} {
+func (p *IndexRequest) performsList(ctx *builder.Context, lists []map[string]interface{}) []interface{} {
 	result := []map[string]interface{}{}
 
 	// 获取列表字段
-	indexFields := templateInstance.(interface {
-		IndexFields(request *builder.Request, templateInstance interface{}) interface{}
-	}).IndexFields(request, templateInstance)
+	indexFields := ctx.Template.(interface {
+		IndexFields(ctx *builder.Context) interface{}
+	}).IndexFields(ctx)
 
 	// 解析字段回调函数
 	for _, v := range lists {
 
 		// 给实例的Field属性赋值
-		templateInstance.(interface {
+		ctx.Template.(interface {
 			SetField(fieldData map[string]interface{}) interface{}
 		}).SetField(v)
 
@@ -162,7 +162,7 @@ func (p *IndexRequest) performsList(request *builder.Request, templateInstance i
 	}
 
 	// 回调处理列表字段值
-	return templateInstance.(interface {
-		BeforeIndexShowing(request *builder.Request, result []map[string]interface{}) []interface{}
-	}).BeforeIndexShowing(request, result)
+	return ctx.Template.(interface {
+		BeforeIndexShowing(ctx *builder.Context, result []map[string]interface{}) []interface{}
+	}).BeforeIndexShowing(ctx, result)
 }

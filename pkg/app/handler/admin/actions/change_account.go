@@ -16,9 +16,9 @@ type ChangeAccount struct {
 }
 
 // 执行行为句柄
-func (p *ChangeAccount) Handle(request *builder.Request, model *gorm.DB) interface{} {
+func (p *ChangeAccount) Handle(ctx *builder.Context, model *gorm.DB) interface{} {
 	data := map[string]interface{}{}
-	json.Unmarshal(request.Body(), &data)
+	json.Unmarshal(ctx.Body(), &data)
 	if data["avatar"] != "" {
 		data["avatar"], _ = json.Marshal(data["avatar"])
 	} else {
@@ -31,7 +31,7 @@ func (p *ChangeAccount) Handle(request *builder.Request, model *gorm.DB) interfa
 	}
 
 	// 获取登录管理员信息
-	adminInfo, err := (&models.Admin{}).GetAuthUser(request.Token())
+	adminInfo, err := (&models.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
 		return msg.Error(err.Error(), "")
 	}

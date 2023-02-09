@@ -44,7 +44,7 @@ func (p *Index) Init() interface{} {
 }
 
 // 验证码ID
-func (p *Index) CaptchaId(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
+func (p *Index) CaptchaId(ctx *builder.Context) interface{} {
 
 	return msg.Success("获取成功", "", map[string]string{
 		"captchaId": captcha.NewLen(4),
@@ -52,8 +52,8 @@ func (p *Index) CaptchaId(request *builder.Request, resource *builder.Resource, 
 }
 
 // 生成验证码
-func (p *Index) Captcha(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
-	id := request.Param("id")
+func (p *Index) Captcha(ctx *builder.Context) interface{} {
+	id := ctx.Param("id")
 	writer := bytes.Buffer{}
 	captcha.WriteImage(&writer, id, 110, 38)
 
@@ -61,9 +61,9 @@ func (p *Index) Captcha(request *builder.Request, resource *builder.Resource, te
 }
 
 // 登录方法
-func (p *Index) Handle(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
+func (p *Index) Handle(ctx *builder.Context) interface{} {
 	loginRequest := &LoginRequest{}
-	if err := request.BodyParser(loginRequest); err != nil {
+	if err := ctx.BodyParser(loginRequest); err != nil {
 		return msg.Error(err.Error(), "")
 	}
 	if loginRequest.CaptchaId == "" || loginRequest.Captcha == "" {
@@ -90,7 +90,7 @@ func (p *Index) Handle(request *builder.Request, resource *builder.Resource, tem
 		return msg.Error("用户名或密码错误", "")
 	}
 
-	config := builder.GetConfig()
+	config := ctx.Engine.GetConfig()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, (&model.Admin{}).GetClaims(adminInfo))
 
 	// 获取token字符串
@@ -102,7 +102,7 @@ func (p *Index) Handle(request *builder.Request, resource *builder.Resource, tem
 }
 
 // 退出方法
-func (p *Index) Logout(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
+func (p *Index) Logout(ctx *builder.Context) interface{} {
 
 	return msg.Success("退出成功", "", "")
 }

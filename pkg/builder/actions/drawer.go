@@ -27,11 +27,11 @@ func (p *Drawer) GetDestroyOnClose() bool {
 }
 
 // 内容
-func (p *Drawer) GetBody(request *builder.Request, resourceInstance interface{}) interface{} {
+func (p *Drawer) GetBody(ctx *builder.Context) interface{} {
 	return nil
 }
 
 // 弹窗行为
-func (p *Drawer) GetActions(request *builder.Request, resourceInstance interface{}) []interface{} {
+func (p *Drawer) GetActions(ctx *builder.Context) []interface{} {
 	return []interface{}{}
 }

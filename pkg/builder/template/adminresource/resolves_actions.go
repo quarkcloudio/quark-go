@@ -10,10 +10,10 @@ import (
 )
 
 // 列表行为
-func (p *Template) IndexActions(request *builder.Request, templateInstance interface{}) interface{} {
-	actions := templateInstance.(interface {
-		Actions(request *builder.Request) []interface{}
-	}).Actions(request)
+func (p *Template) IndexActions(ctx *builder.Context) interface{} {
+	actions := ctx.Template.(interface {
+		Actions(ctx *builder.Context) []interface{}
+	}).Actions(ctx)
 
 	var items []interface{}
 	for _, v := range actions {
@@ -22,7 +22,7 @@ func (p *Template) IndexActions(request *builder.Request, templateInstance inter
 		}).ShownOnIndex()
 
 		if shownOnIndex {
-			getAction := p.buildAction(request, v, templateInstance)
+			getAction := p.buildAction(ctx, v)
 			items = append(items, getAction)
 		}
 	}
@@ -31,10 +31,10 @@ func (p *Template) IndexActions(request *builder.Request, templateInstance inter
 }
 
 //表格行内行为
-func (p *Template) IndexTableRowActions(request *builder.Request, templateInstance interface{}) interface{} {
-	actions := templateInstance.(interface {
-		Actions(request *builder.Request) []interface{}
-	}).Actions(request)
+func (p *Template) IndexTableRowActions(ctx *builder.Context) interface{} {
+	actions := ctx.Template.(interface {
+		Actions(ctx *builder.Context) []interface{}
+	}).Actions(ctx)
 
 	var items []interface{}
 	for _, v := range actions {
@@ -43,7 +43,7 @@ func (p *Template) IndexTableRowActions(request *builder.Request, templateInstan
 		}).ShownOnIndexTableRow()
 
 		if shownOnIndexTableRow {
-			getAction := p.buildAction(request, v, templateInstance)
+			getAction := p.buildAction(ctx, v)
 			items = append(items, getAction)
 		}
 	}
@@ -52,10 +52,10 @@ func (p *Template) IndexTableRowActions(request *builder.Request, templateInstan
 }
 
 //表格多选弹出层行为
-func (p *Template) IndexTableAlertActions(request *builder.Request, templateInstance interface{}) interface{} {
-	actions := templateInstance.(interface {
-		Actions(request *builder.Request) []interface{}
-	}).Actions(request)
+func (p *Template) IndexTableAlertActions(ctx *builder.Context) interface{} {
+	actions := ctx.Template.(interface {
+		Actions(ctx *builder.Context) []interface{}
+	}).Actions(ctx)
 
 	var items []interface{}
 	for _, v := range actions {
@@ -64,7 +64,7 @@ func (p *Template) IndexTableAlertActions(request *builder.Request, templateInst
 		}).ShownOnIndexTableAlert()
 
 		if shownOnIndexTableAlert {
-			getAction := p.buildAction(request, v, templateInstance)
+			getAction := p.buildAction(ctx, v)
 			items = append(items, getAction)
 		}
 	}
@@ -73,10 +73,10 @@ func (p *Template) IndexTableAlertActions(request *builder.Request, templateInst
 }
 
 //表单页行为
-func (p *Template) FormActions(request *builder.Request, templateInstance interface{}) []interface{} {
-	actions := templateInstance.(interface {
-		Actions(request *builder.Request) []interface{}
-	}).Actions(request)
+func (p *Template) FormActions(ctx *builder.Context) []interface{} {
+	actions := ctx.Template.(interface {
+		Actions(ctx *builder.Context) []interface{}
+	}).Actions(ctx)
 
 	var items []interface{}
 	for _, v := range actions {
@@ -85,7 +85,7 @@ func (p *Template) FormActions(request *builder.Request, templateInstance interf
 		}).ShownOnForm()
 
 		if shownOnForm {
-			getAction := p.buildAction(request, v, templateInstance)
+			getAction := p.buildAction(ctx, v)
 			items = append(items, getAction)
 		}
 	}
@@ -94,10 +94,10 @@ func (p *Template) FormActions(request *builder.Request, templateInstance interf
 }
 
 //表单页右上角自定义区域行为
-func (p *Template) FormExtraActions(request *builder.Request, templateInstance interface{}) interface{} {
-	actions := templateInstance.(interface {
-		Actions(request *builder.Request) []interface{}
-	}).Actions(request)
+func (p *Template) FormExtraActions(ctx *builder.Context) interface{} {
+	actions := ctx.Template.(interface {
+		Actions(ctx *builder.Context) []interface{}
+	}).Actions(ctx)
 
 	var items []interface{}
 	for _, v := range actions {
@@ -106,7 +106,7 @@ func (p *Template) FormExtraActions(request *builder.Request, templateInstance i
 		}).ShownOnFormExtra()
 
 		if shownOnFormExtra {
-			getAction := p.buildAction(request, v, templateInstance)
+			getAction := p.buildAction(ctx, v)
 			items = append(items, getAction)
 		}
 	}
@@ -115,10 +115,10 @@ func (p *Template) FormExtraActions(request *builder.Request, templateInstance i
 }
 
 //详情页行为
-func (p *Template) DetailActions(request *builder.Request, templateInstance interface{}) []interface{} {
-	actions := templateInstance.(interface {
-		Actions(request *builder.Request) []interface{}
-	}).Actions(request)
+func (p *Template) DetailActions(ctx *builder.Context) []interface{} {
+	actions := ctx.Template.(interface {
+		Actions(ctx *builder.Context) []interface{}
+	}).Actions(ctx)
 
 	var items []interface{}
 	for _, v := range actions {
@@ -127,7 +127,7 @@ func (p *Template) DetailActions(request *builder.Request, templateInstance inte
 		}).ShownOnDetail()
 
 		if shownOnDetail {
-			getAction := p.buildAction(request, v, templateInstance)
+			getAction := p.buildAction(ctx, v)
 			items = append(items, getAction)
 		}
 	}
@@ -136,10 +136,10 @@ func (p *Template) DetailActions(request *builder.Request, templateInstance inte
 }
 
 //详情页右上角自定义区域行为
-func (p *Template) DetailExtraActions(request *builder.Request, templateInstance interface{}) interface{} {
-	actions := templateInstance.(interface {
-		Actions(request *builder.Request) []interface{}
-	}).Actions(request)
+func (p *Template) DetailExtraActions(ctx *builder.Context) interface{} {
+	actions := ctx.Template.(interface {
+		Actions(ctx *builder.Context) []interface{}
+	}).Actions(ctx)
 
 	var items []interface{}
 	for _, v := range actions {
@@ -148,7 +148,7 @@ func (p *Template) DetailExtraActions(request *builder.Request, templateInstance
 		}).ShownOnDetailExtra()
 
 		if shownOnDetailExtra {
-			getAction := p.buildAction(request, v, templateInstance)
+			getAction := p.buildAction(ctx, v)
 			items = append(items, getAction)
 		}
 	}
@@ -157,7 +157,7 @@ func (p *Template) DetailExtraActions(request *builder.Request, templateInstance
 }
 
 //创建行为组件
-func (p *Template) buildAction(request *builder.Request, item interface{}, templateInstance interface{}) interface{} {
+func (p *Template) buildAction(ctx *builder.Context, item interface{}) interface{} {
 	name := item.(interface{ GetName() string }).GetName()
 	withLoading := item.(interface{ GetWithLoading() bool }).GetWithLoading()
 	reload := item.(interface{ GetReload() string }).GetReload()
@@ -169,8 +169,8 @@ func (p *Template) buildAction(request *builder.Request, item interface{}, templ
 
 	// 获取api
 	api := item.(interface {
-		GetApi(request *builder.Request) string
-	}).GetApi(request)
+		GetApi(ctx *builder.Context) string
+	}).GetApi(ctx)
 
 	// 获取api替换参数
 	params := item.(interface {
@@ -178,7 +178,7 @@ func (p *Template) buildAction(request *builder.Request, item interface{}, templ
 	}).GetApiParams()
 
 	if api == "" {
-		api = p.buildActionApi(request, params, uriKey)
+		api = p.buildActionApi(ctx, params, uriKey)
 	}
 
 	actionType := item.(interface{ GetActionType() string }).GetActionType()
@@ -191,8 +191,8 @@ func (p *Template) buildAction(request *builder.Request, item interface{}, templ
 
 	if actionType == "dropdown" {
 		overlay := item.(interface {
-			GetMenu(request *builder.Request, templateInstance interface{}) interface{}
-		}).GetMenu(request, templateInstance)
+			GetMenu(ctx *builder.Context) interface{}
+		}).GetMenu(ctx)
 
 		overlayStyle := item.(interface {
 			GetOverlayStyle() map[string]interface{}
@@ -247,11 +247,11 @@ func (p *Template) buildAction(request *builder.Request, item interface{}, templ
 	switch actionType {
 	case "link":
 		href := item.(interface {
-			GetHref(request *builder.Request) string
-		}).GetHref(request)
+			GetHref(ctx *builder.Context) string
+		}).GetHref(ctx)
 		target := item.(interface {
-			GetTarget(request *builder.Request) string
-		}).GetTarget(request)
+			GetTarget(ctx *builder.Context) string
+		}).GetTarget(ctx)
 
 		getAction = getAction.
 			SetLink(href, target)
@@ -265,12 +265,12 @@ func (p *Template) buildAction(request *builder.Request, item interface{}, templ
 		}).GetDestroyOnClose()
 
 		formBody := item.(interface {
-			GetBody(request *builder.Request, templateInstance interface{}) interface{}
-		}).GetBody(request, templateInstance)
+			GetBody(ctx *builder.Context) interface{}
+		}).GetBody(ctx)
 
 		formActions := item.(interface {
-			GetActions(request *builder.Request, templateInstance interface{}) []interface{}
-		}).GetActions(request, templateInstance)
+			GetActions(ctx *builder.Context) []interface{}
+		}).GetActions(ctx)
 
 		getAction = getAction.SetModal(func(modal *action.Modal) interface{} {
 			return modal.
@@ -290,12 +290,12 @@ func (p *Template) buildAction(request *builder.Request, item interface{}, templ
 		}).GetDestroyOnClose()
 
 		formBody := item.(interface {
-			GetBody(request *builder.Request, templateInstance interface{}) interface{}
-		}).GetBody(request, templateInstance)
+			GetBody(ctx *builder.Context) interface{}
+		}).GetBody(ctx)
 
 		formActions := item.(interface {
-			GetActions(request *builder.Request, templateInstance interface{}) []interface{}
-		}).GetActions(request, templateInstance)
+			GetActions(ctx *builder.Context) []interface{}
+		}).GetActions(ctx)
 
 		getAction = getAction.SetDrawer(func(drawer *action.Drawer) interface{} {
 			return drawer.
@@ -316,7 +316,7 @@ func (p *Template) buildAction(request *builder.Request, item interface{}, templ
 }
 
 //创建行为接口
-func (p *Template) buildActionApi(request *builder.Request, params []string, uriKey string) string {
+func (p *Template) buildActionApi(ctx *builder.Context, params []string, uriKey string) string {
 	paramsUri := ""
 
 	for _, v := range params {
@@ -324,7 +324,7 @@ func (p *Template) buildActionApi(request *builder.Request, params []string, uri
 	}
 
 	// 自动构建列表页接口
-	api := strings.Replace(request.Path(), "/index", "/action/"+uriKey, -1)
+	api := strings.Replace(ctx.Path(), "/index", "/action/"+uriKey, -1)
 
 	// 自动构建创建页接口
 	api = strings.Replace(api, "/create", "/action/"+uriKey, -1)

@@ -39,7 +39,7 @@ func (p *File) Init() interface{} {
 }
 
 // 上传前回调
-func (p *File) BeforeHandle(request *builder.Request, templateInstance interface{}, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error) {
+func (p *File) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error) {
 	fileHash, err := fileSystem.GetFileHash()
 	if err != nil {
 		return fileSystem, nil, err
@@ -66,9 +66,9 @@ func (p *File) BeforeHandle(request *builder.Request, templateInstance interface
 }
 
 // 上传完成后回调
-func (p *File) AfterHandle(request *builder.Request, templateInstance interface{}, result *storage.FileInfo) interface{} {
+func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{} {
 	driver := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("Driver").String()
 
@@ -77,7 +77,7 @@ func (p *File) AfterHandle(request *builder.Request, templateInstance interface{
 		result.Url = (&model.File{}).GetPath(result.Url)
 	}
 
-	adminInfo, err := (&model.Admin{}).GetAuthUser(request.Token())
+	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
 		return msg.Error(err.Error(), "")
 	}

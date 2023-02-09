@@ -37,9 +37,9 @@ func (p *SyncPermission) Init() *SyncPermission {
 }
 
 // 执行行为句柄
-func (p *SyncPermission) Handle(request *builder.Request, model *gorm.DB) interface{} {
+func (p *SyncPermission) Handle(ctx *builder.Context, model *gorm.DB) interface{} {
 	// 获取当前权限
-	permissions := builder.GetRoutes()
+	permissions := ctx.Engine.GetRouterPaths()
 	data := []models.Permission{}
 
 	var names []string

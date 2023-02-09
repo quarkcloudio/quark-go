@@ -15,13 +15,13 @@ import (
 type ExportRequest struct{}
 
 // 执行行为
-func (p *ExportRequest) Handle(request *builder.Request, templateInstance interface{}) interface{} {
-	data := p.QueryData(request, templateInstance)
+func (p *ExportRequest) Handle(ctx *builder.Context) interface{} {
+	data := p.QueryData(ctx)
 
 	// 获取列表字段
-	fields := templateInstance.(interface {
-		ExportFields(request *builder.Request, templateInstance interface{}) interface{}
-	}).ExportFields(request, templateInstance)
+	fields := ctx.Template.(interface {
+		ExportFields(ctx *builder.Context) interface{}
+	}).ExportFields(ctx)
 
 	f := excelize.NewFile()
 	index, _ := f.NewSheet("Sheet1")
@@ -162,32 +162,32 @@ func (p *ExportRequest) getSwitchValue(options interface{}, value int) string {
 }
 
 // 列表查询
-func (p *ExportRequest) QueryData(request *builder.Request, templateInstance interface{}) interface{} {
+func (p *ExportRequest) QueryData(ctx *builder.Context) interface{} {
 	var lists []map[string]interface{}
 	modelInstance := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("Model").Interface()
 	model := db.Client.Model(&modelInstance)
 
 	// 搜索项
-	searches := templateInstance.(interface {
-		Searches(request *builder.Request) []interface{}
-	}).Searches(request)
+	searches := ctx.Template.(interface {
+		Searches(ctx *builder.Context) []interface{}
+	}).Searches(ctx)
 
 	// 过滤项，预留
-	filters := templateInstance.(interface {
-		Filters(request *builder.Request) []interface{}
-	}).Filters(request)
+	filters := ctx.Template.(interface {
+		Filters(ctx *builder.Context) []interface{}
+	}).Filters(ctx)
 
-	query := templateInstance.(interface {
-		BuildExportQuery(request *builder.Request, templateInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB
-	}).BuildExportQuery(request, templateInstance, model, searches, filters, p.columnFilters(request), p.orderings(request))
+	query := ctx.Template.(interface {
+		BuildExportQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB
+	}).BuildExportQuery(ctx, model, searches, filters, p.columnFilters(ctx), p.orderings(ctx))
 
 	query.Find(&lists)
 
 	// 返回解析列表
-	return p.performsList(request, templateInstance, lists)
+	return p.performsList(ctx, lists)
 }
 
 /**
@@ -195,8 +195,8 @@ func (p *ExportRequest) QueryData(request *builder.Request, templateInstance int
  *
  * @return array
  */
-func (p *ExportRequest) columnFilters(request *builder.Request) map[string]interface{} {
-	querys := request.AllQuerys()
+func (p *ExportRequest) columnFilters(ctx *builder.Context) map[string]interface{} {
+	querys := ctx.AllQuerys()
 	var data map[string]interface{}
 	if querys["filter"] == nil {
 		return data
@@ -214,8 +214,8 @@ func (p *ExportRequest) columnFilters(request *builder.Request) map[string]inter
  *
  * @return array
  */
-func (p *ExportRequest) orderings(request *builder.Request) map[string]interface{} {
-	querys := request.AllQuerys()
+func (p *ExportRequest) orderings(ctx *builder.Context) map[string]interface{} {
+	querys := ctx.AllQuerys()
 	var data map[string]interface{}
 	if querys["sorter"] == nil {
 		return data
@@ -229,19 +229,19 @@ func (p *ExportRequest) orderings(request *builder.Request) map[string]interface
 }
 
 // 处理列表
-func (p *ExportRequest) performsList(request *builder.Request, templateInstance interface{}, lists []map[string]interface{}) []interface{} {
+func (p *ExportRequest) performsList(ctx *builder.Context, lists []map[string]interface{}) []interface{} {
 	result := []map[string]interface{}{}
 
 	// 获取列表字段
-	exportFields := templateInstance.(interface {
-		ExportFields(request *builder.Request, templateInstance interface{}) interface{}
-	}).ExportFields(request, templateInstance)
+	exportFields := ctx.Template.(interface {
+		ExportFields(ctx *builder.Context) interface{}
+	}).ExportFields(ctx)
 
 	// 解析字段回调函数
 	for _, v := range lists {
 
 		// 给实例的Field属性赋值
-		templateInstance.(interface {
+		ctx.Template.(interface {
 			SetField(fieldData map[string]interface{}) interface{}
 		}).SetField(v)
 
@@ -271,7 +271,7 @@ func (p *ExportRequest) performsList(request *builder.Request, templateInstance 
 	}
 
 	// 回调处理列表字段值
-	return templateInstance.(interface {
-		BeforeExporting(request *builder.Request, result []map[string]interface{}) []interface{}
-	}).BeforeExporting(request, result)
+	return ctx.Template.(interface {
+		BeforeExporting(ctx *builder.Context, result []map[string]interface{}) []interface{}
+	}).BeforeExporting(ctx, result)
 }

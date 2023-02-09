@@ -44,7 +44,7 @@ func (p *Admin) Init() interface{} {
 }
 
 // 字段
-func (p *Admin) Fields(request *builder.Request) []interface{} {
+func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 
 	field := &builder.AdminField{}
 
@@ -192,7 +192,7 @@ func (p *Admin) Fields(request *builder.Request) []interface{} {
 }
 
 // 搜索
-func (p *Admin) Searches(request *builder.Request) []interface{} {
+func (p *Admin) Searches(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		(&searches.Input{}).Init("username", "用户名"),
@@ -203,7 +203,7 @@ func (p *Admin) Searches(request *builder.Request) []interface{} {
 }
 
 // 行为
-func (p *Admin) Actions(request *builder.Request) []interface{} {
+func (p *Admin) Actions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		(&actions.Import{}).Init(),
@@ -224,7 +224,7 @@ func (p *Admin) Actions(request *builder.Request) []interface{} {
 }
 
 // 编辑页面显示前回调
-func (p *Admin) BeforeEditing(request *builder.Request, data map[string]interface{}) map[string]interface{} {
+func (p *Admin) BeforeEditing(ctx *builder.Context, data map[string]interface{}) map[string]interface{} {
 	delete(data, "password")
 
 	roleIds := []int{}
@@ -240,7 +240,7 @@ func (p *Admin) BeforeEditing(request *builder.Request, data map[string]interfac
 }
 
 // 保存数据前回调
-func (p *Admin) BeforeSaving(request *builder.Request, submitData map[string]interface{}) (map[string]interface{}, error) {
+func (p *Admin) BeforeSaving(ctx *builder.Context, submitData map[string]interface{}) (map[string]interface{}, error) {
 
 	// 加密密码
 	if submitData["password"] != nil {
@@ -254,18 +254,18 @@ func (p *Admin) BeforeSaving(request *builder.Request, submitData map[string]int
 }
 
 // 保存后回调
-func (p *Admin) AfterSaved(request *builder.Request, model *gorm.DB) interface{} {
+func (p *Admin) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
 	data := map[string]interface{}{}
-	json.Unmarshal(request.Body(), &data)
+	json.Unmarshal(ctx.Body(), &data)
 	if data["role_ids"] == nil {
 		if model.Error != nil {
 			return msg.Error(model.Error.Error(), "")
 		}
 
-		return msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", request.Param("resource"), -1), "")
+		return msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), "")
 	}
 
-	if request.IsCreating() {
+	if ctx.IsCreating() {
 		last := map[string]interface{}{}
 		model.Order("id desc").First(&last) // hack
 		roleData := []map[string]interface{}{}
@@ -309,5 +309,5 @@ func (p *Admin) AfterSaved(request *builder.Request, model *gorm.DB) interface{}
 		}
 	}
 
-	return msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", request.Param("resource"), -1), "")
+	return msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), "")
 }

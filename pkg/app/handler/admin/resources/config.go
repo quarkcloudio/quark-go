@@ -31,7 +31,7 @@ func (p *Config) Init() interface{} {
 }
 
 // 字段
-func (p *Config) Fields(request *builder.Request) []interface{} {
+func (p *Config) Fields(ctx *builder.Context) []interface{} {
 	field := &builder.AdminField{}
 
 	return []interface{}{
@@ -113,7 +113,7 @@ func (p *Config) Fields(request *builder.Request) []interface{} {
 }
 
 // 搜索
-func (p *Config) Searches(request *builder.Request) []interface{} {
+func (p *Config) Searches(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&searches.Input{}).Init("title", "标题"),
 		(&searches.Input{}).Init("name", "名称"),
@@ -122,7 +122,7 @@ func (p *Config) Searches(request *builder.Request) []interface{} {
 }
 
 // 行为
-func (p *Config) Actions(request *builder.Request) []interface{} {
+func (p *Config) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&actions.CreateDrawer{}).Init(p.Title),
 		(&actions.Delete{}).Init("批量删除"),

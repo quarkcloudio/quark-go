@@ -11,27 +11,27 @@ import (
 type DetailRequest struct{}
 
 // 表单数据
-func (p *DetailRequest) FillData(request *builder.Request, templateInstance interface{}) map[string]interface{} {
+func (p *DetailRequest) FillData(ctx *builder.Context) map[string]interface{} {
 	result := map[string]interface{}{}
-	id := request.Query("id", "")
+	id := ctx.Query("id", "")
 	if id == "" {
 		return result
 	}
 
 	modelInstance := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("Model").Interface()
 	model := db.Client.Model(&modelInstance)
 	model.Where("id = ?", id).First(&result)
 
 	// 获取列表字段
-	detailFields := templateInstance.(interface {
-		DetailFields(request *builder.Request, templateInstance interface{}) interface{}
-	}).DetailFields(request, templateInstance)
+	detailFields := ctx.Template.(interface {
+		DetailFields(ctx *builder.Context) interface{}
+	}).DetailFields(ctx)
 
 	// 给实例的Field属性赋值
-	templateInstance.(interface {
+	ctx.Template.(interface {
 		SetField(fieldData map[string]interface{}) interface{}
 	}).SetField(result)
 
@@ -53,13 +53,13 @@ func (p *DetailRequest) FillData(request *builder.Request, templateInstance inte
 }
 
 // 获取表单初始化数据
-func (p *DetailRequest) Values(request *builder.Request, templateInstance interface{}) interface{} {
-	data := p.FillData(request, templateInstance)
+func (p *DetailRequest) Values(ctx *builder.Context) interface{} {
+	data := p.FillData(ctx)
 
 	// 断言BeforeEditing方法，获取初始数据
-	data = templateInstance.(interface {
-		BeforeDetailShowing(*builder.Request, map[string]interface{}) map[string]interface{}
-	}).BeforeDetailShowing(request, data)
+	data = ctx.Template.(interface {
+		BeforeDetailShowing(*builder.Context, map[string]interface{}) map[string]interface{}
+	}).BeforeDetailShowing(ctx, data)
 
 	return msg.Success("获取成功", "", data)
 }

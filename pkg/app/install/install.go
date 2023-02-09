@@ -22,7 +22,7 @@ func PathExist(path string) bool {
 }
 
 // 执行安装操作
-func Handle(request *builder.Request) error {
+func Handle(ctx *builder.Context) error {
 
 	// 如果锁定文件存在则不执行安装步骤
 	if PathExist("install.lock") {

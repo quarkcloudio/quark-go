@@ -28,13 +28,13 @@ func (p *Account) Init() interface{} {
 }
 
 // 表单接口
-func (p *Account) FormApi(request *builder.Request) string {
+func (p *Account) FormApi(ctx *builder.Context) string {
 
 	return "admin/account/action/change-account"
 }
 
 // 字段
-func (p *Account) Fields(request *builder.Request) []interface{} {
+func (p *Account) Fields(ctx *builder.Context) []interface{} {
 	field := &builder.AdminField{}
 
 	return []interface{}{
@@ -123,7 +123,7 @@ func (p *Account) Fields(request *builder.Request) []interface{} {
 }
 
 // 行为
-func (p *Account) Actions(request *builder.Request) []interface{} {
+func (p *Account) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&actions.ChangeAccount{}),
 		(&actions.FormSubmit{}).Init(),
@@ -134,9 +134,9 @@ func (p *Account) Actions(request *builder.Request) []interface{} {
 }
 
 // 创建页面显示前回调
-func (p *Account) BeforeCreating(request *builder.Request) map[string]interface{} {
+func (p *Account) BeforeCreating(ctx *builder.Context) map[string]interface{} {
 	data := map[string]interface{}{}
-	adminInfo, _ := (&model.Admin{}).GetAuthUser(request.Token())
+	adminInfo, _ := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	db.Client.
 		Model(p.Model).
 		Where("id = ?", adminInfo.Id).

@@ -47,12 +47,12 @@ func (p *Dropdown) GetOverlayStyle() map[string]interface{} {
 }
 
 // 菜单
-func (p *Dropdown) GetMenu(request *builder.Request, templateInstance interface{}) interface{} {
+func (p *Dropdown) GetMenu(ctx *builder.Context) interface{} {
 	actions := p.GetActions()
 	items := []interface{}{}
 
 	for _, v := range actions {
-		action := p.buildAction(request, v, templateInstance)
+		action := p.buildAction(ctx, v)
 		items = append(items, action)
 	}
 
@@ -60,7 +60,7 @@ func (p *Dropdown) GetMenu(request *builder.Request, templateInstance interface{
 }
 
 //创建行为组件
-func (p *Dropdown) buildAction(request *builder.Request, item interface{}, templateInstance interface{}) interface{} {
+func (p *Dropdown) buildAction(ctx *builder.Context, item interface{}) interface{} {
 	name := item.(interface{ GetName() string }).GetName()
 	withLoading := item.(interface{ GetWithLoading() bool }).GetWithLoading()
 	reload := item.(interface{ GetReload() string }).GetReload()
@@ -72,8 +72,8 @@ func (p *Dropdown) buildAction(request *builder.Request, item interface{}, templ
 
 	// 获取api
 	api := item.(interface {
-		GetApi(*builder.Request) string
-	}).GetApi(request)
+		GetApi(*builder.Context) string
+	}).GetApi(ctx)
 
 	// 获取api替换参数
 	params := item.(interface {
@@ -81,7 +81,7 @@ func (p *Dropdown) buildAction(request *builder.Request, item interface{}, templ
 	}).GetApiParams()
 
 	if api == "" {
-		api = p.buildActionApi(request, params, uriKey)
+		api = p.buildActionApi(ctx, params, uriKey)
 	}
 
 	actionType := item.(interface{ GetActionType() string }).GetActionType()
@@ -110,11 +110,11 @@ func (p *Dropdown) buildAction(request *builder.Request, item interface{}, templ
 	switch actionType {
 	case "link":
 		href := item.(interface {
-			GetHref(request *builder.Request) string
-		}).GetHref(request)
+			GetHref(ctx *builder.Context) string
+		}).GetHref(ctx)
 		target := item.(interface {
-			GetTarget(request *builder.Request) string
-		}).GetTarget(request)
+			GetTarget(ctx *builder.Context) string
+		}).GetTarget(ctx)
 
 		getAction = getAction.
 			SetLink(href, target).
@@ -131,12 +131,12 @@ func (p *Dropdown) buildAction(request *builder.Request, item interface{}, templ
 		}).GetDestroyOnClose()
 
 		formBody := item.(interface {
-			GetBody(request *builder.Request, templateInstance interface{}) interface{}
-		}).GetBody(request, templateInstance)
+			GetBody(ctx *builder.Context) interface{}
+		}).GetBody(ctx)
 
 		formActions := item.(interface {
-			GetActions(request *builder.Request, templateInstance interface{}) []interface{}
-		}).GetActions(request, templateInstance)
+			GetActions(ctx *builder.Context) []interface{}
+		}).GetActions(ctx)
 
 		getAction = getAction.SetModal(func(modal *action.Modal) interface{} {
 			return modal.
@@ -156,12 +156,12 @@ func (p *Dropdown) buildAction(request *builder.Request, item interface{}, templ
 		}).GetDestroyOnClose()
 
 		formBody := item.(interface {
-			GetBody(request *builder.Request, templateInstance interface{}) interface{}
-		}).GetBody(request, templateInstance)
+			GetBody(ctx *builder.Context) interface{}
+		}).GetBody(ctx)
 
 		formActions := item.(interface {
-			GetActions(request *builder.Request, templateInstance interface{}) []interface{}
-		}).GetActions(request, templateInstance)
+			GetActions(ctx *builder.Context) []interface{}
+		}).GetActions(ctx)
 
 		getAction = getAction.SetDrawer(func(drawer *action.Drawer) interface{} {
 			return drawer.
@@ -194,13 +194,13 @@ func (p *Dropdown) GetActions() []interface{} {
 }
 
 //创建行为接口
-func (p *Dropdown) buildActionApi(request *builder.Request, params []string, uriKey string) string {
+func (p *Dropdown) buildActionApi(ctx *builder.Context, params []string, uriKey string) string {
 	paramsUri := ""
 	for _, v := range params {
 		paramsUri = paramsUri + v + "=${" + v + "}&"
 	}
 
-	api := strings.Replace(request.Path(), "/index", "/action/"+uriKey, -1)
+	api := strings.Replace(ctx.Path(), "/index", "/action/"+uriKey, -1)
 	if paramsUri != "" {
 		api = api + "?" + paramsUri
 	}

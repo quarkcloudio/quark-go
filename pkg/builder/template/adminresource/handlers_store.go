@@ -15,30 +15,30 @@ import (
 type StoreRequest struct{}
 
 // 执行行为
-func (p *StoreRequest) Handle(request *builder.Request, templateInstance interface{}) interface{} {
+func (p *StoreRequest) Handle(ctx *builder.Context) interface{} {
 	modelInstance := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("Model").Interface()
 	model := db.Client.Model(&modelInstance)
 
 	// 获取字段
-	fields := templateInstance.(interface {
-		CreationFields(request *builder.Request, templateInstance interface{}) interface{}
-	}).CreationFields(request, templateInstance)
+	fields := ctx.Template.(interface {
+		CreationFields(ctx *builder.Context) interface{}
+	}).CreationFields(ctx)
 
 	data := map[string]interface{}{}
-	json.Unmarshal(request.Body(), &data)
-	data, err := templateInstance.(interface {
-		BeforeSaving(request *builder.Request, data map[string]interface{}) (map[string]interface{}, error)
-	}).BeforeSaving(request, data)
+	json.Unmarshal(ctx.Body(), &data)
+	data, err := ctx.Template.(interface {
+		BeforeSaving(ctx *builder.Context, data map[string]interface{}) (map[string]interface{}, error)
+	}).BeforeSaving(ctx, data)
 	if err != nil {
 		return msg.Error(err.Error(), "")
 	}
 
-	validator := templateInstance.(interface {
-		ValidatorForCreation(request *builder.Request, templateInstance interface{}, data map[string]interface{}) error
-	}).ValidatorForCreation(request, templateInstance, data)
+	validator := ctx.Template.(interface {
+		ValidatorForCreation(ctx *builder.Context, data map[string]interface{}) error
+	}).ValidatorForCreation(ctx, data)
 	if validator != nil {
 		msg.Error(validator.Error(), "")
 	}
@@ -108,7 +108,7 @@ func (p *StoreRequest) Handle(request *builder.Request, templateInstance interfa
 	// 获取对象
 	getModel := model.Create(modelInstance)
 
-	return templateInstance.(interface {
-		AfterSaved(request *builder.Request, model *gorm.DB) interface{}
-	}).AfterSaved(request, getModel)
+	return ctx.Template.(interface {
+		AfterSaved(ctx *builder.Context, model *gorm.DB) interface{}
+	}).AfterSaved(ctx, getModel)
 }

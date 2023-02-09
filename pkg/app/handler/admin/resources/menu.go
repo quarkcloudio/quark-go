@@ -41,7 +41,7 @@ func (p *Menu) Init() interface{} {
 }
 
 // 字段
-func (p *Menu) Fields(request *builder.Request) []interface{} {
+func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 	field := &builder.AdminField{}
 
 	// 权限列表
@@ -104,7 +104,7 @@ func (p *Menu) Fields(request *builder.Request) []interface{} {
 }
 
 // 搜索
-func (p *Menu) Searches(request *builder.Request) []interface{} {
+func (p *Menu) Searches(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&searches.Input{}).Init("name", "名称"),
 		(&searches.Input{}).Init("path", "路由"),
@@ -113,7 +113,7 @@ func (p *Menu) Searches(request *builder.Request) []interface{} {
 }
 
 // 行为
-func (p *Menu) Actions(request *builder.Request) []interface{} {
+func (p *Menu) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&actions.CreateDrawer{}).Init(p.Title),
 		(&actions.Delete{}).Init("批量删除"),
@@ -130,8 +130,8 @@ func (p *Menu) Actions(request *builder.Request) []interface{} {
 }
 
 // 列表页面显示前回调
-func (p *Menu) BeforeIndexShowing(request *builder.Request, list []map[string]interface{}) []interface{} {
-	data := request.AllQuerys()
+func (p *Menu) BeforeIndexShowing(ctx *builder.Context, list []map[string]interface{}) []interface{} {
+	data := ctx.AllQuerys()
 	if search, ok := data["search"].(map[string]interface{}); ok == true && search != nil {
 		result := []interface{}{}
 		for _, v := range list {
@@ -148,8 +148,8 @@ func (p *Menu) BeforeIndexShowing(request *builder.Request, list []map[string]in
 }
 
 // 编辑页面显示前回调
-func (p *Menu) BeforeEditing(request *builder.Request, data map[string]interface{}) map[string]interface{} {
-	id := request.Query("id", "")
+func (p *Menu) BeforeEditing(ctx *builder.Context, data map[string]interface{}) map[string]interface{} {
+	id := ctx.Query("id", "")
 
 	if id != "" {
 		menus := []int{}
@@ -166,7 +166,7 @@ func (p *Menu) BeforeEditing(request *builder.Request, data map[string]interface
 }
 
 // 保存数据前回调
-func (p *Menu) BeforeSaving(request *builder.Request, submitData map[string]interface{}) (map[string]interface{}, error) {
+func (p *Menu) BeforeSaving(ctx *builder.Context, submitData map[string]interface{}) (map[string]interface{}, error) {
 
 	// 暂时清理permission_ids
 	delete(submitData, "permission_ids")
@@ -175,12 +175,12 @@ func (p *Menu) BeforeSaving(request *builder.Request, submitData map[string]inte
 }
 
 // 保存后回调
-func (p *Menu) AfterSaved(request *builder.Request, model *gorm.DB) interface{} {
+func (p *Menu) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
 	var result *gorm.DB
 	data := map[string]interface{}{}
-	json.Unmarshal(request.Body(), &data)
+	json.Unmarshal(ctx.Body(), &data)
 	id := 0
-	if request.IsCreating() {
+	if ctx.IsCreating() {
 		last := map[string]interface{}{}
 		result = model.Order("id desc").First(&last) // 获取最后一条记录的id
 		id = last["id"].(int)
@@ -203,5 +203,5 @@ func (p *Menu) AfterSaved(request *builder.Request, model *gorm.DB) interface{} 
 		return msg.Error(result.Error.Error(), "")
 	}
 
-	return msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", request.Param("resource"), -1), "")
+	return msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), "")
 }

@@ -9,17 +9,17 @@ import (
 )
 
 // 中间件
-func Handle(request *builder.Request) error {
+func Handle(ctx *builder.Context) error {
 	loginIndex := (&login.Index{}).Init()
 
 	// 获取登录模板定义的路由
 	loginIndexRoutes := loginIndex.(interface {
-		GetRoutes() []*builder.Route
+		GetRoutes() []*builder.RouteMapping
 	}).GetRoutes()
 
 	inLoginRoute := false
 	for _, v := range loginIndexRoutes {
-		if v.Path == request.FullPath() {
+		if v.Path == ctx.FullPath() {
 			inLoginRoute = true
 		}
 	}
@@ -30,7 +30,7 @@ func Handle(request *builder.Request) error {
 	}
 
 	// 获取登录管理员信息
-	adminInfo, err := (&model.Admin{}).GetAuthUser(request.Token())
+	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
 		return err
 	}
@@ -49,7 +49,7 @@ func Handle(request *builder.Request) error {
 
 		hasPermission := false
 		for _, v := range permissions {
-			if "/"+v.Name == request.Path() {
+			if "/"+v.Name == ctx.Path() {
 				hasPermission = true
 			}
 		}
@@ -62,8 +62,8 @@ func Handle(request *builder.Request) error {
 	// 记录操作日志
 	(&model.ActionLog{}).InsertGetId(&model.ActionLog{
 		ObjectId: adminInfo.Id,
-		Url:      request.Path(),
-		Ip:       request.IP(),
+		Url:      ctx.Path(),
+		Ip:       ctx.ClientIP(),
 		Type:     "admin",
 	})
 

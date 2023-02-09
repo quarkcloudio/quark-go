@@ -33,11 +33,11 @@ func (p *Template) TemplateInit() interface{} {
 	// 初始化数据对象
 	p.DB = db.Client
 
-	// 清空路由
-	p.Routes = nil
+	// 清空路由映射
+	p.ClearRouteMapping()
 
-	// 注册路由
-	p.AddRoute("/api/admin/dashboard/:resource/index", "Render") // 后台仪表盘路由
+	// 注册路由映射
+	p.GET("/api/admin/dashboard/:resource/index", "Render") // 后台仪表盘路由
 
 	// 标题
 	p.Title = "仪表盘"
@@ -46,15 +46,15 @@ func (p *Template) TemplateInit() interface{} {
 }
 
 // 内容
-func (p *Template) Cards(request *builder.Request) interface{} {
+func (p *Template) Cards(ctx *builder.Context) interface{} {
 	return nil
 }
 
 // 组件渲染
-func (p *Template) Render(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
-	cards := templateInstance.(interface {
-		Cards(*builder.Request) interface{}
-	}).Cards(request)
+func (p *Template) Render(ctx *builder.Context) interface{} {
+	cards := ctx.Template.(interface {
+		Cards(*builder.Context) interface{}
+	}).Cards(ctx)
 	if cards == nil {
 		return msg.Error("请实现Cards内容", "")
 	}
@@ -104,7 +104,7 @@ func (p *Template) Render(request *builder.Request, resource *builder.Resource, 
 		body = append(body, row)
 	}
 
-	return templateInstance.(interface {
-		PageComponentRender(request *builder.Request, templateInstance interface{}, body interface{}) interface{}
-	}).PageComponentRender(request, templateInstance, body)
+	return ctx.Template.(interface {
+		PageComponentRender(ctx *builder.Context, body interface{}) interface{}
+	}).PageComponentRender(ctx, body)
 }

@@ -76,16 +76,16 @@ func (p *Search) GetDefault() interface{} {
 }
 
 // 执行查询
-func (p *Search) Apply(request *builder.Request, query *gorm.DB, value interface{}) *gorm.DB {
+func (p *Search) Apply(ctx *builder.Context, query *gorm.DB, value interface{}) *gorm.DB {
 	return query
 }
 
 // 属性
-func (p *Search) Options(request *builder.Request) map[interface{}]interface{} {
+func (p *Search) Options(ctx *builder.Context) map[interface{}]interface{} {
 	return nil
 }
 
 // 单向联动,返回数据类型：map[string]string{"field": "you_want_load_field","api":   "admin/resource_name/action/select-options"}
-func (p *Search) Load(request *builder.Request) map[string]string {
+func (p *Search) Load(ctx *builder.Context) map[string]string {
 	return nil
 }

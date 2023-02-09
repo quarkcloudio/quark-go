@@ -12,15 +12,15 @@ import (
 type ActionRequest struct{}
 
 // 执行行为
-func (p *ActionRequest) Handle(request *builder.Request, templateInstance interface{}) interface{} {
+func (p *ActionRequest) Handle(ctx *builder.Context) interface{} {
 	var result interface{}
 	modelInstance := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("Model").Interface()
 	model := db.Client.Model(&modelInstance)
 
-	id := request.Query("id", "")
+	id := ctx.Query("id", "")
 	if id != "" {
 		if strings.Contains(id.(string), ",") {
 			model.Where("id IN ?", strings.Split(id.(string), ","))
@@ -29,9 +29,9 @@ func (p *ActionRequest) Handle(request *builder.Request, templateInstance interf
 		}
 	}
 
-	actions := templateInstance.(interface {
-		Actions(request *builder.Request) []interface{}
-	}).Actions(request)
+	actions := ctx.Template.(interface {
+		Actions(ctx *builder.Context) []interface{}
+	}).Actions(ctx)
 
 	for _, v := range actions {
 		// uri唯一标识
@@ -48,17 +48,17 @@ func (p *ActionRequest) Handle(request *builder.Request, templateInstance interf
 					GetUriKey(interface{}) string
 				}).GetUriKey(dropdownAction)
 
-				if request.Param("uriKey") == uriKey {
+				if ctx.Param("uriKey") == uriKey {
 					result = dropdownAction.(interface {
-						Handle(*builder.Request, *gorm.DB) interface{}
-					}).Handle(request, model)
+						Handle(*builder.Context, *gorm.DB) interface{}
+					}).Handle(ctx, model)
 				}
 			}
 		} else {
-			if request.Param("uriKey") == uriKey {
+			if ctx.Param("uriKey") == uriKey {
 				result = v.(interface {
-					Handle(*builder.Request, *gorm.DB) interface{}
-				}).Handle(request, model)
+					Handle(*builder.Context, *gorm.DB) interface{}
+				}).Handle(ctx, model)
 			}
 		}
 	}

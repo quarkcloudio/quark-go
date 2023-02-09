@@ -16,9 +16,9 @@ type ChangeWebConfig struct {
 }
 
 // 执行行为句柄
-func (p *ChangeWebConfig) Handle(request *builder.Request, model *gorm.DB) interface{} {
+func (p *ChangeWebConfig) Handle(ctx *builder.Context, model *gorm.DB) interface{} {
 	data := map[string]interface{}{}
-	json.Unmarshal(request.Body(), &data)
+	json.Unmarshal(ctx.Body(), &data)
 	result := true
 
 	for k, v := range data {

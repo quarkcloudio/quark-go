@@ -8,49 +8,49 @@ import (
 )
 
 // 列表页表格主体
-func (p *Template) IndexExtraRender(request *builder.Request, templateInstance interface{}) interface{} {
+func (p *Template) IndexExtraRender(ctx *builder.Context) interface{} {
 	return nil
 }
 
 // 列表页工具栏
-func (p *Template) IndexToolBar(request *builder.Request, templateInstance interface{}) interface{} {
-	return (&table.ToolBar{}).Init().SetTitle(p.IndexTitle(request, templateInstance)).SetActions(p.IndexActions(request, templateInstance))
+func (p *Template) IndexToolBar(ctx *builder.Context) interface{} {
+	return (&table.ToolBar{}).Init().SetTitle(p.IndexTitle(ctx)).SetActions(p.IndexActions(ctx))
 }
 
 // 列表标题
-func (p *Template) IndexTitle(request *builder.Request, templateInstance interface{}) string {
+func (p *Template) IndexTitle(ctx *builder.Context) string {
 	return reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("Title").
 		String() + "列表"
 }
 
 // 列表页组件渲染
-func (p *Template) IndexComponentRender(request *builder.Request, templateInstance interface{}, data interface{}) interface{} {
+func (p *Template) IndexComponentRender(ctx *builder.Context, data interface{}) interface{} {
 	var component interface{}
 
 	// 列表标题
-	title := p.IndexTitle(request, templateInstance)
+	title := p.IndexTitle(ctx)
 
 	// 反射获取参数
-	value := reflect.ValueOf(templateInstance).Elem()
+	value := reflect.ValueOf(ctx.Template).Elem()
 	indexPolling := value.FieldByName("IndexPolling").Int()
 
 	// 列表页表格主体
-	indexExtraRender := p.IndexExtraRender(request, templateInstance)
+	indexExtraRender := p.IndexExtraRender(ctx)
 
 	// 列表页工具栏
-	indexToolBar := p.IndexToolBar(request, templateInstance)
+	indexToolBar := p.IndexToolBar(ctx)
 
 	// 列表页表格列
-	indexColumns := p.IndexColumns(request, templateInstance)
+	indexColumns := p.IndexColumns(ctx)
 
 	// 列表页批量操作
-	indexTableAlertActions := p.IndexTableAlertActions(request, templateInstance)
+	indexTableAlertActions := p.IndexTableAlertActions(ctx)
 
 	// 列表页搜索栏
-	indexSearches := p.IndexSearches(request, templateInstance)
+	indexSearches := p.IndexSearches(ctx)
 
 	table := (&table.Component{}).
 		Init().
@@ -64,7 +64,7 @@ func (p *Template) IndexComponentRender(request *builder.Request, templateInstan
 
 	// 获取分页
 	perPage := reflect.
-		ValueOf(templateInstance).
+		ValueOf(ctx.Template).
 		Elem().
 		FieldByName("PerPage").Interface()
 
@@ -84,7 +84,7 @@ func (p *Template) IndexComponentRender(request *builder.Request, templateInstan
 }
 
 // 列表页面显示前回调
-func (p *Template) BeforeIndexShowing(request *builder.Request, list []map[string]interface{}) []interface{} {
+func (p *Template) BeforeIndexShowing(ctx *builder.Context, list []map[string]interface{}) []interface{} {
 	result := []interface{}{}
 	for _, v := range list {
 		result = append(result, v)

@@ -9,23 +9,22 @@ import (
 )
 
 // 详情页标题
-func (p *Template) DetailTitle(request *builder.Request, templateInstance interface{}) string {
-	value := reflect.ValueOf(templateInstance).Elem()
+func (p *Template) DetailTitle(ctx *builder.Context) string {
+	value := reflect.ValueOf(ctx.Template).Elem()
 	title := value.FieldByName("Title").String()
 
 	return title + "详情"
 }
 
 // 渲染详情页组件
-func (p *Template) DetailComponentRender(request *builder.Request, templateInstance interface{}, data map[string]interface{}) interface{} {
-	title := p.DetailTitle(request, templateInstance)
-	formExtraActions := p.DetailExtraActions(request, templateInstance)
-	fields := p.DetailFieldsWithinComponents(request, templateInstance, data)
-	formActions := p.DetailActions(request, templateInstance)
+func (p *Template) DetailComponentRender(ctx *builder.Context, data map[string]interface{}) interface{} {
+	title := p.DetailTitle(ctx)
+	formExtraActions := p.DetailExtraActions(ctx)
+	fields := p.DetailFieldsWithinComponents(ctx, data)
+	formActions := p.DetailActions(ctx)
 
 	return p.DetailWithinCard(
-		request,
-		templateInstance,
+		ctx,
 		title,
 		formExtraActions,
 		fields,
@@ -36,8 +35,7 @@ func (p *Template) DetailComponentRender(request *builder.Request, templateInsta
 
 // 在卡片内的详情页组件
 func (p *Template) DetailWithinCard(
-	request *builder.Request,
-	templateInstance interface{},
+	ctx *builder.Context,
 	title string,
 	extra interface{},
 	fields interface{},
@@ -54,8 +52,7 @@ func (p *Template) DetailWithinCard(
 
 // 在标签页内的详情页组件
 func (p *Template) DetailWithinTabs(
-	request *builder.Request,
-	templateInstance interface{},
+	ctx *builder.Context,
 	title string,
 	extra interface{},
 	fields interface{},
@@ -66,6 +63,6 @@ func (p *Template) DetailWithinTabs(
 }
 
 // 详情页页面显示前回调
-func (p *Template) BeforeDetailShowing(request *builder.Request, data map[string]interface{}) map[string]interface{} {
+func (p *Template) BeforeDetailShowing(ctx *builder.Context, data map[string]interface{}) map[string]interface{} {
 	return data
 }

@@ -1,9 +1,7 @@
 package zeroadapter
 
 import (
-	"io/ioutil"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
@@ -16,94 +14,13 @@ const JSON_RESPONSE = "json"   // json类型响应
 const IMAGE_RESPONSE = "image" // 图片类型响应
 const EXCEL_RESPONSE = "excel" // Excel文件类型响应
 
-// 将gozero框架的Ctx转换为builder框架Request
-func RequestAdapter(r *http.Request, routePath string) (*builder.Request, error) {
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	headerString := ""
-	for hk, hvs := range r.Header {
-		tmp := ""
-		for _, v := range hvs {
-			tmp = tmp + "," + v
-		}
-		tmp = strings.Trim(tmp, ",")
-		headerString = headerString + hk + ": " + tmp + "\r\n"
-	}
-
-	// 将框架请求转换为builder框架请求
-	return &builder.Request{
-		IPString:       r.RemoteAddr,
-		HeaderString:   headerString,
-		MethodString:   r.Method,
-		FullPathString: routePath,
-		HostString:     r.Host,
-		PathString:     r.URL.Path,
-		QueryString:    r.Response.Request.URL.RawQuery,
-		BodyBuffer:     body,
-	}, nil
-}
-
-// 适配gozero框架响应
-func ResponseAdapter(r *builder.Resource, responseType string, w http.ResponseWriter) {
-	result, err := r.Run()
-	if err != nil {
-		httpx.OkJson(w, msg.Error(err.Error(), ""))
-		return
-	}
-
-	// 响应结果
-	switch responseType {
-	case JSON_RESPONSE:
-		httpx.OkJson(w, result)
-		return
-	case IMAGE_RESPONSE:
-		w.Write(result.([]byte))
-		return
-	case EXCEL_RESPONSE:
-		w.Header().Add("Content-Disposition", "attachment; filename=data_"+time.Now().Format("20060102150405")+".xlsx")
-		w.Header().Add("Content-Type", "application/octet-stream")
-		w.Write(result.([]byte))
-		return
-	}
-}
-
 // 适配gozero框架路由
-func RouteAdapter(b *builder.Resource, routePath string, responseType string) http.HandlerFunc {
+func RouteAdapter(b *builder.Engine, routePath string, responseType string) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		body, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			httpx.OkJson(w, msg.Error(err.Error(), ""))
-			return
-		}
-
-		headerString := ""
-		for hk, hvs := range r.Header {
-			tmp := ""
-			for _, v := range hvs {
-				tmp = tmp + "," + v
-			}
-			tmp = strings.Trim(tmp, ",")
-			headerString = headerString + hk + ": " + tmp + "\r\n"
-		}
-
-		// 将框架请求转换为builder框架请求
-		request := &builder.Request{
-			IPString:       r.RemoteAddr,
-			HeaderString:   headerString,
-			MethodString:   r.Method,
-			FullPathString: routePath,
-			HostString:     r.Host,
-			PathString:     r.URL.Path,
-			QueryString:    r.URL.RawQuery,
-			BodyBuffer:     body,
-		}
 
 		// 转换Request对象
-		result, err := b.TransformRequest(request).Run()
+		result, err := b.NewContext(w, r).Render()
 		if err != nil {
 			httpx.OkJson(w, msg.Error(err.Error(), ""))
 			return
@@ -128,7 +45,7 @@ func RouteAdapter(b *builder.Resource, routePath string, responseType string) ht
 }
 
 // 适配gozero框架
-func Adapter(b *builder.Resource, server *rest.Server) {
+func Adapter(b *builder.Engine, server *rest.Server) {
 
 	server.AddRoutes(
 		[]rest.Route{

@@ -22,7 +22,7 @@ func (p *Index) Init() interface{} {
 }
 
 // 内容
-func (p *Index) Cards(request *builder.Request) interface{} {
+func (p *Index) Cards(ctx *builder.Context) interface{} {
 
 	return []any{
 		&metrics.TotalAdmin{},

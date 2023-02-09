@@ -33,15 +33,15 @@ func (p *Template) TemplateInit() interface{} {
 	// 初始化数据对象
 	p.DB = db.Client
 
-	// 清空路由
-	p.Routes = nil
+	// 清空路由映射
+	p.ClearRouteMapping()
 
-	// 注册路由
-	p.AddRoute("/api/admin/login/:resource/index", "Render")        // 渲染登录页面路由
-	p.AddRoute("/api/admin/login/:resource/handle", "Handle")       // 后台登录执行路由
-	p.AddRoute("/api/admin/login/:resource/captchaId", "CaptchaId") // 后台登录获取验证码ID路由
-	p.AddRoute("/api/admin/login/:resource/captcha/:id", "Captcha") // 后台登录验证码路由
-	p.AddRoute("/api/admin/logout/:resource/handle", "Logout")      // 后台退出执行路由
+	// 注册路由映射
+	p.GET("/api/admin/login/:resource/index", "Render")        // 渲染登录页面路由
+	p.POST("/api/admin/login/:resource/handle", "Handle")      // 后台登录执行路由
+	p.GET("/api/admin/login/:resource/captchaId", "CaptchaId") // 后台登录获取验证码ID路由
+	p.GET("/api/admin/login/:resource/captcha/:id", "Captcha") // 后台登录验证码路由
+	p.GET("/api/admin/logout/:resource/handle", "Logout")      // 后台退出执行路由
 
 	// 标题
 	p.Title = "QuarkGo"
@@ -56,34 +56,40 @@ func (p *Template) TemplateInit() interface{} {
 }
 
 // 验证码ID
-func (p *Template) CaptchaId(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
+func (p *Template) CaptchaId(ctx *builder.Context) interface{} {
 
 	return msg.Error("请实现创建验证码ID方法", "")
 }
 
 // 生成验证码
-func (p *Template) Captcha(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
+func (p *Template) Captcha(ctx *builder.Context) interface{} {
 
 	return msg.Error("请实现生成验证码方法", "")
 }
 
 // 登录方法
-func (p *Template) Handle(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
+func (p *Template) Handle(ctx *builder.Context) interface{} {
 
 	return msg.Error("请实现登录方法", "")
 }
 
 // 退出方法
-func (p *Template) Logout(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
+func (p *Template) Logout(ctx *builder.Context) interface{} {
 
 	return msg.Error("请实现退出方法", "")
 }
 
 // 组件渲染
-func (p *Template) Render(request *builder.Request, resource *builder.Resource, templateInstance interface{}) interface{} {
+func (p *Template) Render(ctx *builder.Context) interface{} {
+
+	// 模板实例
+	templateInstance := ctx.Template
+	if templateInstance == nil {
+		return msg.Error("模板实例获取失败", "")
+	}
 
 	// 默认登录接口
-	defaultLoginApi := resource.RouteToResourceUrl("/api/admin/login/:resource/handle")
+	defaultLoginApi := ctx.RouterPathToUrl("/api/admin/login/:resource/handle")
 
 	// 登录接口
 	loginApi := reflect.
@@ -119,11 +125,12 @@ func (p *Template) Render(request *builder.Request, resource *builder.Resource, 
 		FieldByName("SubTitle").String()
 
 	// 获取验证码ID链接
-	captchaIdUrl := resource.RouteToResourceUrl("/api/admin/login/:resource/captchaId")
+	captchaIdUrl := ctx.RouterPathToUrl("/api/admin/login/:resource/captchaId")
 
 	// 验证码链接
-	captchaUrl := resource.RouteToResourceUrl("/api/admin/login/:resource/captcha/:id")
+	captchaUrl := ctx.RouterPathToUrl("/api/admin/login/:resource/captcha/:id")
 
+	// 组件
 	component := (&login.Component{}).
 		Init().
 		SetApi(defaultLoginApi).
