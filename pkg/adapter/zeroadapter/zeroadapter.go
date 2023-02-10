@@ -4,9 +4,7 @@ import (
 	"net/http"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
-	"github.com/quarkcms/quark-go/pkg/msg"
 	"github.com/zeromicro/go-zero/rest"
-	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 // 适配gozero框架路由
@@ -20,11 +18,8 @@ func RouteAdapter(b *builder.Engine, routePath string) http.HandlerFunc {
 		// 设置路由
 		context.SetFullPath(routePath)
 
-		err := b.Render(context)
-		if err != nil {
-			httpx.OkJson(w, msg.Error(err.Error(), ""))
-			return
-		}
+		b.Render(context)
+		return
 	}
 }
 

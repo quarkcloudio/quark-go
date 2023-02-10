@@ -35,11 +35,7 @@ func RouteAdapter(b *builder.Engine, ctx *gin.Context) {
 		ctx.Writer,
 	)
 
-	err = b.Render(context)
-	if err != nil {
-		ctx.JSON(200, msg.Error(err.Error(), ""))
-		return
-	}
+	b.Render(context)
 }
 
 // 适配gin框架
