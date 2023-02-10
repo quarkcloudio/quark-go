@@ -260,7 +260,7 @@ func (c *Context) Write(p []byte) {
 }
 
 // 根据路由判断是否为当前加载实例
-func (p *Context) isCurrentTemplateInstance(provider interface{}) bool {
+func (p *Context) isCurrentTemplate(provider interface{}) bool {
 	providerName := reflect.TypeOf(provider).String()
 	getNames := strings.Split(providerName, ".")
 	structName := getNames[len(getNames)-1]
@@ -283,26 +283,26 @@ func (p *Context) useHandlerParser() error {
 }
 
 // 初始化模板实例
-func (p *Context) InitTemplateInstance() error {
+func (p *Context) InitTemplate() error {
 	var (
 		err              error
 		templateInstance interface{}
 	)
 
 	// 获取模板实例
-	templateInstance, err = p.getTemplateInstance()
+	templateInstance, err = p.getTemplate()
 	if err != nil {
 		return err
 	}
 
 	// 设置模板实例
-	p.setTemplateInstance(templateInstance)
+	p.setTemplate(templateInstance)
 
 	return nil
 }
 
 // 获取当前模板实例
-func (p *Context) getTemplateInstance() (interface{}, error) {
+func (p *Context) getTemplate() (interface{}, error) {
 	var templateInstance interface{}
 
 	for _, provider := range p.Engine.providers {
@@ -319,7 +319,7 @@ func (p *Context) getTemplateInstance() (interface{}, error) {
 
 		for _, v := range templateInstanceRoutes {
 			if v.Path == p.FullPath() {
-				if p.isCurrentTemplateInstance(provider) {
+				if p.isCurrentTemplate(provider) {
 					// 设置实例
 					templateInstance = template
 				}
@@ -335,7 +335,7 @@ func (p *Context) getTemplateInstance() (interface{}, error) {
 }
 
 // 设置当前模板实例
-func (p *Context) setTemplateInstance(templateInstance interface{}) {
+func (p *Context) setTemplate(templateInstance interface{}) {
 	// 设置实例
 	p.Template = templateInstance
 }

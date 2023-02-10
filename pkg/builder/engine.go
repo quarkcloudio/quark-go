@@ -264,7 +264,7 @@ func (p *Engine) Use(args interface{}) {
 }
 
 // 解析模版方法
-func (p *Engine) templateHandleParser(ctx *Context) error {
+func (p *Engine) handleParser(ctx *Context) error {
 	var (
 		result           interface{}
 		err              error
@@ -302,7 +302,7 @@ func (p *Engine) templateHandleParser(ctx *Context) error {
 // 渲染
 func (p *Engine) Render(ctx *Context) error {
 	// 初始化模板
-	err := ctx.InitTemplateInstance()
+	err := ctx.InitTemplate()
 	if err != nil {
 		return err
 	}
@@ -314,7 +314,7 @@ func (p *Engine) Render(ctx *Context) error {
 	}
 
 	// 解析模版方法
-	return p.templateHandleParser(ctx)
+	return p.handleParser(ctx)
 }
 
 // 处理模版上的路由映射关系
@@ -322,44 +322,44 @@ func (p *Engine) routeMappingParser() {
 	for _, provider := range p.providers {
 
 		// 初始化
-		getTemplateInstance := provider.(interface {
+		template := provider.(interface {
 			Init() interface{}
 		}).Init()
 
 		// 获取模板定义的路由
-		templateInstanceRoutes := getTemplateInstance.(interface {
+		routeMapping := template.(interface {
 			GetRouteMapping() []*RouteMapping
 		}).GetRouteMapping()
 
-		for _, v := range templateInstanceRoutes {
+		for _, v := range routeMapping {
 			switch v.Method {
 			case "GET":
 				p.GET(v.Path, func(ctx *Context) error {
-					return p.templateHandleParser(ctx)
+					return p.handleParser(ctx)
 				})
 			case "HEAD":
 				p.HEAD(v.Path, func(ctx *Context) error {
-					return p.templateHandleParser(ctx)
+					return p.handleParser(ctx)
 				})
 			case "OPTIONS":
 				p.OPTIONS(v.Path, func(ctx *Context) error {
-					return p.templateHandleParser(ctx)
+					return p.handleParser(ctx)
 				})
 			case "POST":
 				p.POST(v.Path, func(ctx *Context) error {
-					return p.templateHandleParser(ctx)
+					return p.handleParser(ctx)
 				})
 			case "PUT":
 				p.PUT(v.Path, func(ctx *Context) error {
-					return p.templateHandleParser(ctx)
+					return p.handleParser(ctx)
 				})
 			case "PATCH":
 				p.PATCH(v.Path, func(ctx *Context) error {
-					return p.templateHandleParser(ctx)
+					return p.handleParser(ctx)
 				})
 			case "DELETE":
 				p.DELETE(v.Path, func(ctx *Context) error {
-					return p.templateHandleParser(ctx)
+					return p.handleParser(ctx)
 				})
 			}
 		}
@@ -374,7 +374,7 @@ func (p *Engine) echoHandle(path string, handle Handle, c echo.Context) error {
 	ctx.SetFullPath(path)
 
 	// 初始化模板
-	ctx.InitTemplateInstance()
+	ctx.InitTemplate()
 
 	// 解析UseHandler方法
 	err := ctx.useHandlerParser()
