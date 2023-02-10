@@ -3,24 +3,54 @@ QuarkGO 是一个基于golang的低代码工具；它提供的丰富组件，能
 
 ## 系统特性
 
-**内置功能**
-* 管理员管理
-* 用户管理
-* 权限系统
-* 菜单管理
-* 系统配置
-* 操作日志
-* 附件管理
+- 用户管理
+- 权限系统
+- 菜单管理
+- 系统配置
+- 操作日志
+- 附件管理
+- 组件丰富
 
-**内置组件**
-* Layout组件
-* Container组件
-* Card组件
-* Table组件
-* Form组件
-* Show组件
-* TabForm组件
-* ...
+## 示例
+
+```go
+package main
+
+import (
+	"github.com/quarkcms/quark-go/pkg/app/handler/admin"
+	"github.com/quarkcms/quark-go/pkg/app/install"
+	"github.com/quarkcms/quark-go/pkg/app/middleware"
+	"github.com/quarkcms/quark-go/pkg/builder"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+)
+
+func main() {
+	// 数据库配置信息
+	dsn := "root:Bc5HQFJc4bLjZCcC@tcp(127.0.0.1:3306)/quarkgo?charset=utf8&parseTime=True&loc=Local"
+
+	// 配置资源
+	config := &builder.Config{
+		AppKey:    "123456",
+		Providers: admin.Providers,
+		DBConfig: &builder.DBConfig{
+			Dialector: mysql.Open(dsn),
+			Opts:      &gorm.Config{},
+		},
+	}
+
+	// 创建对象
+	b := builder.New(config)
+
+	// 初始化安装
+	b.Use(install.Handle)
+
+	// 中间件
+	b.Use(middleware.Handle)
+
+	b.Run(":3000")
+}
+```
 
 ## 技术支持
 为了避免打扰作者日常工作，你可以在Github上提交 [Issues](https://github.com/quarkcms/quark-go/issues)

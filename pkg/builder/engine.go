@@ -366,7 +366,7 @@ func (p *Engine) routeMappingParser() {
 	}
 }
 
-// 适配Echo方法
+// 适配Echo框架方法
 func (p *Engine) echoHandle(path string, handle Handle, c echo.Context) error {
 	ctx := p.NewContext(c.Response().Writer, c.Request())
 
