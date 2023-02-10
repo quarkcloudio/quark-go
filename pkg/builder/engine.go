@@ -20,12 +20,18 @@ const Version = "1.1.1"
 // 静态文件URL
 const RespositoryURL = "https://github.com/quarkcms/quark-go/tree/main/website/"
 
+type RoutePath struct {
+	Method string
+	Path   string
+}
+
 type Engine struct {
 	Echo        *echo.Echo                 // 内置Echo
 	UseHandlers []func(ctx *Context) error // 中间件方法
 	config      *Config                    // 配置
 	providers   []interface{}              // 服务列表
-	routerPaths []string                   // 路由路径列表
+	urlPaths    []string                   // 请求路径列表
+	routePaths  []*RoutePath               // 路由路径列表
 }
 
 type RouteMapping struct {
@@ -94,8 +100,8 @@ func New(config *Config) *Engine {
 	// 下载静态文件
 	github.Download(RespositoryURL, config.StaticPath)
 
-	// 初始化路由列表
-	engine.initRouterPaths()
+	// 初始化请求列表
+	engine.initPaths()
 
 	// 调用初始化方法
 	return engine
@@ -152,6 +158,11 @@ func (p *Engine) GetAdminLayout() *AdminLayout {
 	return p.config.AdminLayout
 }
 
+// 获取所有服务
+func (p *Engine) GetProviders() []interface{} {
+	return p.providers
+}
+
 // 创建上下文
 func (p *Engine) NewContext(Writer http.ResponseWriter, Request *http.Request) *Context {
 	return &Context{
@@ -182,13 +193,17 @@ func (p *Engine) TransformContext(fullPath string, header map[string][]string, m
 	return ctx
 }
 
-// 初始化路由路径列表
-func (p *Engine) initRouterPaths() {
-	if p.routerPaths != nil {
+// 初始化请求列表
+func (p *Engine) initPaths() {
+	if p.urlPaths != nil && p.routePaths != nil {
 		return
 	}
 
-	var routerPaths []string
+	var (
+		urlPaths   []string
+		routePaths []*RoutePath
+	)
+
 	for _, provider := range p.providers {
 
 		// 初始化
@@ -236,17 +251,39 @@ func (p *Engine) initRouterPaths() {
 						}
 					}
 				}
-				routerPaths = append(routerPaths, path)
+				urlPaths = append(urlPaths, path)
+			}
+
+			if !hasRoutePath(routePaths, v.Method, v.Path) {
+				routePaths = append(routePaths, &RoutePath{v.Method, v.Path})
 			}
 		}
 	}
 
-	p.routerPaths = routerPaths
+	p.urlPaths = urlPaths
+	p.routePaths = routePaths
 }
 
-// 获取路由路径列表
-func (p *Engine) GetRouterPaths() []string {
-	return p.routerPaths
+// 判断是否存在RoutePath
+func hasRoutePath(routePaths []*RoutePath, method string, path string) bool {
+	var has bool
+	for _, v := range routePaths {
+		if v.Method == method && v.Path == path {
+			has = true
+		}
+	}
+
+	return has
+}
+
+// 获取请求列表
+func (p *Engine) GetUrlPaths() []string {
+	return p.urlPaths
+}
+
+// 获取路由列表
+func (p *Engine) GetRoutePaths() []*RoutePath {
+	return p.routePaths
 }
 
 // 通用调用方法
@@ -319,49 +356,37 @@ func (p *Engine) Render(ctx *Context) error {
 
 // 处理模版上的路由映射关系
 func (p *Engine) routeMappingParser() {
-	for _, provider := range p.providers {
+	for _, routePath := range p.routePaths {
 
-		// 初始化
-		template := provider.(interface {
-			Init() interface{}
-		}).Init()
-
-		// 获取模板定义的路由
-		routeMapping := template.(interface {
-			GetRouteMapping() []*RouteMapping
-		}).GetRouteMapping()
-
-		for _, v := range routeMapping {
-			switch v.Method {
-			case "GET":
-				p.GET(v.Path, func(ctx *Context) error {
-					return p.handleParser(ctx)
-				})
-			case "HEAD":
-				p.HEAD(v.Path, func(ctx *Context) error {
-					return p.handleParser(ctx)
-				})
-			case "OPTIONS":
-				p.OPTIONS(v.Path, func(ctx *Context) error {
-					return p.handleParser(ctx)
-				})
-			case "POST":
-				p.POST(v.Path, func(ctx *Context) error {
-					return p.handleParser(ctx)
-				})
-			case "PUT":
-				p.PUT(v.Path, func(ctx *Context) error {
-					return p.handleParser(ctx)
-				})
-			case "PATCH":
-				p.PATCH(v.Path, func(ctx *Context) error {
-					return p.handleParser(ctx)
-				})
-			case "DELETE":
-				p.DELETE(v.Path, func(ctx *Context) error {
-					return p.handleParser(ctx)
-				})
-			}
+		switch routePath.Method {
+		case "GET":
+			p.GET(routePath.Path, func(ctx *Context) error {
+				return p.handleParser(ctx)
+			})
+		case "HEAD":
+			p.HEAD(routePath.Path, func(ctx *Context) error {
+				return p.handleParser(ctx)
+			})
+		case "OPTIONS":
+			p.OPTIONS(routePath.Path, func(ctx *Context) error {
+				return p.handleParser(ctx)
+			})
+		case "POST":
+			p.POST(routePath.Path, func(ctx *Context) error {
+				return p.handleParser(ctx)
+			})
+		case "PUT":
+			p.PUT(routePath.Path, func(ctx *Context) error {
+				return p.handleParser(ctx)
+			})
+		case "PATCH":
+			p.PATCH(routePath.Path, func(ctx *Context) error {
+				return p.handleParser(ctx)
+			})
+		case "DELETE":
+			p.DELETE(routePath.Path, func(ctx *Context) error {
+				return p.handleParser(ctx)
+			})
 		}
 	}
 }

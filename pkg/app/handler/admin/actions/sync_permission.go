@@ -39,7 +39,7 @@ func (p *SyncPermission) Init() *SyncPermission {
 // 执行行为句柄
 func (p *SyncPermission) Handle(ctx *builder.Context, model *gorm.DB) interface{} {
 	// 获取当前权限
-	permissions := ctx.Engine.GetRouterPaths()
+	permissions := ctx.Engine.GetUrlPaths()
 	data := []models.Permission{}
 
 	var names []string

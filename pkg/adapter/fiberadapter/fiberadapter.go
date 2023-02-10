@@ -31,83 +31,40 @@ func RouteAdapter(b *builder.Engine, ctx *fiber.Ctx) error {
 // 适配gofiber框架
 func Adapter(b *builder.Engine, app *fiber.App) {
 
-	// 后台路由组
-	rg := app.Group("/api/admin")
+	// 获取注册的服务
+	routePaths := b.GetRoutePaths()
 
-	// 登录
-	rg.Get("/login/:resource/index", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Post("/login/:resource/handle", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Get("/login/:resource/captchaId", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Get("/login/:resource/captcha/:id", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Get("/logout/:resource/handle", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-
-	// 仪表盘
-	rg.Get("/dashboard/:resource/index", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-
-	// 增删改查
-	rg.Get("/:resource/index", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Get("/:resource/editable", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.All("/:resource/action/:uriKey", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Get("/:resource/create", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Post("/:resource/store", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Get("/:resource/edit", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Get("/:resource/edit/values", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Post("/:resource/save", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Get("/:resource/detail", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Get("/:resource/export", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.All("/:resource/import", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Get("/:resource/import/template", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Get("/:resource/:uriKey/form", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-
-	// 文件上传
-	rg.Post("/upload/:resource/handle", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Get("/upload/:resource/getList", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Post("/upload/:resource/delete", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
-	rg.Post("/upload/:resource/crop", func(ctx *fiber.Ctx) error {
-		return RouteAdapter(b, ctx)
-	})
+	// 解析服务
+	for _, v := range routePaths {
+		switch v.Method {
+		case "GET":
+			app.Get(v.Path, func(ctx *fiber.Ctx) error {
+				return RouteAdapter(b, ctx)
+			})
+		case "HEAD":
+			app.Head(v.Path, func(ctx *fiber.Ctx) error {
+				return RouteAdapter(b, ctx)
+			})
+		case "OPTIONS":
+			app.Options(v.Path, func(ctx *fiber.Ctx) error {
+				return RouteAdapter(b, ctx)
+			})
+		case "POST":
+			app.Post(v.Path, func(ctx *fiber.Ctx) error {
+				return RouteAdapter(b, ctx)
+			})
+		case "PUT":
+			app.Put(v.Path, func(ctx *fiber.Ctx) error {
+				return RouteAdapter(b, ctx)
+			})
+		case "PATCH":
+			app.Patch(v.Path, func(ctx *fiber.Ctx) error {
+				return RouteAdapter(b, ctx)
+			})
+		case "DELETE":
+			app.Delete(v.Path, func(ctx *fiber.Ctx) error {
+				return RouteAdapter(b, ctx)
+			})
+		}
+	}
 }

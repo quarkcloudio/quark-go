@@ -45,83 +45,40 @@ func RouteAdapter(b *builder.Engine, ctx *gin.Context) {
 // 适配gin框架
 func Adapter(b *builder.Engine, app *gin.Engine) {
 
-	// 后台路由组
-	rg := app.Group("/api/admin")
+	// 获取注册的服务
+	routePaths := b.GetRoutePaths()
 
-	// 登录
-	rg.GET("/login/:resource/index", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.POST("/login/:resource/handle", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/login/:resource/captchaId", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/login/:resource/captcha/:id", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/logout/:resource/handle", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-
-	// 仪表盘
-	rg.GET("/dashboard/:resource/index", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-
-	// 增删改查
-	rg.GET("/:resource/index", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/editable", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.Any("/:resource/action/:uriKey", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/create", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.POST("/:resource/store", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/edit", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/edit/values", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.POST("/:resource/save", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/detail", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/export", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.Any("/:resource/import", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/import/template", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/:uriKey/form", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-
-	// 文件上传
-	rg.POST("/upload/:resource/handle", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/upload/:resource/getList", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.POST("/upload/:resource/delete", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
-	rg.POST("/upload/:resource/crop", func(ctx *gin.Context) {
-		RouteAdapter(b, ctx)
-	})
+	// 解析服务
+	for _, v := range routePaths {
+		switch v.Method {
+		case "GET":
+			app.GET(v.Path, func(ctx *gin.Context) {
+				RouteAdapter(b, ctx)
+			})
+		case "HEAD":
+			app.HEAD(v.Path, func(ctx *gin.Context) {
+				RouteAdapter(b, ctx)
+			})
+		case "OPTIONS":
+			app.OPTIONS(v.Path, func(ctx *gin.Context) {
+				RouteAdapter(b, ctx)
+			})
+		case "POST":
+			app.POST(v.Path, func(ctx *gin.Context) {
+				RouteAdapter(b, ctx)
+			})
+		case "PUT":
+			app.PUT(v.Path, func(ctx *gin.Context) {
+				RouteAdapter(b, ctx)
+			})
+		case "PATCH":
+			app.PATCH(v.Path, func(ctx *gin.Context) {
+				RouteAdapter(b, ctx)
+			})
+		case "DELETE":
+			app.DELETE(v.Path, func(ctx *gin.Context) {
+				RouteAdapter(b, ctx)
+			})
+		}
+	}
 }

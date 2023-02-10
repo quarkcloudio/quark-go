@@ -43,83 +43,40 @@ func RouteAdapter(b *builder.Engine, ctx *app.RequestContext) {
 // 适配hertz框架
 func Adapter(b *builder.Engine, r *server.Hertz) {
 
-	// 后台路由组
-	rg := r.Group("/api/admin")
+	// 获取注册的服务
+	routePaths := b.GetRoutePaths()
 
-	// 登录
-	rg.GET("/login/:resource/index", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.POST("/login/:resource/handle", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/login/:resource/captchaId", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/login/:resource/captcha/:id", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/logout/:resource/handle", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-
-	// 仪表盘
-	rg.GET("/dashboard/:resource/index", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-
-	// 增删改查
-	rg.GET("/:resource/index", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/editable", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.Any("/:resource/action/:uriKey", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/create", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.POST("/:resource/store", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/edit", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/edit/values", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.POST("/:resource/save", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/detail", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/export", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.Any("/:resource/import", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/import/template", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/:resource/:uriKey/form", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-
-	// 文件上传
-	rg.POST("/upload/:resource/handle", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.GET("/upload/:resource/getList", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.POST("/upload/:resource/delete", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
-	rg.POST("/upload/:resource/crop", func(c context.Context, ctx *app.RequestContext) {
-		RouteAdapter(b, ctx)
-	})
+	// 解析服务
+	for _, v := range routePaths {
+		switch v.Method {
+		case "GET":
+			r.GET(v.Path, func(c context.Context, ctx *app.RequestContext) {
+				RouteAdapter(b, ctx)
+			})
+		case "HEAD":
+			r.HEAD(v.Path, func(c context.Context, ctx *app.RequestContext) {
+				RouteAdapter(b, ctx)
+			})
+		case "OPTIONS":
+			r.OPTIONS(v.Path, func(c context.Context, ctx *app.RequestContext) {
+				RouteAdapter(b, ctx)
+			})
+		case "POST":
+			r.POST(v.Path, func(c context.Context, ctx *app.RequestContext) {
+				RouteAdapter(b, ctx)
+			})
+		case "PUT":
+			r.PUT(v.Path, func(c context.Context, ctx *app.RequestContext) {
+				RouteAdapter(b, ctx)
+			})
+		case "PATCH":
+			r.PATCH(v.Path, func(c context.Context, ctx *app.RequestContext) {
+				RouteAdapter(b, ctx)
+			})
+		case "DELETE":
+			r.DELETE(v.Path, func(c context.Context, ctx *app.RequestContext) {
+				RouteAdapter(b, ctx)
+			})
+		}
+	}
 }
