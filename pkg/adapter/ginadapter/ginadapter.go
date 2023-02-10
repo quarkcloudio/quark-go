@@ -3,7 +3,6 @@ package ginadapter
 import (
 	"bytes"
 	"io/ioutil"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/quarkcms/quark-go/pkg/builder"
@@ -21,16 +20,6 @@ func RouteAdapter(b *builder.Engine, ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(200, msg.Error(err.Error(), ""))
 		return
-	}
-
-	headerString := ""
-	for hk, hvs := range ctx.Request.Header {
-		tmp := ""
-		for _, v := range hvs {
-			tmp = tmp + "," + v
-		}
-		tmp = strings.Trim(tmp, ",")
-		headerString = headerString + hk + ": " + tmp + "\r\n"
 	}
 
 	//把读过的字节流重新放到body
