@@ -20,18 +20,13 @@ const Version = "1.1.1"
 // 静态文件URL
 const RespositoryURL = "https://github.com/quarkcms/quark-go/tree/main/website/"
 
-type RoutePath struct {
-	Method string
-	Path   string
-}
-
 type Engine struct {
 	Echo        *echo.Echo                 // 内置Echo
 	UseHandlers []func(ctx *Context) error // 中间件方法
 	config      *Config                    // 配置
 	providers   []interface{}              // 服务列表
 	urlPaths    []string                   // 请求路径列表
-	routePaths  []*RoutePath               // 路由路径列表
+	routePaths  []*RouteMapping            // 路由路径列表
 }
 
 type RouteMapping struct {
@@ -201,7 +196,7 @@ func (p *Engine) initPaths() {
 
 	var (
 		urlPaths   []string
-		routePaths []*RoutePath
+		routePaths []*RouteMapping
 	)
 
 	for _, provider := range p.providers {
@@ -255,7 +250,7 @@ func (p *Engine) initPaths() {
 			}
 
 			if !hasRoutePath(routePaths, v.Method, v.Path) {
-				routePaths = append(routePaths, &RoutePath{v.Method, v.Path})
+				routePaths = append(routePaths, &RouteMapping{v.Method, v.Path, v.HandlerName})
 			}
 		}
 	}
@@ -265,7 +260,7 @@ func (p *Engine) initPaths() {
 }
 
 // 判断是否存在RoutePath
-func hasRoutePath(routePaths []*RoutePath, method string, path string) bool {
+func hasRoutePath(routePaths []*RouteMapping, method string, path string) bool {
 	var has bool
 	for _, v := range routePaths {
 		if v.Method == method && v.Path == path {
@@ -282,7 +277,7 @@ func (p *Engine) GetUrlPaths() []string {
 }
 
 // 获取路由列表
-func (p *Engine) GetRoutePaths() []*RoutePath {
+func (p *Engine) GetRoutePaths() []*RouteMapping {
 	return p.routePaths
 }
 
@@ -312,11 +307,7 @@ func (p *Engine) handleParser(ctx *Context) error {
 	templateInstance = ctx.Template
 
 	// 执行挂载的方法
-	templateInstanceRoutes := templateInstance.(interface {
-		GetRouteMapping() []*RouteMapping
-	}).GetRouteMapping()
-
-	for _, v := range templateInstanceRoutes {
+	for _, v := range p.routePaths {
 		if v.Path == ctx.FullPath() {
 			getResult := reflect.
 				ValueOf(templateInstance).

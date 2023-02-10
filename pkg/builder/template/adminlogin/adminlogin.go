@@ -33,9 +33,6 @@ func (p *Template) TemplateInit() interface{} {
 	// 初始化数据对象
 	p.DB = db.Client
 
-	// 清空路由映射
-	p.ClearRouteMapping()
-
 	// 注册路由映射
 	p.GET("/api/admin/login/:resource/index", "Render")        // 渲染登录页面路由
 	p.POST("/api/admin/login/:resource/handle", "Handle")      // 后台登录执行路由

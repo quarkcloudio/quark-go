@@ -48,9 +48,6 @@ func (p *Template) TemplateInit() interface{} {
 	// 初始化数据对象
 	p.DB = db.Client
 
-	// 清空路由映射
-	p.ClearRouteMapping()
-
 	// 注册路由映射
 	p.GET(IndexRoute, "Render")          // 后台增删改查，列表路由
 	p.GET(EditableRoute, "Render")       // 后台增删改查，表格行内编辑路由

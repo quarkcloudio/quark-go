@@ -45,9 +45,6 @@ func (p *Template) TemplateInit() interface{} {
 	// 默认本地上传
 	p.Driver = storage.LocalDriver
 
-	// 清空路由映射
-	p.ClearRouteMapping()
-
 	// 注册路由映射
 	p.POST("/api/admin/upload/:resource/handle", "Handle")
 	p.POST("/api/admin/upload/:resource/base64Handle", "HandleFromBase64")

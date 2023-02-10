@@ -26,21 +26,29 @@ func (p *AdminTemplate) GetRouteMapping() []*builder.RouteMapping {
 	return p.RouteMapping
 }
 
-// 注册路由
-func (p *AdminTemplate) AddRouteMapping(method string, path string, handlerName string) *AdminTemplate {
-	getRoute := &builder.RouteMapping{
-		Method:      method,
-		Path:        path,
-		HandlerName: handlerName,
+// 是否存在路由
+func (p *AdminTemplate) hasRouteMapping(method string, path string, handlerName string) bool {
+	has := false
+	for _, v := range p.RouteMapping {
+		if v.Method == method && v.Path == path && v.HandlerName == handlerName {
+			has = true
+		}
 	}
-	p.RouteMapping = append(p.RouteMapping, getRoute)
 
-	return p
+	return has
 }
 
-// 清除路由
-func (p *AdminTemplate) ClearRouteMapping() *AdminTemplate {
-	p.RouteMapping = nil
+// 注册路由
+func (p *AdminTemplate) AddRouteMapping(method string, path string, handlerName string) *AdminTemplate {
+	if !p.hasRouteMapping(method, path, handlerName) {
+		getRoute := &builder.RouteMapping{
+			Method:      method,
+			Path:        path,
+			HandlerName: handlerName,
+		}
+
+		p.RouteMapping = append(p.RouteMapping, getRoute)
+	}
 
 	return p
 }
