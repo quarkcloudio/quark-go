@@ -80,11 +80,11 @@ func (p *Image) GetList(ctx *builder.Context) interface{} {
 		return msg.Error(err.Error(), "")
 	}
 
-	return msg.Success("上传成功", "", map[string]interface{}{
+	return ctx.JSON(200, msg.Success("上传成功", "", map[string]interface{}{
 		"pagination": pagination,
 		"lists":      pictures,
 		"categorys":  categorys,
-	})
+	}))
 }
 
 // 图片删除
@@ -92,14 +92,14 @@ func (p *Image) Delete(ctx *builder.Context) interface{} {
 	data := map[string]interface{}{}
 	json.Unmarshal(ctx.Body(), &data)
 	if data["id"] == "" {
-		return msg.Error("参数错误！", "")
+		return ctx.JSON(200, msg.Error("参数错误！", ""))
 	}
 
 	err := (&model.Picture{}).DeleteById(data["id"])
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSON(200, msg.Error(err.Error(), ""))
 	} else {
-		return msg.Success("操作成功！", "", "")
+		return ctx.JSON(200, msg.Success("操作成功！", "", ""))
 	}
 }
 
@@ -115,18 +115,18 @@ func (p *Image) Crop(ctx *builder.Context) interface{} {
 		return msg.Error(err.Error(), "")
 	}
 	if data["id"] == "" {
-		return msg.Error("参数错误！", "")
+		return ctx.JSON(200, msg.Error("参数错误！", ""))
 	}
 	if data["file"] == "" {
-		return msg.Error("参数错误！", "")
+		return ctx.JSON(200, msg.Error("参数错误！", ""))
 	}
 
 	pictureInfo, err := (&model.Picture{}).GetInfoById(data["id"])
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSON(200, msg.Error(err.Error(), ""))
 	}
 	if pictureInfo.Id == 0 {
-		return msg.Error("文件不存在", "")
+		return ctx.JSON(200, msg.Error("文件不存在", ""))
 	}
 
 	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
@@ -139,12 +139,12 @@ func (p *Image) Crop(ctx *builder.Context) interface{} {
 
 	files := strings.Split(data["file"].(string), ",")
 	if len(files) != 2 {
-		return msg.Error("格式错误", "")
+		return ctx.JSON(200, msg.Error("格式错误", ""))
 	}
 
 	fileData, err := base64.StdEncoding.DecodeString(files[1]) //成图片文件并把文件写入到buffer
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSON(200, msg.Error(err.Error(), ""))
 	}
 
 	limitSize := reflect.
@@ -240,7 +240,7 @@ func (p *Image) Crop(ctx *builder.Context) interface{} {
 		Save()
 
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSON(200, msg.Error(err.Error(), ""))
 	}
 
 	// 重写url
@@ -263,7 +263,7 @@ func (p *Image) Crop(ctx *builder.Context) interface{} {
 		Status:  1,
 	})
 
-	return msg.Success("裁剪成功", "", result)
+	return ctx.JSON(200, msg.Success("裁剪成功", "", result))
 }
 
 // 上传前回调
@@ -327,5 +327,5 @@ func (p *Image) AfterHandle(ctx *builder.Context, result *storage.FileInfo) inte
 		Status:  1,
 	})
 
-	return msg.Success("上传成功", "", result)
+	return ctx.JSON(200, msg.Success("上传成功", "", result))
 }

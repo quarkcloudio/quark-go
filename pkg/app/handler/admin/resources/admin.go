@@ -259,10 +259,10 @@ func (p *Admin) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
 	json.Unmarshal(ctx.Body(), &data)
 	if data["role_ids"] == nil {
 		if model.Error != nil {
-			return msg.Error(model.Error.Error(), "")
+			return ctx.JSON(200, msg.Error(model.Error.Error(), ""))
 		}
 
-		return msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), "")
+		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
 	}
 
 	if ctx.IsCreating() {
@@ -309,5 +309,5 @@ func (p *Admin) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
 		}
 	}
 
-	return msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), "")
+	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
 }

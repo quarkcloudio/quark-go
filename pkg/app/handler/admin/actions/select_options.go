@@ -31,5 +31,5 @@ func (p *SelectOptions) Handle(ctx *builder.Context, model *gorm.DB) interface{}
 		}
 	}
 
-	return msg.Success("操作成功", "", results)
+	return ctx.JSON(200, msg.Success("操作成功", "", results))
 }

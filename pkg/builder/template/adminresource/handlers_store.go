@@ -33,14 +33,14 @@ func (p *StoreRequest) Handle(ctx *builder.Context) interface{} {
 		BeforeSaving(ctx *builder.Context, data map[string]interface{}) (map[string]interface{}, error)
 	}).BeforeSaving(ctx, data)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSON(200, msg.Error(err.Error(), ""))
 	}
 
 	validator := ctx.Template.(interface {
 		ValidatorForCreation(ctx *builder.Context, data map[string]interface{}) error
 	}).ValidatorForCreation(ctx, data)
 	if validator != nil {
-		msg.Error(validator.Error(), "")
+		return ctx.JSON(200, msg.Error(validator.Error(), ""))
 	}
 
 	for _, v := range fields.([]interface{}) {

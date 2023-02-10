@@ -160,7 +160,7 @@ func (p *Role) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
 		Pluck("id", &permissionIds)
 
 	if len(permissionIds) == 0 {
-		return msg.Error("获取的权限为空，请先在菜单管理中绑定权限", "")
+		return ctx.JSON(200, msg.Error("获取的权限为空，请先在菜单管理中绑定权限", ""))
 	}
 
 	var result *gorm.DB
@@ -179,10 +179,10 @@ func (p *Role) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
 	}
 
 	if result.Error != nil {
-		return msg.Error(result.Error.Error(), "")
+		return ctx.JSON(200, msg.Error(result.Error.Error(), ""))
 	}
 
-	return msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), "")
+	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
 }
 
 // 保存后回调

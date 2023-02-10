@@ -40,12 +40,12 @@ func (p *ChangeWebConfig) Handle(ctx *builder.Context, model *gorm.DB) interface
 	}
 
 	if !result {
-		return msg.Error("操作失败，请重试！", "")
+		return ctx.JSON(200, msg.Error("操作失败，请重试！", ""))
 	}
 
 	// 刷新网站配置
 	(&models.Config{}).Refresh()
 
 	// 返回成功
-	return msg.Success("操作成功", "", "")
+	return ctx.JSON(200, msg.Success("操作成功", "", ""))
 }

@@ -79,7 +79,7 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) inter
 
 	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSON(200, msg.Error(err.Error(), ""))
 	}
 
 	// 插入数据库
@@ -95,5 +95,5 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) inter
 		Status:  1,
 	})
 
-	return msg.Success("上传成功", "", result)
+	return ctx.JSON(200, msg.Success("上传成功", "", result))
 }

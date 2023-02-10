@@ -53,7 +53,7 @@ func (p *ChangeStatus) GetApiParams() []string {
 func (p *ChangeStatus) Handle(ctx *builder.Context, model *gorm.DB) interface{} {
 	status := ctx.Query("status")
 	if status == "" {
-		return msg.Error("参数错误！", "")
+		return ctx.JSON(200, msg.Error("参数错误！", ""))
 	}
 
 	var fieldStatus int
@@ -65,8 +65,8 @@ func (p *ChangeStatus) Handle(ctx *builder.Context, model *gorm.DB) interface{} 
 
 	err := model.Update("status", fieldStatus).Error
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSON(200, msg.Error(err.Error(), ""))
 	}
 
-	return msg.Success("操作成功", "", "")
+	return ctx.JSON(200, msg.Success("操作成功", "", ""))
 }

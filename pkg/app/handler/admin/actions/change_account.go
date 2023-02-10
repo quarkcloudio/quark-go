@@ -41,5 +41,5 @@ func (p *ChangeAccount) Handle(ctx *builder.Context, model *gorm.DB) interface{}
 		return msg.Error(err.Error(), "")
 	}
 
-	return msg.Success("操作成功", "", "")
+	return ctx.JSON(200, msg.Success("操作成功", "", ""))
 }

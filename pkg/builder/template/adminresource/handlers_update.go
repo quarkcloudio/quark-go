@@ -105,7 +105,7 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) interface{} {
 				}
 
 				if reflectFieldName.Type().String() != reflectValue.Type().String() {
-					return msg.Error("结构体类型与传参类型不一致！", "")
+					return ctx.JSON(200, msg.Error("结构体类型与传参类型不一致！", ""))
 				}
 
 				reflectFieldName.Set(reflectValue)

@@ -99,6 +99,8 @@ func (p *Template) Render(ctx *builder.Context) interface{} {
 		result = ctx.Template.(interface {
 			PageComponentRender(ctx *builder.Context, body interface{}) interface{}
 		}).PageComponentRender(ctx, body)
+
+		return ctx.JSON(200, result)
 	case EditableRoute: // 表格行内编辑
 		result = (&EditableRequest{}).Handle(ctx)
 	case ActionRoute: // 执行行为路由
@@ -118,6 +120,8 @@ func (p *Template) Render(ctx *builder.Context) interface{} {
 		result = ctx.Template.(interface {
 			PageComponentRender(ctx *builder.Context, body interface{}) interface{}
 		}).PageComponentRender(ctx, body)
+
+		return ctx.JSON(200, result)
 	case StoreRoute: // 创建方法路由
 		result = (&StoreRequest{}).Handle(ctx)
 	case EditRoute: // 编辑页面路由
@@ -138,11 +142,11 @@ func (p *Template) Render(ctx *builder.Context) interface{} {
 		result = ctx.Template.(interface {
 			PageComponentRender(ctx *builder.Context, body interface{}) interface{}
 		}).PageComponentRender(ctx, body)
-	case EditValuesRoute: // 获取编辑表单值
 
+		return ctx.JSON(200, result)
+	case EditValuesRoute: // 获取编辑表单值
 		result = (&EditRequest{}).Values(ctx)
 	case SaveRoute: // 保存编辑值
-
 		result = (&UpdateRequest{}).Handle(ctx)
 	case DetailRoute: // 详情页面
 		data := (&DetailRequest{}).FillData(ctx)
@@ -160,6 +164,8 @@ func (p *Template) Render(ctx *builder.Context) interface{} {
 		result = ctx.Template.(interface {
 			PageComponentRender(ctx *builder.Context, body interface{}) interface{}
 		}).PageComponentRender(ctx, body)
+
+		return ctx.JSON(200, result)
 	case ExportRoute: // 导出数据
 		result = (&ExportRequest{}).Handle(ctx)
 	case ImportRoute: // 导入数据
@@ -180,7 +186,9 @@ func (p *Template) Render(ctx *builder.Context) interface{} {
 		result = ctx.Template.(interface {
 			PageComponentRender(ctx *builder.Context, body interface{}) interface{}
 		}).PageComponentRender(ctx, body)
+
+		return ctx.JSON(200, result)
 	}
 
-	return ctx.JSON(200, result)
+	return result
 }

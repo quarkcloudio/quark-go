@@ -47,7 +47,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context) interface{} {
 
 	importData, err := (&models.File{}).GetExcelData(getFileId)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSON(200, msg.Error(err.Error(), ""))
 	}
 
 	// 表格头部
@@ -128,7 +128,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context) interface{} {
 	}
 
 	if importResult {
-		return msg.Success("操作成功！", strings.Replace("/index?api="+IndexRoute, ":resource", ctx.Param("resource"), -1), "")
+		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
 	} else {
 		importHead = append(importHead, "错误信息")
 

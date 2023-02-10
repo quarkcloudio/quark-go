@@ -61,7 +61,7 @@ func (p *SyncPermission) Handle(ctx *builder.Context, model *gorm.DB) interface{
 		}
 	}
 	if len(data) == 0 {
-		return msg.Error("暂无新增权限！", "")
+		return ctx.JSON(200, msg.Error("暂无新增权限！", ""))
 	}
 
 	err := model.Create(data).Error
@@ -74,5 +74,5 @@ func (p *SyncPermission) Handle(ctx *builder.Context, model *gorm.DB) interface{
 		return msg.Error(err.Error(), "")
 	}
 
-	return msg.Success("操作成功", "", "")
+	return ctx.JSON(200, msg.Success("操作成功", "", ""))
 }

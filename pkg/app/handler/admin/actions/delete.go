@@ -1,6 +1,8 @@
 package actions
 
 import (
+	"fmt"
+
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/actions"
 	"github.com/quarkcms/quark-go/pkg/msg"
@@ -57,8 +59,10 @@ func (p *Delete) GetApiParams() []string {
 func (p *Delete) Handle(ctx *builder.Context, model *gorm.DB) interface{} {
 	err := model.Delete("").Error
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSON(200, msg.Error(err.Error(), ""))
 	}
 
-	return msg.Success("操作成功", "", "")
+	fmt.Println("abcd")
+
+	return ctx.JSON(200, msg.Success("操作成功", "", ""))
 }
