@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
@@ -99,7 +100,11 @@ func (p *ExportRequest) Handle(ctx *builder.Context) interface{} {
 	f.SetActiveSheet(index)
 	buf, _ := f.WriteToBuffer()
 
-	return buf.Bytes()
+	ctx.Writer.Header().Set("Content-Disposition", "attachment; filename=data_"+time.Now().Format("20060102150405")+".xlsx")
+	ctx.Writer.Header().Set("Content-Type", "application/octet-stream")
+	ctx.Writer.Write(buf.Bytes())
+
+	return nil
 }
 
 // 获取属性值

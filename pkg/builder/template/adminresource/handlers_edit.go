@@ -61,5 +61,5 @@ func (p *EditRequest) Values(ctx *builder.Context) interface{} {
 		BeforeEditing(*builder.Context, map[string]interface{}) map[string]interface{}
 	}).BeforeEditing(ctx, data)
 
-	return msg.Success("获取成功", "", data)
+	return ctx.JSON(200, msg.Success("获取成功", "", data))
 }

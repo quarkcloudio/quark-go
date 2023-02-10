@@ -10,7 +10,6 @@ import (
 
 	"github.com/derekstavis/go-qs"
 	"github.com/gobeam/stringy"
-	"github.com/julienschmidt/httprouter"
 )
 
 // Context is the most important part of gin. It allows us to pass variables between middleware,
@@ -21,8 +20,13 @@ type Context struct {
 	Writer   http.ResponseWriter    // ResponseWriter
 	Template interface{}            // 资源模板实例
 	fullPath string                 // 路由
-	Params   httprouter.Params      // URL param
+	Params   map[string]string      // URL param
 	Querys   map[string]interface{} // URL querys
+}
+
+type ParamValue struct {
+	Key   int
+	Value string
 }
 
 // 设置SetFullPath
@@ -83,58 +87,9 @@ func (p *Context) Body() []byte {
 	return body
 }
 
-// 设置Params
-func (p *Context) SetParams(params httprouter.Params) *Context {
-	p.Params = params
-
-	return p
-}
-
 // Param returns the value of the URL param.
 // It is a shortcut for c.Params.ByName(key)
-//
-//	router.GET("/user/:id", func(c *hertz.RequestContext) {
-//	    // a GET request to /user/john
-//	    id := c.Param("id") // id == "john"
-//	})
-func (p *Context) Param(key string) string {
-	return p.Params.ByName(key)
-}
-
-// Query returns the value of the URL Querys.
-func (p *Context) parseQuerys() {
-	querys, err := qs.Unmarshal(p.Request.URL.RawQuery)
-	if err == nil {
-		p.Querys = querys
-	}
-}
-
-// Query returns the value of the URL query.
-func (p *Context) Query(params ...interface{}) interface{} {
-	if len(params) == 2 {
-		if p.Querys[params[0].(string)] == nil {
-			return params[1]
-		}
-	}
-
-	return p.Querys[params[0].(string)]
-}
-
-// AllQuerys returns all query arguments from RequestURI.
-func (p *Context) AllQuerys() map[string]interface{} {
-	return p.Querys
-}
-
-// ResourceName returns the value of the URL Resource param.
-// If request path is "/api/admin/login/index" and route is "/api/admin/login/:resource"
-//
-//	resourceName := p.ResourceName() // resourceName = "index"
-func (p *Context) ResourceName() string {
-	type ParamValue struct {
-		Key   int
-		Value string
-	}
-
+func (p *Context) parseParams() {
 	params := map[string]string{}
 	fullPaths := strings.Split(p.FullPath(), "/")
 	paramValues := []*ParamValue{}
@@ -154,7 +109,69 @@ func (p *Context) ResourceName() string {
 		params[v.Value] = paths[v.Key]
 	}
 
-	return params["resource"]
+	p.SetParams(params)
+}
+
+// 设置Params
+func (p *Context) SetParams(params map[string]string) *Context {
+	p.Params = params
+
+	return p
+}
+
+// Param returns the value of the URL param.
+// It is a shortcut for c.Params.ByName(key)
+//
+//	router.GET("/user/:id", func(c *hertz.RequestContext) {
+//	    // a GET request to /user/john
+//	    id := c.Param("id") // id == "john"
+//	})
+func (p *Context) Param(key string) string {
+	if p.Params == nil {
+		p.parseParams()
+	}
+
+	return p.Params[key]
+}
+
+// Query returns the value of the URL Querys.
+func (p *Context) parseQuerys() {
+	querys, err := qs.Unmarshal(p.Request.URL.RawQuery)
+	if err == nil {
+		p.Querys = querys
+	}
+}
+
+// Query returns the value of the URL query.
+func (p *Context) Query(params ...interface{}) interface{} {
+	if p.Querys == nil {
+		p.parseQuerys()
+	}
+
+	if len(params) == 2 {
+		if p.Querys[params[0].(string)] == nil {
+			return params[1]
+		}
+	}
+
+	return p.Querys[params[0].(string)]
+}
+
+// AllQuerys returns all query arguments from RequestURI.
+func (p *Context) AllQuerys() map[string]interface{} {
+	if p.Querys == nil {
+		p.parseQuerys()
+	}
+
+	return p.Querys
+}
+
+// ResourceName returns the value of the URL Resource param.
+// If request path is "/api/admin/login/index" and route is "/api/admin/login/:resource"
+//
+//	resourceName := p.ResourceName() // resourceName = "index"
+func (p *Context) ResourceName() string {
+	return p.Param("resource")
 }
 
 // 替换路由中的资源参数
@@ -321,4 +338,17 @@ func (p *Context) getTemplateInstance() (interface{}, error) {
 func (p *Context) setTemplateInstance(templateInstance interface{}) {
 	// 设置实例
 	p.Template = templateInstance
+}
+
+// 输出Json数据
+func (p *Context) JSON(code int, data interface{}) error {
+	p.Writer.Header().Set("Content-Type", "application/json")
+	p.Writer.WriteHeader(code)
+
+	err := json.NewEncoder(p.Writer).Encode(data)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

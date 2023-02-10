@@ -123,5 +123,5 @@ func (p *Template) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} 
 		return msg.Error(model.Error.Error(), "")
 	}
 
-	return msg.Success("操作成功！", strings.Replace("/index?api="+IndexRoute, ":resource", ctx.Param("resource"), -1), "")
+	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
 }

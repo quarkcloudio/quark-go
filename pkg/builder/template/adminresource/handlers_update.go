@@ -29,7 +29,7 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) interface{} {
 	data := map[string]interface{}{}
 	json.Unmarshal(ctx.Body(), &data)
 	if data["id"] == "" {
-		return msg.Error("参数错误！", "")
+		return ctx.JSON(200, msg.Error("参数错误！", ""))
 	}
 
 	data, err := ctx.Template.(interface {

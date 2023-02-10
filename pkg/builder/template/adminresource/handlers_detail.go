@@ -61,5 +61,5 @@ func (p *DetailRequest) Values(ctx *builder.Context) interface{} {
 		BeforeDetailShowing(*builder.Context, map[string]interface{}) map[string]interface{}
 	}).BeforeDetailShowing(ctx, data)
 
-	return msg.Success("获取成功", "", data)
+	return ctx.JSON(200, msg.Success("获取成功", "", data))
 }

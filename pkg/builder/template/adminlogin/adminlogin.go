@@ -57,26 +57,22 @@ func (p *Template) TemplateInit() interface{} {
 
 // 验证码ID
 func (p *Template) CaptchaId(ctx *builder.Context) interface{} {
-
-	return msg.Error("请实现创建验证码ID方法", "")
+	return ctx.JSON(200, msg.Error("请实现创建验证码ID方法", ""))
 }
 
 // 生成验证码
 func (p *Template) Captcha(ctx *builder.Context) interface{} {
-
-	return msg.Error("请实现生成验证码方法", "")
+	return ctx.JSON(200, msg.Error("请实现生成验证码方法", ""))
 }
 
 // 登录方法
 func (p *Template) Handle(ctx *builder.Context) interface{} {
-
-	return msg.Error("请实现登录方法", "")
+	return ctx.JSON(200, msg.Error("请实现登录方法", ""))
 }
 
 // 退出方法
 func (p *Template) Logout(ctx *builder.Context) interface{} {
-
-	return msg.Error("请实现退出方法", "")
+	return ctx.JSON(200, msg.Error("请实现退出方法", ""))
 }
 
 // 组件渲染
@@ -85,7 +81,7 @@ func (p *Template) Render(ctx *builder.Context) interface{} {
 	// 模板实例
 	templateInstance := ctx.Template
 	if templateInstance == nil {
-		return msg.Error("模板实例获取失败", "")
+		return ctx.JSON(200, msg.Error("模板实例获取失败", ""))
 	}
 
 	// 默认登录接口
@@ -142,5 +138,5 @@ func (p *Template) Render(ctx *builder.Context) interface{} {
 		SetCaptchaUrl(captchaUrl).
 		JsonSerialize()
 
-	return component
+	return ctx.JSON(200, component)
 }

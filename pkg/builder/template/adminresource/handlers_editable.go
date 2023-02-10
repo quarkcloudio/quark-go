@@ -34,5 +34,5 @@ func (p *EditableRequest) Handle(ctx *builder.Context) interface{} {
 		msg.Error(err.Error(), "")
 	}
 
-	return msg.Success("操作成功", "", "")
+	return ctx.JSON(200, msg.Success("操作成功", "", ""))
 }

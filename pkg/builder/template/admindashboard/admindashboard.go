@@ -56,7 +56,7 @@ func (p *Template) Render(ctx *builder.Context) interface{} {
 		Cards(*builder.Context) interface{}
 	}).Cards(ctx)
 	if cards == nil {
-		return msg.Error("请实现Cards内容", "")
+		return ctx.JSON(200, msg.Error("请实现Cards内容", ""))
 	}
 
 	var cols []interface{}
@@ -104,7 +104,9 @@ func (p *Template) Render(ctx *builder.Context) interface{} {
 		body = append(body, row)
 	}
 
-	return ctx.Template.(interface {
+	component := ctx.Template.(interface {
 		PageComponentRender(ctx *builder.Context, body interface{}) interface{}
 	}).PageComponentRender(ctx, body)
+
+	return ctx.JSON(200, component)
 }

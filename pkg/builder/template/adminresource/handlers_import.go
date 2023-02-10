@@ -36,7 +36,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context) interface{} {
 	}
 
 	if getFileId == 0 {
-		return msg.Error("参数错误！", "")
+		return ctx.JSON(200, msg.Error("参数错误！", ""))
 	}
 
 	modelInstance := reflect.

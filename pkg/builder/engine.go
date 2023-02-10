@@ -1,7 +1,6 @@
 package builder
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"reflect"
@@ -9,7 +8,7 @@ import (
 	"time"
 
 	"github.com/jinzhu/copier"
-	"github.com/julienschmidt/httprouter"
+	"github.com/labstack/echo/v4"
 	"github.com/quarkcms/quark-go/pkg/dal"
 	"github.com/quarkcms/quark-go/pkg/github"
 	"gorm.io/gorm"
@@ -22,7 +21,7 @@ const Version = "1.1.1"
 const RespositoryURL = "https://github.com/quarkcms/quark-go/tree/main/website/"
 
 type Engine struct {
-	Router      *httprouter.Router         // 路由
+	Echo        *echo.Echo                 // 内置Echo
 	UseHandlers []func(ctx *Context) error // 中间件方法
 	config      *Config                    // 配置
 	providers   []interface{}              // 服务列表
@@ -69,14 +68,13 @@ type AdminLayout struct {
 // Handle is a function that can be registered to a route to handle HTTP
 // requests. Like http.HandlerFunc, but has a third parameter for the values of
 // wildcards (path variables).
-type Handle func(ctx *Context)
+type Handle func(ctx *Context) error
 
 // 初始化对象
 func New(config *Config) *Engine {
 
-	// 初始化路由对象
-	router := httprouter.New()
-	router.RedirectTrailingSlash = true
+	// 初始化echo引擎
+	e := echo.New()
 
 	// 初始化数据库
 	if config.DBConfig != nil {
@@ -88,7 +86,7 @@ func New(config *Config) *Engine {
 
 	// 定义结构体
 	engine := &Engine{
-		Router:    router,
+		Echo:      e,
 		providers: config.Providers,
 		config:    config,
 	}
@@ -98,9 +96,6 @@ func New(config *Config) *Engine {
 
 	// 初始化路由列表
 	engine.initRouterPaths()
-
-	// 处理模版上的路由映射关系
-	engine.routeMappingParser()
 
 	// 调用初始化方法
 	return engine
@@ -167,12 +162,15 @@ func (p *Engine) NewContext(Writer http.ResponseWriter, Request *http.Request) *
 }
 
 // 转换Request、Response对象
-func (p *Engine) TransformContext(fullPath string, method string, url string, body io.Reader, writer io.Writer) *Context {
+func (p *Engine) TransformContext(fullPath string, header map[string][]string, method string, url string, body io.Reader, writer io.Writer) *Context {
 	// 转换为http.ResponseWriter
 	w := NewResponse(writer)
 
 	// 转换为http.Request
 	r := NewRequest(method, url, body)
+
+	// 转换Header
+	r.Header = header
 
 	// 创建上下文
 	ctx := p.NewContext(w, r)
@@ -266,7 +264,7 @@ func (p *Engine) Use(args interface{}) {
 }
 
 // 解析模版方法
-func (p *Engine) templateHandleParser(ctx *Context) (interface{}, error) {
+func (p *Engine) templateHandleParser(ctx *Context) error {
 	var (
 		result           interface{}
 		err              error
@@ -282,29 +280,37 @@ func (p *Engine) templateHandleParser(ctx *Context) (interface{}, error) {
 	}).GetRouteMapping()
 
 	for _, v := range templateInstanceRoutes {
-		handle, params, result := p.Router.Lookup(v.Method, ctx.FullPath())
-
-		fmt.Println(result)
-		if result {
-			handle(ctx.Writer, ctx.Request, params)
+		if v.Path == ctx.FullPath() {
+			getResult := reflect.
+				ValueOf(templateInstance).
+				MethodByName(v.HandlerName).
+				Call([]reflect.Value{
+					reflect.ValueOf(ctx),
+				})
+			if len(getResult) == 1 {
+				result = getResult[0].Interface()
+				if v, ok := result.(error); ok {
+					err = v
+				}
+			}
 		}
 	}
 
-	return result, err
+	return err
 }
 
 // 渲染
-func (p *Engine) Render(ctx *Context) (interface{}, error) {
+func (p *Engine) Render(ctx *Context) error {
 	// 初始化模板
 	err := ctx.InitTemplateInstance()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// 解析UseHandler方法
 	err = ctx.useHandlerParser()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// 解析模版方法
@@ -326,229 +332,141 @@ func (p *Engine) routeMappingParser() {
 		}).GetRouteMapping()
 
 		for _, v := range templateInstanceRoutes {
-
-			// 匿名函数
-			handle := func(ctx *Context) {
-
-				handlerResult := reflect.
-					ValueOf(provider).
-					MethodByName(v.HandlerName).
-					Call([]reflect.Value{
-						reflect.ValueOf(ctx),
-					})
-
-				if len(handlerResult) == 1 {
-					handlerResult[0].Interface()
-				}
-			}
-
 			switch v.Method {
 			case "GET":
-				p.GET(v.Path, handle)
+				p.GET(v.Path, func(ctx *Context) error {
+					return p.templateHandleParser(ctx)
+				})
 			case "HEAD":
-				p.HEAD(v.Path, handle)
+				p.HEAD(v.Path, func(ctx *Context) error {
+					return p.templateHandleParser(ctx)
+				})
 			case "OPTIONS":
-				p.OPTIONS(v.Path, handle)
+				p.OPTIONS(v.Path, func(ctx *Context) error {
+					return p.templateHandleParser(ctx)
+				})
 			case "POST":
-				p.POST(v.Path, handle)
+				p.POST(v.Path, func(ctx *Context) error {
+					return p.templateHandleParser(ctx)
+				})
 			case "PUT":
-				p.PUT(v.Path, handle)
+				p.PUT(v.Path, func(ctx *Context) error {
+					return p.templateHandleParser(ctx)
+				})
 			case "PATCH":
-				p.PATCH(v.Path, handle)
+				p.PATCH(v.Path, func(ctx *Context) error {
+					return p.templateHandleParser(ctx)
+				})
 			case "DELETE":
-				p.DELETE(v.Path, handle)
+				p.DELETE(v.Path, func(ctx *Context) error {
+					return p.templateHandleParser(ctx)
+				})
 			}
 		}
 	}
 }
 
+// 适配Echo方法
+func (p *Engine) echoHandle(path string, handle Handle, c echo.Context) error {
+	ctx := p.NewContext(c.Response().Writer, c.Request())
+
+	// 设置路由路径
+	ctx.SetFullPath(path)
+
+	// 初始化模板
+	ctx.InitTemplateInstance()
+
+	// 解析UseHandler方法
+	err := ctx.useHandlerParser()
+	if err != nil {
+		panic(err)
+	}
+
+	// 执行方法
+	return handle(ctx)
+}
+
 // GET is a shortcut for router.Handle(http.MethodGet, path, handle)
-func (p *Engine) GET(path string, handle Handle) {
-	p.Router.Handle(http.MethodGet, path, func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		ctx := p.NewContext(w, r)
-
-		// 设置路由路径
-		ctx.SetFullPath(path)
-
-		// 设置Params
-		ctx.SetParams(ps)
-
-		// 初始化模板
-		ctx.InitTemplateInstance()
-
-		// 解析UseHandler方法
-		err := ctx.useHandlerParser()
-		if err != nil {
-			panic(err)
-		}
-
-		// 执行方法
-		handle(ctx)
+func (p *Engine) GET(path string, handle Handle) error {
+	p.Echo.GET(path, func(c echo.Context) error {
+		return p.echoHandle(path, handle, c)
 	})
+
+	return nil
 }
 
 // HEAD is a shortcut for router.Handle(http.MethodHead, path, handle)
-func (p *Engine) HEAD(path string, handle Handle) {
-	p.Router.Handle(http.MethodHead, path, func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		ctx := p.NewContext(w, r)
-
-		// 设置路由路径
-		ctx.SetFullPath(path)
-
-		// 设置Params
-		ctx.SetParams(ps)
-
-		// 初始化模板
-		ctx.InitTemplateInstance()
-
-		// 解析UseHandler方法
-		err := ctx.useHandlerParser()
-		if err != nil {
-			panic(err)
-		}
-
-		// 执行方法
-		handle(ctx)
+func (p *Engine) HEAD(path string, handle Handle) error {
+	p.Echo.HEAD(path, func(c echo.Context) error {
+		return p.echoHandle(path, handle, c)
 	})
+
+	return nil
 }
 
 // OPTIONS is a shortcut for router.Handle(http.MethodOptions, path, handle)
-func (p *Engine) OPTIONS(path string, handle Handle) {
-	p.Router.Handle(http.MethodOptions, path, func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		ctx := p.NewContext(w, r)
-
-		// 设置路由路径
-		ctx.SetFullPath(path)
-
-		// 设置Params
-		ctx.SetParams(ps)
-
-		// 初始化模板
-		ctx.InitTemplateInstance()
-
-		// 解析UseHandler方法
-		err := ctx.useHandlerParser()
-		if err != nil {
-			panic(err)
-		}
-
-		// 执行方法
-		handle(ctx)
+func (p *Engine) OPTIONS(path string, handle Handle) error {
+	p.Echo.OPTIONS(path, func(c echo.Context) error {
+		return p.echoHandle(path, handle, c)
 	})
+
+	return nil
 }
 
 // POST is a shortcut for router.Handle(http.MethodPost, path, handle)
-func (p *Engine) POST(path string, handle Handle) {
-	p.Router.Handle(http.MethodPost, path, func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		ctx := p.NewContext(w, r)
-
-		// 设置路由路径
-		ctx.SetFullPath(path)
-
-		// 设置Params
-		ctx.SetParams(ps)
-
-		// 初始化模板
-		ctx.InitTemplateInstance()
-
-		// 解析UseHandler方法
-		err := ctx.useHandlerParser()
-		if err != nil {
-			panic(err)
-		}
-
-		// 执行方法
-		handle(ctx)
+func (p *Engine) POST(path string, handle Handle) error {
+	p.Echo.POST(path, func(c echo.Context) error {
+		return p.echoHandle(path, handle, c)
 	})
+
+	return nil
 }
 
 // PUT is a shortcut for router.Handle(http.MethodPut, path, handle)
-func (p *Engine) PUT(path string, handle Handle) {
-	p.Router.Handle(http.MethodPut, path, func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		ctx := p.NewContext(w, r)
-
-		// 设置路由路径
-		ctx.SetFullPath(path)
-
-		// 设置Params
-		ctx.SetParams(ps)
-
-		// 初始化模板
-		ctx.InitTemplateInstance()
-
-		// 解析UseHandler方法
-		err := ctx.useHandlerParser()
-		if err != nil {
-			panic(err)
-		}
-
-		// 执行方法
-		handle(ctx)
+func (p *Engine) PUT(path string, handle Handle) error {
+	p.Echo.PUT(path, func(c echo.Context) error {
+		return p.echoHandle(path, handle, c)
 	})
+
+	return nil
 }
 
 // PATCH is a shortcut for router.Handle(http.MethodPatch, path, handle)
-func (p *Engine) PATCH(path string, handle Handle) {
-	p.Router.Handle(http.MethodPatch, path, func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		ctx := p.NewContext(w, r)
-
-		// 设置路由路径
-		ctx.SetFullPath(path)
-
-		// 设置Params
-		ctx.SetParams(ps)
-
-		// 初始化模板
-		ctx.InitTemplateInstance()
-
-		// 解析UseHandler方法
-		err := ctx.useHandlerParser()
-		if err != nil {
-			panic(err)
-		}
-
-		// 执行方法
-		handle(ctx)
+func (p *Engine) PATCH(path string, handle Handle) error {
+	p.Echo.PATCH(path, func(c echo.Context) error {
+		return p.echoHandle(path, handle, c)
 	})
+
+	return nil
 }
 
 // DELETE is a shortcut for router.Handle(http.MethodDelete, path, handle)
-func (p *Engine) DELETE(path string, handle Handle) {
-	p.Router.Handle(http.MethodDelete, path, func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		ctx := p.NewContext(w, r)
-
-		// 设置路由路径
-		ctx.SetFullPath(path)
-
-		// 设置Params
-		ctx.SetParams(ps)
-
-		// 初始化模板
-		ctx.InitTemplateInstance()
-
-		// 解析UseHandler方法
-		err := ctx.useHandlerParser()
-		if err != nil {
-			panic(err)
-		}
-
-		// 执行方法
-		handle(ctx)
+func (p *Engine) DELETE(path string, handle Handle) error {
+	p.Echo.DELETE(path, func(c echo.Context) error {
+		return p.echoHandle(path, handle, c)
 	})
+
+	return nil
 }
 
-// ANY is a shortcut for router.Handle(http.MethodGet, path, handle)
-func (p *Engine) ANY(path string, handle Handle) {
-	p.GET(path, handle)
-	p.HEAD(path, handle)
-	p.OPTIONS(path, handle)
-	p.POST(path, handle)
-	p.PUT(path, handle)
-	p.PATCH(path, handle)
-	p.DELETE(path, handle)
+// Any is a shortcut for router.Handle(http.MethodGet, path, handle)
+func (p *Engine) Any(path string, handle Handle) error {
+	p.Echo.Any(path, func(c echo.Context) error {
+		return p.echoHandle(path, handle, c)
+	})
+
+	return nil
 }
 
 // Run Server
 func (p *Engine) Run(addr string) {
-	http.ListenAndServe(addr, p.Router)
+
+	// 静态文件目录
+	p.Echo.Static("/", "./website")
+
+	// 处理模版上的路由映射关系
+	p.routeMappingParser()
+
+	// 启动服务
+	p.Echo.Logger.Fatal(p.Echo.Start(addr))
 }

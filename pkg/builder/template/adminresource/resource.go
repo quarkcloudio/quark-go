@@ -185,5 +185,5 @@ func (p *Template) Render(ctx *builder.Context) interface{} {
 		}).PageComponentRender(ctx, body)
 	}
 
-	return result
+	return ctx.JSON(200, result)
 }
