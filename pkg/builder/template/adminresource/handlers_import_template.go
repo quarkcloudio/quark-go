@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/xuri/excelize/v2"
@@ -45,7 +46,11 @@ func (p *ImportTemplateRequest) Handle(ctx *builder.Context) interface{} {
 	f.SetActiveSheet(index)
 	buf, _ := f.WriteToBuffer()
 
-	return buf.Bytes()
+	ctx.Writer.Header().Set("Content-Disposition", "attachment; filename=data_"+time.Now().Format("20060102150405")+".xlsx")
+	ctx.Writer.Header().Set("Content-Type", "application/octet-stream")
+	ctx.Writer.Write(buf.Bytes())
+
+	return nil
 }
 
 // 导入字段提示信息
