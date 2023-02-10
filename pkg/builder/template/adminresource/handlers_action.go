@@ -1,7 +1,6 @@
 package adminresource
 
 import (
-	"fmt"
 	"reflect"
 	"strings"
 
@@ -49,24 +48,21 @@ func (p *ActionRequest) Handle(ctx *builder.Context) interface{} {
 					GetUriKey(interface{}) string
 				}).GetUriKey(dropdownAction)
 
-				fmt.Println(uriKey)
-				fmt.Println(ctx.Param("uriKey"))
-				fmt.Println(ctx.Param("uriKey") == uriKey)
-
 				if ctx.Param("uriKey") == uriKey {
 					result = dropdownAction.(interface {
 						Handle(*builder.Context, *gorm.DB) interface{}
 					}).Handle(ctx, model)
+
+					return result
 				}
 			}
 		} else {
-			fmt.Println(uriKey)
-			fmt.Println(ctx.Param("uriKey"))
-			fmt.Println(ctx.Param("uriKey") == uriKey)
 			if ctx.Param("uriKey") == uriKey {
 				result = v.(interface {
 					Handle(*builder.Context, *gorm.DB) interface{}
 				}).Handle(ctx, model)
+
+				return result
 			}
 		}
 	}

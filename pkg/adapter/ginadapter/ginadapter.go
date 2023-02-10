@@ -75,6 +75,10 @@ func Adapter(b *builder.Engine, app *gin.Engine) {
 			app.DELETE(v.Path, func(ctx *gin.Context) {
 				RouteAdapter(b, ctx)
 			})
+		case "Any":
+			app.Any(v.Path, func(ctx *gin.Context) {
+				RouteAdapter(b, ctx)
+			})
 		}
 	}
 }

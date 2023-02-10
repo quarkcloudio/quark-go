@@ -51,7 +51,7 @@ func (p *Template) TemplateInit() interface{} {
 	// 注册路由映射
 	p.GET(IndexRoute, "Render")          // 后台增删改查，列表路由
 	p.GET(EditableRoute, "Render")       // 后台增删改查，表格行内编辑路由
-	p.ANY(ActionRoute, "Render")         // 后台增删改查，执行行为路由
+	p.Any(ActionRoute, "Render")         // 后台增删改查，执行行为路由
 	p.GET(CreateRoute, "Render")         // 后台增删改查，创建页面路由
 	p.POST(StoreRoute, "Render")         // 后台增删改查，创建方法路由
 	p.GET(EditRoute, "Render")           // 后台增删改查，编辑页面路由

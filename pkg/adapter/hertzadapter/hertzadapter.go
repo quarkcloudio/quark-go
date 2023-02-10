@@ -73,6 +73,10 @@ func Adapter(b *builder.Engine, r *server.Hertz) {
 			r.DELETE(v.Path, func(c context.Context, ctx *app.RequestContext) {
 				RouteAdapter(b, ctx)
 			})
+		case "Any":
+			r.Any(v.Path, func(c context.Context, ctx *app.RequestContext) {
+				RouteAdapter(b, ctx)
+			})
 		}
 	}
 }

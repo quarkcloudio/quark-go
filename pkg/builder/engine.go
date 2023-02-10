@@ -378,6 +378,10 @@ func (p *Engine) routeMappingParser() {
 			p.DELETE(routePath.Path, func(ctx *Context) error {
 				return p.handleParser(ctx)
 			})
+		case "Any":
+			p.Any(routePath.Path, func(ctx *Context) error {
+				return p.handleParser(ctx)
+			})
 		}
 	}
 }

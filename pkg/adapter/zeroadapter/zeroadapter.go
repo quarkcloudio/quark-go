@@ -19,7 +19,6 @@ func RouteAdapter(b *builder.Engine, routePath string) http.HandlerFunc {
 		context.SetFullPath(routePath)
 
 		b.Render(context)
-		return
 	}
 }
 
@@ -34,11 +33,34 @@ func Adapter(b *builder.Engine, server *rest.Server) {
 
 	// 解析服务
 	for _, v := range routePaths {
-		routes = append(routes, rest.Route{
-			Method:  v.Method,
-			Path:    v.Path,
-			Handler: RouteAdapter(b, v.Path),
-		})
+		if v.Method == "Any" {
+			routes = append(routes, rest.Route{
+				Method:  http.MethodGet,
+				Path:    v.Path,
+				Handler: RouteAdapter(b, v.Path),
+			})
+			routes = append(routes, rest.Route{
+				Method:  http.MethodPost,
+				Path:    v.Path,
+				Handler: RouteAdapter(b, v.Path),
+			})
+			routes = append(routes, rest.Route{
+				Method:  http.MethodDelete,
+				Path:    v.Path,
+				Handler: RouteAdapter(b, v.Path),
+			})
+			routes = append(routes, rest.Route{
+				Method:  http.MethodPut,
+				Path:    v.Path,
+				Handler: RouteAdapter(b, v.Path),
+			})
+		} else {
+			routes = append(routes, rest.Route{
+				Method:  v.Method,
+				Path:    v.Path,
+				Handler: RouteAdapter(b, v.Path),
+			})
+		}
 	}
 
 	server.AddRoutes(routes)

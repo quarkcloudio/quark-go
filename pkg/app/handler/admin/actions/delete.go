@@ -1,8 +1,6 @@
 package actions
 
 import (
-	"fmt"
-
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/actions"
 	"github.com/quarkcms/quark-go/pkg/msg"
@@ -61,8 +59,6 @@ func (p *Delete) Handle(ctx *builder.Context, model *gorm.DB) interface{} {
 	if err != nil {
 		return ctx.JSON(200, msg.Error(err.Error(), ""))
 	}
-
-	fmt.Println("abcd")
 
 	return ctx.JSON(200, msg.Success("操作成功", "", ""))
 }

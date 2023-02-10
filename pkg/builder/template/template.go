@@ -54,14 +54,8 @@ func (p *AdminTemplate) AddRouteMapping(method string, path string, handlerName 
 }
 
 // ANY is a shortcut for router.Handle(http.MethodGet, path, handle)
-func (p *AdminTemplate) ANY(path string, handlerName string) {
-	p.GET(path, handlerName)
-	p.HEAD(path, handlerName)
-	p.OPTIONS(path, handlerName)
-	p.POST(path, handlerName)
-	p.PUT(path, handlerName)
-	p.PATCH(path, handlerName)
-	p.DELETE(path, handlerName)
+func (p *AdminTemplate) Any(path string, handlerName string) {
+	p.AddRouteMapping("Any", path, handlerName)
 }
 
 // GET is a shortcut for router.Handle(http.MethodGet, path, handle)

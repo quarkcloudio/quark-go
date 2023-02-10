@@ -65,6 +65,10 @@ func Adapter(b *builder.Engine, app *fiber.App) {
 			app.Delete(v.Path, func(ctx *fiber.Ctx) error {
 				return RouteAdapter(b, ctx)
 			})
+		case "Any":
+			app.All(v.Path, func(ctx *fiber.Ctx) error {
+				return RouteAdapter(b, ctx)
+			})
 		}
 	}
 }
