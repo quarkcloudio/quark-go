@@ -77,6 +77,9 @@ func New(config *Config) *Engine {
 	// 初始化echo引擎
 	e := echo.New()
 
+	// 隐藏banner
+	e.HideBanner = true
+
 	// 初始化数据库
 	if config.DBConfig != nil {
 		dal.InitDB(config.DBConfig.Dialector, config.DBConfig.Opts)
