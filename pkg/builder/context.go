@@ -335,20 +335,28 @@ func (p *Context) setTemplate(templateInstance interface{}) {
 // Method return request method.
 //
 // Returned value is valid until returning from RequestHandler.
-func (c *Context) Write(p []byte) {
+func (p *Context) Write(data []byte) {
 
-	c.Writer.Write(p)
+	p.Writer.Write(data)
 }
 
 // 输出Json数据
 func (p *Context) JSON(code int, data interface{}) error {
 	p.Writer.Header().Set("Content-Type", "application/json")
 	p.Writer.WriteHeader(code)
-
 	err := json.NewEncoder(p.Writer).Encode(data)
 	if err != nil {
 		return err
 	}
+
+	return nil
+}
+
+// 输出String数据
+func (p *Context) String(code int, data string) error {
+	p.Writer.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	p.Writer.WriteHeader(code)
+	p.Writer.Write([]byte(data))
 
 	return nil
 }
