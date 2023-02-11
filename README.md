@@ -61,10 +61,10 @@ func main() {
 ```
 
 后台地址： http://127.0.0.1:3000/admin/
-
-用户名：administrator
-
+```
+账号：administrator
 密码：123456
+```
 
 
 ## 技术支持
