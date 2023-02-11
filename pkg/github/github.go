@@ -35,7 +35,7 @@ func Download(respositoryURL string, path string) {
 	var client http.Client
 	var wg sync.WaitGroup
 	start := time.Now()
-	fmt.Println("start to download static files, please waiting...")
+	fmt.Println("Downloading static files, please wait...")
 	handle(client, respositoryURL, path, &wg)
 	wg.Wait()
 
@@ -47,6 +47,14 @@ func Download(respositoryURL string, path string) {
 	fmt.Printf("total time: %.2f s\n", float64(time.Since(start))/float64(time.Second))
 }
 
+// failedPrint
+func failedPrint(err error) {
+	if err != nil {
+		fmt.Println("Download static files failed! \r\n Please goto https://github.com/quarkcms/quark-go/tree/main/website url to download it  \r\n After downloading, you must make 'install.lock' file in the website dir")
+		panic(err)
+	}
+}
+
 // get all file link and download it
 func handle(client http.Client, url, path string, wg *sync.WaitGroup) {
 	// if the path is not existed, then create it
@@ -56,7 +64,7 @@ func handle(client http.Client, url, path string, wg *sync.WaitGroup) {
 	// get html source
 	html, err := getHtml(client, url)
 	if err != nil {
-		panic(err)
+		failedPrint(err)
 	}
 	// find all file and directory link
 	links := urlPattern.FindAllSubmatch(html, -1)
@@ -81,14 +89,14 @@ func getFile(client http.Client, fileURL, path, filename string, wg *sync.WaitGr
 
 	resp, err := client.Get(fileURL)
 	if err != nil {
-		panic(err)
+		failedPrint(err)
 	}
 	defer resp.Body.Close()
 	var buff [1024]byte
 	// 创建文件
 	file, err := os.Create(filepath.Join(path, filename))
 	if err != nil {
-		panic(err)
+		failedPrint(err)
 	}
 	defer file.Close()
 	// 写入文件
@@ -101,7 +109,7 @@ func getFile(client http.Client, fileURL, path, filename string, wg *sync.WaitGr
 			}
 			// if failed delete this file
 			os.Remove(filepath.Join(path, filename))
-			panic(err)
+			failedPrint(err)
 		}
 		file.Write(buff[:n])
 	}
