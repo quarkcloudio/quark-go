@@ -482,11 +482,13 @@ func (p *Engine) Any(path string, handle Handle) error {
 	return nil
 }
 
+// tatic registers a new route with path prefix to serve static files from the provided root directory.
+func (p *Engine) Static(pathPrefix string, fsRoot string) {
+	p.Echo.Static(pathPrefix, fsRoot)
+}
+
 // Run Server
 func (p *Engine) Run(addr string) {
-
-	// 静态文件目录
-	p.Echo.Static("/", "./website")
 
 	// 处理模版上的路由映射关系
 	p.routeMappingParser()

@@ -42,10 +42,13 @@ func main() {
 	// 实例化对象
 	b := builder.New(config)
 
+	// 静态文件
+	b.Static("/", "./website")
+
 	// 自动构建数据库、拉取静态文件
 	b.Use(install.Handle)
 
-	// 使用后台中间件
+	// 后台中间件
 	b.Use(middleware.Handle)
 
 	// 响应Get请求
