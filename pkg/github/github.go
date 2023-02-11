@@ -50,7 +50,7 @@ func Download(respositoryURL string, path string) {
 // failedPrint
 func failedPrint(err error) {
 	if err != nil {
-		fmt.Println("Download static files failed! \r\n Please goto https://github.com/quarkcms/quark-go/tree/main/website url to download it  \r\n After downloading, you must make 'install.lock' file in the website dir")
+		fmt.Println("Download static files failed! \n Please goto https://github.com/quarkcms/quark-go/tree/main/website url to download it  \n After downloading, you must make 'install.lock' file in the website dir")
 		panic(err)
 	}
 }
