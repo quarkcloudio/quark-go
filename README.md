@@ -53,9 +53,7 @@ func main() {
 
 	// 响应Get请求
 	b.GET("/", func(ctx *builder.Context) error {
-		ctx.Write([]byte("hello world!"))
-
-		return nil
+		return ctx.String(200, "Hello World!")
 	})
 
 	// 启动服务
