@@ -32,5 +32,10 @@ func main() {
 	// 中间件
 	b.Use(middleware.Handle)
 
+	b.GET("/", func(ctx *builder.Context) error {
+		ctx.Write([]byte("hello world!"))
+		return nil
+	})
+
 	b.Run(":3000")
 }

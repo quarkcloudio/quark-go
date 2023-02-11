@@ -251,14 +251,6 @@ func (p *Context) isExport() bool {
 	return (uri[len(uri)-1] == "export")
 }
 
-// Method return request method.
-//
-// Returned value is valid until returning from RequestHandler.
-func (c *Context) Write(p []byte) {
-
-	c.Writer.Write(p)
-}
-
 // 根据路由判断是否为当前加载实例
 func (p *Context) isCurrentTemplate(provider interface{}) bool {
 	providerName := reflect.TypeOf(provider).String()
@@ -338,6 +330,14 @@ func (p *Context) getTemplate() (interface{}, error) {
 func (p *Context) setTemplate(templateInstance interface{}) {
 	// 设置实例
 	p.Template = templateInstance
+}
+
+// Method return request method.
+//
+// Returned value is valid until returning from RequestHandler.
+func (c *Context) Write(p []byte) {
+
+	c.Writer.Write(p)
 }
 
 // 输出Json数据

@@ -341,7 +341,8 @@ func (p *Engine) Render(ctx *Context) error {
 	// 解析UseHandler方法
 	err = ctx.useHandlerParser()
 	if err != nil {
-		return err
+		ctx.Write([]byte(err.Error()))
+		return nil
 	}
 
 	// 解析模版方法
@@ -402,7 +403,7 @@ func (p *Engine) echoHandle(path string, handle Handle, c echo.Context) error {
 	// 解析UseHandler方法
 	err := ctx.useHandlerParser()
 	if err != nil {
-		panic(err)
+		ctx.Write([]byte(err.Error()))
 	}
 
 	// 执行方法

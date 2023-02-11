@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/login"
 	"github.com/quarkcms/quark-go/pkg/app/model"
@@ -26,6 +27,11 @@ func Handle(ctx *builder.Context) error {
 
 	// 排除登录路由
 	if inLoginRoute {
+		return nil
+	}
+
+	// 排除非后台路由
+	if !strings.Contains(ctx.FullPath(), "api/admin") {
 		return nil
 	}
 
