@@ -10,6 +10,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminlogin"
 	"github.com/quarkcms/quark-go/pkg/hash"
 	"github.com/quarkcms/quark-go/pkg/msg"
+	"gorm.io/gorm"
 )
 
 type Index struct {
@@ -83,6 +84,9 @@ func (p *Index) Handle(ctx *builder.Context) interface{} {
 
 	adminInfo, err := (&model.Admin{}).GetInfoByUsername(loginRequest.Username)
 	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return ctx.JSON(200, msg.Error("用户不存在", ""))
+		}
 		return ctx.JSON(200, msg.Error(err.Error(), ""))
 	}
 

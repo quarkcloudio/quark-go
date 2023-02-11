@@ -44,7 +44,7 @@ type AdminClaims struct {
 // 管理员Seeder
 func (model *Admin) Seeder() {
 	seeders := []Admin{
-		{Username: "administrator", Nickname: "超级管理员", Email: "admin@yourweb.com", Phone: "10086", Password: hash.Make("123456"), Sex: 1, Status: 1},
+		{Username: "administrator", Nickname: "超级管理员", Email: "admin@yourweb.com", Phone: "10086", Password: hash.Make("123456"), Sex: 1, Status: 1, LastLoginTime: time.Now()},
 	}
 
 	db.Client.Create(&seeders)
