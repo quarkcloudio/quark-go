@@ -6,6 +6,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
+	"gorm.io/gorm"
 )
 
 // 判断路径是否存在
@@ -48,7 +49,7 @@ func Handle(ctx *builder.Context) error {
 
 	// 如果超级管理员不存在，初始化数据库数据
 	adminInfo, err := (&model.Admin{}).GetInfoById(1)
-	if err != nil && err.Error() != "record not found" {
+	if err != nil && err != gorm.ErrRecordNotFound {
 		panic(err)
 	}
 	if adminInfo.Id == 0 {
