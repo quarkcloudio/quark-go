@@ -60,12 +60,10 @@ func main() {
 }
 ```
 
-后台地址： http://127.0.0.1:3000/admin/
-```
-账号：administrator
-密码：123456
-```
+后台地址： ```http://127.0.0.1:3000/admin/```
 
+账号：```administrator```
+密码：```123456```
 
 ## 技术支持
 为了避免打扰作者日常工作，你可以在Github上提交 [Issues](https://github.com/quarkcms/quark-go/issues)
