@@ -176,16 +176,19 @@ func (p *Menu) BeforeSaving(ctx *builder.Context, submitData map[string]interfac
 
 // 保存后回调
 func (p *Menu) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
-	var result *gorm.DB
-	data := map[string]interface{}{}
+	var (
+		result *gorm.DB
+		id     interface{}
+		data   map[string]interface{}
+		last   map[string]interface{}
+	)
+
 	json.Unmarshal(ctx.Body(), &data)
-	id := 0
 	if ctx.IsCreating() {
-		last := map[string]interface{}{}
 		result = model.Order("id desc").First(&last) // 获取最后一条记录的id
-		id = last["id"].(int)
+		id = last["id"]
 	} else {
-		id = int(data["id"].(float64))
+		id = data["id"]
 		result = db.Client.
 			Model(&models.Permission{}).
 			Where("menu_id = ?", id).
