@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -83,6 +84,9 @@ func (p *Context) Body() []byte {
 	if err != nil {
 		return nil
 	}
+
+	// 重新赋值
+	p.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 
 	return body
 }
