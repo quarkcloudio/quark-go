@@ -39,16 +39,16 @@ func main() {
 		},
 	}
 
-	// 创建对象
+	// 实例化对象
 	b := builder.New(config)
 
-	// 初始化安装
+	// 自动构建数据库、拉取静态文件
 	b.Use(install.Handle)
 
-	// 中间件
+	// 使用后台中间件
 	b.Use(middleware.Handle)
 
-	// Get请求
+	// 响应Get请求
 	b.GET("/", func(ctx *builder.Context) error {
 		ctx.Write([]byte("hello world!"))
 
