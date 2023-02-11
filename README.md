@@ -48,6 +48,14 @@ func main() {
 	// 中间件
 	b.Use(middleware.Handle)
 
+	// Get请求
+	b.GET("/", func(ctx *builder.Context) error {
+		ctx.Write([]byte("hello world!"))
+
+		return nil
+	})
+
+	// 启动服务
 	b.Run(":3000")
 }
 ```
