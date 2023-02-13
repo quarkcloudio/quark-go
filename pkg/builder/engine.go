@@ -14,8 +14,11 @@ import (
 	"gorm.io/gorm"
 )
 
+// Name of current package
+const AppName = "QuarkGo"
+
 // Version of current package
-const Version = "1.1.1"
+const Version = "1.1.8"
 
 // 静态文件URL
 const RespositoryURL = "https://github.com/quarkcms/quark-go/tree/main/website/"
@@ -42,7 +45,6 @@ type DBConfig struct {
 
 type Config struct {
 	AppKey      string        // 应用加密Key，用于JWT认证
-	AppName     string        // 应用名称
 	DBConfig    *DBConfig     // 数据库配置
 	StaticPath  string        // 静态文件目录
 	Providers   []interface{} // 服务列表
