@@ -197,14 +197,14 @@ func (p *Engine) TransformContext(fullPath string, header map[string][]string, m
 
 // 初始化请求列表
 func (p *Engine) initPaths() {
-	if p.urlPaths != nil && p.routePaths != nil {
-		return
-	}
-
 	var (
 		urlPaths   []string
 		routePaths []*RouteMapping
 	)
+
+	if p.urlPaths != nil && p.routePaths != nil {
+		return
+	}
 
 	for _, provider := range p.providers {
 
