@@ -14,14 +14,16 @@ import (
 	"gorm.io/gorm"
 )
 
-// Name of current package
-const AppName = "QuarkGo"
+const (
+	// Name of current package
+	AppName = "QuarkGo"
 
-// Version of current package
-const Version = "1.1.8"
+	// Version of current package
+	Version = "1.1.8"
 
-// 静态文件URL
-const RespositoryURL = "https://github.com/quarkcms/quark-go/tree/main/website/"
+	// 静态文件URL
+	RespositoryURL = "https://github.com/quarkcms/quark-go/tree/main/website/"
+)
 
 type Engine struct {
 	echo        *echo.Echo                 // Echo框架实例
