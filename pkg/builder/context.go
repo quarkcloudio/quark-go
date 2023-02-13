@@ -268,7 +268,7 @@ func (p *Context) isCurrentTemplate(provider interface{}) bool {
 // 解析UseHandler方法
 func (p *Context) useHandlerParser() error {
 	var err error
-	for _, Handler := range p.Engine.UseHandlers {
+	for _, Handler := range p.Engine.UseHandlers() {
 		err = Handler(p)
 		if err != nil {
 			return err

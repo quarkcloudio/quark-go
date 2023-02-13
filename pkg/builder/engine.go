@@ -21,8 +21,8 @@ const Version = "1.1.1"
 const RespositoryURL = "https://github.com/quarkcms/quark-go/tree/main/website/"
 
 type Engine struct {
-	Echo        *echo.Echo                 // 内置Echo
-	UseHandlers []func(ctx *Context) error // 中间件方法
+	echo        *echo.Echo                 // Echo框架实例
+	useHandlers []func(ctx *Context) error // 中间件方法
 	config      *Config                    // 配置
 	providers   []interface{}              // 服务列表
 	urlPaths    []string                   // 请求路径列表
@@ -90,7 +90,7 @@ func New(config *Config) *Engine {
 
 	// 定义结构体
 	engine := &Engine{
-		Echo:      e,
+		echo:      e,
 		providers: config.Providers,
 		config:    config,
 	}
@@ -292,10 +292,15 @@ func (p *Engine) Use(args interface{}) {
 	case "*builder.AdminLayout":
 		p.config.AdminLayout = initAdminLayout(args.(*AdminLayout))
 	case "func(*builder.Context) error":
-		p.UseHandlers = append(p.UseHandlers, args.(func(ctx *Context) error))
+		p.useHandlers = append(p.useHandlers, args.(func(ctx *Context) error))
 	default:
 		panic(argsName + " arguments was not found")
 	}
+}
+
+// 获取通用调用方法
+func (p *Engine) UseHandlers() []func(ctx *Context) error {
+	return p.useHandlers
 }
 
 // 解析模版方法
@@ -390,6 +395,11 @@ func (p *Engine) routeMappingParser() {
 	}
 }
 
+// 获取Echo框架实例
+func (p *Engine) Echo() *echo.Echo {
+	return p.echo
+}
+
 // 适配Echo框架方法
 func (p *Engine) echoHandle(path string, handle Handle, c echo.Context) error {
 	ctx := p.NewContext(c.Response().Writer, c.Request())
@@ -410,9 +420,30 @@ func (p *Engine) echoHandle(path string, handle Handle, c echo.Context) error {
 	return handle(ctx)
 }
 
+// tatic registers a new route with path prefix to serve static files from the provided root directory.
+func (p *Engine) Static(pathPrefix string, fsRoot string) {
+	p.echo.Static(pathPrefix, fsRoot)
+}
+
+// Group creates a new router group with prefix and optional group-level middleware.
+func (p *Engine) Group(path string, handlers ...Handle) error {
+	p.echo.Group(path, func(next echo.HandlerFunc) echo.HandlerFunc {
+		if len(handlers) > 0 {
+			for _, handle := range handlers {
+				newHandle := func(c echo.Context) error {
+					return p.echoHandle(path, handle, c)
+				}
+				return newHandle
+			}
+		}
+		return next
+	})
+	return nil
+}
+
 // GET is a shortcut for router.Handle(http.MethodGet, path, handle)
 func (p *Engine) GET(path string, handle Handle) error {
-	p.Echo.GET(path, func(c echo.Context) error {
+	p.echo.GET(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
 	})
 
@@ -421,7 +452,7 @@ func (p *Engine) GET(path string, handle Handle) error {
 
 // HEAD is a shortcut for router.Handle(http.MethodHead, path, handle)
 func (p *Engine) HEAD(path string, handle Handle) error {
-	p.Echo.HEAD(path, func(c echo.Context) error {
+	p.echo.HEAD(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
 	})
 
@@ -430,7 +461,7 @@ func (p *Engine) HEAD(path string, handle Handle) error {
 
 // OPTIONS is a shortcut for router.Handle(http.MethodOptions, path, handle)
 func (p *Engine) OPTIONS(path string, handle Handle) error {
-	p.Echo.OPTIONS(path, func(c echo.Context) error {
+	p.echo.OPTIONS(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
 	})
 
@@ -439,7 +470,7 @@ func (p *Engine) OPTIONS(path string, handle Handle) error {
 
 // POST is a shortcut for router.Handle(http.MethodPost, path, handle)
 func (p *Engine) POST(path string, handle Handle) error {
-	p.Echo.POST(path, func(c echo.Context) error {
+	p.echo.POST(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
 	})
 
@@ -448,7 +479,7 @@ func (p *Engine) POST(path string, handle Handle) error {
 
 // PUT is a shortcut for router.Handle(http.MethodPut, path, handle)
 func (p *Engine) PUT(path string, handle Handle) error {
-	p.Echo.PUT(path, func(c echo.Context) error {
+	p.echo.PUT(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
 	})
 
@@ -457,7 +488,7 @@ func (p *Engine) PUT(path string, handle Handle) error {
 
 // PATCH is a shortcut for router.Handle(http.MethodPatch, path, handle)
 func (p *Engine) PATCH(path string, handle Handle) error {
-	p.Echo.PATCH(path, func(c echo.Context) error {
+	p.echo.PATCH(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
 	})
 
@@ -466,7 +497,7 @@ func (p *Engine) PATCH(path string, handle Handle) error {
 
 // DELETE is a shortcut for router.Handle(http.MethodDelete, path, handle)
 func (p *Engine) DELETE(path string, handle Handle) error {
-	p.Echo.DELETE(path, func(c echo.Context) error {
+	p.echo.DELETE(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
 	})
 
@@ -475,16 +506,11 @@ func (p *Engine) DELETE(path string, handle Handle) error {
 
 // Any is a shortcut for router.Handle(http.MethodGet, path, handle)
 func (p *Engine) Any(path string, handle Handle) error {
-	p.Echo.Any(path, func(c echo.Context) error {
+	p.echo.Any(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
 	})
 
 	return nil
-}
-
-// tatic registers a new route with path prefix to serve static files from the provided root directory.
-func (p *Engine) Static(pathPrefix string, fsRoot string) {
-	p.Echo.Static(pathPrefix, fsRoot)
 }
 
 // Run Server
@@ -494,5 +520,5 @@ func (p *Engine) Run(addr string) {
 	p.routeMappingParser()
 
 	// 启动服务
-	p.Echo.Logger.Fatal(p.Echo.Start(addr))
+	p.echo.Logger.Fatal(p.echo.Start(addr))
 }
