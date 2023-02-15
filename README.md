@@ -68,7 +68,7 @@ func main() {
 
 ## 示例
 - [QuarkSmart](https://github.com/quarkcms/quark-smart) 单体应用
-- [QuarkMicro](https://github.com/quarkcms/quark-micro) 微服务应用
+- [QuarkMicro](https://github.com/quarkcms/quark-micro) 微服务应用(开发中)
 
 ## 技术支持
 为了避免打扰作者日常工作，你可以在Github上提交 [Issues](https://github.com/quarkcms/quark-go/issues)
