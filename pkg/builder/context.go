@@ -270,7 +270,10 @@ func (p *Context) useHandlerParser() error {
 	var err error
 	for _, Handler := range p.Engine.UseHandlers() {
 		err = Handler(p)
-		if err != nil {
+		if err == nil {
+			return nil
+		}
+		if err.Error() != p.Next().Error() {
 			return err
 		}
 	}
