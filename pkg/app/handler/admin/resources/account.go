@@ -30,7 +30,7 @@ func (p *Account) Init() interface{} {
 // 表单接口
 func (p *Account) FormApi(ctx *builder.Context) string {
 
-	return "admin/account/action/change-account"
+	return "/api/admin/account/action/change-account"
 }
 
 // 字段
