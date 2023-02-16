@@ -109,6 +109,7 @@ func (model *Admin) GetInfoById(id interface{}) (admin *Admin, Error error) {
 // 通过用户名获取管理员信息
 func (model *Admin) GetInfoByUsername(username string) (admin *Admin, Error error) {
 	err := db.Client.Where("status = ?", 1).Where("username = ?", username).First(&admin).Error
+	admin.Avatar = (&Picture{}).GetPath(admin.Avatar) // 获取头像地址
 
 	return admin, err
 }
