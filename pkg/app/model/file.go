@@ -95,7 +95,7 @@ func (model *File) GetPath(id interface{}) string {
 	file := &File{}
 	db.Client.Where("id", id).Where("status", 1).First(&file)
 	if file.Id != 0 {
-		path = file.Path
+		path = file.Url
 		if strings.Contains(path, "//") {
 			return path
 		}
