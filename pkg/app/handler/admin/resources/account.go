@@ -29,7 +29,6 @@ func (p *Account) Init() interface{} {
 
 // 表单接口
 func (p *Account) FormApi(ctx *builder.Context) string {
-
 	return "/api/admin/account/action/change-account"
 }
 

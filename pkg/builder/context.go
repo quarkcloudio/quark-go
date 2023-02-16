@@ -364,3 +364,8 @@ func (p *Context) String(code int, data string) error {
 
 	return nil
 }
+
+// 执行下一个Use方法，TODO
+func (p *Context) Next() error {
+	return errors.New("NextUseHandler")
+}
