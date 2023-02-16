@@ -156,7 +156,7 @@ func (model *Picture) GetPath(id interface{}) string {
 	picture := &Picture{}
 	db.Client.Where("id", id).Where("status", 1).First(&picture)
 	if picture.Id != 0 {
-		path = picture.Path
+		path = picture.Url
 		if strings.Contains(path, "//") {
 			return path
 		}

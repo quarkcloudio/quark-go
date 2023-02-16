@@ -270,7 +270,10 @@ func (p *Context) useHandlerParser() error {
 	var err error
 	for _, Handler := range p.Engine.UseHandlers() {
 		err = Handler(p)
-		if err != nil {
+		if err == nil {
+			return nil
+		}
+		if err.Error() != p.Next().Error() {
 			return err
 		}
 	}
@@ -363,4 +366,9 @@ func (p *Context) String(code int, data string) error {
 	p.Writer.Write([]byte(data))
 
 	return nil
+}
+
+// 执行下一个Use方法，TODO
+func (p *Context) Next() error {
+	return errors.New("NextUseHandler")
 }

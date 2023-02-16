@@ -19,7 +19,7 @@ const (
 	AppName = "QuarkGo"
 
 	// Version of current package
-	Version = "1.1.8"
+	Version = "1.1.11"
 
 	// 静态文件URL
 	RespositoryURL = "https://github.com/quarkcms/quark-go/tree/main/website/"
@@ -349,13 +349,18 @@ func (p *Engine) Render(ctx *Context) error {
 
 	// 解析UseHandler方法
 	err = ctx.useHandlerParser()
+	if err.Error() != ctx.Next().Error() {
+		return err
+	}
 	if err != nil {
-		ctx.Write([]byte(err.Error()))
-		return nil
+		if err.Error() == ctx.Next().Error() {
+			// 解析模版方法
+			return p.handleParser(ctx)
+		}
 	}
 
 	// 解析模版方法
-	return p.handleParser(ctx)
+	return err
 }
 
 // 处理模版上的路由映射关系
@@ -417,11 +422,13 @@ func (p *Engine) echoHandle(path string, handle Handle, c echo.Context) error {
 	// 解析UseHandler方法
 	err := ctx.useHandlerParser()
 	if err != nil {
-		ctx.Write([]byte(err.Error()))
+		if err.Error() == ctx.Next().Error() {
+			// 执行方法
+			return handle(ctx)
+		}
 	}
 
-	// 执行方法
-	return handle(ctx)
+	return err
 }
 
 // tatic registers a new route with path prefix to serve static files from the provided root directory.

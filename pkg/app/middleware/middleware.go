@@ -1,12 +1,12 @@
 package middleware
 
 import (
-	"errors"
 	"strings"
 
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/login"
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
+	"github.com/quarkcms/quark-go/pkg/msg"
 )
 
 // 中间件
@@ -27,30 +27,30 @@ func Handle(ctx *builder.Context) error {
 
 	// 排除登录路由
 	if inLoginRoute {
-		return nil
+		return ctx.Next()
 	}
 
 	// 排除非后台路由
 	if !strings.Contains(ctx.FullPath(), "api/admin") {
-		return nil
+		return ctx.Next()
 	}
 
 	// 获取登录管理员信息
 	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
-		return err
+		return ctx.JSON(200, msg.Error(err.Error(), ""))
 	}
 
 	guardName := adminInfo.GuardName
 	if guardName != "admin" {
-		return errors.New("401 Unauthozied")
+		return ctx.JSON(200, msg.Error("401 Unauthozied", ""))
 	}
 
 	// 管理员id
 	if adminInfo.Id != 1 {
 		permissions, err := (&model.Permission{}).GetListByAdminId(adminInfo.Id)
 		if err != nil {
-			return errors.New("403 Forbidden")
+			return ctx.JSON(200, msg.Error("403 Forbidden", ""))
 		}
 
 		hasPermission := false
@@ -61,7 +61,7 @@ func Handle(ctx *builder.Context) error {
 		}
 
 		if !hasPermission {
-			return errors.New("403 Forbidden")
+			return ctx.JSON(200, msg.Error("403 Forbidden", ""))
 		}
 	}
 
@@ -73,5 +73,5 @@ func Handle(ctx *builder.Context) error {
 		Type:     "admin",
 	})
 
-	return nil
+	return ctx.Next()
 }
