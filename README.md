@@ -70,6 +70,13 @@ func main() {
 - [QuarkSmart](https://github.com/quarkcms/quark-smart) 单体应用
 - [QuarkMicro](https://github.com/quarkcms/quark-micro) 微服务应用(开发中)
 
+## 演示站点
+香港站点，页面加载可能比较缓慢
+
+- 地址：http://smart.quarkcms.com/admin/#/
+- 账号：```administrator```
+- 密码：```123456```
+
 ## 技术支持
 为了避免打扰作者日常工作，你可以在Github上提交 [Issues](https://github.com/quarkcms/quark-go/issues)
 
