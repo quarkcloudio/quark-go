@@ -19,7 +19,7 @@ const (
 	AppName = "QuarkGo"
 
 	// Version of current package
-	Version = "1.1.14"
+	Version = "1.1.15"
 
 	// 静态文件URL
 	RespositoryURL = "https://github.com/quarkcms/quark-go/tree/main/website/"
@@ -317,6 +317,9 @@ func (p *Engine) handleParser(ctx *Context) error {
 
 	// 获取模板实例
 	templateInstance = ctx.Template
+	if templateInstance == nil {
+		return ctx.String(200, "未获取到资源实例")
+	}
 
 	// 执行挂载的方法
 	for _, v := range p.routePaths {
