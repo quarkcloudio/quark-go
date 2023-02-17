@@ -213,7 +213,7 @@ func (model *Menu) GetInfoByName(name string) (menu *Menu, Error error) {
 }
 
 // 通过ID判断菜单是否已存在
-func (model *Menu) IsExisted(id interface{}) bool {
+func (model *Menu) IsExist(id interface{}) bool {
 	menu := Menu{}
 	err := db.Client.Where("status = ?", 1).Where("id = ?", id).First(&menu).Error
 	if err == gorm.ErrRecordNotFound {
