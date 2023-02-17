@@ -19,7 +19,7 @@ const (
 	AppName = "QuarkGo"
 
 	// Version of current package
-	Version = "1.1.13"
+	Version = "1.1.14"
 
 	// 静态文件URL
 	RespositoryURL = "https://github.com/quarkcms/quark-go/tree/main/website/"
@@ -321,16 +321,19 @@ func (p *Engine) handleParser(ctx *Context) error {
 	// 执行挂载的方法
 	for _, v := range p.routePaths {
 		if v.Path == ctx.FullPath() {
-			getResult := reflect.
-				ValueOf(templateInstance).
-				MethodByName(v.HandlerName).
-				Call([]reflect.Value{
-					reflect.ValueOf(ctx),
-				})
-			if len(getResult) == 1 {
-				result = getResult[0].Interface()
-				if v, ok := result.(error); ok {
-					err = v
+			value := reflect.ValueOf(templateInstance)
+			if value.IsValid() {
+				method := value.MethodByName(v.HandlerName)
+				if method.IsValid() {
+					getResult := method.Call([]reflect.Value{
+						reflect.ValueOf(ctx),
+					})
+					if len(getResult) == 1 {
+						result = getResult[0].Interface()
+						if v, ok := result.(error); ok {
+							err = v
+						}
+					}
 				}
 			}
 		}
