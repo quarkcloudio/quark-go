@@ -7,6 +7,7 @@ import (
 	"github.com/go-basic/uuid"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"github.com/quarkcms/quark-go/pkg/lister"
+	"gorm.io/gorm"
 )
 
 // 字段
@@ -195,4 +196,32 @@ func (model *Menu) GetListByAdminId(adminId int) (menuList interface{}, Error er
 	}
 
 	return lister.ListToTree(menus, "id", "pid", "routes", 0)
+}
+
+// 通过ID获取菜单信息
+func (model *Menu) GetInfoById(id interface{}) (menu *Menu, Error error) {
+	err := db.Client.Where("status = ?", 1).Where("id = ?", id).First(&menu).Error
+
+	return menu, err
+}
+
+// 通过名称获取菜单信息
+func (model *Menu) GetInfoByName(name string) (menu *Menu, Error error) {
+	err := db.Client.Where("status = ?", 1).Where("name = ?", name).First(&menu).Error
+
+	return menu, err
+}
+
+// 通过ID判断菜单是否已存在
+func (model *Menu) IsExisted(id interface{}) bool {
+	menu := Menu{}
+	err := db.Client.Where("status = ?", 1).Where("id = ?", id).First(&menu).Error
+	if err == gorm.ErrRecordNotFound {
+		return false
+	}
+	if err != nil {
+		panic(err)
+	}
+
+	return true
 }
