@@ -20,9 +20,9 @@ type Item struct {
 	Colon                bool                   `json:"colon"`
 	Value                interface{}            `json:"value"`
 	DefaultValue         interface{}            `json:"defaultValue"`
-	Extra                string                 `json:"extra"`
+	Extra                string                 `json:"extra,omitempty"`
 	HasFeedback          bool                   `json:"hasFeedback"`
-	Help                 string                 `json:"help"`
+	Help                 string                 `json:"help,omitempty"`
 	NoStyle              bool                   `json:"noStyle"`
 	Label                string                 `json:"label"`
 	LabelAlign           string                 `json:"labelAlign"`
