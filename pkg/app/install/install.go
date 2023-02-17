@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/quarkcms/quark-go/pkg/app/model"
-	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"gorm.io/gorm"
 )
@@ -23,11 +22,11 @@ func PathExist(path string) bool {
 }
 
 // 执行安装操作
-func Handle(ctx *builder.Context) error {
+func Handle() {
 
 	// 如果锁定文件存在则不执行安装步骤
 	if PathExist("install.lock") {
-		return ctx.Next()
+		return
 	}
 
 	// 迁移数据
@@ -62,6 +61,4 @@ func Handle(ctx *builder.Context) error {
 	// 创建锁定文件
 	file, _ := os.Create("install.lock")
 	file.Close()
-
-	return ctx.Next()
 }

@@ -30,7 +30,7 @@ func main() {
 	b.Static("/", "./website")
 
 	// 自动构建数据库、拉取静态文件
-	b.Use(install.Handle)
+	install.Handle()
 
 	// 后台中间件
 	b.Use(middleware.Handle)

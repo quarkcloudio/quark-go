@@ -35,7 +35,7 @@ func main() {
 	b := builder.New(config)
 
 	// 初始化安装
-	b.Use(install.Handle)
+	install.Handle()
 
 	// 中间件
 	b.Use(middleware.Handle)
