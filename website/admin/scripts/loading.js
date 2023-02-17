@@ -3,14 +3,19 @@
  * 解决首次加载时白屏的问题
  */
 (function () {
+  const _body = document.querySelector('body');
   const _root = document.querySelector('#root');
+  const _loading = document.createElement("div")
   if (_root && _root.innerHTML === '') {
-    _root.innerHTML = `
+    window.onload = function(){
+      _loading.style.display = "none"
+    }
+    _loading.innerHTML = `
       <style>
         html,
         body,
         #root {
-          height: 100%;
+          height: 0;
           margin: 0;
           padding: 0;
         }
@@ -198,5 +203,6 @@
         </div>
       </div>
     `;
+    _body.appendChild(_loading)
   }
 })();
