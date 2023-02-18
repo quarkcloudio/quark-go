@@ -157,6 +157,7 @@ func (p *IndexRequest) performsList(ctx *builder.Context, lists []map[string]int
 			} else {
 				if v[name] != nil {
 					var fieldValue interface{}
+					fieldValue = v[name]
 					getV, ok := v[name].(string)
 					if ok {
 						if strings.Contains(getV, "{") {
@@ -197,8 +198,6 @@ func (p *IndexRequest) performsList(ctx *builder.Context, lists []map[string]int
 						format = strings.Replace(format, "ss", "05", -1)
 
 						fieldValue = v[name].(time.Time).Format(format)
-					} else {
-						fieldValue = v[name]
 					}
 
 					fields[name] = fieldValue
