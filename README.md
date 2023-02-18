@@ -66,7 +66,7 @@ func main() {
 账号：```administrator```
 密码：```123456```
 
-## 案例
+## 相关项目
 - [QuarkSmart](https://github.com/quarkcms/quark-smart) 单体应用
 - [QuarkMicro](https://github.com/quarkcms/quark-micro) 微服务应用(开发中)
 
