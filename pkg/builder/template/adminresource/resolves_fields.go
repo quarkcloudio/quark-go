@@ -163,14 +163,16 @@ func (p *Template) CreationFields(ctx *builder.Context) interface{} {
 	var items []interface{}
 
 	fields := p.getFields(ctx)
-	if v, ok := fields.(interface {
-		IsShownOnCreation() bool
-	}); ok {
-		isShownOnCreation := v.(interface {
+	for _, v := range fields.([]interface{}) {
+		if v, ok := v.(interface {
 			IsShownOnCreation() bool
-		}).IsShownOnCreation()
-		if isShownOnCreation {
-			items = append(items, v)
+		}); ok {
+			isShownOnCreation := v.(interface {
+				IsShownOnCreation() bool
+			}).IsShownOnCreation()
+			if isShownOnCreation {
+				items = append(items, v)
+			}
 		}
 	}
 
