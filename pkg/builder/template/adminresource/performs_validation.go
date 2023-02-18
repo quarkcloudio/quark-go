@@ -46,29 +46,32 @@ func (p *Template) Validator(rules []interface{}, messages []interface{}, data m
 					case "required":
 						if fieldValue == nil {
 							errMsg := p.getRuleMessage(messages, k+"."+getItem)
-
 							if errMsg != "" {
 								result = errors.New(errMsg)
 							}
 						}
 					case "min":
-						strNum := utf8.RuneCountInString(fieldValue.(string))
-						minOption, _ := strconv.Atoi(getOption)
+						if fieldValue, ok := fieldValue.(string); ok {
+							strNum := utf8.RuneCountInString(fieldValue)
+							minOption, _ := strconv.Atoi(getOption)
 
-						if strNum < minOption {
-							errMsg := p.getRuleMessage(messages, k+"."+getItem)
-							if errMsg != "" {
-								result = errors.New(errMsg)
+							if strNum < minOption {
+								errMsg := p.getRuleMessage(messages, k+"."+getItem)
+								if errMsg != "" {
+									result = errors.New(errMsg)
+								}
 							}
 						}
 					case "max":
-						strNum := utf8.RuneCountInString(fieldValue.(string))
-						maxOption, _ := strconv.Atoi(getOption)
+						if fieldValue, ok := fieldValue.(string); ok {
+							strNum := utf8.RuneCountInString(fieldValue)
+							maxOption, _ := strconv.Atoi(getOption)
 
-						if strNum > maxOption {
-							errMsg := p.getRuleMessage(messages, k+"."+getItem)
-							if errMsg != "" {
-								result = errors.New(errMsg)
+							if strNum > maxOption {
+								errMsg := p.getRuleMessage(messages, k+"."+getItem)
+								if errMsg != "" {
+									result = errors.New(errMsg)
+								}
 							}
 						}
 					case "unique":
