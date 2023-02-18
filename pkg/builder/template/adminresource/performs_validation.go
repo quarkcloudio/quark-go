@@ -154,15 +154,13 @@ func (p *Template) RulesForCreation(ctx *builder.Context) ([]interface{}, []inte
 			FieldByName("When").Interface()
 
 		if when != nil {
-			whenItems := reflect.
-				ValueOf(when).
-				Elem().
-				FieldByName("Items").Interface()
+			whenItems := when.(map[string]interface{})["items"]
 
 			if whenItems != nil {
-				for _, vi := range whenItems.([]map[string]interface{}) {
-					if p.needValidateWhenRules(ctx, vi) {
-						body := vi["body"]
+
+				for _, vi := range whenItems.([]interface{}) {
+					if p.needValidateWhenRules(ctx, vi.(map[string]interface{})) {
+						body := vi.(map[string]interface{})["body"]
 						if body != nil {
 							// 如果为数组
 							getBody, ok := body.([]interface{})
@@ -358,15 +356,12 @@ func (p *Template) RulesForUpdate(ctx *builder.Context) ([]interface{}, []interf
 			FieldByName("When").Interface()
 
 		if when != nil {
-			whenItems := reflect.
-				ValueOf(when).
-				Elem().
-				FieldByName("Items").Interface()
+			whenItems := when.(map[string]interface{})["items"]
 
 			if whenItems != nil {
-				for _, vi := range whenItems.([]map[string]interface{}) {
-					if p.needValidateWhenRules(ctx, vi) {
-						body := vi["body"]
+				for _, vi := range whenItems.([]interface{}) {
+					if p.needValidateWhenRules(ctx, vi.(map[string]interface{})) {
+						body := vi.(map[string]interface{})["body"]
 
 						if body != nil {
 
@@ -504,15 +499,12 @@ func (p *Template) RulesForImport(ctx *builder.Context) ([]interface{}, []interf
 			FieldByName("When").Interface()
 
 		if when != nil {
-			whenItems := reflect.
-				ValueOf(when).
-				Elem().
-				FieldByName("Items").Interface()
+			whenItems := when.(map[string]interface{})["items"]
 
 			if whenItems != nil {
-				for _, vi := range whenItems.([]map[string]interface{}) {
-					if p.needValidateWhenRules(ctx, vi) {
-						body := vi["body"]
+				for _, vi := range whenItems.([]interface{}) {
+					if p.needValidateWhenRules(ctx, vi.(map[string]interface{})) {
+						body := vi.(map[string]interface{})["body"]
 
 						if body != nil {
 

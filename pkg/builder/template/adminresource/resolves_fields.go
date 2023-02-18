@@ -160,20 +160,21 @@ func (p *Template) fieldToColumn(ctx *builder.Context, field interface{}) interf
 
 // 创建页字段
 func (p *Template) CreationFields(ctx *builder.Context) interface{} {
-	fields := p.getFields(ctx)
 	var items []interface{}
-	for _, v := range fields.([]interface{}) {
+
+	fields := p.getFields(ctx)
+	if v, ok := fields.(interface {
+		IsShownOnCreation() bool
+	}); ok {
 		isShownOnCreation := v.(interface {
 			IsShownOnCreation() bool
 		}).IsShownOnCreation()
-
 		if isShownOnCreation {
 			items = append(items, v)
 		}
 	}
 
 	return items
-
 }
 
 // 不包含When组件内字段的创建页字段
@@ -181,11 +182,15 @@ func (p *Template) CreationFieldsWithoutWhen(ctx *builder.Context) interface{} {
 	fields := p.getFieldsWithoutWhen(ctx)
 	var items []interface{}
 	for _, v := range fields.([]interface{}) {
-		isShownOnCreation := v.(interface {
+		if v, ok := v.(interface {
 			IsShownOnCreation() bool
-		}).IsShownOnCreation()
-		if isShownOnCreation {
-			items = append(items, v)
+		}); ok {
+			isShownOnCreation := v.(interface {
+				IsShownOnCreation() bool
+			}).IsShownOnCreation()
+			if isShownOnCreation {
+				items = append(items, v)
+			}
 		}
 	}
 
@@ -243,15 +248,19 @@ func (p *Template) CreationFieldsWithinComponents(ctx *builder.Context) interfac
 
 // 编辑页字段
 func (p *Template) UpdateFields(ctx *builder.Context) interface{} {
-	fields := p.getFields(ctx)
 	var items []interface{}
 
+	fields := p.getFields(ctx)
 	for _, v := range fields.([]interface{}) {
-		isShownOnUpdate := v.(interface {
+		if v, ok := v.(interface {
 			IsShownOnUpdate() bool
-		}).IsShownOnUpdate()
-		if isShownOnUpdate {
-			items = append(items, v)
+		}); ok {
+			isShownOnUpdate := v.(interface {
+				IsShownOnUpdate() bool
+			}).IsShownOnUpdate()
+			if isShownOnUpdate {
+				items = append(items, v)
+			}
 		}
 	}
 
@@ -264,11 +273,15 @@ func (p *Template) UpdateFieldsWithoutWhen(ctx *builder.Context) interface{} {
 	var items []interface{}
 
 	for _, v := range fields.([]interface{}) {
-		isShownOnUpdate := v.(interface {
+		if v, ok := v.(interface {
 			IsShownOnUpdate() bool
-		}).IsShownOnUpdate()
-		if isShownOnUpdate {
-			items = append(items, v)
+		}); ok {
+			isShownOnUpdate := v.(interface {
+				IsShownOnUpdate() bool
+			}).IsShownOnUpdate()
+			if isShownOnUpdate {
+				items = append(items, v)
+			}
 		}
 	}
 
@@ -538,10 +551,7 @@ func (p *Template) getWhenFields(item interface{}) []interface{} {
 		return items
 	}
 
-	whenItems := reflect.
-		ValueOf(when).
-		Elem().
-		FieldByName("Items").Interface()
+	whenItems := when.(map[string]interface{})["items"]
 	if whenItems == nil {
 		return items
 	}
@@ -549,10 +559,7 @@ func (p *Template) getWhenFields(item interface{}) []interface{} {
 	whenItems, ok := whenItems.([]interface{})
 	if ok {
 		for _, v := range whenItems.([]interface{}) {
-			body := reflect.
-				ValueOf(v).
-				Elem().
-				FieldByName("Body").Interface()
+			body := v.(map[string]interface{})["body"]
 			if body != nil {
 				if body, ok := body.([]interface{}); ok {
 					if len(body) > 0 {
