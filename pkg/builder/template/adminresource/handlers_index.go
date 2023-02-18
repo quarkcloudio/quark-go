@@ -2,7 +2,9 @@ package adminresource
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
@@ -153,6 +155,25 @@ func (p *IndexRequest) performsList(ctx *builder.Context, lists []map[string]int
 				fields[name] = getCallback()
 			} else {
 				if v[name] != nil {
+					getV, ok := v[name].(string)
+					if ok {
+						if strings.Contains(getV, "{") {
+							var m map[string]interface{}
+							err := json.Unmarshal([]byte(getV), &m)
+							if err != nil {
+								fmt.Printf("Unmarshal with error: %+v\n", err)
+							}
+							v[name] = m
+						}
+						if strings.Contains(getV, "[") {
+							var m []interface{}
+							err := json.Unmarshal([]byte(getV), &m)
+							if err != nil {
+								fmt.Printf("Unmarshal with error: %+v\n", err)
+							}
+							v[name] = m
+						}
+					}
 					fields[name] = v[name]
 				}
 			}

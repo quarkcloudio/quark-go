@@ -121,6 +121,11 @@ func (p *Template) fieldToColumn(ctx *builder.Context, field interface{}) interf
 			GetValueEnum() map[interface{}]interface{}
 		}).GetValueEnum()
 		column = column.SetValueType("select").SetValueEnum(valueEnum)
+	case "checkboxField":
+		valueEnum := field.(interface {
+			GetValueEnum() map[interface{}]interface{}
+		}).GetValueEnum()
+		column = column.SetValueType("checkbox").SetValueEnum(valueEnum)
 	case "radioField":
 		valueEnum := field.(interface {
 			GetValueEnum() map[interface{}]interface{}
