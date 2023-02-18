@@ -5,7 +5,6 @@ import "github.com/quarkcms/quark-go/pkg/component/admin/component"
 type DateRange struct {
 	Item
 	Picker string `json:"picker"`
-	Format string `json:"format"`
 }
 
 // 初始化

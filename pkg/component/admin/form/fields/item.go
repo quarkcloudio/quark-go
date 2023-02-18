@@ -66,6 +66,7 @@ type Item struct {
 	LimitWH              map[string]int         `json:"limitWH"`
 	Api                  string                 `json:"api"`
 	AutoSize             interface{}            `json:"autoSize"`
+	Format               string                 `json:"format"`
 }
 
 const DEFAULT_KEY = ""

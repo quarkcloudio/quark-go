@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
@@ -155,6 +156,7 @@ func (p *IndexRequest) performsList(ctx *builder.Context, lists []map[string]int
 				fields[name] = getCallback()
 			} else {
 				if v[name] != nil {
+					var fieldValue interface{}
 					getV, ok := v[name].(string)
 					if ok {
 						if strings.Contains(getV, "{") {
@@ -163,7 +165,7 @@ func (p *IndexRequest) performsList(ctx *builder.Context, lists []map[string]int
 							if err != nil {
 								fmt.Printf("Unmarshal with error: %+v\n", err)
 							}
-							v[name] = m
+							fieldValue = m
 						}
 						if strings.Contains(getV, "[") {
 							var m []interface{}
@@ -171,10 +173,35 @@ func (p *IndexRequest) performsList(ctx *builder.Context, lists []map[string]int
 							if err != nil {
 								fmt.Printf("Unmarshal with error: %+v\n", err)
 							}
-							v[name] = m
+							fieldValue = m
 						}
 					}
-					fields[name] = v[name]
+
+					// 组件名称
+					component := reflect.
+						ValueOf(field).
+						Elem().
+						FieldByName("Component").String()
+
+					if component == "datetimeField" || component == "dateField" {
+						format := reflect.
+							ValueOf(field).
+							Elem().
+							FieldByName("Format").String()
+
+						format = strings.Replace(format, "YYYY", "2006", -1)
+						format = strings.Replace(format, "MM", "01", -1)
+						format = strings.Replace(format, "DD", "02", -1)
+						format = strings.Replace(format, "HH", "15", -1)
+						format = strings.Replace(format, "mm", "04", -1)
+						format = strings.Replace(format, "ss", "05", -1)
+
+						fieldValue = v[name].(time.Time).Format(format)
+					} else {
+						fieldValue = v[name]
+					}
+
+					fields[name] = fieldValue
 				}
 			}
 		}

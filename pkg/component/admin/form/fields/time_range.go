@@ -4,7 +4,6 @@ import "github.com/quarkcms/quark-go/pkg/component/admin/component"
 
 type TimeRange struct {
 	Item
-	Format string `json:"format"`
 }
 
 // 初始化

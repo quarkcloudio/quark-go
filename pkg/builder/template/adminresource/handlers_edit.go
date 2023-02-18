@@ -2,6 +2,8 @@ package adminresource
 
 import (
 	"reflect"
+	"strings"
+	"time"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
@@ -45,7 +47,32 @@ func (p *EditRequest) FillData(ctx *builder.Context) map[string]interface{} {
 			FieldByName("Name").String()
 
 		if result[name] != nil {
-			fields[name] = result[name]
+			var fieldValue interface{}
+			// 组件名称
+			component := reflect.
+				ValueOf(field).
+				Elem().
+				FieldByName("Component").String()
+
+			if component == "datetimeField" || component == "dateField" {
+				format := reflect.
+					ValueOf(field).
+					Elem().
+					FieldByName("Format").String()
+
+				format = strings.Replace(format, "YYYY", "2006", -1)
+				format = strings.Replace(format, "MM", "01", -1)
+				format = strings.Replace(format, "DD", "02", -1)
+				format = strings.Replace(format, "HH", "15", -1)
+				format = strings.Replace(format, "mm", "04", -1)
+				format = strings.Replace(format, "ss", "05", -1)
+
+				fieldValue = result[name].(time.Time).Format(format)
+			} else {
+				fieldValue = result[name]
+			}
+
+			fields[name] = fieldValue
 		}
 	}
 

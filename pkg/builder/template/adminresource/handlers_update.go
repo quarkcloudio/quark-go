@@ -45,7 +45,7 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) interface{} {
 	if validator != nil {
 		return validator
 	}
-
+	zeroValues := map[string]interface{}{}
 	for _, v := range fields.([]interface{}) {
 		name := reflect.
 			ValueOf(v).
@@ -108,13 +108,22 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) interface{} {
 					return ctx.JSON(200, msg.Error("结构体类型与传参类型不一致！", ""))
 				}
 
+				if reflectValue.IsZero() {
+					zeroValues[fieldName] = 0
+				}
+
 				reflectFieldName.Set(reflectValue)
 			}
 		}
 	}
 
 	// 获取对象
-	getModel := db.Client.Model(&modelInstance).Select("*").Where("id = ?", data["id"]).Updates(modelInstance)
+	getModel := db.Client.Model(&modelInstance).Where("id = ?", data["id"]).Updates(modelInstance)
+
+	// 因为gorm使用结构体，不更新零值，需要使用map更新零值
+	if len(zeroValues) > 0 {
+		db.Client.Model(&modelInstance).Where("id = ?", data["id"]).Updates(zeroValues)
+	}
 
 	return ctx.Template.(interface {
 		AfterSaved(ctx *builder.Context, model *gorm.DB) interface{}
