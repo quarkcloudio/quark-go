@@ -42,7 +42,7 @@ func (p *StoreRequest) Handle(ctx *builder.Context) interface{} {
 	if validator != nil {
 		return ctx.JSON(200, msg.Error(validator.Error(), ""))
 	}
-
+	zeroValues := map[string]interface{}{}
 	for _, v := range fields.([]interface{}) {
 		name := reflect.
 			ValueOf(v).
@@ -79,13 +79,22 @@ func (p *StoreRequest) Handle(ctx *builder.Context) interface{} {
 					if value, ok := formValue.(float64); ok {
 						reflectValue = reflect.ValueOf(int(value))
 					}
+					if reflectValue.IsZero() {
+						zeroValues[fieldName] = 0
+					}
 				case "float64":
 					if value, ok := formValue.(float64); ok {
 						reflectValue = reflect.ValueOf(float64(value))
 					}
+					if reflectValue.IsZero() {
+						zeroValues[fieldName] = 0
+					}
 				case "float32":
 					if value, ok := formValue.(float64); ok {
 						reflectValue = reflect.ValueOf(float32(value))
+					}
+					if reflectValue.IsZero() {
+						zeroValues[fieldName] = 0
 					}
 				case "time.Time":
 					getTime, _ := time.ParseInLocation("2006-01-02 15:04:05", formValue.(string), time.Local)
@@ -95,18 +104,35 @@ func (p *StoreRequest) Handle(ctx *builder.Context) interface{} {
 					if reflect.ValueOf(formValue).Type().String() == "[]uint8" {
 						reflectValue = reflect.ValueOf(string(formValue.([]uint8)))
 					}
-				}
-				if reflectFieldName.Type().String() != reflectValue.Type().String() {
-					return ctx.JSON(200, msg.Error("结构体类型与传参类型不一致！", ""))
+					if reflectValue.IsZero() {
+						zeroValues[fieldName] = nil
+					}
 				}
 
-				reflectFieldName.Set(reflectValue)
+				if reflectValue.IsValid() {
+					if reflectFieldName.Type().String() != reflectValue.Type().String() {
+						return ctx.JSON(200, msg.Error("结构体类型与传参类型不一致！", ""))
+					}
+
+					reflectFieldName.Set(reflectValue)
+				}
 			}
 		}
 	}
 
 	// 获取对象
 	getModel := model.Create(modelInstance)
+
+	// 因为gorm使用结构体，不更新零值，需要使用map更新零值
+	if len(zeroValues) > 0 {
+		reflectId := reflect.
+			ValueOf(modelInstance).
+			Elem().
+			FieldByName("Id")
+		if reflectId.IsValid() {
+			db.Client.Model(&modelInstance).Where("id = ?", reflectId).Updates(zeroValues)
+		}
+	}
 
 	return ctx.Template.(interface {
 		AfterSaved(ctx *builder.Context, model *gorm.DB) interface{}
