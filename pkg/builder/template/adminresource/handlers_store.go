@@ -130,7 +130,7 @@ func (p *StoreRequest) Handle(ctx *builder.Context) interface{} {
 			Elem().
 			FieldByName("Id")
 		if reflectId.IsValid() {
-			db.Client.Model(&modelInstance).Where("id = ?", reflectId).Updates(zeroValues)
+			db.Client.Model(&modelInstance).Where("id = ?", reflectId.Int()).Updates(zeroValues)
 		}
 	}
 
