@@ -43,7 +43,7 @@ func (p *Menu) Seeder() {
 		{Id: 9, Name: "网站设置", GuardName: "admin", Icon: "", Type: "engine", Pid: 8, Sort: 0, Path: "/api/admin/webConfig/setting/form", Show: 1, Status: 1},
 		{Id: 10, Name: "配置管理", GuardName: "admin", Icon: "", Type: "engine", Pid: 8, Sort: 0, Path: "/api/admin/config/index", Show: 1, Status: 1},
 		{Id: 11, Name: "菜单管理", GuardName: "admin", Icon: "", Type: "engine", Pid: 7, Sort: 0, Path: "/api/admin/menu/index", Show: 1, Status: 1},
-		{Id: 12, Name: "操作日志", GuardName: "admin", Icon: "", Type: "engine", Pid: 7, Sort: 0, Path: "/api/admin/actionLog/index", Show: 1, Status: 1},
+		{Id: 12, Name: "操作日志", GuardName: "admin", Icon: "", Type: "engine", Pid: 7, Sort: 100, Path: "/api/admin/actionLog/index", Show: 1, Status: 1},
 		{Id: 13, Name: "附件空间", GuardName: "admin", Icon: "icon-attachment", Type: "default", Pid: 0, Sort: 100, Path: "/attachment", Show: 1, Status: 1},
 		{Id: 14, Name: "文件管理", GuardName: "admin", Icon: "", Type: "engine", Pid: 13, Sort: 0, Path: "/api/admin/file/index", Show: 1, Status: 1},
 		{Id: 15, Name: "图片管理", GuardName: "admin", Icon: "", Type: "engine", Pid: 13, Sort: 0, Path: "/api/admin/picture/index", Show: 1, Status: 1},
