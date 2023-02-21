@@ -3,7 +3,7 @@ package middleware
 import (
 	"strings"
 
-	"github.com/quarkcms/quark-go/pkg/app/handler/admin/login"
+	"github.com/quarkcms/quark-go/pkg/app/handler/admin/logins"
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/msg"
@@ -11,7 +11,7 @@ import (
 
 // 中间件
 func Handle(ctx *builder.Context) error {
-	loginIndex := (&login.Index{}).Init()
+	loginIndex := (&logins.Index{}).Init()
 
 	// 获取登录模板定义的路由
 	loginIndexRoutes := loginIndex.(interface {

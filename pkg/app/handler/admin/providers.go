@@ -2,14 +2,14 @@ package admin
 
 import (
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/dashboards"
-	"github.com/quarkcms/quark-go/pkg/app/handler/admin/login"
+	"github.com/quarkcms/quark-go/pkg/app/handler/admin/logins"
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/resources"
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/uploads"
 )
 
 // 注册服务
 var Providers = []interface{}{
-	&login.Index{},
+	&logins.Index{},
 	&dashboards.Index{},
 	&resources.Admin{},
 	&resources.Role{},
