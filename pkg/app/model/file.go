@@ -73,11 +73,11 @@ func (model *File) GetPath(id interface{}) string {
 			json.Unmarshal([]byte(getId), &jsonData)
 			// 如果为map
 			if mapData, ok := jsonData.(map[string]interface{}); ok {
-				path = mapData["path"].(string)
+				path = mapData["url"].(string)
 			}
 			// 如果为数组，返回第一个key的path
 			if arrayData, ok := jsonData.([]map[string]interface{}); ok {
-				path = arrayData[0]["path"].(string)
+				path = arrayData[0]["url"].(string)
 			}
 		}
 
@@ -108,6 +108,48 @@ func (model *File) GetPath(id interface{}) string {
 	}
 
 	return ""
+}
+
+// 获取多文件路径
+func (model *File) GetPaths(id interface{}) []string {
+	var paths []string
+	http, path := "", ""
+	webSiteDomain := (&Config{}).GetValue("WEB_SITE_DOMAIN")
+	WebConfig := (&Config{}).GetValue("SSL_OPEN")
+	if webSiteDomain != "" {
+		if WebConfig == "1" {
+			http = "https://"
+		} else {
+			http = "http://"
+		}
+	}
+
+	if getId, ok := id.(string); ok {
+		// json字符串
+		if strings.Contains(getId, "{") {
+			var jsonData interface{}
+			json.Unmarshal([]byte(getId), &jsonData)
+			// 如果为数组，返回第一个key的path
+			if arrayData, ok := jsonData.([]map[string]interface{}); ok {
+				for _, v := range arrayData {
+					path = v["path"].(string)
+					if strings.Contains(path, "//") {
+						paths = append(paths, v["path"].(string))
+					} else {
+						if strings.Contains(path, "./") {
+							path = strings.Replace(path, "./website/", "/", -1)
+						}
+						if path != "" {
+							path = http + webSiteDomain + path
+						}
+						paths = append(paths, path)
+					}
+				}
+			}
+		}
+	}
+
+	return paths
 }
 
 // 获取Excel文件数据

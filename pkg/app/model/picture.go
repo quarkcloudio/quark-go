@@ -171,3 +171,45 @@ func (model *Picture) GetPath(id interface{}) string {
 
 	return http + webSiteDomain + "/admin/default.png"
 }
+
+// 获取多图片路径
+func (model *Picture) GetPaths(id interface{}) []string {
+	var paths []string
+	http, path := "", ""
+	webSiteDomain := (&Config{}).GetValue("WEB_SITE_DOMAIN")
+	WebConfig := (&Config{}).GetValue("SSL_OPEN")
+	if webSiteDomain != "" {
+		if WebConfig == "1" {
+			http = "https://"
+		} else {
+			http = "http://"
+		}
+	}
+
+	if getId, ok := id.(string); ok {
+		// json字符串
+		if strings.Contains(getId, "{") {
+			var jsonData interface{}
+			json.Unmarshal([]byte(getId), &jsonData)
+			// 如果为数组，返回第一个key的path
+			if arrayData, ok := jsonData.([]map[string]interface{}); ok {
+				for _, v := range arrayData {
+					path = v["url"].(string)
+					if strings.Contains(path, "//") {
+						paths = append(paths, v["url"].(string))
+					} else {
+						if strings.Contains(path, "./") {
+							path = strings.Replace(path, "./website/", "/", -1)
+						}
+						if path != "" {
+							path = http + webSiteDomain + path
+						}
+						paths = append(paths, path)
+					}
+				}
+			}
+		}
+	}
+
+	return paths
+}
