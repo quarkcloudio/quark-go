@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin"
+	"github.com/quarkcms/quark-go/pkg/app/handler/mix"
 	"github.com/quarkcms/quark-go/pkg/app/install"
 	"github.com/quarkcms/quark-go/pkg/app/middleware"
 	"github.com/quarkcms/quark-go/pkg/builder"
@@ -16,7 +17,7 @@ func main() {
 	// 配置资源
 	config := &builder.Config{
 		AppKey:    "123456",
-		Providers: admin.Providers,
+		Providers: append(admin.Providers, mix.Providers...),
 		DBConfig: &builder.DBConfig{
 			Dialector: mysql.Open(dsn),
 			Opts:      &gorm.Config{},

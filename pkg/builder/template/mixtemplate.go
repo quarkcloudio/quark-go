@@ -2,11 +2,8 @@ package template
 
 import (
 	"net/http"
-	"reflect"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
-	"github.com/quarkcms/quark-go/pkg/component/admin/page"
-	"github.com/quarkcms/quark-go/pkg/component/admin/pagecontainer"
 	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
@@ -90,40 +87,8 @@ func (p *MixTemplate) DELETE(path string, handlerName string) {
 	p.AddRouteMapping(http.MethodDelete, path, handlerName)
 }
 
-// 页面组件渲染
-func (p *MixTemplate) PageComponentRender(ctx *builder.Context, body interface{}) interface{} {
-
-	// Layout组件
-	layoutComponent := ctx.Template.(interface {
-		LayoutComponentRender(ctx *builder.Context, body interface{}) interface{}
-	}).LayoutComponentRender(ctx, body)
-
-	return (&page.Component{}).
-		Init().
-		SetStyle(map[string]interface{}{
-			"height": "100vh",
-		}).
-		SetBody(layoutComponent).
-		JsonSerialize()
-}
-
-// 页面容器组件渲染
-func (p *MixTemplate) PageContainerComponentRender(ctx *builder.Context, body interface{}) interface{} {
-	value := reflect.ValueOf(ctx.Template).Elem()
-	title := value.FieldByName("Title").String()
-	subTitle := value.FieldByName("SubTitle").String()
-
-	// 设置头部
-	header := (&pagecontainer.PageHeader{}).
-		Init().
-		SetTitle(title).
-		SetSubTitle(subTitle)
-
-	return (&pagecontainer.Component{}).Init().SetHeader(header).SetBody(body)
-}
-
 // 默认组件渲染
 func (p *MixTemplate) Render(ctx *builder.Context) interface{} {
 
-	return msg.Error("请实现组件渲染方法", "")
+	return ctx.JSON(200, msg.Error("请实现组件渲染方法", ""))
 }

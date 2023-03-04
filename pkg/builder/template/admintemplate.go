@@ -177,5 +177,5 @@ func (p *AdminTemplate) PageContainerComponentRender(ctx *builder.Context, body 
 // 默认组件渲染
 func (p *AdminTemplate) Render(ctx *builder.Context) interface{} {
 
-	return msg.Error("请实现组件渲染方法", "")
+	return ctx.JSON(200, msg.Error("请实现组件渲染方法", ""))
 }
