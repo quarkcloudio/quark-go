@@ -20,5 +20,5 @@ func (p *Index) Init() interface{} {
 // 组件渲染
 func (p *Index) Content(ctx *builder.Context) interface{} {
 
-	return "hello world"
+	return "Hello World"
 }
