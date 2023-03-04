@@ -68,7 +68,7 @@ func main() {
 
 ## 相关项目
 - [QuarkSmart](https://github.com/quarkcms/quark-smart) 单体应用
-- [QuarkMicro](https://github.com/quarkcms/quark-go) 微服务应用(开发中)
+- [QuarkMicro](https://github.com/quarkcms/quark-go) 微服务应用
 
 ## 演示站点
 香港站点，页面加载可能比较缓慢

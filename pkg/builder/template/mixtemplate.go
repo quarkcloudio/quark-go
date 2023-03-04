@@ -4,10 +4,7 @@ import (
 	"net/http"
 	"reflect"
 
-	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
-	"github.com/quarkcms/quark-go/pkg/component/admin/footer"
-	"github.com/quarkcms/quark-go/pkg/component/admin/layout"
 	"github.com/quarkcms/quark-go/pkg/component/admin/page"
 	"github.com/quarkcms/quark-go/pkg/component/admin/pagecontainer"
 	"github.com/quarkcms/quark-go/pkg/msg"
@@ -108,55 +105,6 @@ func (p *MixTemplate) PageComponentRender(ctx *builder.Context, body interface{}
 		}).
 		SetBody(layoutComponent).
 		JsonSerialize()
-}
-
-// 页面布局组件渲染
-func (p *MixTemplate) LayoutComponentRender(ctx *builder.Context, body interface{}) interface{} {
-	admin := &model.Admin{}
-	config := ctx.Engine.GetConfig()
-
-	// 获取登录管理员信息
-	adminInfo, err := admin.GetAuthUser(config.AppKey, ctx.Token())
-	if err != nil {
-		return msg.Error(err.Error(), "")
-	}
-
-	// 获取管理员菜单
-	getMenus, err := admin.GetMenuListById(adminInfo.Id)
-	if err != nil {
-		return msg.Error(err.Error(), "")
-	}
-
-	adminLayout := ctx.Engine.GetAdminLayout()
-
-	// 页脚
-	footer := (&footer.Component{}).
-		Init().
-		SetCopyright(adminLayout.Copyright).
-		SetLinks(adminLayout.Links)
-
-	// 页面容器组件渲染
-	pageContainerComponent := ctx.Template.(interface {
-		PageContainerComponentRender(ctx *builder.Context, body interface{}) interface{}
-	}).PageContainerComponentRender(ctx, body)
-
-	return (&layout.Component{}).
-		Init().
-		SetTitle(adminLayout.Title).
-		SetLogo(adminLayout.Logo).
-		SetActions(adminLayout.Actions).
-		SetLayout(adminLayout.Layout).
-		SetSplitMenus(adminLayout.SplitMenus).
-		SetContentWidth(adminLayout.ContentWidth).
-		SetPrimaryColor(adminLayout.PrimaryColor).
-		SetFixSiderbar(adminLayout.FixSiderbar).
-		SetFixedHeader(adminLayout.FixedHeader).
-		SetIconfontUrl(adminLayout.IconfontUrl).
-		SetLocale(adminLayout.Locale).
-		SetSiderWidth(adminLayout.SiderWidth).
-		SetMenu(getMenus).
-		SetBody(pageContainerComponent).
-		SetFooter(footer)
 }
 
 // 页面容器组件渲染
