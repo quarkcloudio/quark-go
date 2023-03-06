@@ -1,0 +1,1 @@
+import{r as a,_ as e}from"./engine-page.752ad3b3.js";import{o as i,c as p,r}from"./index-0edb9fcf.js";import{_ as n}from"./_plugin-vue_export-helper.1b428a4d.js";const o=n({data:()=>({api:"/api/mix/page/my/index"})},[["render",function(n,o,s,t,m,g){const u=a(r("engine-page"),e);return i(),p(u,{api:m.api},null,8,["api"])}]]);export{o as default};
