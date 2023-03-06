@@ -60,6 +60,11 @@ func (p *Template) NavBar(ctx *builder.Context, navbar *navbar.Component) interf
 	return nil
 }
 
+// 轮播广告图
+func (p *Template) Banner(ctx *builder.Context) []string {
+	return nil
+}
+
 // 内容
 func (p *Template) Content(ctx *builder.Context) interface{} {
 	return nil
@@ -72,6 +77,10 @@ func (p *Template) TabBar(ctx *builder.Context) interface{} {
 
 // 组件渲染
 func (p *Template) Render(ctx *builder.Context) interface{} {
+	var (
+		components  []interface{}
+		swiperItems []interface{}
+	)
 
 	// 标题
 	title := reflect.
@@ -96,10 +105,25 @@ func (p *Template) Render(ctx *builder.Context) interface{} {
 		Elem().
 		FieldByName("Style").String()
 
+	// banner图
+	banners := ctx.Template.(interface {
+		Banner(ctx *builder.Context) []string
+	}).Banner(ctx)
+	if banners != nil {
+		bannerStyle := "width: 100%; height: 200px;"
+		for _, v := range banners {
+			swiperItems = append(swiperItems, p.SwiperItem(p.Image(v).SetStyle(bannerStyle)))
+		}
+
+		banner := p.Swiper(swiperItems)
+		components = append(components, banner)
+	}
+
 	// 内容
 	content := ctx.Template.(interface {
 		Content(ctx *builder.Context) interface{}
 	}).Content(ctx)
+	components = append(components, content)
 
 	// 组件
 	component := (&page.Component{}).
@@ -108,7 +132,7 @@ func (p *Template) Render(ctx *builder.Context) interface{} {
 		SetNavBar(navBar).
 		SetTabBar(tabBar).
 		SetStyle(style).
-		SetContent(content).
+		SetContent(components).
 		JsonSerialize()
 
 	return ctx.JSON(200, component)
