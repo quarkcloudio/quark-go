@@ -344,13 +344,16 @@ func (p *Template) UpdateFieldsWithinComponents(ctx *builder.Context) interface{
 func (p *Template) DetailFields(ctx *builder.Context) interface{} {
 	fields := p.getFields(ctx)
 	var items []interface{}
-
 	for _, v := range fields.([]interface{}) {
-		isShownOnDetail := v.(interface {
+		if v, ok := v.(interface {
 			IsShownOnDetail() bool
-		}).IsShownOnDetail()
-		if isShownOnDetail {
-			items = append(items, v)
+		}); ok {
+			isShownOnDetail := v.(interface {
+				IsShownOnDetail() bool
+			}).IsShownOnDetail()
+			if isShownOnDetail {
+				items = append(items, v)
+			}
 		}
 	}
 
