@@ -257,11 +257,12 @@ func (p *Admin) BeforeSaving(ctx *builder.Context, submitData map[string]interfa
 func (p *Admin) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
 	data := map[string]interface{}{}
 	json.Unmarshal(ctx.Body(), &data)
-	if data["role_ids"] == nil {
-		if model.Error != nil {
-			return ctx.JSON(200, msg.Error(model.Error.Error(), ""))
-		}
 
+	if model.Error != nil {
+		return ctx.JSON(200, msg.Error(model.Error.Error(), ""))
+	}
+
+	if data["role_ids"] == nil {
 		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
 	}
 
