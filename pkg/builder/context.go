@@ -249,14 +249,14 @@ func (p *Context) IsDetail() bool {
 }
 
 // 判断当前页面是否为导出页面
-func (p *Context) isExport() bool {
+func (p *Context) IsExport() bool {
 	uri := strings.Split(p.Path(), "/")
 
 	return (uri[len(uri)-1] == "export")
 }
 
 // 判断当前页面是否为导入页面
-func (p *Context) isImport() bool {
+func (p *Context) IsImport() bool {
 	uri := strings.Split(p.Path(), "/")
 
 	return (uri[len(uri)-1] == "import")
