@@ -29,7 +29,7 @@ func (p *Import) Init() *Import {
 
 // 内容
 func (p *Import) GetBody(ctx *builder.Context) interface{} {
-	api := "admin/" + ctx.Param("resource") + "/import"
+	api := "/api/admin/" + ctx.Param("resource") + "/import"
 	getTpl := (&tpl.Component{}).
 		Init().
 		SetBody("模板文件: <a href='/api/admin/" + ctx.Param("resource") + "/import/template?token=" + ctx.Token() + "' target='_blank'>下载模板</a>").
