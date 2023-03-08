@@ -118,9 +118,9 @@ func (p *Template) BeforeSaving(ctx *builder.Context, submitData map[string]inte
 }
 
 // 保存数据后回调
-func (p *Template) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
-	if model.Error != nil {
-		return ctx.JSON(200, msg.Error(model.Error.Error(), ""))
+func (p *Template) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{} {
+	if result.Error != nil {
+		return ctx.JSON(200, msg.Error(result.Error.Error(), ""))
 	}
 
 	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+IndexRoute, ":resource", ctx.Param("resource"), -1), ""))

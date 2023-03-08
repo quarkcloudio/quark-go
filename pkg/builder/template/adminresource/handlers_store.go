@@ -124,17 +124,20 @@ func (p *StoreRequest) Handle(ctx *builder.Context) interface{} {
 	getModel := model.Create(modelInstance)
 
 	// 因为gorm使用结构体，不更新零值，需要使用map更新零值
-	if len(zeroValues) > 0 {
-		reflectId := reflect.
-			ValueOf(modelInstance).
-			Elem().
-			FieldByName("Id")
-		if reflectId.IsValid() {
+	id := 0
+	reflectId := reflect.
+		ValueOf(modelInstance).
+		Elem().
+		FieldByName("Id")
+	if reflectId.IsValid() {
+		if len(zeroValues) > 0 {
 			db.Client.Model(&modelInstance).Where("id = ?", reflectId.Int()).Updates(zeroValues)
 		}
+
+		id = int(reflectId.Int())
 	}
 
 	return ctx.Template.(interface {
-		AfterSaved(ctx *builder.Context, model *gorm.DB) interface{}
-	}).AfterSaved(ctx, getModel)
+		AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{}
+	}).AfterSaved(ctx, id, data, getModel)
 }

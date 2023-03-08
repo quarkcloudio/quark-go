@@ -1,7 +1,6 @@
 package resources
 
 import (
-	"encoding/json"
 	"strconv"
 	"strings"
 	"time"
@@ -254,12 +253,9 @@ func (p *Admin) BeforeSaving(ctx *builder.Context, submitData map[string]interfa
 }
 
 // 保存后回调
-func (p *Admin) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
-	data := map[string]interface{}{}
-	json.Unmarshal(ctx.Body(), &data)
-
-	if model.Error != nil {
-		return ctx.JSON(200, msg.Error(model.Error.Error(), ""))
+func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{} {
+	if result.Error != nil {
+		return ctx.JSON(200, msg.Error(result.Error.Error(), ""))
 	}
 
 	if data["role_ids"] == nil {
@@ -267,14 +263,12 @@ func (p *Admin) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
 	}
 
 	if ctx.IsCreating() {
-		last := map[string]interface{}{}
-		model.Order("id desc").First(&last) // hack
 		roleData := []map[string]interface{}{}
 		for _, v := range data["role_ids"].([]interface{}) {
 			item := map[string]interface{}{
 				"role_id":    v,
 				"model_type": "admin",
-				"model_id":   last["id"],
+				"model_id":   id,
 			}
 			roleData = append(roleData, item)
 		}
@@ -288,7 +282,6 @@ func (p *Admin) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
 	} else {
 
 		// 同步角色
-		id := data["id"].(float64)
 		roleData := []map[string]interface{}{}
 
 		// 先清空用户对应的角色
@@ -297,7 +290,7 @@ func (p *Admin) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
 			item := map[string]interface{}{
 				"role_id":    v,
 				"model_type": "admin",
-				"model_id":   int(id),
+				"model_id":   id,
 			}
 			roleData = append(roleData, item)
 		}

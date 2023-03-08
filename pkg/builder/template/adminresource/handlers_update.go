@@ -136,6 +136,6 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) interface{} {
 	}
 
 	return ctx.Template.(interface {
-		AfterSaved(ctx *builder.Context, model *gorm.DB) interface{}
-	}).AfterSaved(ctx, getModel)
+		AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{}
+	}).AfterSaved(ctx, int(data["id"].(float64)), data, getModel)
 }

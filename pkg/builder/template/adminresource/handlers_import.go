@@ -118,9 +118,13 @@ func (p *ImportRequest) Handle(ctx *builder.Context) interface{} {
 			//记录错误数据
 			importFailedData = append(importFailedData, item)
 		} else {
+
+			lastData := map[string]interface{}{}
+			getModel.Order("id desc").First(&lastData)
+
 			ctx.Template.(interface {
-				AfterSaved(ctx *builder.Context, model *gorm.DB) interface{}
-			}).AfterSaved(ctx, getModel)
+				AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{}
+			}).AfterSaved(ctx, lastData["id"].(int), data, getModel)
 
 			importSuccessedNum = importSuccessedNum + 1
 		}
@@ -224,7 +228,7 @@ func (p *ImportRequest) transformFormValues(fields interface{}, data []interface
 }
 
 // 获取提交表单的数据
-func (p *ImportRequest) getSubmitData(fields interface{}, submitData interface{}) interface{} {
+func (p *ImportRequest) getSubmitData(fields interface{}, submitData interface{}) map[string]interface{} {
 
 	result := make(map[string]interface{})
 

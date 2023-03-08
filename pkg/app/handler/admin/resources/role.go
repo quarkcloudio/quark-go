@@ -1,7 +1,6 @@
 package resources
 
 import (
-	"encoding/json"
 	"errors"
 	"strings"
 	"time"
@@ -148,10 +147,7 @@ func (p *Role) BeforeSaving(ctx *builder.Context, submitData map[string]interfac
 }
 
 // 保存后回调
-func (p *Role) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
-	data := map[string]interface{}{}
-	json.Unmarshal(ctx.Body(), &data)
-
+func (p *Role) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{} {
 	// 根据菜单id获取所有权限
 	var permissionIds []int
 	db.Client.
@@ -163,20 +159,8 @@ func (p *Role) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
 		return ctx.JSON(200, msg.Error("获取的权限为空，请先在菜单管理中绑定权限", ""))
 	}
 
-	var result *gorm.DB
-
-	if ctx.IsCreating() {
-		lastRole := map[string]interface{}{}
-		model.Order("id desc").First(&lastRole) // hack
-
-		// 同步权限
-		result = p.syncPermissions(lastRole["id"].(int), permissionIds)
-	} else {
-
-		// 同步权限
-		id := data["id"].(float64)
-		result = p.syncPermissions(int(id), permissionIds)
-	}
+	// 同步权限
+	result = p.syncPermissions(id, permissionIds)
 
 	if result.Error != nil {
 		return ctx.JSON(200, msg.Error(result.Error.Error(), ""))

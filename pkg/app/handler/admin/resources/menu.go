@@ -1,7 +1,6 @@
 package resources
 
 import (
-	"encoding/json"
 	"strings"
 
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/actions"
@@ -175,25 +174,11 @@ func (p *Menu) BeforeSaving(ctx *builder.Context, submitData map[string]interfac
 }
 
 // 保存后回调
-func (p *Menu) AfterSaved(ctx *builder.Context, model *gorm.DB) interface{} {
-	var (
-		result *gorm.DB
-		id     interface{}
-		data   map[string]interface{}
-		last   map[string]interface{}
-	)
-
-	json.Unmarshal(ctx.Body(), &data)
-	if ctx.IsCreating() {
-		result = model.Order("id desc").First(&last) // 获取最后一条记录的id
-		id = last["id"]
-	} else {
-		id = data["id"]
-		result = db.Client.
-			Model(&models.Permission{}).
-			Where("menu_id = ?", id).
-			Update("menu_id", 0)
-	}
+func (p *Menu) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{} {
+	result = db.Client.
+		Model(&models.Permission{}).
+		Where("menu_id = ?", id).
+		Update("menu_id", 0)
 
 	if data["permission_ids"] != nil {
 		result = db.Client.

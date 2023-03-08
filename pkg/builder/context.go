@@ -255,6 +255,13 @@ func (p *Context) isExport() bool {
 	return (uri[len(uri)-1] == "export")
 }
 
+// 判断当前页面是否为导入页面
+func (p *Context) isImport() bool {
+	uri := strings.Split(p.Path(), "/")
+
+	return (uri[len(uri)-1] == "import")
+}
+
 // 根据路由判断是否为当前加载实例
 func (p *Context) isCurrentTemplate(provider interface{}) bool {
 	providerName := reflect.TypeOf(provider).String()
