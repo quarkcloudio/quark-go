@@ -11,6 +11,7 @@ func (p *Cascader) Init() *Cascader {
 	p.Component = "cascaderField"
 	p.InitItem().SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 	p.Placeholder = "请选择"
+	p.SetWidth(400)
 
 	return p
 }

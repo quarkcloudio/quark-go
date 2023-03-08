@@ -443,8 +443,8 @@ func (p *AdminField) Select(params ...interface{}) *fields.Select {
 }
 
 // 级联菜单组件
-func (p *AdminField) Cascader(params ...interface{}) *fields.Select {
-	field := (&fields.Select{}).Init()
+func (p *AdminField) Cascader(params ...interface{}) *fields.Cascader {
+	field := (&fields.Cascader{}).Init()
 
 	if len(params) >= 2 {
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
