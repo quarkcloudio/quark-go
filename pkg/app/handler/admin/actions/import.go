@@ -21,6 +21,9 @@ func (p *Import) Init() *Import {
 	// 文字
 	p.Name = "导入数据"
 
+	// 关闭时销毁 Modal 里的子元素
+	p.DestroyOnClose = true
+
 	// 设置展示位置
 	p.SetOnlyOnIndex(true)
 
