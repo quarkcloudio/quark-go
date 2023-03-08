@@ -440,7 +440,7 @@ func (p *Template) ExportFields(ctx *builder.Context) interface{} {
 	var items []interface{}
 	for _, v := range fields.([]interface{}) {
 		if v, ok := v.(interface {
-			isShownOnExport() bool
+			IsShownOnExport() bool
 		}); ok {
 			isShownOnExport := v.(interface {
 				IsShownOnExport() bool
