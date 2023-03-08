@@ -258,48 +258,34 @@ func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interfa
 		return ctx.JSON(200, msg.Error(result.Error.Error(), ""))
 	}
 
+	// 导入操作，直接返回
+	if ctx.IsImport() {
+		return true
+	}
+
 	if data["role_ids"] == nil {
 		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
 	}
 
-	if ctx.IsCreating() {
-		roleData := []map[string]interface{}{}
-		for _, v := range data["role_ids"].([]interface{}) {
-			item := map[string]interface{}{
-				"role_id":    v,
-				"model_type": "admin",
-				"model_id":   id,
-			}
-			roleData = append(roleData, item)
-		}
-		if len(roleData) > 0 {
-			// 同步角色
-			err := db.Client.Model(&models.ModelHasRole{}).Create(roleData).Error
-			if err != nil {
-				return msg.Error(err.Error(), "")
-			}
-		}
-	} else {
-
-		// 同步角色
-		roleData := []map[string]interface{}{}
-
-		// 先清空用户对应的角色
+	// 编辑操作，先清空用户对应的角色
+	if ctx.IsEditing() {
 		db.Client.Model(&models.ModelHasRole{}).Where("model_id = ?", id).Where("model_type = ?", "admin").Delete("")
-		for _, v := range data["role_ids"].([]interface{}) {
-			item := map[string]interface{}{
-				"role_id":    v,
-				"model_type": "admin",
-				"model_id":   id,
-			}
-			roleData = append(roleData, item)
+	}
+
+	roleData := []map[string]interface{}{}
+	for _, v := range data["role_ids"].([]interface{}) {
+		item := map[string]interface{}{
+			"role_id":    v,
+			"model_type": "admin",
+			"model_id":   id,
 		}
-		if len(roleData) > 0 {
-			// 同步角色
-			err := db.Client.Model(&models.ModelHasRole{}).Create(roleData).Error
-			if err != nil {
-				return msg.Error(err.Error(), "")
-			}
+		roleData = append(roleData, item)
+	}
+	if len(roleData) > 0 {
+		// 同步角色
+		err := db.Client.Model(&models.ModelHasRole{}).Create(roleData).Error
+		if err != nil {
+			return msg.Error(err.Error(), "")
 		}
 	}
 
