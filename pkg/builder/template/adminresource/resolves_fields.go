@@ -439,11 +439,15 @@ func (p *Template) ExportFields(ctx *builder.Context) interface{} {
 	fields := p.getFields(ctx)
 	var items []interface{}
 	for _, v := range fields.([]interface{}) {
-		isShownOnExport := v.(interface {
-			IsShownOnExport() bool
-		}).IsShownOnExport()
-		if isShownOnExport {
-			items = append(items, v)
+		if v, ok := v.(interface {
+			isShownOnExport() bool
+		}); ok {
+			isShownOnExport := v.(interface {
+				IsShownOnExport() bool
+			}).IsShownOnExport()
+			if isShownOnExport {
+				items = append(items, v)
+			}
 		}
 	}
 
@@ -455,11 +459,15 @@ func (p *Template) ImportFields(ctx *builder.Context) interface{} {
 	fields := p.getFields(ctx)
 	var items []interface{}
 	for _, v := range fields.([]interface{}) {
-		isShownOnImport := v.(interface {
+		if v, ok := v.(interface {
 			IsShownOnImport() bool
-		}).IsShownOnImport()
-		if isShownOnImport {
-			items = append(items, v)
+		}); ok {
+			isShownOnImport := v.(interface {
+				IsShownOnImport() bool
+			}).IsShownOnImport()
+			if isShownOnImport {
+				items = append(items, v)
+			}
 		}
 	}
 
