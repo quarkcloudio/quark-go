@@ -30,6 +30,18 @@ func (p *File) Init() interface{} {
 		"image/jpeg",
 		"image/png",
 		"image/gif",
+		"audio/mpeg",
+		"audo/m4a",
+		"application/msword",
+		"application/x-xls",
+		"application/vnd.ms-excel",
+		"application/x-ppt",
+		"application/vnd.ms-powerpoint",
+		"application/zip",
+		"application/pdf",
+		"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+		"application/vnd.openxmlformats-officedocument.presentationml.presentation",
 	}
 
 	// 设置文件上传路径
@@ -83,7 +95,7 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) inter
 	}
 
 	// 插入数据库
-	(&model.File{}).InsertGetId(&model.File{
+	id, err := (&model.File{}).InsertGetId(&model.File{
 		ObjType: "ADMINID",
 		ObjId:   adminInfo.Id,
 		Name:    result.Name,
@@ -94,6 +106,18 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) inter
 		Hash:    result.Hash,
 		Status:  1,
 	})
+	if err != nil {
+		return ctx.JSON(200, msg.Error(err.Error(), ""))
+	}
 
-	return ctx.JSON(200, msg.Success("上传成功", "", result))
+	return ctx.JSON(200, msg.Success("上传成功", "", map[string]interface{}{
+		"id":          id,
+		"contentType": result.ContentType,
+		"ext":         result.Ext,
+		"hash":        result.Hash,
+		"name":        result.Name,
+		"path":        result.Path,
+		"size":        result.Size,
+		"url":         result.Url,
+	}))
 }

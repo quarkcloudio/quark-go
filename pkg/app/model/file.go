@@ -154,20 +154,16 @@ func (model *File) GetPaths(id interface{}) []string {
 
 // 获取Excel文件数据
 func (model *File) GetExcelData(fileId int) (data [][]interface{}, Error error) {
-	filePath := ""
 	file := &File{}
 	err := db.Client.Where("id", fileId).Where("status", 1).First(&file).Error
 	if err != nil {
 		return data, err
 	}
-	if file.Id != 0 {
-		filePath = file.Path
-	}
-	if filePath == "" {
+	if file.Id == 0 {
 		return data, errors.New("参数错误！")
 	}
 
-	f, err := excelize.OpenFile(filePath)
+	f, err := excelize.OpenFile(file.Path + file.Name)
 	if err != nil {
 		return data, err
 	}

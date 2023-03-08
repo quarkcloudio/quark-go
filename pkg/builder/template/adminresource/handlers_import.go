@@ -90,14 +90,13 @@ func (p *ImportRequest) Handle(ctx *builder.Context) interface{} {
 			importFailedData = append(importFailedData, item)
 		}
 
-		submitData := ctx.Template.(interface {
-			BeforeSaving(ctx *builder.Context, data map[string]interface{}) interface{}
-		}).BeforeSaving(ctx, formValues) // 保存前回调
-
-		if value, ok := submitData.(error); ok {
+		submitData, err := ctx.Template.(interface {
+			BeforeSaving(ctx *builder.Context, data map[string]interface{}) (map[string]interface{}, error)
+		}).BeforeSaving(ctx, formValues)
+		if err != nil {
 			importResult = false
 			importFailedNum = importFailedNum + 1 // 记录错误条数
-			item = append(item, value.Error())    // 记录错误信息
+			item = append(item, err.Error())      // 记录错误信息
 
 			//记录错误数据
 			importFailedData = append(importFailedData, item)
@@ -160,19 +159,19 @@ func (p *ImportRequest) Handle(ctx *builder.Context) interface{} {
 
 		f.SetActiveSheet(index)
 
-		filePath := "./storage/app/public/failImports/"
+		filePath := "./website/storage/failImports/"
 		fileName := rand.MakeAlphanumeric(40) + ".xlsx"
 
 		// 不存在路径，则创建
 		if isExist(filePath) == false {
 			err := os.MkdirAll(filePath, 0666)
 			if err != nil {
-				return msg.Error(err.Error(), "")
+				return ctx.JSON(200, msg.Error(err.Error(), ""))
 			}
 		}
 
 		if err := f.SaveAs(filePath + fileName); err != nil {
-			return msg.Error(err.Error(), "")
+			return ctx.JSON(200, msg.Error(err.Error(), ""))
 		}
 
 		importTotalNumTpl := (&tpl.Component{}).
@@ -185,7 +184,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context) interface{} {
 
 		importFailedNumTpl := (&tpl.Component{}).
 			Init().
-			SetBody("失败数量: <span style='color:#ff4d4f'>" + strconv.Itoa(importFailedNum) + "</span> <a href='" + ctx.Host() + "/storage/failImports/" + fileName + "' target='_blank'>下载失败数据</a>")
+			SetBody("失败数量: <span style='color:#ff4d4f'>" + strconv.Itoa(importFailedNum) + "</span> <a href='//" + ctx.Host() + "/storage/failImports/" + fileName + "' target='_blank'>下载失败数据</a>")
 
 		component := (&space.Component{}).
 			Init().
@@ -201,7 +200,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context) interface{} {
 				"marginBottom": "20px",
 			})
 
-		return component
+		return ctx.JSON(200, component)
 	}
 }
 

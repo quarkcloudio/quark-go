@@ -313,7 +313,7 @@ func (p *Image) AfterHandle(ctx *builder.Context, result *storage.FileInfo) inte
 	}
 
 	// 插入数据库
-	(&model.Picture{}).InsertGetId(&model.Picture{
+	id, err := (&model.Picture{}).InsertGetId(&model.Picture{
 		ObjType: "ADMINID",
 		ObjId:   adminInfo.Id,
 		Name:    result.Name,
@@ -327,5 +327,20 @@ func (p *Image) AfterHandle(ctx *builder.Context, result *storage.FileInfo) inte
 		Status:  1,
 	})
 
-	return ctx.JSON(200, msg.Success("上传成功", "", result))
+	if err != nil {
+		return ctx.JSON(200, msg.Error(err.Error(), ""))
+	}
+
+	return ctx.JSON(200, msg.Success("上传成功", "", map[string]interface{}{
+		"id":          id,
+		"contentType": result.ContentType,
+		"ext":         result.Ext,
+		"hash":        result.Hash,
+		"height":      result.Height,
+		"width":       result.Width,
+		"name":        result.Name,
+		"path":        result.Path,
+		"size":        result.Size,
+		"url":         result.Url,
+	}))
 }

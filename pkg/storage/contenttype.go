@@ -4,6 +4,10 @@ package storage
 var ContentTypeList = map[string]string{
 	"application/x-dosexec":             "exe",
 	"application/msword":                "doc",
+	"application/vnd.ms-excel":          "xls",
+	"application/x-xls":                 "xls",
+	"application/vnd.ms-powerpoint":     "ppt",
+	"application/x-ppt":                 "ppt",
 	"application/x-dmg":                 "dmg",
 	"application/x-gzip":                "gz",
 	"application/x-rar":                 "rar",
