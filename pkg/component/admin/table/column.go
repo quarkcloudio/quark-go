@@ -138,14 +138,23 @@ func (p *Column) SetCopyable(copyable bool) *Column {
  * @return p
  */
 func (p *Column) SetValueEnum(valueEnum interface{}) *Column {
-	valueEnumStr := map[string]interface{}{}
-	valueEnumInt := map[int]interface{}{}
+	var (
+		valueEnumStr = map[string]interface{}{}
+		valueEnumInt = map[int]interface{}{}
+	)
 
 	for k, v := range valueEnum.(map[interface{}]interface{}) {
-		if value, ok := k.(string); ok == true {
-			valueEnumStr[value] = v
-		} else if value, ok := k.(int); ok == true {
-			valueEnumInt[value] = v
+		switch k.(type) {
+		case string:
+			valueEnumStr[k.(string)] = v
+		case int:
+			valueEnumInt[k.(int)] = v
+		case int64:
+			valueEnumInt[int(k.(int64))] = v
+		case float32:
+			valueEnumInt[int(k.(float32))] = v
+		case float64:
+			valueEnumInt[int(k.(float64))] = v
 		}
 	}
 
