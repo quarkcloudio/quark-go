@@ -74,27 +74,28 @@ func (p *StoreRequest) Handle(ctx *builder.Context) interface{} {
 							reflectValue = reflect.ValueOf(1)
 						} else {
 							reflectValue = reflect.ValueOf(0)
+							zeroValues[fieldName] = 0
 						}
 					}
 					if value, ok := formValue.(float64); ok {
 						reflectValue = reflect.ValueOf(int(value))
-					}
-					if reflectValue.IsZero() {
-						zeroValues[fieldName] = 0
+						if int(value) == 0 {
+							zeroValues[fieldName] = 0
+						}
 					}
 				case "float64":
 					if value, ok := formValue.(float64); ok {
 						reflectValue = reflect.ValueOf(float64(value))
-					}
-					if reflectValue.IsZero() {
-						zeroValues[fieldName] = 0
+						if float64(value) == 0 {
+							zeroValues[fieldName] = 0
+						}
 					}
 				case "float32":
 					if value, ok := formValue.(float64); ok {
 						reflectValue = reflect.ValueOf(float32(value))
-					}
-					if reflectValue.IsZero() {
-						zeroValues[fieldName] = 0
+						if float32(value) == 0 {
+							zeroValues[fieldName] = 0
+						}
 					}
 				case "time.Time":
 					getTime, _ := time.ParseInLocation("2006-01-02 15:04:05", formValue.(string), time.Local)
