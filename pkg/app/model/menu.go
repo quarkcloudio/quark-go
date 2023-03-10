@@ -94,7 +94,11 @@ func (model *Menu) OrderedList() (list []map[string]interface{}, Error error) {
 // 获取SelectTree组件的数据
 func (model *Menu) SelectTreeData(root bool) (list []interface{}, Error error) {
 	menus := []Menu{}
-	err := db.Client.Where("status = ?", 1).Select("name", "id", "pid").Find(&menus).Error
+	err := db.Client.
+		Where("guard_name = ?", "admin").
+		Order("sort asc,id asc").
+		Select("name", "id", "pid").
+		Find(&menus).Error
 	if err != nil {
 		return list, err
 	}
