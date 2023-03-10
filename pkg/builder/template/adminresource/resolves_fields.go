@@ -116,6 +116,24 @@ func (p *Template) fieldToColumn(ctx *builder.Context, field interface{}) interf
 		column = column.SetValueType("text")
 	case "textAreaField":
 		column = column.SetValueType("text")
+	case "treeSelectField":
+		// 获取属性
+		treeData := reflectElem.
+			FieldByName("TreeData").
+			Interface()
+
+		column = column.SetValueType("treeSelect").SetFieldProps(map[string]interface{}{
+			"options": treeData,
+		})
+	case "cascaderField":
+		// 获取属性
+		treeData := reflectElem.
+			FieldByName("TreeData").
+			Interface()
+
+		column = column.SetValueType("cascader").SetFieldProps(map[string]interface{}{
+			"options": treeData,
+		})
 	case "selectField":
 		valueEnum := field.(interface {
 			GetValueEnum() map[interface{}]interface{}

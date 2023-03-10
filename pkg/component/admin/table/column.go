@@ -27,6 +27,7 @@ type Column struct {
 	Editable      interface{} `json:"editable"`
 	Actions       interface{} `json:"actions"`
 	FormItemProps interface{} `json:"formItemProps"`
+	FieldProps    interface{} `json:"fieldProps,omitempty"`
 }
 
 // 初始化
@@ -143,27 +144,31 @@ func (p *Column) SetValueEnum(valueEnum interface{}) *Column {
 		valueEnumInt = map[int]interface{}{}
 	)
 
-	for k, v := range valueEnum.(map[interface{}]interface{}) {
-		switch k.(type) {
-		case string:
-			valueEnumStr[k.(string)] = v
-		case int:
-			valueEnumInt[k.(int)] = v
-		case int64:
-			valueEnumInt[int(k.(int64))] = v
-		case float32:
-			valueEnumInt[int(k.(float32))] = v
-		case float64:
-			valueEnumInt[int(k.(float64))] = v
+	if getValueEnum, ok := valueEnum.(map[interface{}]interface{}); ok {
+		for k, v := range getValueEnum {
+			switch k.(type) {
+			case string:
+				valueEnumStr[k.(string)] = v
+			case int:
+				valueEnumInt[k.(int)] = v
+			case int64:
+				valueEnumInt[int(k.(int64))] = v
+			case float32:
+				valueEnumInt[int(k.(float32))] = v
+			case float64:
+				valueEnumInt[int(k.(float64))] = v
+			}
 		}
-	}
 
-	if len(valueEnumStr) > 0 {
-		p.ValueEnum = valueEnumStr
-	}
+		if len(valueEnumStr) > 0 {
+			p.ValueEnum = valueEnumStr
+		}
 
-	if len(valueEnumInt) > 0 {
-		p.ValueEnum = valueEnumInt
+		if len(valueEnumInt) > 0 {
+			p.ValueEnum = valueEnumInt
+		}
+	} else {
+		p.ValueEnum = valueEnum
 	}
 
 	return p
@@ -312,6 +317,12 @@ func (p *Column) SetActions(actions interface{}) *Column {
  */
 func (p *Column) SetFormItemProps(formItemProps interface{}) *Column {
 	p.FormItemProps = formItemProps
+	return p
+}
+
+// 传给渲染的组件的 props，自定义的时候也会传递
+func (p *Column) SetFieldProps(fieldProps interface{}) *Column {
+	p.FieldProps = fieldProps
 	return p
 }
 
