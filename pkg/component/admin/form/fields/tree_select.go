@@ -34,12 +34,18 @@ type TreeSelect struct {
 	TreeLine                bool        `json:"treeLine,omitempty"`
 	Value                   interface{} `json:"value,omitempty"`
 	Virtual                 bool        `json:"virtual,omitempty"`
+	Width                   interface{} `json:"width,omitempty"`
+	MaxLength               int         `json:"maxLength,omitempty"`
 }
 
 // 初始化
 func (p *TreeSelect) Init() *TreeSelect {
 	p.Component = "treeSelectField"
 	p.InitItem().SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+	p.Width = 400
+	p.TreeDefaultExpandAll = true
+	p.ShowArrow = true
+	p.TreeLine = true
 
 	return p
 }
@@ -236,6 +242,20 @@ func (p *TreeSelect) SetValue(value interface{}) *TreeSelect {
 // 设置 false 时关闭虚拟滚动
 func (p *TreeSelect) SetVirtual(virtual bool) *TreeSelect {
 	p.Virtual = virtual
+
+	return p
+}
+
+// 设置宽度
+func (p *TreeSelect) SetWidth(width interface{}) *TreeSelect {
+	p.Width = width
+
+	return p
+}
+
+// 最大字符数
+func (p *TreeSelect) SetMaxLength(maxLength int) *TreeSelect {
+	p.MaxLength = maxLength
 
 	return p
 }

@@ -8,7 +8,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/actions"
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/searches"
 	"github.com/quarkcms/quark-go/pkg/app/model"
-	models "github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
 	"github.com/quarkcms/quark-go/pkg/component/admin/table"
@@ -269,7 +268,7 @@ func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interfa
 
 	// 编辑操作，先清空用户对应的角色
 	if ctx.IsEditing() {
-		db.Client.Model(&models.ModelHasRole{}).Where("model_id = ?", id).Where("model_type = ?", "admin").Delete("")
+		db.Client.Model(&model.ModelHasRole{}).Where("model_id = ?", id).Where("model_type = ?", "admin").Delete("")
 	}
 
 	roleData := []map[string]interface{}{}
@@ -283,7 +282,7 @@ func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interfa
 	}
 	if len(roleData) > 0 {
 		// 同步角色
-		err := db.Client.Model(&models.ModelHasRole{}).Create(roleData).Error
+		err := db.Client.Model(&model.ModelHasRole{}).Create(roleData).Error
 		if err != nil {
 			return msg.Error(err.Error(), "")
 		}
