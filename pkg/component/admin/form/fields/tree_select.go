@@ -4,38 +4,6 @@ import "github.com/quarkcms/quark-go/pkg/component/admin/component"
 
 type TreeSelect struct {
 	Item
-	AllowClear              bool        `json:"allowClear"`
-	AutoClearSearchValue    bool        `json:"autoClearSearchValue"`
-	Bordered                bool        `json:"bordered"`
-	DefaultValue            interface{} `json:"defaultValue"`
-	Disabled                bool        `json:"disabled"`
-	PopupClassName          string      `json:"popupClassName"`
-	ListHeight              int         `json:"listHeight"`
-	MaxTagCount             int         `json:"maxTagCount,omitempty"`
-	MaxTagPlaceholder       interface{} `json:"maxTagPlaceholder,omitempty"`
-	MaxTagTextLength        int         `json:"maxTagTextLength,omitempty"`
-	Multiple                bool        `json:"multiple"`
-	NotFoundContent         string      `json:"notFoundContent,omitempty"`
-	Placeholder             string      `json:"placeholder"`
-	Placement               string      `json:"placement"`
-	ShowArrow               bool        `json:"showArrow"`
-	ShowSearch              bool        `json:"showSearch"`
-	Size                    string      `json:"size"`
-	Status                  string      `json:"status"`
-	SuffixIcon              interface{} `json:"suffixIcon,omitempty"`
-	TreeCheckable           bool        `json:"treeCheckable"`
-	TreeData                interface{} `json:"treeData"`
-	TreeDataSimpleMode      bool        `json:"treeDataSimpleMode"`
-	TreeDefaultExpandAll    bool        `json:"treeDefaultExpandAll"`
-	TreeDefaultExpandedKeys []string    `json:"treeDefaultExpandedKeys,omitempty"`
-	TreeExpandAction        interface{} `json:"treeExpandAction,omitempty"`
-	TreeExpandedKeys        []string    `json:"treeExpandedKeys,omitempty"`
-	TreeIcon                bool        `json:"treeIcon,omitempty"`
-	TreeLine                bool        `json:"treeLine,omitempty"`
-	Value                   interface{} `json:"value,omitempty"`
-	Virtual                 bool        `json:"virtual,omitempty"`
-	Width                   interface{} `json:"width,omitempty"`
-	MaxLength               int         `json:"maxLength,omitempty"`
 }
 
 // 初始化
