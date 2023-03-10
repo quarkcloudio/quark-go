@@ -47,7 +47,7 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 	permissions, _ := (&models.Permission{}).List()
 
 	// 菜单列表
-	menus, _ := (&models.Menu{}).OrderedList()
+	menus, _ := (&models.Menu{}).SelectTreeData(true)
 
 	return []interface{}{
 		field.Hidden("id", "ID"), // 列表读取且不展示的字段
@@ -70,6 +70,11 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 
 		field.Icon("icon", "图标").OnlyOnForms(),
 
+		field.TreeSelect("pid", "父节点").
+			SetData(menus).
+			SetDefault(0).
+			OnlyOnForms(),
+
 		field.Radio("type", "渲染组件").
 			SetOptions(map[interface{}]interface{}{
 				"default": "无组件",
@@ -79,11 +84,6 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 		field.Text("path", "路由").
 			SetEditable(true).
 			SetHelp("前端路由或后端api"),
-
-		field.Select("pid", "父节点").
-			SetOptions(menus).
-			SetDefault(0).
-			OnlyOnForms(),
 
 		field.Number("sort", "排序").
 			SetEditable(true).

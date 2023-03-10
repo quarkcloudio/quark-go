@@ -91,6 +91,42 @@ func (model *Menu) OrderedList() (list []map[string]interface{}, Error error) {
 	return list, nil
 }
 
+// 获取SelectTree组件的数据
+func (model *Menu) SelectTreeData(root bool) (list []interface{}, Error error) {
+	menus := []Menu{}
+	err := db.Client.Where("status = ?", 1).Select("name", "id", "pid").Find(&menus).Error
+	if err != nil {
+		return list, err
+	}
+
+	menuList := []map[string]interface{}{}
+
+	// 是否有跟节点
+	if root {
+		list = append(list, map[string]interface{}{
+			"label": "根节点",
+			"value": 0,
+		})
+	}
+
+	for _, v := range menus {
+		item := map[string]interface{}{
+			"value": v.Id,
+			"pid":   v.Pid,
+			"label": v.Name,
+		}
+		menuList = append(menuList, item)
+	}
+
+	tree, err := lister.ListToTree(menuList, "value", "pid", "children", 0)
+	if err != nil {
+		return list, err
+	}
+	list = append(list, tree...)
+
+	return list, err
+}
+
 // 获取菜单的tree
 func (model *Menu) Tree() (list []interface{}, Error error) {
 	menus := []Menu{}

@@ -10,10 +10,14 @@ type TreeSelect struct {
 func (p *TreeSelect) Init() *TreeSelect {
 	p.Component = "treeSelectField"
 	p.InitItem().SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
-	p.Width = 400
+	p.Width = 200
 	p.TreeDefaultExpandAll = true
 	p.ShowArrow = true
 	p.TreeLine = true
+	p.DropdownStyle = map[string]interface{}{
+		"maxHeight": 400,
+		"overflow":  "auto",
+	}
 
 	return p
 }
@@ -56,6 +60,13 @@ func (p *TreeSelect) SetDisabled(disabled bool) *TreeSelect {
 // 下拉菜单的 className 属性
 func (p *TreeSelect) SetPopupClassName(popupClassName string) *TreeSelect {
 	p.PopupClassName = popupClassName
+
+	return p
+}
+
+// 下拉菜单的样式
+func (p *TreeSelect) SetDropdownStyle(dropdownStyle interface{}) *TreeSelect {
+	p.DropdownStyle = dropdownStyle
 
 	return p
 }

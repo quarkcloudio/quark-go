@@ -70,6 +70,7 @@ type Item struct {
 	AutoClearSearchValue    bool                   `json:"autoClearSearchValue"`
 	Bordered                bool                   `json:"bordered"`
 	PopupClassName          string                 `json:"popupClassName"`
+	DropdownStyle           interface{}            `json:"dropdownStyle,omitempty"`
 	ListHeight              int                    `json:"listHeight"`
 	MaxTagCount             int                    `json:"maxTagCount,omitempty"`
 	MaxTagPlaceholder       interface{}            `json:"maxTagPlaceholder,omitempty"`
