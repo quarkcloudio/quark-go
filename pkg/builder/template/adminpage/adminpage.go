@@ -1,6 +1,8 @@
 package adminpage
 
 import (
+	"github.com/quarkcms/quark-go/pkg/component/admin/page"
+
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template"
@@ -59,7 +61,7 @@ func (p *Template) Render(ctx *builder.Context) interface{} {
 		SetCopyright(adminLayout.Copyright).
 		SetLinks(adminLayout.Links)
 
-	component := (&layout.Component{}).
+	layoutComponent := (&layout.Component{}).
 		Init().
 		SetTitle(adminLayout.Title).
 		SetLogo(adminLayout.Logo).
@@ -76,6 +78,14 @@ func (p *Template) Render(ctx *builder.Context) interface{} {
 		SetMenu(getMenus).
 		SetBody(data).
 		SetFooter(footer)
+
+	component := (&page.Component{}).
+		Init().
+		SetStyle(map[string]interface{}{
+			"height": "100vh",
+		}).
+		SetBody(layoutComponent).
+		JsonSerialize()
 
 	return ctx.JSON(200, component)
 }
