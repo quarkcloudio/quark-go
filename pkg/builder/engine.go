@@ -55,8 +55,8 @@ type Config struct {
 
 // 定义Group
 type Group struct {
-	Engine    *Engine
-	EchoGroup *echo.Group
+	engine    *Engine
+	echoGroup *echo.Group
 }
 
 type AdminLayout struct {
@@ -526,7 +526,15 @@ func (p *Engine) Group(path string, handlers ...Handle) *Group {
 		if len(handlers) > 0 {
 			for _, handle := range handlers {
 				newHandle := func(c echo.Context) error {
-					return p.echoHandle(path, handle, c)
+					err := p.echoHandle(path, handle, c)
+					if err != nil {
+						// 执行下一步操作，这里应该放到数组里面执行，暂时用NextUseHandler
+						if err.Error() == "NextUseHandler" {
+							return next(c)
+						}
+					}
+
+					return err
 				}
 				return newHandle
 			}
@@ -534,13 +542,13 @@ func (p *Engine) Group(path string, handlers ...Handle) *Group {
 		return next
 	})
 
-	return &Group{EchoGroup: echoGroup}
+	return &Group{engine: p, echoGroup: echoGroup}
 }
 
 // GET is a shortcut for router.Handle(http.MethodGet, path, handle)
 func (p *Group) GET(path string, handle Handle) error {
-	p.EchoGroup.GET(path, func(c echo.Context) error {
-		return p.Engine.echoHandle(path, handle, c)
+	p.echoGroup.GET(path, func(c echo.Context) error {
+		return p.engine.echoHandle(path, handle, c)
 	})
 
 	return nil
@@ -548,8 +556,8 @@ func (p *Group) GET(path string, handle Handle) error {
 
 // HEAD is a shortcut for router.Handle(http.MethodHead, path, handle)
 func (p *Group) HEAD(path string, handle Handle) error {
-	p.EchoGroup.HEAD(path, func(c echo.Context) error {
-		return p.Engine.echoHandle(path, handle, c)
+	p.echoGroup.HEAD(path, func(c echo.Context) error {
+		return p.engine.echoHandle(path, handle, c)
 	})
 
 	return nil
@@ -557,8 +565,8 @@ func (p *Group) HEAD(path string, handle Handle) error {
 
 // OPTIONS is a shortcut for router.Handle(http.MethodOptions, path, handle)
 func (p *Group) OPTIONS(path string, handle Handle) error {
-	p.EchoGroup.OPTIONS(path, func(c echo.Context) error {
-		return p.Engine.echoHandle(path, handle, c)
+	p.echoGroup.OPTIONS(path, func(c echo.Context) error {
+		return p.engine.echoHandle(path, handle, c)
 	})
 
 	return nil
@@ -566,8 +574,8 @@ func (p *Group) OPTIONS(path string, handle Handle) error {
 
 // POST is a shortcut for router.Handle(http.MethodPost, path, handle)
 func (p *Group) POST(path string, handle Handle) error {
-	p.EchoGroup.POST(path, func(c echo.Context) error {
-		return p.Engine.echoHandle(path, handle, c)
+	p.echoGroup.POST(path, func(c echo.Context) error {
+		return p.engine.echoHandle(path, handle, c)
 	})
 
 	return nil
@@ -575,8 +583,8 @@ func (p *Group) POST(path string, handle Handle) error {
 
 // PUT is a shortcut for router.Handle(http.MethodPut, path, handle)
 func (p *Group) PUT(path string, handle Handle) error {
-	p.EchoGroup.PUT(path, func(c echo.Context) error {
-		return p.Engine.echoHandle(path, handle, c)
+	p.echoGroup.PUT(path, func(c echo.Context) error {
+		return p.engine.echoHandle(path, handle, c)
 	})
 
 	return nil
@@ -584,8 +592,8 @@ func (p *Group) PUT(path string, handle Handle) error {
 
 // PATCH is a shortcut for router.Handle(http.MethodPatch, path, handle)
 func (p *Group) PATCH(path string, handle Handle) error {
-	p.EchoGroup.PATCH(path, func(c echo.Context) error {
-		return p.Engine.echoHandle(path, handle, c)
+	p.echoGroup.PATCH(path, func(c echo.Context) error {
+		return p.engine.echoHandle(path, handle, c)
 	})
 
 	return nil
@@ -593,8 +601,8 @@ func (p *Group) PATCH(path string, handle Handle) error {
 
 // DELETE is a shortcut for router.Handle(http.MethodDelete, path, handle)
 func (p *Group) DELETE(path string, handle Handle) error {
-	p.EchoGroup.DELETE(path, func(c echo.Context) error {
-		return p.Engine.echoHandle(path, handle, c)
+	p.echoGroup.DELETE(path, func(c echo.Context) error {
+		return p.engine.echoHandle(path, handle, c)
 	})
 
 	return nil
@@ -602,11 +610,36 @@ func (p *Group) DELETE(path string, handle Handle) error {
 
 // Any is a shortcut for router.Handle(http.MethodGet, path, handle)
 func (p *Group) Any(path string, handle Handle) error {
-	p.EchoGroup.Any(path, func(c echo.Context) error {
-		return p.Engine.echoHandle(path, handle, c)
+	p.echoGroup.Any(path, func(c echo.Context) error {
+		return p.engine.echoHandle(path, handle, c)
 	})
 
 	return nil
+}
+
+// Group creates a new router group with prefix and optional group-level middleware.
+func (p *Group) Group(path string, handlers ...Handle) *Group {
+	echoGroup := p.engine.echo.Group(path, func(next echo.HandlerFunc) echo.HandlerFunc {
+		if len(handlers) > 0 {
+			for _, handle := range handlers {
+				newHandle := func(c echo.Context) error {
+					err := p.engine.echoHandle(path, handle, c)
+					if err != nil {
+						// 执行下一步操作，这里应该放到数组里面执行，暂时用NextUseHandler
+						if err.Error() == "NextUseHandler" {
+							return next(c)
+						}
+					}
+
+					return err
+				}
+				return newHandle
+			}
+		}
+		return next
+	})
+
+	return &Group{engine: p.engine, echoGroup: echoGroup}
 }
 
 // Run Server
