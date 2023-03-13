@@ -19,7 +19,7 @@ const (
 	AppName = "QuarkGo"
 
 	// Version of current package
-	Version = "1.1.35"
+	Version = "1.1.36"
 
 	// 静态文件URL
 	RespositoryURL = "https://github.com/quarkcms/quark-go/tree/main/website/"
@@ -51,6 +51,12 @@ type Config struct {
 	StaticPath  string        // 静态文件目录
 	Providers   []interface{} // 服务列表
 	AdminLayout *AdminLayout  // 后台布局
+}
+
+// 定义Group
+type Group struct {
+	Engine    *Engine
+	EchoGroup *echo.Group
 }
 
 type AdminLayout struct {
@@ -442,22 +448,6 @@ func (p *Engine) Static(pathPrefix string, fsRoot string) {
 	p.echo.Static(pathPrefix, fsRoot)
 }
 
-// Group creates a new router group with prefix and optional group-level middleware.
-func (p *Engine) Group(path string, handlers ...Handle) error {
-	p.echo.Group(path, func(next echo.HandlerFunc) echo.HandlerFunc {
-		if len(handlers) > 0 {
-			for _, handle := range handlers {
-				newHandle := func(c echo.Context) error {
-					return p.echoHandle(path, handle, c)
-				}
-				return newHandle
-			}
-		}
-		return next
-	})
-	return nil
-}
-
 // GET is a shortcut for router.Handle(http.MethodGet, path, handle)
 func (p *Engine) GET(path string, handle Handle) error {
 	p.echo.GET(path, func(c echo.Context) error {
@@ -525,6 +515,95 @@ func (p *Engine) DELETE(path string, handle Handle) error {
 func (p *Engine) Any(path string, handle Handle) error {
 	p.echo.Any(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
+	})
+
+	return nil
+}
+
+// Group creates a new router group with prefix and optional group-level middleware.
+func (p *Engine) Group(path string, handlers ...Handle) *Group {
+	echoGroup := p.echo.Group(path, func(next echo.HandlerFunc) echo.HandlerFunc {
+		if len(handlers) > 0 {
+			for _, handle := range handlers {
+				newHandle := func(c echo.Context) error {
+					return p.echoHandle(path, handle, c)
+				}
+				return newHandle
+			}
+		}
+		return next
+	})
+
+	return &Group{EchoGroup: echoGroup}
+}
+
+// GET is a shortcut for router.Handle(http.MethodGet, path, handle)
+func (p *Group) GET(path string, handle Handle) error {
+	p.EchoGroup.GET(path, func(c echo.Context) error {
+		return p.Engine.echoHandle(path, handle, c)
+	})
+
+	return nil
+}
+
+// HEAD is a shortcut for router.Handle(http.MethodHead, path, handle)
+func (p *Group) HEAD(path string, handle Handle) error {
+	p.EchoGroup.HEAD(path, func(c echo.Context) error {
+		return p.Engine.echoHandle(path, handle, c)
+	})
+
+	return nil
+}
+
+// OPTIONS is a shortcut for router.Handle(http.MethodOptions, path, handle)
+func (p *Group) OPTIONS(path string, handle Handle) error {
+	p.EchoGroup.OPTIONS(path, func(c echo.Context) error {
+		return p.Engine.echoHandle(path, handle, c)
+	})
+
+	return nil
+}
+
+// POST is a shortcut for router.Handle(http.MethodPost, path, handle)
+func (p *Group) POST(path string, handle Handle) error {
+	p.EchoGroup.POST(path, func(c echo.Context) error {
+		return p.Engine.echoHandle(path, handle, c)
+	})
+
+	return nil
+}
+
+// PUT is a shortcut for router.Handle(http.MethodPut, path, handle)
+func (p *Group) PUT(path string, handle Handle) error {
+	p.EchoGroup.PUT(path, func(c echo.Context) error {
+		return p.Engine.echoHandle(path, handle, c)
+	})
+
+	return nil
+}
+
+// PATCH is a shortcut for router.Handle(http.MethodPatch, path, handle)
+func (p *Group) PATCH(path string, handle Handle) error {
+	p.EchoGroup.PATCH(path, func(c echo.Context) error {
+		return p.Engine.echoHandle(path, handle, c)
+	})
+
+	return nil
+}
+
+// DELETE is a shortcut for router.Handle(http.MethodDelete, path, handle)
+func (p *Group) DELETE(path string, handle Handle) error {
+	p.EchoGroup.DELETE(path, func(c echo.Context) error {
+		return p.Engine.echoHandle(path, handle, c)
+	})
+
+	return nil
+}
+
+// Any is a shortcut for router.Handle(http.MethodGet, path, handle)
+func (p *Group) Any(path string, handle Handle) error {
+	p.EchoGroup.Any(path, func(c echo.Context) error {
+		return p.Engine.echoHandle(path, handle, c)
 	})
 
 	return nil
