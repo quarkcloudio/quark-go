@@ -33,6 +33,14 @@ func New() *When {
 	return p
 }
 
+// 初始化
+func (p *When) Init() *When {
+	p.Component = "when"
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+
+	return p
+}
+
 // 设置Key
 func (p *When) SetKey(key string, crypt bool) *When {
 	if key == "" {

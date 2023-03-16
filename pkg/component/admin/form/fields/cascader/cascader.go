@@ -119,6 +119,28 @@ func New() *Cascader {
 	p.ShowOnExport = true
 	p.ShowOnImport = true
 	p.Column = (&table.Column{}).Init()
+	p.Placeholder = "请选择"
+
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+	p.SetWidth(400)
+
+	return p
+}
+
+// 初始化
+func (p *Cascader) Init() *Cascader {
+	p.Component = "cascaderField"
+	p.Colon = true
+	p.LabelAlign = "right"
+	p.ShowOnIndex = true
+	p.ShowOnDetail = true
+	p.ShowOnCreation = true
+	p.ShowOnUpdate = true
+	p.ShowOnExport = true
+	p.ShowOnImport = true
+	p.Column = (&table.Column{}).Init()
+	p.Placeholder = "请选择"
+
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 	p.SetWidth(400)
 
