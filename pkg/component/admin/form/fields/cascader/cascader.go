@@ -380,8 +380,8 @@ func (p *Cascader) SetIgnore(ignore bool) *Cascader {
 
 // 表单联动
 func (p *Cascader) SetWhen(value ...any) *Cascader {
-	getWhen := when.New()
-	whenItem := when.NewItem()
+	w := when.New()
+	wi := when.NewItem()
 	var operator string
 	var option any
 
@@ -390,7 +390,7 @@ func (p *Cascader) SetWhen(value ...any) *Cascader {
 		option = value[0]
 		callback := value[1].(func() interface{})
 
-		whenItem.Body = callback()
+		wi.Body = callback()
 	}
 
 	if len(value) == 3 {
@@ -398,44 +398,44 @@ func (p *Cascader) SetWhen(value ...any) *Cascader {
 		option = value[1]
 		callback := value[2].(func() interface{})
 
-		whenItem.Body = callback()
+		wi.Body = callback()
 	}
 
 	getOption := p.InterfaceToString(option)
 
 	switch operator {
 	case "=":
-		whenItem.Condition = "<%=String(" + p.Name + ") === '" + getOption + "' %>"
+		wi.Condition = "<%=String(" + p.Name + ") === '" + getOption + "' %>"
 		break
 	case ">":
-		whenItem.Condition = "<%=String(" + p.Name + ") > '" + getOption + "' %>"
+		wi.Condition = "<%=String(" + p.Name + ") > '" + getOption + "' %>"
 		break
 	case "<":
-		whenItem.Condition = "<%=String(" + p.Name + ") < '" + getOption + "' %>"
+		wi.Condition = "<%=String(" + p.Name + ") < '" + getOption + "' %>"
 		break
 	case "<=":
-		whenItem.Condition = "<%=String(" + p.Name + ") <= '" + getOption + "' %>"
+		wi.Condition = "<%=String(" + p.Name + ") <= '" + getOption + "' %>"
 		break
 	case ">=":
-		whenItem.Condition = "<%=String(" + p.Name + ") => '" + getOption + "' %>"
+		wi.Condition = "<%=String(" + p.Name + ") => '" + getOption + "' %>"
 		break
 	case "has":
-		whenItem.Condition = "<%=(String(" + p.Name + ").indexOf('" + getOption + "') !=-1) %>"
+		wi.Condition = "<%=(String(" + p.Name + ").indexOf('" + getOption + "') !=-1) %>"
 		break
 	case "in":
 		jsonStr, _ := json.Marshal(option)
-		whenItem.Condition = "<%=(" + string(jsonStr) + ".indexOf(" + p.Name + ") !=-1) %>"
+		wi.Condition = "<%=(" + string(jsonStr) + ".indexOf(" + p.Name + ") !=-1) %>"
 		break
 	default:
-		whenItem.Condition = "<%=String(" + p.Name + ") === '" + getOption + "' %>"
+		wi.Condition = "<%=String(" + p.Name + ") === '" + getOption + "' %>"
 		break
 	}
 
-	whenItem.ConditionName = p.Name
-	whenItem.ConditionOperator = operator
-	whenItem.Option = option
-	p.WhenItem = append(p.WhenItem, whenItem)
-	p.When = getWhen.SetItems(p.WhenItem)
+	wi.ConditionName = p.Name
+	wi.ConditionOperator = operator
+	wi.Option = option
+	p.WhenItem = append(p.WhenItem, wi)
+	p.When = w.SetItems(p.WhenItem)
 
 	return p
 }
