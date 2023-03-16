@@ -1,4 +1,4 @@
-package action
+package modal
 
 import "github.com/quarkcms/quark-go/pkg/component/admin/component"
 

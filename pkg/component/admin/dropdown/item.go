@@ -1,8 +1,9 @@
 package dropdown
 
 import (
-	"github.com/quarkcms/quark-go/pkg/component/admin/action"
 	"github.com/quarkcms/quark-go/pkg/component/admin/component"
+	"github.com/quarkcms/quark-go/pkg/component/admin/drawer"
+	"github.com/quarkcms/quark-go/pkg/component/admin/modal"
 )
 
 type Item struct {
@@ -149,20 +150,20 @@ func (p *Item) SetLink(href string, target string) *Item {
 
 // 弹窗
 func (p *Item) SetModal(callback interface{}) *Item {
-	modal := (&action.Modal{}).Init()
-	getCallback := callback.(func(modal *action.Modal) interface{})
+	component := (&modal.Modal{}).Init()
+	getCallback := callback.(func(modal *modal.Modal) interface{})
 
-	p.Modal = getCallback(modal)
+	p.Modal = getCallback(component)
 
 	return p
 }
 
 // 抽屉
 func (p *Item) SetDrawer(callback interface{}) *Item {
-	drawer := (&action.Drawer{}).Init()
-	getCallback := callback.(func(drawer *action.Drawer) interface{})
+	component := (&drawer.Drawer{}).Init()
+	getCallback := callback.(func(drawer *drawer.Drawer) interface{})
 
-	p.Drawer = getCallback(drawer)
+	p.Drawer = getCallback(component)
 
 	return p
 }
