@@ -31,6 +31,12 @@ type Component struct {
 	WithLoading  bool        `json:"withLoading"`
 }
 
+// 初始化组件
+func New() *Component {
+
+	return (&Component{}).Init()
+}
+
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "action"
@@ -152,8 +158,8 @@ func (p *Component) SetLink(href string, target string) *Component {
 
 // 弹窗
 func (p *Component) SetModal(callback interface{}) *Component {
-	component := (&modal.Modal{}).Init()
-	getCallback := callback.(func(modal *modal.Modal) interface{})
+	component := (&modal.Component{}).Init()
+	getCallback := callback.(func(modal *modal.Component) interface{})
 
 	p.Modal = getCallback(component)
 
@@ -162,8 +168,8 @@ func (p *Component) SetModal(callback interface{}) *Component {
 
 // 抽屉
 func (p *Component) SetDrawer(callback interface{}) *Component {
-	component := (&drawer.Drawer{}).Init()
-	getCallback := callback.(func(drawer *drawer.Drawer) interface{})
+	component := (&drawer.Component{}).Init()
+	getCallback := callback.(func(drawer *drawer.Component) interface{})
 
 	p.Drawer = getCallback(component)
 

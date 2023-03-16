@@ -15,6 +15,17 @@ type Component struct {
 	TabPanes           interface{} `json:"tabPanes"`
 }
 
+// 初始化组件
+func New() *Component {
+	return (&Component{}).Init()
+}
+
+// 获取TabPane
+func NewTabPane() *TabPane {
+
+	return (&TabPane{}).Init()
+}
+
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "tabs"

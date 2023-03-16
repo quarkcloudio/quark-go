@@ -160,8 +160,8 @@ func (p *Item) SetLink(href string, target string) *Item {
 
 // 弹窗
 func (p *Item) SetModal(callback interface{}) *Item {
-	component := (&modal.Modal{}).Init()
-	getCallback := callback.(func(modal *modal.Modal) interface{})
+	component := (&modal.Component{}).Init()
+	getCallback := callback.(func(modal *modal.Component) interface{})
 
 	p.Modal = getCallback(component)
 
@@ -170,8 +170,8 @@ func (p *Item) SetModal(callback interface{}) *Item {
 
 // 抽屉
 func (p *Item) SetDrawer(callback interface{}) *Item {
-	component := (&drawer.Drawer{}).Init()
-	getCallback := callback.(func(drawer *drawer.Drawer) interface{})
+	component := (&drawer.Component{}).Init()
+	getCallback := callback.(func(drawer *drawer.Component) interface{})
 
 	p.Drawer = getCallback(component)
 

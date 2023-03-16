@@ -12,6 +12,11 @@ type Row struct {
 	Body    interface{} `json:"body"`
 }
 
+// 获取Row
+func (p *Component) Row() *Row {
+	return (&Row{}).Init()
+}
+
 // 初始化
 func (p *Row) Init() *Row {
 	p.Component = "row"

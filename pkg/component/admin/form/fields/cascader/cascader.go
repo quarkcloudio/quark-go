@@ -61,7 +61,7 @@ type Cascader struct {
 	UpdateRuleMessages   map[string]string `json:"-"`             // 编辑页校验提示信息
 	FrontendRules        interface{}       `json:"frontendRules"` // 前端校验规则，设置字段的校验逻辑
 	When                 *when.When        `json:"when"`          //
-	WhenItem             []*when.WhenItem  `json:"-"`             //
+	WhenItem             []*when.Item      `json:"-"`             //
 	ShowOnIndex          bool              `json:"-"`             // 在列表页展示
 	ShowOnDetail         bool              `json:"-"`             // 在详情页展示
 	ShowOnCreation       bool              `json:"-"`             // 在创建页面展示
@@ -107,24 +107,7 @@ type Cascader struct {
 
 // 初始化组件
 func New() *Cascader {
-	p := &Cascader{}
-
-	p.Component = "cascaderField"
-	p.Colon = true
-	p.LabelAlign = "right"
-	p.ShowOnIndex = true
-	p.ShowOnDetail = true
-	p.ShowOnCreation = true
-	p.ShowOnUpdate = true
-	p.ShowOnExport = true
-	p.ShowOnImport = true
-	p.Column = (&table.Column{}).Init()
-	p.Placeholder = "请选择"
-
-	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
-	p.SetWidth(400)
-
-	return p
+	return (&Cascader{}).Init()
 }
 
 // 初始化
@@ -397,7 +380,8 @@ func (p *Cascader) SetIgnore(ignore bool) *Cascader {
 
 // 表单联动
 func (p *Cascader) SetWhen(value ...any) *Cascader {
-	whenItem := &when.WhenItem{}
+	getWhen := when.New()
+	whenItem := when.NewItem()
 	var operator string
 	var option any
 
@@ -451,7 +435,7 @@ func (p *Cascader) SetWhen(value ...any) *Cascader {
 	whenItem.ConditionOperator = operator
 	whenItem.Option = option
 	p.WhenItem = append(p.WhenItem, whenItem)
-	p.When = when.New().SetItems(p.WhenItem)
+	p.When = getWhen.SetItems(p.WhenItem)
 
 	return p
 }

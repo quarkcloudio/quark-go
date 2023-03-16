@@ -18,6 +18,16 @@ type Component struct {
 	Actions    interface{} `json:"actions"`
 }
 
+// 初始化组件
+func New() *Component {
+	return (&Component{}).Init()
+}
+
+// 获取description组件Field
+func NewField() *Field {
+	return (&Field{}).Init()
+}
+
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "descriptions"

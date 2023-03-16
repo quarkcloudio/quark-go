@@ -139,7 +139,7 @@ func (p *Dropdown) buildAction(ctx *builder.Context, item interface{}) interface
 			GetActions(ctx *builder.Context) []interface{}
 		}).GetActions(ctx)
 
-		getAction = getAction.SetModal(func(modal *modal.Modal) interface{} {
+		getAction = getAction.SetModal(func(modal *modal.Component) interface{} {
 			return modal.
 				SetTitle(name).
 				SetWidth(formWidth).
@@ -164,7 +164,7 @@ func (p *Dropdown) buildAction(ctx *builder.Context, item interface{}) interface
 			GetActions(ctx *builder.Context) []interface{}
 		}).GetActions(ctx)
 
-		getAction = getAction.SetDrawer(func(drawer *drawer.Drawer) interface{} {
+		getAction = getAction.SetDrawer(func(drawer *drawer.Component) interface{} {
 			return drawer.
 				SetTitle(name).
 				SetWidth(formWidth).

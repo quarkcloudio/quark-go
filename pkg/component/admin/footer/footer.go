@@ -8,6 +8,11 @@ type Component struct {
 	Links     []map[string]interface{} `json:"links"`
 }
 
+// 初始化组件
+func New() *Component {
+	return (&Component{}).Init()
+}
+
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "footer"

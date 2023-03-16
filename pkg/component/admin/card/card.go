@@ -21,6 +21,11 @@ type Component struct {
 	Body             interface{} `json:"body"`
 }
 
+// 初始化组件
+func New() *Component {
+	return (&Component{}).Init()
+}
+
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "card"

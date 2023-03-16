@@ -16,6 +16,16 @@ type Component struct {
 	ToolBar      interface{} `json:"toolBar"`
 }
 
+// 初始化组件
+func New() *Component {
+	return (&Component{}).Init()
+}
+
+// 获取Meta
+func NewMeta() *Meta {
+	return (&Meta{}).Init()
+}
+
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "list"

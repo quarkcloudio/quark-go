@@ -13,6 +13,11 @@ type Text struct {
 	Value     interface{} `json:"value"`
 }
 
+// 初始化组件
+func New() *Text {
+	return (&Text{}).Init()
+}
+
 // 初始化
 func (p *Text) Init() *Text {
 	p.Component = "text"

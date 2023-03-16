@@ -8,7 +8,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/component/admin/component"
 )
 
-type WhenItem struct {
+type Item struct {
 	Component         string      `json:"component"`          // 组件名称
 	Condition         string      `json:"condition"`          // 条件：js表达式语句
 	ConditionName     string      `json:"condition_name"`     // 需要对比的字段名称
@@ -18,19 +18,19 @@ type WhenItem struct {
 }
 
 type When struct {
-	ComponentKey string      `json:"componentkey"` // 组件标识
-	Component    string      `json:"component"`    // 组件名称
-	Items        []*WhenItem `json:"items"`        // When组件中需要解析的元素
+	ComponentKey string  `json:"componentkey"` // 组件标识
+	Component    string  `json:"component"`    // 组件名称
+	Items        []*Item `json:"items"`        // When组件中需要解析的元素
 }
 
 // 初始化组件
 func New() *When {
-	p := &When{}
+	return (&When{}).Init()
+}
 
-	p.Component = "when"
-	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
-
-	return p
+// 获取Item
+func NewItem() *Item {
+	return &Item{}
 }
 
 // 初始化
@@ -59,7 +59,7 @@ func (p *When) SetKey(key string, crypt bool) *When {
 }
 
 // 设置When组件中需要解析的元素
-func (p *When) SetItems(items []*WhenItem) *When {
+func (p *When) SetItems(items []*Item) *When {
 	p.Items = items
 	return p
 }

@@ -18,6 +18,31 @@ type Component struct {
 	Items                interface{} `json:"items"`
 }
 
+// 初始化组件
+func New() *Component {
+	return (&Component{}).Init()
+}
+
+// 获取Divider
+func NewDivider() *Divider {
+	return (&Divider{}).Init()
+}
+
+// 获取ItemGroup
+func NewItemGroup() *ItemGroup {
+	return (&ItemGroup{}).Init()
+}
+
+// 获取Item
+func NewItem() *Item {
+	return (&Item{}).Init()
+}
+
+// 获取SubMenu
+func NewSubMenu() *SubMenu {
+	return (&SubMenu{}).Init()
+}
+
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "menu"

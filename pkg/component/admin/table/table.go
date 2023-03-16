@@ -25,6 +25,35 @@ type Component struct {
 	Polling          int             `json:"polling"`
 }
 
+// 初始化组件
+func New() *Component {
+	return (&Component{}).Init()
+}
+
+// 获取Column
+func NewColumn() *Column {
+
+	return (&Column{}).Init()
+}
+
+// 获取Search
+func NewSearch() *Search {
+
+	return (&Search{}).Init()
+}
+
+// 获取SearchItem
+func NewSearchItem() *SearchItem {
+
+	return (&SearchItem{}).Init()
+}
+
+// 获取SearchItem
+func NewToolBar() *ToolBar {
+
+	return (&ToolBar{}).Init()
+}
+
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "table"

@@ -2,7 +2,7 @@ package drawer
 
 import "github.com/quarkcms/quark-go/pkg/component/admin/component"
 
-type Drawer struct {
+type Component struct {
 	component.Element
 	Title               string        `json:"title"`
 	BodyStyle           interface{}   `json:"bodyStyle"`
@@ -24,8 +24,13 @@ type Drawer struct {
 	Body                interface{}   `json:"body"`
 }
 
+// 初始化组件
+func New() *Component {
+	return (&Component{}).Init()
+}
+
 // 初始化
-func (p *Drawer) Init() *Drawer {
+func (p *Component) Init() *Component {
 	p.Component = "drawer"
 	p.SetKey("drawer", component.DEFAULT_CRYPT)
 	p.Closable = true
@@ -44,133 +49,133 @@ func (p *Drawer) Init() *Drawer {
 }
 
 // Set style.
-func (p *Drawer) SetStyle(style map[string]interface{}) *Drawer {
+func (p *Component) SetStyle(style map[string]interface{}) *Component {
 	p.Style = style
 
 	return p
 }
 
 // 标题
-func (p *Drawer) SetTitle(title string) *Drawer {
+func (p *Component) SetTitle(title string) *Component {
 	p.Title = title
 
 	return p
 }
 
 // Modal body 样式
-func (p *Drawer) SetBodyStyle(style interface{}) *Drawer {
+func (p *Component) SetBodyStyle(style interface{}) *Component {
 	p.BodyStyle = style
 
 	return p
 }
 
 // 容器控件里面的内容
-func (p *Drawer) SetBody(body interface{}) *Drawer {
+func (p *Component) SetBody(body interface{}) *Component {
 	p.Body = body
 
 	return p
 }
 
 // 是否显示右上角的关闭按钮
-func (p *Drawer) SetClosable(closable bool) *Drawer {
+func (p *Component) SetClosable(closable bool) *Component {
 	p.Closable = closable
 
 	return p
 }
 
 // 可用于设置 Drawer 包裹内容部分的样式
-func (p *Drawer) SetContentWrapperStyle(style interface{}) *Drawer {
+func (p *Component) SetContentWrapperStyle(style interface{}) *Component {
 	p.ContentWrapperStyle = style
 
 	return p
 }
 
 // 关闭时销毁 Modal 里的子元素
-func (p *Drawer) SetDestroyOnClose(destroyOnClose bool) *Drawer {
+func (p *Component) SetDestroyOnClose(destroyOnClose bool) *Component {
 	p.DestroyOnClose = destroyOnClose
 
 	return p
 }
 
 // 用于设置 Drawer 弹出层的样式
-func (p *Drawer) SetDrawerStyle(style interface{}) *Drawer {
+func (p *Component) SetDrawerStyle(style interface{}) *Component {
 	p.DrawerStyle = style
 
 	return p
 }
 
 // 抽屉页脚部件的样式
-func (p *Drawer) SetFooterStyle(style interface{}) *Drawer {
+func (p *Component) SetFooterStyle(style interface{}) *Component {
 	p.FooterStyle = style
 
 	return p
 }
 
 // 高度, 在 placement 为 top 或 bottom 时使用
-func (p *Drawer) SetHeight(height int) *Drawer {
+func (p *Component) SetHeight(height int) *Component {
 	p.Height = height
 
 	return p
 }
 
 // 是否支持键盘 esc 关闭
-func (p *Drawer) SetKeyboard(keyboard bool) *Drawer {
+func (p *Component) SetKeyboard(keyboard bool) *Component {
 	p.Keyboard = keyboard
 
 	return p
 }
 
 // 是否展示遮罩
-func (p *Drawer) SetMask(mask bool) *Drawer {
+func (p *Component) SetMask(mask bool) *Component {
 	p.Mask = mask
 
 	return p
 }
 
 // 点击蒙层是否允许关闭
-func (p *Drawer) SetMaskClosable(maskClosable bool) *Drawer {
+func (p *Component) SetMaskClosable(maskClosable bool) *Component {
 	p.MaskClosable = maskClosable
 
 	return p
 }
 
 // 遮罩样式
-func (p *Drawer) SetMaskStyle(style interface{}) *Drawer {
+func (p *Component) SetMaskStyle(style interface{}) *Component {
 	p.MaskStyle = style
 
 	return p
 }
 
 // 抽屉的方向,top | right | bottom | left
-func (p *Drawer) SetPlacement(placement string) *Drawer {
+func (p *Component) SetPlacement(placement string) *Component {
 	p.Placement = placement
 
 	return p
 }
 
 // 对话框是否可见
-func (p *Drawer) SetOpen(open bool) *Drawer {
+func (p *Component) SetOpen(open bool) *Component {
 	p.Open = open
 
 	return p
 }
 
 // 宽度
-func (p *Drawer) SetWidth(width int) *Drawer {
+func (p *Component) SetWidth(width int) *Component {
 	p.Width = width
 
 	return p
 }
 
 // 设置 Modal 的 z-index
-func (p *Drawer) SetZIndex(zIndex int) *Drawer {
+func (p *Component) SetZIndex(zIndex int) *Component {
 	p.ZIndex = zIndex
 
 	return p
 }
 
 // 弹窗行为
-func (p *Drawer) SetActions(actions []interface{}) *Drawer {
+func (p *Component) SetActions(actions []interface{}) *Component {
 	p.Actions = actions
 
 	return p

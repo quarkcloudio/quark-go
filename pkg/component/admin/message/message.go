@@ -14,6 +14,11 @@ type Component struct {
 	Url       string      `json:"url"`
 }
 
+// 初始化组件
+func New() *Component {
+	return (&Component{}).Init()
+}
+
 // 返回成功
 func Success(content string, url string, data interface{}) *Component {
 

@@ -20,6 +20,11 @@ type Line struct {
 	Smooth        bool        `json:"smooth"`
 }
 
+// 折线图表
+func NewLine(data interface{}) *Line {
+	return (&Line{}).Init().SetData(data)
+}
+
 // 初始化
 func (p *Line) Init() *Line {
 	p.Component = "line"

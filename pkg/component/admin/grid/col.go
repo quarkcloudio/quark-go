@@ -2,6 +2,8 @@ package grid
 
 import "github.com/quarkcms/quark-go/pkg/component/admin/component"
 
+type Component struct{}
+
 type Col struct {
 	component.Element
 	Flex   string      `json:"flex"`
@@ -17,6 +19,16 @@ type Col struct {
 	Xl     interface{} `json:"xl"`
 	Xxl    interface{} `json:"xxl"`
 	Body   interface{} `json:"body"`
+}
+
+// 初始化组件
+func New() *Component {
+	return (&Component{})
+}
+
+// 获取Col
+func (p *Component) Col() *Col {
+	return (&Col{}).Init()
 }
 
 // 初始化

@@ -23,6 +23,17 @@ type Component struct {
 	Visible            bool                   `json:"-"`
 }
 
+// 初始化组件
+func New() *Component {
+	return (&Component{}).Init()
+}
+
+// 获取Item
+func NewItem() *Item {
+
+	return (&Item{}).Init()
+}
+
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "dropdown"
