@@ -1,6 +1,10 @@
 package action
 
-import "github.com/quarkcms/quark-go/pkg/component/admin/component"
+import (
+	"github.com/quarkcms/quark-go/pkg/component/admin/component"
+	"github.com/quarkcms/quark-go/pkg/component/admin/drawer"
+	"github.com/quarkcms/quark-go/pkg/component/admin/modal"
+)
 
 type Component struct {
 	component.Element
@@ -148,20 +152,20 @@ func (p *Component) SetLink(href string, target string) *Component {
 
 // 弹窗
 func (p *Component) SetModal(callback interface{}) *Component {
-	modal := (&Modal{}).Init()
-	getCallback := callback.(func(modal *Modal) interface{})
+	component := (&modal.Modal{}).Init()
+	getCallback := callback.(func(modal *modal.Modal) interface{})
 
-	p.Modal = getCallback(modal)
+	p.Modal = getCallback(component)
 
 	return p
 }
 
 // 抽屉
 func (p *Component) SetDrawer(callback interface{}) *Component {
-	drawer := (&Drawer{}).Init()
-	getCallback := callback.(func(drawer *Drawer) interface{})
+	component := (&drawer.Drawer{}).Init()
+	getCallback := callback.(func(drawer *drawer.Drawer) interface{})
 
-	p.Drawer = getCallback(drawer)
+	p.Drawer = getCallback(component)
 
 	return p
 }

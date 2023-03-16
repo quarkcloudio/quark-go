@@ -5,7 +5,9 @@ import (
 
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/component/admin/action"
+	"github.com/quarkcms/quark-go/pkg/component/admin/drawer"
 	"github.com/quarkcms/quark-go/pkg/component/admin/dropdown"
+	"github.com/quarkcms/quark-go/pkg/component/admin/modal"
 	"github.com/quarkcms/quark-go/pkg/component/admin/space"
 )
 
@@ -272,7 +274,7 @@ func (p *Template) buildAction(ctx *builder.Context, item interface{}) interface
 			GetActions(ctx *builder.Context) []interface{}
 		}).GetActions(ctx)
 
-		getAction = getAction.SetModal(func(modal *action.Modal) interface{} {
+		getAction = getAction.SetModal(func(modal *modal.Modal) interface{} {
 			return modal.
 				SetTitle(name).
 				SetWidth(formWidth).
@@ -297,7 +299,7 @@ func (p *Template) buildAction(ctx *builder.Context, item interface{}) interface
 			GetActions(ctx *builder.Context) []interface{}
 		}).GetActions(ctx)
 
-		getAction = getAction.SetDrawer(func(drawer *action.Drawer) interface{} {
+		getAction = getAction.SetDrawer(func(drawer *drawer.Drawer) interface{} {
 			return drawer.
 				SetTitle(name).
 				SetWidth(formWidth).
