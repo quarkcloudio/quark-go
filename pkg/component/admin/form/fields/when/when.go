@@ -1,11 +1,8 @@
 package when
 
 import (
-	"crypto/md5"
-	"encoding/hex"
-
-	"github.com/go-basic/uuid"
 	"github.com/quarkcms/quark-go/pkg/component/admin/component"
+	"github.com/quarkcms/quark-go/pkg/untils"
 )
 
 type Item struct {
@@ -43,17 +40,7 @@ func (p *When) Init() *When {
 
 // 设置Key
 func (p *When) SetKey(key string, crypt bool) *When {
-	if key == "" {
-		key = uuid.New()
-	}
-
-	if crypt {
-		h := md5.New()
-		h.Write([]byte(key))
-		key = hex.EncodeToString(h.Sum(nil))
-	}
-
-	p.ComponentKey = key
+	p.ComponentKey = untils.MakeKey(key, crypt)
 
 	return p
 }
