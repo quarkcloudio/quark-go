@@ -1,4 +1,4 @@
-package date
+package month
 
 import (
 	"encoding/json"
@@ -88,7 +88,7 @@ func New() *Date {
 
 // 初始化
 func (p *Date) Init() *Date {
-	p.Component = "dateField"
+	p.Component = "monthField"
 	p.Colon = true
 	p.LabelAlign = "right"
 	p.ShowOnIndex = true
