@@ -1,4 +1,4 @@
-package date
+package date_range
 
 import (
 	"encoding/json"
@@ -11,7 +11,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/untils"
 )
 
-type Date struct {
+type DatetimeRange struct {
 	ComponentKey string `json:"componentkey"` // 组件标识
 	Component    string `json:"component"`    // 组件名称
 
@@ -82,53 +82,44 @@ type Date struct {
 }
 
 // 初始化组件
-func New() *Date {
-	return (&Date{}).Init()
+func New() *DatetimeRange {
+	return (&DatetimeRange{}).Init()
 }
 
 // 初始化
-func (p *Date) Init() *Date {
-	p.Component = "dateField"
-	p.Colon = true
-	p.LabelAlign = "right"
-	p.ShowOnIndex = true
-	p.ShowOnDetail = true
-	p.ShowOnCreation = true
-	p.ShowOnUpdate = true
-	p.ShowOnExport = true
-	p.ShowOnImport = true
-	p.Column = (&table.Column{}).Init()
-	p.Placeholder = "请选择"
+func (p *DatetimeRange) Init() *DatetimeRange {
+	p.Component = "datetimeRangeField"
+	p.Format = "YYYY-MM-DD HH:mm:ss"
+	p.DefaultValue = []interface{}{nil, nil}
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
-	p.SetWidth(400)
 
 	return p
 }
 
 // 设置Key
-func (p *Date) SetKey(key string, crypt bool) *Date {
+func (p *DatetimeRange) SetKey(key string, crypt bool) *DatetimeRange {
 	p.ComponentKey = untils.MakeKey(key, crypt)
 
 	return p
 }
 
 // Set style.
-func (p *Date) SetStyle(style map[string]interface{}) *Date {
+func (p *DatetimeRange) SetStyle(style map[string]interface{}) *DatetimeRange {
 	p.Style = style
 
 	return p
 }
 
 // 会在 label 旁增加一个 icon，悬浮后展示配置的信息
-func (p *Date) SetTooltip(tooltip string) *Date {
+func (p *DatetimeRange) SetTooltip(tooltip string) *DatetimeRange {
 	p.Tooltip = tooltip
 
 	return p
 }
 
 // Field 的长度，我们归纳了常用的 Field 长度以及适合的场景，支持了一些枚举 "xs" , "s" , "m" , "l" , "x"
-func (p *Date) SetWidth(width interface{}) *Date {
+func (p *DatetimeRange) SetWidth(width interface{}) *DatetimeRange {
 	style := make(map[string]interface{})
 
 	for k, v := range p.Style {
@@ -142,69 +133,69 @@ func (p *Date) SetWidth(width interface{}) *Date {
 }
 
 // 配合 label 属性使用，表示是否显示 label 后面的冒号
-func (p *Date) SetColon(colon bool) *Date {
+func (p *DatetimeRange) SetColon(colon bool) *DatetimeRange {
 	p.Colon = colon
 	return p
 }
 
 // 额外的提示信息，和 help 类似，当需要错误信息和提示文案同时出现时，可以使用这个。
-func (p *Date) SetExtra(extra string) *Date {
+func (p *DatetimeRange) SetExtra(extra string) *DatetimeRange {
 	p.Extra = extra
 	return p
 }
 
 // 配合 validateStatus 属性使用，展示校验状态图标，建议只配合 Input 组件使用
-func (p *Date) SetHasFeedback(hasFeedback bool) *Date {
+func (p *DatetimeRange) SetHasFeedback(hasFeedback bool) *DatetimeRange {
 	p.HasFeedback = hasFeedback
 	return p
 }
 
 // 配合 help 属性使用，展示校验状态图标，建议只配合 Input 组件使用
-func (p *Date) SetHelp(help string) *Date {
+func (p *DatetimeRange) SetHelp(help string) *DatetimeRange {
 	p.Help = help
 	return p
 }
 
 // 为 true 时不带样式，作为纯字段控件使用
-func (p *Date) SetNoStyle() *Date {
+func (p *DatetimeRange) SetNoStyle() *DatetimeRange {
 	p.NoStyle = true
 	return p
 }
 
 // label 标签的文本
-func (p *Date) SetLabel(label string) *Date {
+func (p *DatetimeRange) SetLabel(label string) *DatetimeRange {
 	p.Label = label
 
 	return p
 }
 
 // 标签文本对齐方式
-func (p *Date) SetLabelAlign(align string) *Date {
+func (p *DatetimeRange) SetLabelAlign(align string) *DatetimeRange {
 	p.LabelAlign = align
 	return p
 }
 
 // label 标签布局，同 <Col> 组件，设置 span offset 值，如 {span: 3, offset: 12} 或 sm: {span: 3, offset: 12}。
 // 你可以通过 Form 的 labelCol 进行统一设置。当和 Form 同时设置时，以 Item 为准
-func (p *Date) SetLabelCol(col interface{}) *Date {
+func (p *DatetimeRange) SetLabelCol(col interface{}) *DatetimeRange {
 	p.LabelCol = col
 	return p
 }
 
 // 字段名，支持数组
-func (p *Date) SetName(name string) *Date {
+func (p *DatetimeRange) SetName(name string) *DatetimeRange {
 	p.Name = name
 	return p
 }
 
 // 是否必填，如不设置，则会根据校验规则自动生成
-func (p *Date) SetRequired() *Date {
+func (p *DatetimeRange) SetRequired() *DatetimeRange {
 	p.Required = true
 	return p
 }
 
 // 获取前端验证规则
-func (p *Date) GetFrontendRules(path string) *Date {
+func (p *DatetimeRange) GetFrontendRules(path string) *DatetimeRange {
 	var (
 		frontendRules []*rule.Rule
 		rules         []*rule.Rule
@@ -241,65 +232,65 @@ func (p *Date) GetFrontendRules(path string) *Date {
 }
 
 // 校验规则，设置字段的校验逻辑
-func (p *Date) SetRules(rules []*rule.Rule) *Date {
+func (p *DatetimeRange) SetRules(rules []*rule.Rule) *DatetimeRange {
 	p.Rules = rules
 
 	return p
 }
 
 // 校验规则，只在创建表单提交时生效
-func (p *Date) SetCreationRules(rules []*rule.Rule) *Date {
+func (p *DatetimeRange) SetCreationRules(rules []*rule.Rule) *DatetimeRange {
 	p.CreationRules = rules
 
 	return p
 }
 
 // 校验规则，只在更新表单提交时生效
-func (p *Date) SetUpdateRules(rules []*rule.Rule) *Date {
+func (p *DatetimeRange) SetUpdateRules(rules []*rule.Rule) *DatetimeRange {
 	p.UpdateRules = rules
 
 	return p
 }
 
 // 子节点的值的属性，如 Switch 的是 "checked"
-func (p *Date) SetValuePropName(valuePropName string) *Date {
+func (p *DatetimeRange) SetValuePropName(valuePropName string) *DatetimeRange {
 	p.ValuePropName = valuePropName
 	return p
 }
 
 // 需要为输入控件设置布局样式时，使用该属性，用法同 labelCol。
 // 你可以通过 Form 的 wrapperCol 进行统一设置。当和 Form 同时设置时，以 Item 为准。
-func (p *Date) SetWrapperCol(col interface{}) *Date {
+func (p *DatetimeRange) SetWrapperCol(col interface{}) *DatetimeRange {
 	p.WrapperCol = col
 	return p
 }
 
 // 设置保存值。
-func (p *Date) SetValue(value interface{}) *Date {
+func (p *DatetimeRange) SetValue(value interface{}) *DatetimeRange {
 	p.Value = value
 	return p
 }
 
 // 设置默认值。
-func (p *Date) SetDefault(value interface{}) *Date {
+func (p *DatetimeRange) SetDefault(value interface{}) *DatetimeRange {
 	p.DefaultValue = value
 	return p
 }
 
 // 是否禁用状态，默认为 false
-func (p *Date) SetDisabled(disabled bool) *Date {
+func (p *DatetimeRange) SetDisabled(disabled bool) *DatetimeRange {
 	p.Disabled = disabled
 	return p
 }
 
 // 是否忽略保存到数据库，默认为 false
-func (p *Date) SetIgnore(ignore bool) *Date {
+func (p *DatetimeRange) SetIgnore(ignore bool) *DatetimeRange {
 	p.Ignore = ignore
 	return p
 }
 
 // 表单联动
-func (p *Date) SetWhen(value ...any) *Date {
+func (p *DatetimeRange) SetWhen(value ...any) *DatetimeRange {
 	w := when.New()
 	i := when.NewItem()
 	var operator string
@@ -361,91 +352,91 @@ func (p *Date) SetWhen(value ...any) *Date {
 }
 
 // Specify that the element should be hidden from the index view.
-func (p *Date) HideFromIndex(callback bool) *Date {
+func (p *DatetimeRange) HideFromIndex(callback bool) *DatetimeRange {
 	p.ShowOnIndex = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the detail view.
-func (p *Date) HideFromDetail(callback bool) *Date {
+func (p *DatetimeRange) HideFromDetail(callback bool) *DatetimeRange {
 	p.ShowOnDetail = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the creation view.
-func (p *Date) HideWhenCreating(callback bool) *Date {
+func (p *DatetimeRange) HideWhenCreating(callback bool) *DatetimeRange {
 	p.ShowOnCreation = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the update view.
-func (p *Date) HideWhenUpdating(callback bool) *Date {
+func (p *DatetimeRange) HideWhenUpdating(callback bool) *DatetimeRange {
 	p.ShowOnUpdate = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the export file.
-func (p *Date) HideWhenExporting(callback bool) *Date {
+func (p *DatetimeRange) HideWhenExporting(callback bool) *DatetimeRange {
 	p.ShowOnExport = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the import file.
-func (p *Date) HideWhenImporting(callback bool) *Date {
+func (p *DatetimeRange) HideWhenImporting(callback bool) *DatetimeRange {
 	p.ShowOnImport = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the index view.
-func (p *Date) OnIndexShowing(callback bool) *Date {
+func (p *DatetimeRange) OnIndexShowing(callback bool) *DatetimeRange {
 	p.ShowOnIndex = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the detail view.
-func (p *Date) OnDetailShowing(callback bool) *Date {
+func (p *DatetimeRange) OnDetailShowing(callback bool) *DatetimeRange {
 	p.ShowOnDetail = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the creation view.
-func (p *Date) ShowOnCreating(callback bool) *Date {
+func (p *DatetimeRange) ShowOnCreating(callback bool) *DatetimeRange {
 	p.ShowOnCreation = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the update view.
-func (p *Date) ShowOnUpdating(callback bool) *Date {
+func (p *DatetimeRange) ShowOnUpdating(callback bool) *DatetimeRange {
 	p.ShowOnUpdate = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the export file.
-func (p *Date) ShowOnExporting(callback bool) *Date {
+func (p *DatetimeRange) ShowOnExporting(callback bool) *DatetimeRange {
 	p.ShowOnExport = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the import file.
-func (p *Date) ShowOnImporting(callback bool) *Date {
+func (p *DatetimeRange) ShowOnImporting(callback bool) *DatetimeRange {
 	p.ShowOnImport = callback
 
 	return p
 }
 
 // Specify that the element should only be shown on the index view.
-func (p *Date) OnlyOnIndex() *Date {
+func (p *DatetimeRange) OnlyOnIndex() *DatetimeRange {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -457,7 +448,7 @@ func (p *Date) OnlyOnIndex() *Date {
 }
 
 // Specify that the element should only be shown on the detail view.
-func (p *Date) OnlyOnDetail() *Date {
+func (p *DatetimeRange) OnlyOnDetail() *DatetimeRange {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
@@ -469,7 +460,7 @@ func (p *Date) OnlyOnDetail() *Date {
 }
 
 // Specify that the element should only be shown on forms.
-func (p *Date) OnlyOnForms() *Date {
+func (p *DatetimeRange) OnlyOnForms() *DatetimeRange {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = true
@@ -481,7 +472,7 @@ func (p *Date) OnlyOnForms() *Date {
 }
 
 // Specify that the element should only be shown on export file.
-func (p *Date) OnlyOnExport() *Date {
+func (p *DatetimeRange) OnlyOnExport() *DatetimeRange {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -493,7 +484,7 @@ func (p *Date) OnlyOnExport() *Date {
 }
 
 // Specify that the element should only be shown on import file.
-func (p *Date) OnlyOnImport() *Date {
+func (p *DatetimeRange) OnlyOnImport() *DatetimeRange {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -505,7 +496,7 @@ func (p *Date) OnlyOnImport() *Date {
 }
 
 // Specify that the element should be hidden from forms.
-func (p *Date) ExceptOnForms() *Date {
+func (p *DatetimeRange) ExceptOnForms() *DatetimeRange {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
@@ -517,58 +508,58 @@ func (p *Date) ExceptOnForms() *Date {
 }
 
 // Check for showing when updating.
-func (p *Date) IsShownOnUpdate() bool {
+func (p *DatetimeRange) IsShownOnUpdate() bool {
 	return p.ShowOnUpdate
 }
 
 // Check showing on index.
-func (p *Date) IsShownOnIndex() bool {
+func (p *DatetimeRange) IsShownOnIndex() bool {
 	return p.ShowOnIndex
 }
 
 // Check showing on detail.
-func (p *Date) IsShownOnDetail() bool {
+func (p *DatetimeRange) IsShownOnDetail() bool {
 	return p.ShowOnDetail
 }
 
 // Check for showing when creating.
-func (p *Date) IsShownOnCreation() bool {
+func (p *DatetimeRange) IsShownOnCreation() bool {
 	return p.ShowOnCreation
 }
 
 // Check for showing when exporting.
-func (p *Date) IsShownOnExport() bool {
+func (p *DatetimeRange) IsShownOnExport() bool {
 	return p.ShowOnExport
 }
 
 // Check for showing when importing.
-func (p *Date) IsShownOnImport() bool {
+func (p *DatetimeRange) IsShownOnImport() bool {
 	return p.ShowOnImport
 }
 
 // 设置为可编辑列
-func (p *Date) SetEditable(editable bool) *Date {
+func (p *DatetimeRange) SetEditable(editable bool) *DatetimeRange {
 	p.Editable = editable
 
 	return p
 }
 
 // 闭包，透传表格列的属性
-func (p *Date) SetColumn(f func(column *table.Column) *table.Column) *Date {
+func (p *DatetimeRange) SetColumn(f func(column *table.Column) *table.Column) *DatetimeRange {
 	p.Column = f(p.Column)
 
 	return p
 }
 
 // 当前列值的枚举 valueEnum
-func (p *Date) GetValueEnum() map[interface{}]interface{} {
+func (p *DatetimeRange) GetValueEnum() map[interface{}]interface{} {
 	data := map[interface{}]interface{}{}
 
 	return data
 }
 
 // 设置回调函数
-func (p *Date) SetCallback(closure func() interface{}) *Date {
+func (p *DatetimeRange) SetCallback(closure func() interface{}) *DatetimeRange {
 	if closure != nil {
 		p.Callback = closure
 	}
@@ -577,193 +568,193 @@ func (p *Date) SetCallback(closure func() interface{}) *Date {
 }
 
 // 获取回调函数
-func (p *Date) GetCallback() interface{} {
+func (p *DatetimeRange) GetCallback() interface{} {
 	return p.Callback
 }
 
 // 获取数据接口
-func (p *Date) SetApi(api string) *Date {
+func (p *DatetimeRange) SetApi(api string) *DatetimeRange {
 	p.Api = api
 	return p
 }
 
 // 可以点击清除图标删除内容
-func (p *Date) SetAllowClear(allowClear bool) *Date {
+func (p *DatetimeRange) SetAllowClear(allowClear bool) *DatetimeRange {
 	p.AllowClear = allowClear
 
 	return p
 }
 
 // 自动获取焦点，默认false
-func (p *Date) SetAutoFocus(autoFocus bool) *Date {
+func (p *DatetimeRange) SetAutoFocus(autoFocus bool) *DatetimeRange {
 	p.AutoFocus = autoFocus
 
 	return p
 }
 
 // 是否有边框，默认true
-func (p *Date) SetBordered(bordered bool) *Date {
+func (p *DatetimeRange) SetBordered(bordered bool) *DatetimeRange {
 	p.Bordered = bordered
 
 	return p
 }
 
 // 自定义类名
-func (p *Date) SetClassName(className string) *Date {
+func (p *DatetimeRange) SetClassName(className string) *DatetimeRange {
 	p.ClassName = className
 
 	return p
 }
 
 // 默认的选中项
-func (p *Date) SetDefaultValue(defaultValue interface{}) *Date {
+func (p *DatetimeRange) SetDefaultValue(defaultValue interface{}) *DatetimeRange {
 	p.DefaultValue = defaultValue
 
 	return p
 }
 
 // 设置日期格式，为数组时支持多格式匹配，展示以第一个为准。
-func (p *Date) SetFormat(format string) *Date {
+func (p *DatetimeRange) SetFormat(format string) *DatetimeRange {
 	p.Format = format
 
 	return p
 }
 
 // 自定义类名
-func (p *Date) SetPopupClassName(popupClassName string) *Date {
+func (p *DatetimeRange) SetPopupClassName(popupClassName string) *DatetimeRange {
 	p.PopupClassName = popupClassName
 
 	return p
 }
 
 // 设置输入框为只读（避免在移动设备上打开虚拟键盘）
-func (p *Date) SetInputReadOnly(inputReadOnly bool) *Date {
+func (p *DatetimeRange) SetInputReadOnly(inputReadOnly bool) *DatetimeRange {
 	p.InputReadOnly = inputReadOnly
 
 	return p
 }
 
 // 国际化配置
-func (p *Date) SetLocale(locale interface{}) *Date {
+func (p *DatetimeRange) SetLocale(locale interface{}) *DatetimeRange {
 	p.Locale = locale
 
 	return p
 }
 
 // 日期面板的状态 time | date | month | year | decade
-func (p *Date) SetMode(mode string) *Date {
+func (p *DatetimeRange) SetMode(mode string) *DatetimeRange {
 	p.Mode = mode
 
 	return p
 }
 
 // 自定义下一个图标
-func (p *Date) SetNextIcon(nextIcon interface{}) *Date {
+func (p *DatetimeRange) SetNextIcon(nextIcon interface{}) *DatetimeRange {
 	p.NextIcon = nextIcon
 
 	return p
 }
 
 // 控制浮层显隐
-func (p *Date) SetOpen(open bool) *Date {
+func (p *DatetimeRange) SetOpen(open bool) *DatetimeRange {
 	p.Open = open
 
 	return p
 }
 
 // 设置选择器类型 date | week | month | quarter | year
-func (p *Date) SetPicker(picker string) *Date {
+func (p *DatetimeRange) SetPicker(picker string) *DatetimeRange {
 	p.Picker = picker
 
 	return p
 }
 
 // 输入框占位文本
-func (p *Date) SetPlaceholder(placeholder string) *Date {
+func (p *DatetimeRange) SetPlaceholder(placeholder string) *DatetimeRange {
 	p.Placeholder = placeholder
 
 	return p
 }
 
 // 浮层预设位置，bottomLeft bottomRight topLeft topRight
-func (p *Date) SetPlacement(placement string) *Date {
+func (p *DatetimeRange) SetPlacement(placement string) *DatetimeRange {
 	p.Placement = placement
 
 	return p
 }
 
 // 额外的弹出日历样式
-func (p *Date) SetPopupStyle(popupStyle interface{}) *Date {
+func (p *DatetimeRange) SetPopupStyle(popupStyle interface{}) *DatetimeRange {
 	p.PopupStyle = popupStyle
 
 	return p
 }
 
 // 自定义上一个图标
-func (p *Date) SetPrevIcon(prevIcon interface{}) *Date {
+func (p *DatetimeRange) SetPrevIcon(prevIcon interface{}) *DatetimeRange {
 	p.PrevIcon = prevIcon
 
 	return p
 }
 
 // 控件大小。注：标准表单内的输入框大小限制为 large。可选 large default small
-func (p *Date) SetSize(size string) *Date {
+func (p *DatetimeRange) SetSize(size string) *DatetimeRange {
 	p.Size = size
 
 	return p
 }
 
 // 设置校验状态，'error' | 'warning'
-func (p *Date) SetStatus(status string) *Date {
+func (p *DatetimeRange) SetStatus(status string) *DatetimeRange {
 	p.Status = status
 
 	return p
 }
 
 // 自定义的选择框后缀图标
-func (p *Date) SetSuffixIcon(suffixIcon interface{}) *Date {
+func (p *DatetimeRange) SetSuffixIcon(suffixIcon interface{}) *DatetimeRange {
 	p.SuffixIcon = suffixIcon
 
 	return p
 }
 
 // 自定义 << 切换图标
-func (p *Date) SetSuperNextIcon(superNextIcon interface{}) *Date {
+func (p *DatetimeRange) SetSuperNextIcon(superNextIcon interface{}) *DatetimeRange {
 	p.SuperNextIcon = superNextIcon
 
 	return p
 }
 
 // 自定义 >> 切换图标
-func (p *Date) SetSuperPrevIcon(superPrevIcon interface{}) *Date {
+func (p *DatetimeRange) SetSuperPrevIcon(superPrevIcon interface{}) *DatetimeRange {
 	p.SuperPrevIcon = superPrevIcon
 
 	return p
 }
 
 // 默认面板日期
-func (p *Date) SetDefaultPickerValue(defaultPickerValue string) *Date {
+func (p *DatetimeRange) SetDefaultPickerValue(defaultPickerValue string) *DatetimeRange {
 	p.DefaultPickerValue = defaultPickerValue
 
 	return p
 }
 
 // 当设定了 showTime 的时候，面板是否显示“此刻”按钮
-func (p *Date) SetShowNow(showNow bool) *Date {
+func (p *DatetimeRange) SetShowNow(showNow bool) *DatetimeRange {
 	p.ShowNow = showNow
 
 	return p
 }
 
 // 增加时间选择功能
-func (p *Date) SetShowTime(showTime interface{}) *Date {
+func (p *DatetimeRange) SetShowTime(showTime interface{}) *DatetimeRange {
 	p.ShowTime = showTime
 
 	return p
 }
 
 // 是否展示“今天”按钮
-func (p *Date) SetShowToday(showToday bool) *Date {
+func (p *DatetimeRange) SetShowToday(showToday bool) *DatetimeRange {
 	p.ShowToday = showToday
 
 	return p
