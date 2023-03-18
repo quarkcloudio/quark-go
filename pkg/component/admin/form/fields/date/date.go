@@ -1,4 +1,4 @@
-package cascader
+package date
 
 import (
 	"encoding/json"
@@ -11,23 +11,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/untils"
 )
 
-type FieldNames struct {
-	Label    string `json:"label"`
-	Value    string `json:"value"`
-	Children string `json:"children"`
-}
-
-type Option struct {
-	Label    string      `json:"label,omitempty"`
-	Value    interface{} `json:"value"`
-	Disabled bool        `json:"disabled,omitempty"`
-	Children []*Option   `json:"children,omitempty"`
-	// 标记是否为叶子节点，设置了 `loadData` 时有效
-	// 设为 `false` 时会强制标记为父节点，即使当前节点没有 children，也会显示展开图标
-	IsLeaf bool `json:"isLeaf,omitempty"`
-}
-
-type Cascader struct {
+type Date struct {
 	ComponentKey string `json:"componentkey"` // 组件标识
 	Component    string `json:"component"`    // 组件名称
 
@@ -65,47 +49,46 @@ type Cascader struct {
 	Column         *table.Column `json:"-"`             // 表格列
 	Callback       interface{}   `json:"-"`             // 回调函数
 
-	AllowClear              bool                   `json:"allowClear,omitempty"`              // 是否支持清除，默认true
-	AutoFocus               bool                   `json:"autoFocus,omitempty"`               // 自动获取焦点，默认false
-	Bordered                bool                   `json:"bordered,omitempty"`                // 是否有边框，默认true
-	ClearIcon               interface{}            `json:"clearIcon,omitempty"`               // 自定义的选择框清空图标
-	ChangeOnSelect          bool                   `json:"changeOnSelect,omitempty"`          // （单选时生效）当此项为 true 时，点选每级菜单选项值都会发生变化，默认false
-	ClassName               string                 `json:"className,omitempty"`               // 自定义类名
-	DefaultValue            interface{}            `json:"defaultValue,omitempty"`            // 默认的选中项
-	Disabled                interface{}            `json:"disabled,omitempty"`                // 禁用
-	PopupClassName          string                 `json:"popupClassName,omitempty"`          // 自定义类名
-	ExpandIcon              interface{}            `json:"expandIcon,omitempty"`              // 自定义次级菜单展开图标
-	ExpandTrigger           string                 `json:"expandTrigger,omitempty"`           // 次级菜单的展开方式，可选 'click' 和 'hover'
-	FieldNames              *FieldNames            `json:"fieldNames,omitempty"`              // 自定义 options 中 label value children 的字段
-	MaxTagCount             int                    `json:"maxTagCount,omitempty"`             // 最多显示多少个 tag，响应式模式会对性能产生损耗
-	MaxTagPlaceholder       string                 `json:"maxTagPlaceholder,omitempty"`       // 隐藏 tag 时显示的内容
-	MaxTagTextLength        int                    `json:"maxTagTextLength,omitempty"`        // 最大显示的 tag 文本长度
-	NotFoundContent         string                 `json:"notFoundContent,omitempty"`         // 当下拉列表为空时显示的内容
-	Open                    bool                   `json:"open,omitempty"`                    // 控制浮层显隐
-	Options                 []*Option              `json:"options,omitempty"`                 // 可选项数据源
-	Placeholder             string                 `json:"placeholder,omitempty"`             // 输入框占位文本
-	Placement               string                 `json:"placement,omitempty"`               // 浮层预设位置，bottomLeft bottomRight topLeft topRight
-	ShowSearch              bool                   `json:"showSearch,omitempty"`              // 在选择框中显示搜索框
-	Size                    string                 `json:"size,omitempty"`                    // 输入框大小，large | middle | small
-	Status                  string                 `json:"status,omitempty"`                  // 设置校验状态，'error' | 'warning'
-	Style                   map[string]interface{} `json:"style,omitempty"`                   // 自定义样式
-	SuffixIcon              interface{}            `json:"suffixIcon,omitempty"`              // 自定义的选择框后缀图标
-	Value                   interface{}            `json:"value,omitempty"`                   // 指定选中项,string[] | number[]
-	Multiple                bool                   `json:"multiple,omitempty"`                // 支持多选节点
-	ShowCheckedStrategy     string                 `json:"showCheckedStrategy,omitempty"`     // 定义选中项回填的方式。Cascader.SHOW_CHILD: 只显示选中的子节点。Cascader.SHOW_PARENT: 只显示父节点（当父节点下所有子节点都选中时）。Cascader.SHOW_PARENT | Cascader.SHOW_CHILD
-	RemoveIcon              interface{}            `json:"removeIcon,omitempty"`              // 自定义的多选框清除图标
-	SearchValue             string                 `json:"searchValue,omitempty"`             // 设置搜索的值，需要与 showSearch 配合使用
-	DropdownMenuColumnStyle interface{}            `json:"dropdownMenuColumnStyle,omitempty"` // 下拉菜单列的样式
+	AllowClear     bool                   `json:"allowClear,omitempty"`     // 是否支持清除，默认true
+	AutoFocus      bool                   `json:"autoFocus,omitempty"`      // 自动获取焦点，默认false
+	Bordered       bool                   `json:"bordered,omitempty"`       // 是否有边框，默认true
+	ClassName      string                 `json:"className,omitempty"`      // 自定义类名
+	DefaultValue   interface{}            `json:"defaultValue,omitempty"`   // 默认的选中项
+	Disabled       interface{}            `json:"disabled,omitempty"`       // 禁用
+	Format         string                 `json:"format,omitempty"`         // 设置日期格式，为数组时支持多格式匹配，展示以第一个为准。
+	PopupClassName string                 `json:"popupClassName,omitempty"` // 额外的弹出日历 className
+	InputReadOnly  bool                   `json:"inputReadOnly,omitempty"`  // 设置输入框为只读（避免在移动设备上打开虚拟键盘）
+	Locale         interface{}            `json:"locale,omitempty"`         // 国际化配置
+	Mode           string                 `json:"mode,omitempty"`           // 日期面板的状态 time | date | month | year | decade
+	NextIcon       interface{}            `json:"nextIcon,omitempty"`       // 自定义下一个图标
+	Open           bool                   `json:"open,omitempty"`           // 控制浮层显隐
+	Picker         string                 `json:"picker,omitempty"`         // 设置选择器类型 date | week | month | quarter | year
+	Placeholder    string                 `json:"placeholder,omitempty"`    // 输入框占位文本
+	Placement      string                 `json:"placement,omitempty"`      // 浮层预设位置，bottomLeft bottomRight topLeft topRight
+	PopupStyle     interface{}            `json:"popupStyle,omitempty"`     // 额外的弹出日历样式
+	PrevIcon       interface{}            `json:"prevIcon,omitempty"`       // 自定义上一个图标
+	Size           string                 `json:"size,omitempty"`           // 输入框大小，large | middle | small
+	Status         string                 `json:"status,omitempty"`         // 设置校验状态，'error' | 'warning'
+	Style          map[string]interface{} `json:"style,omitempty"`          // 自定义样式
+	SuffixIcon     interface{}            `json:"suffixIcon,omitempty"`     // 自定义的选择框后缀图标
+	SuperNextIcon  interface{}            `json:"superNextIcon,omitempty"`  // 自定义 << 切换图标
+	SuperPrevIcon  interface{}            `json:"superPrevIcon,omitempty"`  // 自定义 >> 切换图标
+	Value          interface{}            `json:"value,omitempty"`          // 指定选中项,string[] | number[]
+
+	DefaultPickerValue string      `json:"defaultPickerValue,omitempty"` // 默认面板日期
+	ShowNow            bool        `json:"showNow,omitempty"`            // 当设定了 showTime 的时候，面板是否显示“此刻”按钮
+	ShowTime           interface{} `json:"showTime,omitempty"`           // 增加时间选择功能
+	ShowToday          bool        `json:"showToday,omitempty"`          // 是否展示“今天”按钮
 }
 
 // 初始化组件
-func New() *Cascader {
-	return (&Cascader{}).Init()
+func New() *Date {
+	return (&Date{}).Init()
 }
 
 // 初始化
-func (p *Cascader) Init() *Cascader {
-	p.Component = "cascaderField"
+func (p *Date) Init() *Date {
+	p.Component = "dateField"
 	p.Colon = true
 	p.LabelAlign = "right"
 	p.ShowOnIndex = true
@@ -124,28 +107,28 @@ func (p *Cascader) Init() *Cascader {
 }
 
 // 设置Key
-func (p *Cascader) SetKey(key string, crypt bool) *Cascader {
+func (p *Date) SetKey(key string, crypt bool) *Date {
 	p.ComponentKey = untils.MakeKey(key, crypt)
 
 	return p
 }
 
 // Set style.
-func (p *Cascader) SetStyle(style map[string]interface{}) *Cascader {
+func (p *Date) SetStyle(style map[string]interface{}) *Date {
 	p.Style = style
 
 	return p
 }
 
 // 会在 label 旁增加一个 icon，悬浮后展示配置的信息
-func (p *Cascader) SetTooltip(tooltip string) *Cascader {
+func (p *Date) SetTooltip(tooltip string) *Date {
 	p.Tooltip = tooltip
 
 	return p
 }
 
 // Field 的长度，我们归纳了常用的 Field 长度以及适合的场景，支持了一些枚举 "xs" , "s" , "m" , "l" , "x"
-func (p *Cascader) SetWidth(width interface{}) *Cascader {
+func (p *Date) SetWidth(width interface{}) *Date {
 	style := make(map[string]interface{})
 
 	for k, v := range p.Style {
@@ -159,69 +142,69 @@ func (p *Cascader) SetWidth(width interface{}) *Cascader {
 }
 
 // 配合 label 属性使用，表示是否显示 label 后面的冒号
-func (p *Cascader) SetColon(colon bool) *Cascader {
+func (p *Date) SetColon(colon bool) *Date {
 	p.Colon = colon
 	return p
 }
 
 // 额外的提示信息，和 help 类似，当需要错误信息和提示文案同时出现时，可以使用这个。
-func (p *Cascader) SetExtra(extra string) *Cascader {
+func (p *Date) SetExtra(extra string) *Date {
 	p.Extra = extra
 	return p
 }
 
 // 配合 validateStatus 属性使用，展示校验状态图标，建议只配合 Input 组件使用
-func (p *Cascader) SetHasFeedback(hasFeedback bool) *Cascader {
+func (p *Date) SetHasFeedback(hasFeedback bool) *Date {
 	p.HasFeedback = hasFeedback
 	return p
 }
 
 // 配合 help 属性使用，展示校验状态图标，建议只配合 Input 组件使用
-func (p *Cascader) SetHelp(help string) *Cascader {
+func (p *Date) SetHelp(help string) *Date {
 	p.Help = help
 	return p
 }
 
 // 为 true 时不带样式，作为纯字段控件使用
-func (p *Cascader) SetNoStyle() *Cascader {
+func (p *Date) SetNoStyle() *Date {
 	p.NoStyle = true
 	return p
 }
 
 // label 标签的文本
-func (p *Cascader) SetLabel(label string) *Cascader {
+func (p *Date) SetLabel(label string) *Date {
 	p.Label = label
 
 	return p
 }
 
 // 标签文本对齐方式
-func (p *Cascader) SetLabelAlign(align string) *Cascader {
+func (p *Date) SetLabelAlign(align string) *Date {
 	p.LabelAlign = align
 	return p
 }
 
 // label 标签布局，同 <Col> 组件，设置 span offset 值，如 {span: 3, offset: 12} 或 sm: {span: 3, offset: 12}。
 // 你可以通过 Form 的 labelCol 进行统一设置。当和 Form 同时设置时，以 Item 为准
-func (p *Cascader) SetLabelCol(col interface{}) *Cascader {
+func (p *Date) SetLabelCol(col interface{}) *Date {
 	p.LabelCol = col
 	return p
 }
 
 // 字段名，支持数组
-func (p *Cascader) SetName(name string) *Cascader {
+func (p *Date) SetName(name string) *Date {
 	p.Name = name
 	return p
 }
 
 // 是否必填，如不设置，则会根据校验规则自动生成
-func (p *Cascader) SetRequired() *Cascader {
+func (p *Date) SetRequired() *Date {
 	p.Required = true
 	return p
 }
 
 // 获取前端验证规则
-func (p *Cascader) GetFrontendRules(path string) *Cascader {
+func (p *Date) GetFrontendRules(path string) *Date {
 	var (
 		frontendRules []*rule.Rule
 		rules         []*rule.Rule
@@ -258,65 +241,65 @@ func (p *Cascader) GetFrontendRules(path string) *Cascader {
 }
 
 // 校验规则，设置字段的校验逻辑
-func (p *Cascader) SetRules(rules []*rule.Rule) *Cascader {
+func (p *Date) SetRules(rules []*rule.Rule) *Date {
 	p.Rules = rules
 
 	return p
 }
 
 // 校验规则，只在创建表单提交时生效
-func (p *Cascader) SetCreationRules(rules []*rule.Rule) *Cascader {
+func (p *Date) SetCreationRules(rules []*rule.Rule) *Date {
 	p.CreationRules = rules
 
 	return p
 }
 
 // 校验规则，只在更新表单提交时生效
-func (p *Cascader) SetUpdateRules(rules []*rule.Rule) *Cascader {
+func (p *Date) SetUpdateRules(rules []*rule.Rule) *Date {
 	p.UpdateRules = rules
 
 	return p
 }
 
 // 子节点的值的属性，如 Switch 的是 "checked"
-func (p *Cascader) SetValuePropName(valuePropName string) *Cascader {
+func (p *Date) SetValuePropName(valuePropName string) *Date {
 	p.ValuePropName = valuePropName
 	return p
 }
 
 // 需要为输入控件设置布局样式时，使用该属性，用法同 labelCol。
 // 你可以通过 Form 的 wrapperCol 进行统一设置。当和 Form 同时设置时，以 Item 为准。
-func (p *Cascader) SetWrapperCol(col interface{}) *Cascader {
+func (p *Date) SetWrapperCol(col interface{}) *Date {
 	p.WrapperCol = col
 	return p
 }
 
 // 设置保存值。
-func (p *Cascader) SetValue(value interface{}) *Cascader {
+func (p *Date) SetValue(value interface{}) *Date {
 	p.Value = value
 	return p
 }
 
 // 设置默认值。
-func (p *Cascader) SetDefault(value interface{}) *Cascader {
+func (p *Date) SetDefault(value interface{}) *Date {
 	p.DefaultValue = value
 	return p
 }
 
 // 是否禁用状态，默认为 false
-func (p *Cascader) SetDisabled(disabled bool) *Cascader {
+func (p *Date) SetDisabled(disabled bool) *Date {
 	p.Disabled = disabled
 	return p
 }
 
 // 是否忽略保存到数据库，默认为 false
-func (p *Cascader) SetIgnore(ignore bool) *Cascader {
+func (p *Date) SetIgnore(ignore bool) *Date {
 	p.Ignore = ignore
 	return p
 }
 
 // 表单联动
-func (p *Cascader) SetWhen(value ...any) *Cascader {
+func (p *Date) SetWhen(value ...any) *Date {
 	w := when.New()
 	i := when.NewItem()
 	var operator string
@@ -378,91 +361,91 @@ func (p *Cascader) SetWhen(value ...any) *Cascader {
 }
 
 // Specify that the element should be hidden from the index view.
-func (p *Cascader) HideFromIndex(callback bool) *Cascader {
+func (p *Date) HideFromIndex(callback bool) *Date {
 	p.ShowOnIndex = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the detail view.
-func (p *Cascader) HideFromDetail(callback bool) *Cascader {
+func (p *Date) HideFromDetail(callback bool) *Date {
 	p.ShowOnDetail = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the creation view.
-func (p *Cascader) HideWhenCreating(callback bool) *Cascader {
+func (p *Date) HideWhenCreating(callback bool) *Date {
 	p.ShowOnCreation = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the update view.
-func (p *Cascader) HideWhenUpdating(callback bool) *Cascader {
+func (p *Date) HideWhenUpdating(callback bool) *Date {
 	p.ShowOnUpdate = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the export file.
-func (p *Cascader) HideWhenExporting(callback bool) *Cascader {
+func (p *Date) HideWhenExporting(callback bool) *Date {
 	p.ShowOnExport = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the import file.
-func (p *Cascader) HideWhenImporting(callback bool) *Cascader {
+func (p *Date) HideWhenImporting(callback bool) *Date {
 	p.ShowOnImport = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the index view.
-func (p *Cascader) OnIndexShowing(callback bool) *Cascader {
+func (p *Date) OnIndexShowing(callback bool) *Date {
 	p.ShowOnIndex = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the detail view.
-func (p *Cascader) OnDetailShowing(callback bool) *Cascader {
+func (p *Date) OnDetailShowing(callback bool) *Date {
 	p.ShowOnDetail = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the creation view.
-func (p *Cascader) ShowOnCreating(callback bool) *Cascader {
+func (p *Date) ShowOnCreating(callback bool) *Date {
 	p.ShowOnCreation = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the update view.
-func (p *Cascader) ShowOnUpdating(callback bool) *Cascader {
+func (p *Date) ShowOnUpdating(callback bool) *Date {
 	p.ShowOnUpdate = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the export file.
-func (p *Cascader) ShowOnExporting(callback bool) *Cascader {
+func (p *Date) ShowOnExporting(callback bool) *Date {
 	p.ShowOnExport = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the import file.
-func (p *Cascader) ShowOnImporting(callback bool) *Cascader {
+func (p *Date) ShowOnImporting(callback bool) *Date {
 	p.ShowOnImport = callback
 
 	return p
 }
 
 // Specify that the element should only be shown on the index view.
-func (p *Cascader) OnlyOnIndex() *Cascader {
+func (p *Date) OnlyOnIndex() *Date {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -474,7 +457,7 @@ func (p *Cascader) OnlyOnIndex() *Cascader {
 }
 
 // Specify that the element should only be shown on the detail view.
-func (p *Cascader) OnlyOnDetail() *Cascader {
+func (p *Date) OnlyOnDetail() *Date {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
@@ -486,7 +469,7 @@ func (p *Cascader) OnlyOnDetail() *Cascader {
 }
 
 // Specify that the element should only be shown on forms.
-func (p *Cascader) OnlyOnForms() *Cascader {
+func (p *Date) OnlyOnForms() *Date {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = true
@@ -498,7 +481,7 @@ func (p *Cascader) OnlyOnForms() *Cascader {
 }
 
 // Specify that the element should only be shown on export file.
-func (p *Cascader) OnlyOnExport() *Cascader {
+func (p *Date) OnlyOnExport() *Date {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -510,7 +493,7 @@ func (p *Cascader) OnlyOnExport() *Cascader {
 }
 
 // Specify that the element should only be shown on import file.
-func (p *Cascader) OnlyOnImport() *Cascader {
+func (p *Date) OnlyOnImport() *Date {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -522,7 +505,7 @@ func (p *Cascader) OnlyOnImport() *Cascader {
 }
 
 // Specify that the element should be hidden from forms.
-func (p *Cascader) ExceptOnForms() *Cascader {
+func (p *Date) ExceptOnForms() *Date {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
@@ -534,58 +517,58 @@ func (p *Cascader) ExceptOnForms() *Cascader {
 }
 
 // Check for showing when updating.
-func (p *Cascader) IsShownOnUpdate() bool {
+func (p *Date) IsShownOnUpdate() bool {
 	return p.ShowOnUpdate
 }
 
 // Check showing on index.
-func (p *Cascader) IsShownOnIndex() bool {
+func (p *Date) IsShownOnIndex() bool {
 	return p.ShowOnIndex
 }
 
 // Check showing on detail.
-func (p *Cascader) IsShownOnDetail() bool {
+func (p *Date) IsShownOnDetail() bool {
 	return p.ShowOnDetail
 }
 
 // Check for showing when creating.
-func (p *Cascader) IsShownOnCreation() bool {
+func (p *Date) IsShownOnCreation() bool {
 	return p.ShowOnCreation
 }
 
 // Check for showing when exporting.
-func (p *Cascader) IsShownOnExport() bool {
+func (p *Date) IsShownOnExport() bool {
 	return p.ShowOnExport
 }
 
 // Check for showing when importing.
-func (p *Cascader) IsShownOnImport() bool {
+func (p *Date) IsShownOnImport() bool {
 	return p.ShowOnImport
 }
 
 // 设置为可编辑列
-func (p *Cascader) SetEditable(editable bool) *Cascader {
+func (p *Date) SetEditable(editable bool) *Date {
 	p.Editable = editable
 
 	return p
 }
 
 // 闭包，透传表格列的属性
-func (p *Cascader) SetColumn(f func(column *table.Column) *table.Column) *Cascader {
+func (p *Date) SetColumn(f func(column *table.Column) *table.Column) *Date {
 	p.Column = f(p.Column)
 
 	return p
 }
 
 // 当前列值的枚举 valueEnum
-func (p *Cascader) GetValueEnum() map[interface{}]interface{} {
+func (p *Date) GetValueEnum() map[interface{}]interface{} {
 	data := map[interface{}]interface{}{}
 
 	return data
 }
 
 // 设置回调函数
-func (p *Cascader) SetCallback(closure func() interface{}) *Cascader {
+func (p *Date) SetCallback(closure func() interface{}) *Date {
 	if closure != nil {
 		p.Callback = closure
 	}
@@ -594,208 +577,26 @@ func (p *Cascader) SetCallback(closure func() interface{}) *Cascader {
 }
 
 // 获取回调函数
-func (p *Cascader) GetCallback() interface{} {
+func (p *Date) GetCallback() interface{} {
 	return p.Callback
 }
 
-// 获取数据接口
-func (p *Cascader) SetApi(api string) *Cascader {
-	p.Api = api
-	return p
-}
-
-// 可以点击清除图标删除内容
-func (p *Cascader) SetAllowClear(allowClear bool) *Cascader {
-	p.AllowClear = allowClear
-
-	return p
-}
-
-// 自动获取焦点，默认false
-func (p *Cascader) SetAutoFocus(autoFocus bool) *Cascader {
-	p.AutoFocus = autoFocus
-
-	return p
-}
-
-// 是否有边框，默认true
-func (p *Cascader) SetBordered(bordered bool) *Cascader {
-	p.Bordered = bordered
-
-	return p
-}
-
-// 自定义的选择框清空图标
-func (p *Cascader) SetClearIcon(clearIcon interface{}) *Cascader {
-	p.ClearIcon = clearIcon
-
-	return p
-}
-
-// （单选时生效）当此项为 true 时，点选每级菜单选项值都会发生变化，默认false
-func (p *Cascader) SetChangeOnSelect(changeOnSelect bool) *Cascader {
-	p.ChangeOnSelect = changeOnSelect
-
-	return p
-}
-
-// 自定义类名
-func (p *Cascader) SetClassName(className string) *Cascader {
-	p.ClassName = className
-
-	return p
-}
-
-// 默认的选中项
-func (p *Cascader) SetDefaultValue(defaultValue interface{}) *Cascader {
-	p.DefaultValue = defaultValue
-
-	return p
-}
-
-// 自定义类名
-func (p *Cascader) SetPopupClassName(popupClassName string) *Cascader {
-	p.PopupClassName = popupClassName
-
-	return p
-}
-
-// 自定义次级菜单展开图标
-func (p *Cascader) SetExpandIcon(expandIcon interface{}) *Cascader {
-	p.ExpandIcon = expandIcon
-
-	return p
-}
-
-// 次级菜单的展开方式，可选 'click' 和 'hover'
-func (p *Cascader) SetExpandTrigger(expandTrigger string) *Cascader {
-	p.ExpandTrigger = expandTrigger
-
-	return p
-}
-
-// 自定义 options 中 label value children 的字段
-func (p *Cascader) SetFieldNames(fieldNames *FieldNames) *Cascader {
-	p.FieldNames = fieldNames
-
-	return p
-}
-
-// 最多显示多少个 tag，响应式模式会对性能产生损耗
-func (p *Cascader) SetMaxTagCount(maxTagCount int) *Cascader {
-	p.MaxTagCount = maxTagCount
-
-	return p
-}
-
-// 隐藏 tag 时显示的内容
-func (p *Cascader) SetMaxTagPlaceholder(maxTagPlaceholder string) *Cascader {
-	p.MaxTagPlaceholder = maxTagPlaceholder
-
-	return p
-}
-
-// 最大显示的 tag 文本长度
-func (p *Cascader) SetMaxTagTextLength(maxTagTextLength int) *Cascader {
-	p.MaxTagTextLength = maxTagTextLength
-
-	return p
-}
-
-// 当下拉列表为空时显示的内容
-func (p *Cascader) SetNotFoundContent(notFoundContent string) *Cascader {
-	p.NotFoundContent = notFoundContent
-
-	return p
-}
-
-// 控制浮层显隐
-func (p *Cascader) SetOpen(open bool) *Cascader {
-	p.Open = open
-
-	return p
-}
-
-// 可选项数据源
-func (p *Cascader) SetOptions(options []*Option) *Cascader {
-	p.Options = options
-
-	return p
-}
-
-// 输入框占位文本
-func (p *Cascader) SetPlaceholder(placeholder string) *Cascader {
-	p.Placeholder = placeholder
-
-	return p
-}
-
-// 浮层预设位置，bottomLeft bottomRight topLeft topRight
-func (p *Cascader) SetPlacement(placement string) *Cascader {
-	p.Placement = placement
-
-	return p
-}
-
-// 在选择框中显示搜索框
-func (p *Cascader) SetShowSearch(showSearch bool) *Cascader {
-	p.ShowSearch = showSearch
-
-	return p
-}
-
 // 控件大小。注：标准表单内的输入框大小限制为 large。可选 large default small
-func (p *Cascader) SetSize(size string) *Cascader {
+func (p *Date) SetSize(size string) *Date {
 	p.Size = size
 
 	return p
 }
 
-// 设置校验状态，'error' | 'warning'
-func (p *Cascader) SetStatus(status string) *Cascader {
-	p.Status = status
+// 可以点击清除图标删除内容
+func (p *Date) SetAllowClear(allowClear bool) *Date {
+	p.AllowClear = allowClear
 
 	return p
 }
 
-// 自定义的选择框后缀图标
-func (p *Cascader) SetSuffixIcon(suffixIcon interface{}) *Cascader {
-	p.SuffixIcon = suffixIcon
-
-	return p
-}
-
-// 支持多选节点
-func (p *Cascader) SetMultiple(multiple bool) *Cascader {
-	p.Multiple = multiple
-
-	return p
-}
-
-// 定义选中项回填的方式。Cascader.SHOW_CHILD: 只显示选中的子节点。Cascader.SHOW_PARENT: 只显示父节点（当父节点下所有子节点都选中时）。Cascader.SHOW_PARENT | Cascader.SHOW_CHILD
-func (p *Cascader) SetShowCheckedStrategy(showCheckedStrategy string) *Cascader {
-	p.ShowCheckedStrategy = showCheckedStrategy
-
-	return p
-}
-
-// 自定义的多选框清除图标
-func (p *Cascader) SetRemoveIcon(removeIcon interface{}) *Cascader {
-	p.RemoveIcon = removeIcon
-
-	return p
-}
-
-// 设置搜索的值，需要与 showSearch 配合使用
-func (p *Cascader) SetSearchValue(searchValue string) *Cascader {
-	p.SearchValue = searchValue
-
-	return p
-}
-
-// 设置搜索的值，需要与 showSearch 配合使用
-func (p *Cascader) SetDropdownMenuColumnStyle(dropdownMenuColumnStyle interface{}) *Cascader {
-	p.DropdownMenuColumnStyle = dropdownMenuColumnStyle
-
+// 获取数据接口
+func (p *Date) SetApi(api string) *Date {
+	p.Api = api
 	return p
 }

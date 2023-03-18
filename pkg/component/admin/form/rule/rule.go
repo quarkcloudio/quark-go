@@ -20,6 +20,19 @@ func New() *Rule {
 	return p
 }
 
+// 转换前端验证规则，剔除前端不支持的unique
+func ConvertToFrontendRules(rules []*Rule) []*Rule {
+	var newRules []*Rule
+
+	for _, rule := range rules {
+		if rule.Type != "unique" {
+			newRules = append(newRules, rule)
+		}
+	}
+
+	return newRules
+}
+
 // 必须设置 type：string 类型；为字符串最大长度；number 类型时为最大值；array 类型时为数组最大长度
 func (p *Rule) SetMax(max int) *Rule {
 	p.Max = max
