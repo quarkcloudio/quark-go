@@ -7,7 +7,7 @@ import (
 
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/actions"
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/searches"
-	models "github.com/quarkcms/quark-go/pkg/app/model"
+	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
@@ -29,7 +29,7 @@ func (p *Role) Init() interface{} {
 	p.Title = "角色"
 
 	// 模型
-	p.Model = &models.Role{}
+	p.Model = &model.Role{}
 
 	// 分页
 	p.PerPage = 10
@@ -40,7 +40,7 @@ func (p *Role) Init() interface{} {
 // 字段
 func (p *Role) Fields(ctx *builder.Context) []interface{} {
 	field := &builder.AdminField{}
-	treeData, _ := (&models.Menu{}).Tree()
+	treeData, _ := (&model.Menu{}).Tree()
 
 	return []interface{}{
 		field.ID("id", "ID"),
@@ -100,20 +100,20 @@ func (p *Role) BeforeEditing(ctx *builder.Context, data map[string]interface{}) 
 	id := ctx.Query("id", "")
 	menus := []map[string]interface{}{}
 
-	db.Client.Model(&models.Menu{}).Find(&menus)
+	db.Client.Model(&model.Menu{}).Find(&menus)
 
 	checkedMenus := []int{}
 	for _, v := range menus {
 		var permissionIds []int
 		db.Client.
-			Model(&models.Permission{}).
+			Model(&model.Permission{}).
 			Where("menu_id", v["id"]).
 			Pluck("id", &permissionIds)
 
 		if len(permissionIds) > 0 {
 			roleHasPermission := map[string]interface{}{}
 			db.Client.
-				Model(&models.RoleHasPermission{}).
+				Model(&model.RoleHasPermission{}).
 				Where("permission_id IN ?", permissionIds).
 				Where("role_id", id).
 				First(&roleHasPermission)
@@ -133,15 +133,13 @@ func (p *Role) BeforeEditing(ctx *builder.Context, data map[string]interface{}) 
 func (p *Role) BeforeSaving(ctx *builder.Context, submitData map[string]interface{}) (map[string]interface{}, error) {
 	var permissionIds []int
 	db.Client.
-		Model(&models.Permission{}).
+		Model(&model.Permission{}).
 		Where("menu_id IN ?", submitData["menu_ids"]).
 		Pluck("id", &permissionIds)
 
 	if len(permissionIds) == 0 {
 		return submitData, errors.New("获取的权限为空，请在菜单管理中绑定权限")
 	}
-
-	delete(submitData, "menu_ids")
 
 	return submitData, nil
 }
@@ -151,7 +149,7 @@ func (p *Role) AfterSaved(ctx *builder.Context, id int, data map[string]interfac
 	// 根据菜单id获取所有权限
 	var permissionIds []int
 	db.Client.
-		Model(&models.Permission{}).
+		Model(&model.Permission{}).
 		Where("menu_id IN ?", data["menu_ids"]).
 		Pluck("id", &permissionIds)
 
@@ -174,7 +172,7 @@ func (p *Role) syncPermissions(roleId int, permissionIds []int) *gorm.DB {
 	permissionIds = p.arrayFilter(permissionIds)
 
 	// 先清空此角色的权限
-	db.Client.Model(&models.RoleHasPermission{}).Where("role_id", roleId).Delete("")
+	db.Client.Model(&model.RoleHasPermission{}).Where("role_id", roleId).Delete("")
 
 	data := []map[string]interface{}{}
 	for _, v := range permissionIds {
@@ -185,7 +183,7 @@ func (p *Role) syncPermissions(roleId int, permissionIds []int) *gorm.DB {
 		data = append(data, permission)
 	}
 
-	return db.Client.Model(&models.RoleHasPermission{}).Create(data)
+	return db.Client.Model(&model.RoleHasPermission{}).Create(data)
 }
 
 // 数组去重
