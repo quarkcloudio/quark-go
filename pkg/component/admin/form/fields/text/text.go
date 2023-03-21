@@ -35,14 +35,14 @@ type Text struct {
 	Ignore         bool          `json:"ignore"`        // 是否忽略保存到数据库，默认为 false
 	Rules          []*rule.Rule  `json:"-"`             // 全局校验规则
 	CreationRules  []*rule.Rule  `json:"-"`             // 创建页校验规则
-	UpTextRules    []*rule.Rule  `json:"-"`             // 编辑页校验规则
+	UpdateRules    []*rule.Rule  `json:"-"`             // 编辑页校验规则
 	FrontendRules  []*rule.Rule  `json:"frontendRules"` // 前端校验规则，设置字段的校验逻辑
 	When           *when.When    `json:"when"`          //
 	WhenItem       []*when.Item  `json:"-"`             //
 	ShowOnIndex    bool          `json:"-"`             // 在列表页展示
 	ShowOnDetail   bool          `json:"-"`             // 在详情页展示
 	ShowOnCreation bool          `json:"-"`             // 在创建页面展示
-	ShowOnUpText   bool          `json:"-"`             // 在编辑页面展示
+	ShowOnUpdate   bool          `json:"-"`             // 在编辑页面展示
 	ShowOnExport   bool          `json:"-"`             // 在导出的Excel上展示
 	ShowOnImport   bool          `json:"-"`             // 在导入Excel上展示
 	Editable       bool          `json:"-"`             // 表格上是否可编辑
@@ -81,7 +81,7 @@ func (p *Text) Init() *Text {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = true
 	p.ShowOnCreation = true
-	p.ShowOnUpText = true
+	p.ShowOnUpdate = true
 	p.ShowOnExport = true
 	p.ShowOnImport = true
 	p.Column = (&table.Column{}).Init()
@@ -197,7 +197,7 @@ func (p *Text) GetFrontendRules(path string) *Text {
 		frontendRules []*rule.Rule
 		rules         []*rule.Rule
 		creationRules []*rule.Rule
-		upTextRules   []*rule.Rule
+		UpdateRules   []*rule.Rule
 	)
 
 	uri := strings.Split(path, "/")
@@ -210,8 +210,8 @@ func (p *Text) GetFrontendRules(path string) *Text {
 	if isCreating && len(p.CreationRules) > 0 {
 		creationRules = rule.ConvertToFrontendRules(p.CreationRules)
 	}
-	if isEditing && len(p.UpTextRules) > 0 {
-		upTextRules = rule.ConvertToFrontendRules(p.UpTextRules)
+	if isEditing && len(p.UpdateRules) > 0 {
+		UpdateRules = rule.ConvertToFrontendRules(p.UpdateRules)
 	}
 	if len(rules) > 0 {
 		frontendRules = append(frontendRules, rules...)
@@ -219,8 +219,8 @@ func (p *Text) GetFrontendRules(path string) *Text {
 	if len(creationRules) > 0 {
 		frontendRules = append(frontendRules, creationRules...)
 	}
-	if len(upTextRules) > 0 {
-		frontendRules = append(frontendRules, upTextRules...)
+	if len(UpdateRules) > 0 {
+		frontendRules = append(frontendRules, UpdateRules...)
 	}
 
 	p.FrontendRules = frontendRules
@@ -243,8 +243,8 @@ func (p *Text) SetCreationRules(rules []*rule.Rule) *Text {
 }
 
 // 校验规则，只在更新表单提交时生效
-func (p *Text) SetUpTextRules(rules []*rule.Rule) *Text {
-	p.UpTextRules = rules
+func (p *Text) SetUpdateRules(rules []*rule.Rule) *Text {
+	p.UpdateRules = rules
 
 	return p
 }
@@ -371,7 +371,7 @@ func (p *Text) HideWhenCreating(callback bool) *Text {
 
 // Specify that the element should be hidden from the upText view.
 func (p *Text) HideWhenUpdating(callback bool) *Text {
-	p.ShowOnUpText = !callback
+	p.ShowOnUpdate = !callback
 
 	return p
 }
@@ -413,7 +413,7 @@ func (p *Text) ShowOnCreating(callback bool) *Text {
 
 // Specify that the element should be hidden from the upText view.
 func (p *Text) ShowOnUpdating(callback bool) *Text {
-	p.ShowOnUpText = callback
+	p.ShowOnUpdate = callback
 
 	return p
 }
@@ -437,7 +437,7 @@ func (p *Text) OnlyOnIndex() *Text {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
-	p.ShowOnUpText = false
+	p.ShowOnUpdate = false
 	p.ShowOnExport = false
 	p.ShowOnImport = false
 
@@ -449,7 +449,7 @@ func (p *Text) OnlyOnDetail() *Text {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
-	p.ShowOnUpText = false
+	p.ShowOnUpdate = false
 	p.ShowOnExport = false
 	p.ShowOnImport = false
 
@@ -461,7 +461,7 @@ func (p *Text) OnlyOnForms() *Text {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = true
-	p.ShowOnUpText = true
+	p.ShowOnUpdate = true
 	p.ShowOnExport = false
 	p.ShowOnImport = false
 
@@ -473,7 +473,7 @@ func (p *Text) OnlyOnExport() *Text {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
-	p.ShowOnUpText = false
+	p.ShowOnUpdate = false
 	p.ShowOnExport = true
 	p.ShowOnImport = false
 
@@ -485,7 +485,7 @@ func (p *Text) OnlyOnImport() *Text {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
-	p.ShowOnUpText = false
+	p.ShowOnUpdate = false
 	p.ShowOnExport = false
 	p.ShowOnImport = true
 
@@ -497,7 +497,7 @@ func (p *Text) ExceptOnForms() *Text {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
-	p.ShowOnUpText = false
+	p.ShowOnUpdate = false
 	p.ShowOnExport = true
 	p.ShowOnImport = true
 
@@ -506,7 +506,7 @@ func (p *Text) ExceptOnForms() *Text {
 
 // Check for showing when updating.
 func (p *Text) IsShownOnUpText() bool {
-	return p.ShowOnUpText
+	return p.ShowOnUpdate
 }
 
 // Check showing on index.

@@ -11,6 +11,12 @@ import (
 	"github.com/quarkcms/quark-go/pkg/untils"
 )
 
+type FieldNames struct {
+	Label    string `json:"label"`
+	Value    string `json:"value"`
+	Children string `json:"children"`
+}
+
 type Option struct {
 	Label    string      `json:"label"`
 	Value    interface{} `json:"value"`
@@ -55,14 +61,45 @@ type SelectField struct {
 	Column         *table.Column `json:"-"`             // 表格列
 	Callback       interface{}   `json:"-"`             // 回调函数
 
-	AllowClear           bool        `json:"allowClear,omitempty"`           // 可以点击清除图标删除内容
-	AutoClearSearchValue bool        `json:"autoClearSearchValue,omitempty"` // 是否在选中项后清空搜索框，只在 mode 为 multiple 或 tags 时有效
-	DefaultValue         interface{} `json:"defaultValue,omitempty"`         // 默认选中的选项
-	Disabled             bool        `json:"disabled,omitempty"`             // 整组失效
-	Options              []*Option   `json:"options,omitempty"`              // 可选项数据源
-	OptionType           string      `json:"optionType,omitempty"`           // 用于设置 Search options 类型 default | button
-	Size                 string      `json:"size,omitempty"`                 // 大小，只对按钮样式生效, large | middle | small
-	Value                interface{} `json:"value,omitempty"`                // 指定选中项,string[] | number[]
+	AllowClear               bool                   `json:"allowClear,omitempty"`               // 可以点击清除图标删除内容
+	AutoClearSearchValue     bool                   `json:"autoClearSearchValue,omitempty"`     // 是否在选中项后清空搜索框，只在 mode 为 multiple 或 tags 时有效
+	AutoFocus                bool                   `json:"autoFocus,omitempty"`                // 默认获取焦点
+	Bordered                 bool                   `json:"bordered,omitempty"`                 // 是否有边框
+	ClearIcon                interface{}            `json:"clearIcon,omitempty"`                // 自定义的多选框清空图标
+	DefaultActiveFirstOption bool                   `json:"defaultActiveFirstOption,omitempty"` // 是否默认高亮第一个选项
+	DefaultOpen              bool                   `json:"defaultOpen,omitempty"`              // 是否默认展开下拉菜单
+	DefaultValue             interface{}            `json:"defaultValue,omitempty"`             // 默认选中的选项
+	Disabled                 bool                   `json:"disabled,omitempty"`                 // 整组失效
+	PopupClassName           string                 `json:"popupClassName,omitempty"`           // 下拉菜单的 className 属性
+	DropdownMatchSelectWidth interface{}            `json:"dropdownMatchSelectWidth,omitempty"` // 下拉菜单和选择器同宽。默认将设置 min-width，当值小于选择框宽度时会被忽略。false 时会关闭虚拟滚动
+	DropdownStyle            interface{}            `json:"dropdownStyle,omitempty"`            // 下拉菜单的 style 属性
+	FieldNames               *FieldNames            `json:"fieldNames,omitempty"`               // 自定义 options 中 label value children 的字段
+	LabelInValue             bool                   `json:"labelInValue,omitempty"`             // 是否把每个选项的 label 包装到 value 中，会把 Select 的 value 类型从 string 变为 { value: string, label: ReactNode } 的格式
+	ListHeight               int                    `json:"listHeight,omitempty"`               // 设置弹窗滚动高度 256
+	Loading                  bool                   `json:"loading,omitempty"`                  // 加载中状态
+	MaxTagCount              int                    `json:"maxTagCount,omitempty"`              // 最多显示多少个 tag，响应式模式会对性能产生损耗
+	MaxTagPlaceholder        string                 `json:"maxTagPlaceholder,omitempty"`        // 隐藏 tag 时显示的内容
+	MaxTagTextLength         int                    `json:"maxTagTextLength,omitempty"`         // 最大显示的 tag 文本长度
+	MenuItemSelectedIcon     interface{}            `json:"menuItemSelectedIcon,omitempty"`     // 自定义多选时当前选中的条目图标
+	Mode                     string                 `json:"mode,omitempty"`                     // 设置 Select 的模式为多选或标签 multiple | tags
+	NotFoundContent          string                 `json:"notFoundContent,omitempty"`          // 当下拉列表为空时显示的内容
+	Open                     bool                   `json:"open,omitempty"`                     // 是否展开下拉菜单
+	OptionFilterProp         string                 `json:"optionFilterProp,omitempty"`         // 搜索时过滤对应的 option 属性，如设置为 children 表示对内嵌内容进行搜索。若通过 options 属性配置选项内容，建议设置 optionFilterProp="label" 来对内容进行搜索。
+	OptionLabelProp          string                 `json:"optionLabelProp,omitempty"`          // 回填到选择框的 Option 的属性值，默认是 Option 的子元素。比如在子元素需要高亮效果时，此值可以设为 value。
+	Options                  []*Option              `json:"options,omitempty"`                  // 可选项数据源
+	Placeholder              string                 `json:"placeholder,omitempty"`              // 选择框默认文本
+	Placement                string                 `json:"placement,omitempty"`                // 选择框弹出的位置 bottomLeft bottomRight topLeft topRight
+	RemoveIcon               interface{}            `json:"removeIcon,omitempty"`               // 自定义的多选框清除图标
+	SearchValue              string                 `json:"searchValue,omitempty"`              // 控制搜索文本
+	ShowArrow                bool                   `json:"showArrow,omitempty"`                // 是否显示下拉小箭头
+	ShowSearch               bool                   `json:"showSearch,omitempty"`               // 配置是否可搜索
+	Size                     string                 `json:"size,omitempty"`                     // 选择框大小
+	Status                   string                 `json:"status,omitempty"`                   // 设置校验状态 'error' | 'warning'
+	SuffixIcon               interface{}            `json:"suffixIcon,omitempty"`               // 自定义的选择框后缀图标
+	TokenSeparators          interface{}            `json:"tokenSeparators,omitempty"`          // 自动分词的分隔符，仅在 mode="tags" 时生效
+	Value                    interface{}            `json:"value,omitempty"`                    // 指定当前选中的条目，多选时为一个数组。（value 数组引用未变化时，Select 不会更新）
+	Virtual                  bool                   `json:"virtual,omitempty"`                  // 设置 false 时关闭虚拟滚动
+	Style                    map[string]interface{} `json:"style,omitempty"`                    // 自定义样式
 }
 
 // 初始化组件
@@ -83,7 +120,7 @@ func (p *SelectField) Init() *SelectField {
 	p.ShowOnImport = true
 	p.AllowClear = true
 	p.Column = (&table.Column{}).Init()
-
+	p.SetWidth(200)
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
@@ -99,6 +136,20 @@ func (p *SelectField) SetKey(key string, crypt bool) *SelectField {
 // 会在 label 旁增加一个 icon，悬浮后展示配置的信息
 func (p *SelectField) SetTooltip(tooltip string) *SelectField {
 	p.Tooltip = tooltip
+
+	return p
+}
+
+// Field 的长度，我们归纳了常用的 Field 长度以及适合的场景，支持了一些枚举 "xs" , "s" , "m" , "l" , "x"
+func (p *SelectField) SetWidth(width interface{}) *SelectField {
+	style := make(map[string]interface{})
+
+	for k, v := range p.Style {
+		style[k] = v
+	}
+
+	style["width"] = width
+	p.Style = style
 
 	return p
 }
@@ -236,7 +287,7 @@ func (p *SelectField) SetWrapperCol(col interface{}) *SelectField {
 	return p
 }
 
-// 设置保存值。
+// 指定当前选中的条目，多选时为一个数组。（value 数组引用未变化时，Select 不会更新）
 func (p *SelectField) SetValue(value interface{}) *SelectField {
 	p.Value = value
 	return p
@@ -557,16 +608,240 @@ func (p *SelectField) SetApi(api string) *SelectField {
 	return p
 }
 
-// 用于设置 Search options 类型 default | button
-func (p *SelectField) SetOptionType(optionType string) *SelectField {
-	p.OptionType = optionType
+// 可以点击清除图标删除内容
+func (p *SelectField) SetAllowClear(allowClear bool) *SelectField {
+	p.AllowClear = allowClear
 
 	return p
 }
 
-// 大小，只对按钮样式生效, large | middle | smallon
+// 是否在选中项后清空搜索框，只在 mode 为 multiple 或 tags 时有效
+func (p *SelectField) SetAutoClearSearchValue(autoClearSearchValue bool) *SelectField {
+	p.AutoClearSearchValue = autoClearSearchValue
+
+	return p
+}
+
+// 默认获取焦点
+func (p *SelectField) SetAutoFocus(autoFocus bool) *SelectField {
+	p.AutoFocus = autoFocus
+
+	return p
+}
+
+// 默认获取焦点
+func (p *SelectField) SetBordered(bordered bool) *SelectField {
+	p.Bordered = bordered
+
+	return p
+}
+
+// 自定义的多选框清空图标
+func (p *SelectField) SetClearIcon(clearIcon interface{}) *SelectField {
+	p.ClearIcon = clearIcon
+
+	return p
+}
+
+// 是否默认高亮第一个选项
+func (p *SelectField) SetDefaultActiveFirstOption(defaultActiveFirstOption bool) *SelectField {
+	p.DefaultActiveFirstOption = defaultActiveFirstOption
+
+	return p
+}
+
+// 是否默认展开下拉菜单
+func (p *SelectField) SetDefaultOpen(defaultOpen bool) *SelectField {
+	p.DefaultOpen = defaultOpen
+
+	return p
+}
+
+// 下拉菜单的 className 属性
+func (p *SelectField) SetPopupClassName(popupClassName string) *SelectField {
+	p.PopupClassName = popupClassName
+
+	return p
+}
+
+// 下拉菜单和选择器同宽。默认将设置 min-width，当值小于选择框宽度时会被忽略。false 时会关闭虚拟滚动
+func (p *SelectField) SetDropdownMatchSelectWidth(dropdownMatchSelectWidth interface{}) *SelectField {
+	p.DropdownMatchSelectWidth = dropdownMatchSelectWidth
+
+	return p
+}
+
+// 下拉菜单的 style 属性
+func (p *SelectField) SetDropdownStyle(dropdownStyle interface{}) *SelectField {
+	p.DropdownStyle = dropdownStyle
+
+	return p
+}
+
+// 自定义 options 中 label value children 的字段
+func (p *SelectField) SetFieldNames(fieldNames *FieldNames) *SelectField {
+	p.FieldNames = fieldNames
+
+	return p
+}
+
+// 是否把每个选项的 label 包装到 value 中，会把 Select 的 value 类型从 string 变为 { value: string, label: ReactNode } 的格式
+func (p *SelectField) SetLabelInValue(labelInValue bool) *SelectField {
+	p.LabelInValue = labelInValue
+
+	return p
+}
+
+// 设置弹窗滚动高度 256
+func (p *SelectField) SetListHeight(listHeight int) *SelectField {
+	p.ListHeight = listHeight
+
+	return p
+}
+
+// 加载中状态
+func (p *SelectField) SetLoading(loading bool) *SelectField {
+	p.Loading = loading
+
+	return p
+}
+
+// 最多显示多少个 tag，响应式模式会对性能产生损耗
+func (p *SelectField) SetMaxTagCount(maxTagCount int) *SelectField {
+	p.MaxTagCount = maxTagCount
+
+	return p
+}
+
+// 隐藏 tag 时显示的内容
+func (p *SelectField) SetMaxTagPlaceholder(maxTagPlaceholder string) *SelectField {
+	p.MaxTagPlaceholder = maxTagPlaceholder
+
+	return p
+}
+
+// 最大显示的 tag 文本长度
+func (p *SelectField) SetMaxTagTextLength(maxTagTextLength int) *SelectField {
+	p.MaxTagTextLength = maxTagTextLength
+
+	return p
+}
+
+// 自定义多选时当前选中的条目图标
+func (p *SelectField) SetMenuItemSelectedIcon(menuItemSelectedIcon interface{}) *SelectField {
+	p.MenuItemSelectedIcon = menuItemSelectedIcon
+
+	return p
+}
+
+// 设置 Select 的模式为多选或标签 multiple | tags
+func (p *SelectField) SetMode(mode string) *SelectField {
+	p.Mode = mode
+
+	return p
+}
+
+// 当下拉列表为空时显示的内容
+func (p *SelectField) SetNotFoundContent(notFoundContent string) *SelectField {
+	p.NotFoundContent = notFoundContent
+
+	return p
+}
+
+// 是否展开下拉菜单
+func (p *SelectField) SetOpen(open bool) *SelectField {
+	p.Open = open
+
+	return p
+}
+
+// 搜索时过滤对应的 option 属性，如设置为 children 表示对内嵌内容进行搜索。若通过 options 属性配置选项内容，建议设置 optionFilterProp="label" 来对内容进行搜索。
+func (p *SelectField) SetOptionFilterProp(optionFilterProp string) *SelectField {
+	p.OptionFilterProp = optionFilterProp
+
+	return p
+}
+
+// 回填到选择框的 Option 的属性值，默认是 Option 的子元素。比如在子元素需要高亮效果时，此值可以设为 value。
+func (p *SelectField) SetOptionLabelProp(optionLabelProp string) *SelectField {
+	p.OptionLabelProp = optionLabelProp
+
+	return p
+}
+
+// 选择框默认文本
+func (p *SelectField) SetPlaceholder(placeholder string) *SelectField {
+	p.Placeholder = placeholder
+
+	return p
+}
+
+// 选择框弹出的位置 bottomLeft bottomRight topLeft topRight
+func (p *SelectField) SetPlacement(placement string) *SelectField {
+	p.Placement = placement
+
+	return p
+}
+
+// 自定义的多选框清除图标
+func (p *SelectField) SetRemoveIcon(removeIcon interface{}) *SelectField {
+	p.RemoveIcon = removeIcon
+
+	return p
+}
+
+// 控制搜索文本
+func (p *SelectField) SetSearchValue(searchValue string) *SelectField {
+	p.SearchValue = searchValue
+
+	return p
+}
+
+// 是否显示下拉小箭头
+func (p *SelectField) SetShowArrow(showArrow bool) *SelectField {
+	p.ShowArrow = showArrow
+
+	return p
+}
+
+// 配置是否可搜索
+func (p *SelectField) SetShowSearch(showSearch bool) *SelectField {
+	p.ShowSearch = showSearch
+
+	return p
+}
+
+// 选择框大小
 func (p *SelectField) SetSize(size string) *SelectField {
 	p.Size = size
+
+	return p
+}
+
+// 设置校验状态 'error' | 'warning'
+func (p *SelectField) SetStatus(status string) *SelectField {
+	p.Status = status
+
+	return p
+}
+
+// 自定义的选择框后缀图标
+func (p *SelectField) SetSuffixIcon(suffixIcon interface{}) *SelectField {
+	p.SuffixIcon = suffixIcon
+
+	return p
+}
+
+// 自动分词的分隔符，仅在 mode="tags" 时生效
+func (p *SelectField) SetTokenSeparators(tokenSeparators interface{}) *SelectField {
+	p.TokenSeparators = tokenSeparators
+
+	return p
+}
+
+// 设置 false 时关闭虚拟滚动
+func (p *SelectField) SetVirtual(virtual bool) *SelectField {
+	p.Virtual = virtual
 
 	return p
 }

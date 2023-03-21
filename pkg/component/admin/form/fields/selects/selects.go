@@ -1,4 +1,4 @@
-package search
+package selects
 
 import (
 	"encoding/json"
@@ -11,13 +11,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/untils"
 )
 
-type Option struct {
-	Label    string      `json:"label"`
-	Value    interface{} `json:"value"`
-	Disabled bool        `json:"disabled,omitempty"`
-}
-
-type Search struct {
+type Selects struct {
 	ComponentKey string `json:"componentkey"` // 组件标识
 	Component    string `json:"component"`    // 组件名称
 
@@ -55,36 +49,21 @@ type Search struct {
 	Column         *table.Column `json:"-"`             // 表格列
 	Callback       interface{}   `json:"-"`             // 回调函数
 
-	AllowClear   bool                   `json:"allowClear,omitempty"`   // 可以点击清除图标删除内容
-	Placeholder  string                 `json:"placeholder,omitempty"`  // 占位符
-	DefaultValue interface{}            `json:"defaultValue,omitempty"` // 默认选中的选项
-	Disabled     bool                   `json:"disabled,omitempty"`     // 整组失效
-	Options      []*Option              `json:"options,omitempty"`      // 可选项数据源
-	OptionType   string                 `json:"optionType,omitempty"`   // 用于设置 Search options 类型 default | button
-	Size         string                 `json:"size,omitempty"`         // 大小，只对按钮样式生效, large | middle | small
-	Value        interface{}            `json:"value,omitempty"`        // 指定选中项,string[] | number[]
-	Style        map[string]interface{} `json:"style,omitempty"`        // 自定义样式
+	Body interface{} `json:"body"`
 }
 
 // 初始化组件
-func New() *Search {
-	return (&Search{}).Init()
+func New() *Selects {
+	return (&Selects{}).Init()
 }
 
 // 初始化
-func (p *Search) Init() *Search {
-	p.Component = "searchField"
+func (p *Selects) Init() *Selects {
+	p.Component = "selects"
 	p.Colon = true
 	p.LabelAlign = "right"
-	p.ShowOnIndex = true
-	p.ShowOnDetail = true
-	p.ShowOnCreation = true
-	p.ShowOnUpdate = true
-	p.ShowOnExport = true
-	p.ShowOnImport = true
-	p.Placeholder = "请输入要搜索的内容"
-	p.AllowClear = true
 	p.Column = (&table.Column{}).Init()
+	p.OnlyOnForms()
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
@@ -92,97 +71,83 @@ func (p *Search) Init() *Search {
 }
 
 // 设置Key
-func (p *Search) SetKey(key string, crypt bool) *Search {
+func (p *Selects) SetKey(key string, crypt bool) *Selects {
 	p.ComponentKey = untils.MakeKey(key, crypt)
 
 	return p
 }
 
 // 会在 label 旁增加一个 icon，悬浮后展示配置的信息
-func (p *Search) SetTooltip(tooltip string) *Search {
+func (p *Selects) SetTooltip(tooltip string) *Selects {
 	p.Tooltip = tooltip
 
 	return p
 }
 
-// Field 的长度，我们归纳了常用的 Field 长度以及适合的场景，支持了一些枚举 "xs" , "s" , "m" , "l" , "x"
-func (p *Search) SetWidth(width interface{}) *Search {
-	style := make(map[string]interface{})
-
-	for k, v := range p.Style {
-		style[k] = v
-	}
-
-	style["width"] = width
-	p.Style = style
-
-	return p
-}
-
 // 配合 label 属性使用，表示是否显示 label 后面的冒号
-func (p *Search) SetColon(colon bool) *Search {
+func (p *Selects) SetColon(colon bool) *Selects {
 	p.Colon = colon
 	return p
 }
 
 // 额外的提示信息，和 help 类似，当需要错误信息和提示文案同时出现时，可以使用这个。
-func (p *Search) SetExtra(extra string) *Search {
+func (p *Selects) SetExtra(extra string) *Selects {
 	p.Extra = extra
 	return p
 }
 
 // 配合 validateStatus 属性使用，展示校验状态图标，建议只配合 Input 组件使用
-func (p *Search) SetHasFeedback(hasFeedback bool) *Search {
+func (p *Selects) SetHasFeedback(hasFeedback bool) *Selects {
 	p.HasFeedback = hasFeedback
 	return p
 }
 
 // 配合 help 属性使用，展示校验状态图标，建议只配合 Input 组件使用
-func (p *Search) SetHelp(help string) *Search {
+func (p *Selects) SetHelp(help string) *Selects {
 	p.Help = help
 	return p
 }
 
 // 为 true 时不带样式，作为纯字段控件使用
-func (p *Search) SetNoStyle() *Search {
+func (p *Selects) SetNoStyle() *Selects {
 	p.NoStyle = true
 	return p
 }
 
 // label 标签的文本
-func (p *Search) SetLabel(label string) *Search {
+func (p *Selects) SetLabel(label string) *Selects {
 	p.Label = label
 
 	return p
 }
 
 // 标签文本对齐方式
-func (p *Search) SetLabelAlign(align string) *Search {
+func (p *Selects) SetLabelAlign(align string) *Selects {
 	p.LabelAlign = align
 	return p
 }
 
 // label 标签布局，同 <Col> 组件，设置 span offset 值，如 {span: 3, offset: 12} 或 sm: {span: 3, offset: 12}。
 // 你可以通过 Form 的 labelCol 进行统一设置。当和 Form 同时设置时，以 Item 为准
-func (p *Search) SetLabelCol(col interface{}) *Search {
+func (p *Selects) SetLabelCol(col interface{}) *Selects {
 	p.LabelCol = col
 	return p
 }
 
 // 字段名，支持数组
-func (p *Search) SetName(name string) *Search {
+func (p *Selects) SetName(name string) *Selects {
 	p.Name = name
 	return p
 }
 
 // 是否必填，如不设置，则会根据校验规则自动生成
-func (p *Search) SetRequired() *Search {
+func (p *Selects) SetRequired() *Selects {
 	p.Required = true
 	return p
 }
 
 // 获取前端验证规则
-func (p *Search) GetFrontendRules(path string) *Search {
+func (p *Selects) GetFrontendRules(path string) *Selects {
 	var (
 		frontendRules []*rule.Rule
 		rules         []*rule.Rule
@@ -219,65 +184,47 @@ func (p *Search) GetFrontendRules(path string) *Search {
 }
 
 // 校验规则，设置字段的校验逻辑
-func (p *Search) SetRules(rules []*rule.Rule) *Search {
+func (p *Selects) SetRules(rules []*rule.Rule) *Selects {
 	p.Rules = rules
 
 	return p
 }
 
 // 校验规则，只在创建表单提交时生效
-func (p *Search) SetCreationRules(rules []*rule.Rule) *Search {
+func (p *Selects) SetCreationRules(rules []*rule.Rule) *Selects {
 	p.CreationRules = rules
 
 	return p
 }
 
 // 校验规则，只在更新表单提交时生效
-func (p *Search) SetUpdateRules(rules []*rule.Rule) *Search {
+func (p *Selects) SetUpdateRules(rules []*rule.Rule) *Selects {
 	p.UpdateRules = rules
 
 	return p
 }
 
 // 子节点的值的属性，如 Switch 的是 "checked"
-func (p *Search) SetValuePropName(valuePropName string) *Search {
+func (p *Selects) SetValuePropName(valuePropName string) *Selects {
 	p.ValuePropName = valuePropName
 	return p
 }
 
 // 需要为输入控件设置布局样式时，使用该属性，用法同 labelCol。
 // 你可以通过 Form 的 wrapperCol 进行统一设置。当和 Form 同时设置时，以 Item 为准。
-func (p *Search) SetWrapperCol(col interface{}) *Search {
+func (p *Selects) SetWrapperCol(col interface{}) *Selects {
 	p.WrapperCol = col
 	return p
 }
 
-// 设置保存值。
-func (p *Search) SetValue(value interface{}) *Search {
-	p.Value = value
-	return p
-}
-
-// 设置默认值。
-func (p *Search) SetDefault(value interface{}) *Search {
-	p.DefaultValue = value
-	return p
-}
-
-// 是否禁用状态，默认为 false
-func (p *Search) SetDisabled(disabled bool) *Search {
-	p.Disabled = disabled
-	return p
-}
-
 // 是否忽略保存到数据库，默认为 false
-func (p *Search) SetIgnore(ignore bool) *Search {
+func (p *Selects) SetIgnore(ignore bool) *Selects {
 	p.Ignore = ignore
 	return p
 }
 
 // 表单联动
-func (p *Search) SetWhen(value ...any) *Search {
+func (p *Selects) SetWhen(value ...any) *Selects {
 	w := when.New()
 	i := when.NewItem()
 	var operator string
@@ -339,91 +286,91 @@ func (p *Search) SetWhen(value ...any) *Search {
 }
 
 // Specify that the element should be hidden from the index view.
-func (p *Search) HideFromIndex(callback bool) *Search {
+func (p *Selects) HideFromIndex(callback bool) *Selects {
 	p.ShowOnIndex = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the detail view.
-func (p *Search) HideFromDetail(callback bool) *Search {
+func (p *Selects) HideFromDetail(callback bool) *Selects {
 	p.ShowOnDetail = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the creation view.
-func (p *Search) HideWhenCreating(callback bool) *Search {
+func (p *Selects) HideWhenCreating(callback bool) *Selects {
 	p.ShowOnCreation = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the update view.
-func (p *Search) HideWhenUpdating(callback bool) *Search {
+func (p *Selects) HideWhenUpdating(callback bool) *Selects {
 	p.ShowOnUpdate = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the export file.
-func (p *Search) HideWhenExporting(callback bool) *Search {
+func (p *Selects) HideWhenExporting(callback bool) *Selects {
 	p.ShowOnExport = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the import file.
-func (p *Search) HideWhenImporting(callback bool) *Search {
+func (p *Selects) HideWhenImporting(callback bool) *Selects {
 	p.ShowOnImport = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the index view.
-func (p *Search) OnIndexShowing(callback bool) *Search {
+func (p *Selects) OnIndexShowing(callback bool) *Selects {
 	p.ShowOnIndex = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the detail view.
-func (p *Search) OnDetailShowing(callback bool) *Search {
+func (p *Selects) OnDetailShowing(callback bool) *Selects {
 	p.ShowOnDetail = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the creation view.
-func (p *Search) ShowOnCreating(callback bool) *Search {
+func (p *Selects) ShowOnCreating(callback bool) *Selects {
 	p.ShowOnCreation = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the update view.
-func (p *Search) ShowOnUpdating(callback bool) *Search {
+func (p *Selects) ShowOnUpdating(callback bool) *Selects {
 	p.ShowOnUpdate = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the export file.
-func (p *Search) ShowOnExporting(callback bool) *Search {
+func (p *Selects) ShowOnExporting(callback bool) *Selects {
 	p.ShowOnExport = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the import file.
-func (p *Search) ShowOnImporting(callback bool) *Search {
+func (p *Selects) ShowOnImporting(callback bool) *Selects {
 	p.ShowOnImport = callback
 
 	return p
 }
 
 // Specify that the element should only be shown on the index view.
-func (p *Search) OnlyOnIndex() *Search {
+func (p *Selects) OnlyOnIndex() *Selects {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -435,7 +382,7 @@ func (p *Search) OnlyOnIndex() *Search {
 }
 
 // Specify that the element should only be shown on the detail view.
-func (p *Search) OnlyOnDetail() *Search {
+func (p *Selects) OnlyOnDetail() *Selects {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
@@ -447,7 +394,7 @@ func (p *Search) OnlyOnDetail() *Search {
 }
 
 // Specify that the element should only be shown on forms.
-func (p *Search) OnlyOnForms() *Search {
+func (p *Selects) OnlyOnForms() *Selects {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = true
@@ -459,7 +406,7 @@ func (p *Search) OnlyOnForms() *Search {
 }
 
 // Specify that the element should only be shown on export file.
-func (p *Search) OnlyOnExport() *Search {
+func (p *Selects) OnlyOnExport() *Selects {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -471,7 +418,7 @@ func (p *Search) OnlyOnExport() *Search {
 }
 
 // Specify that the element should only be shown on import file.
-func (p *Search) OnlyOnImport() *Search {
+func (p *Selects) OnlyOnImport() *Selects {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -483,7 +430,7 @@ func (p *Search) OnlyOnImport() *Search {
 }
 
 // Specify that the element should be hidden from forms.
-func (p *Search) ExceptOnForms() *Search {
+func (p *Selects) ExceptOnForms() *Selects {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
@@ -495,58 +442,58 @@ func (p *Search) ExceptOnForms() *Search {
 }
 
 // Check for showing when updating.
-func (p *Search) IsShownOnUpdate() bool {
+func (p *Selects) IsShownOnUpdate() bool {
 	return p.ShowOnUpdate
 }
 
 // Check showing on index.
-func (p *Search) IsShownOnIndex() bool {
+func (p *Selects) IsShownOnIndex() bool {
 	return p.ShowOnIndex
 }
 
 // Check showing on detail.
-func (p *Search) IsShownOnDetail() bool {
+func (p *Selects) IsShownOnDetail() bool {
 	return p.ShowOnDetail
 }
 
 // Check for showing when creating.
-func (p *Search) IsShownOnCreation() bool {
+func (p *Selects) IsShownOnCreation() bool {
 	return p.ShowOnCreation
 }
 
 // Check for showing when exporting.
-func (p *Search) IsShownOnExport() bool {
+func (p *Selects) IsShownOnExport() bool {
 	return p.ShowOnExport
 }
 
 // Check for showing when importing.
-func (p *Search) IsShownOnImport() bool {
+func (p *Selects) IsShownOnImport() bool {
 	return p.ShowOnImport
 }
 
 // 设置为可编辑列
-func (p *Search) SetEditable(editable bool) *Search {
+func (p *Selects) SetEditable(editable bool) *Selects {
 	p.Editable = editable
 
 	return p
 }
 
 // 闭包，透传表格列的属性
-func (p *Search) SetColumn(f func(column *table.Column) *table.Column) *Search {
+func (p *Selects) SetColumn(f func(column *table.Column) *table.Column) *Selects {
 	p.Column = f(p.Column)
 
 	return p
 }
 
 // 当前列值的枚举 valueEnum
-func (p *Search) GetValueEnum() map[interface{}]interface{} {
+func (p *Selects) GetValueEnum() map[interface{}]interface{} {
 	data := map[interface{}]interface{}{}
 
 	return data
 }
 
 // 设置回调函数
-func (p *Search) SetCallback(closure func() interface{}) *Search {
+func (p *Selects) SetCallback(closure func() interface{}) *Selects {
 	if closure != nil {
 		p.Callback = closure
 	}
@@ -555,34 +502,19 @@ func (p *Search) SetCallback(closure func() interface{}) *Search {
 }
 
 // 获取回调函数
-func (p *Search) GetCallback() interface{} {
+func (p *Selects) GetCallback() interface{} {
 	return p.Callback
 }
 
-// 设置属性
-func (p *Search) SetOptions(options []*Option) *Search {
-	p.Options = options
-
-	return p
-}
-
 // 获取数据接口
-func (p *Search) SetApi(api string) *Search {
+func (p *Selects) SetApi(api string) *Selects {
 	p.Api = api
-
 	return p
 }
 
-// 用于设置 Search options 类型 default | button
-func (p *Search) SetOptionType(optionType string) *Search {
-	p.OptionType = optionType
-
-	return p
-}
-
-// 大小，只对按钮样式生效, large | middle | smallon
-func (p *Search) SetSize(size string) *Search {
-	p.Size = size
+// 组件内容
+func (p *Selects) SetBody(body interface{}) *Selects {
+	p.Body = body
 
 	return p
 }
