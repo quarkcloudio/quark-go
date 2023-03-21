@@ -245,9 +245,6 @@ func (p *Admin) BeforeSaving(ctx *builder.Context, submitData map[string]interfa
 		submitData["password"] = hash.Make(submitData["password"].(string))
 	}
 
-	// 暂时清理role_ids
-	delete(submitData, "role_ids")
-
 	return submitData, nil
 }
 
