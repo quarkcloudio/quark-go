@@ -164,15 +164,6 @@ func (p *Menu) BeforeEditing(ctx *builder.Context, data map[string]interface{}) 
 	return data
 }
 
-// 保存数据前回调
-func (p *Menu) BeforeSaving(ctx *builder.Context, submitData map[string]interface{}) (map[string]interface{}, error) {
-
-	// 暂时清理permission_ids
-	delete(submitData, "permission_ids")
-
-	return submitData, nil
-}
-
 // 保存后回调
 func (p *Menu) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{} {
 	result = db.Client.
