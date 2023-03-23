@@ -26,21 +26,20 @@ func (p *File) Init() interface{} {
 
 	// 限制文件类型
 	p.LimitType = []string{
-		"image/jpg",
-		"image/jpeg",
 		"image/png",
 		"image/gif",
-		"audio/mpeg",
-		"audo/m4a",
-		"application/msword",
+		"image/jpeg",
+		"video/mp4",
+		"video/mpeg",
 		"application/x-xls",
-		"application/vnd.ms-excel",
 		"application/x-ppt",
-		"application/vnd.ms-powerpoint",
+		"application/msword",
 		"application/zip",
 		"application/pdf",
-		"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+		"application/vnd.ms-excel",
+		"application/vnd.ms-powerpoint",
 		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+		"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 		"application/vnd.openxmlformats-officedocument.presentationml.presentation",
 	}
 

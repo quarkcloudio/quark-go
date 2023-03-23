@@ -97,7 +97,13 @@ func (p *FileSystem) Reader(file *File) *FileSystem {
 		file.Size = int64(len(file.Content))
 	}
 	if file.ContentType == "" {
-		file.ContentType = http.DetectContentType(file.Content)
+		if file.Header != nil {
+			if len(file.Header["Content-Type"]) > 0 {
+				file.ContentType = file.Header["Content-Type"][0]
+			}
+		} else {
+			file.ContentType = http.DetectContentType(file.Content)
+		}
 	}
 
 	p.File = file
@@ -260,16 +266,22 @@ func (p *FileSystem) checkFileType() error {
 		return err
 	}
 	for _, v := range p.Config.LimitType {
-		if v == http.DetectContentType(p.File.Content) {
+		if v == p.File.ContentType {
 			checkReuslt = true
 		}
 
-		limitText = limitText + "," + v
+		// 获取允许上传文件的扩展名
+		allowFileExt := ContentTypeList[p.File.ContentType]
+		if allowFileExt == "" {
+			allowFileExt = v
+		}
+
+		limitText = limitText + "," + allowFileExt
 	}
 
 	limitText = strings.Trim(limitText, ",")
 	if !checkReuslt {
-		return errors.New("只能上传 " + limitText + " 格式文件")
+		return errors.New("文件类型 " + p.File.ContentType + " 不合法，" + "请上传 " + limitText + " 格式的文件")
 	}
 
 	return err
