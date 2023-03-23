@@ -64,10 +64,10 @@ func (p *Template) Handle(ctx *builder.Context) interface{} {
 
 	contentTypes := strings.Split(ctx.Header("Content-Type"), "; ")
 	if len(contentTypes) != 2 {
-		return msg.Error("Content-Type error", "")
+		return ctx.JSON(200, msg.Error("Content-Type error", ""))
 	}
 	if contentTypes[0] != "multipart/form-data" {
-		return msg.Error("Content-Type must use multipart/form-data", "")
+		return ctx.JSON(200, msg.Error("Content-Type must use multipart/form-data", ""))
 	}
 
 	limitSize := reflect.

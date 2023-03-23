@@ -1,9 +1,9 @@
 package tool
 
-import "github.com/quarkcms/quark-go/pkg/app/handler/tool/uploads"
+import "github.com/quarkcms/quark-go/pkg/app/handler/tool/upload"
 
 // 注册服务
 var Providers = []interface{}{
-	&uploads.File{},
-	&uploads.Image{},
+	&upload.File{},
+	&upload.Image{},
 }
