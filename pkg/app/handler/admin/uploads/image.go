@@ -30,10 +30,9 @@ func (p *Image) Init() interface{} {
 
 	// 限制文件类型
 	p.LimitType = []string{
-		"image/jpg",
-		"image/jpeg",
 		"image/png",
 		"image/gif",
+		"image/jpeg",
 	}
 
 	// 设置文件上传路径
