@@ -19,7 +19,7 @@ const (
 	AppName = "QuarkGo"
 
 	// Version of current package
-	Version = "1.1.39"
+	Version = "1.1.40"
 
 	// 静态文件URL
 	RespositoryURL = "https://github.com/quarkcms/quark-go/tree/main/website/"
