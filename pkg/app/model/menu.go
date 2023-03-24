@@ -155,7 +155,6 @@ func (model *Menu) Tree() (list []interface{}, Error error) {
 // 通过管理员ID权限菜单
 func (model *Menu) GetListByAdminId(adminId int) (menuList interface{}, Error error) {
 	menus := []Menu{}
-	var menuKey int
 
 	if adminId == 1 {
 		db.Client.Where("status = ?", 1).Where("guard_name", "admin").Order("sort asc").Find(&menus)
@@ -167,8 +166,8 @@ func (model *Menu) GetListByAdminId(adminId int) (menuList interface{}, Error er
 		}
 
 		if permissions != nil {
-			for key, v := range permissions {
-				menuIds[key] = v.MenuId
+			for _, v := range permissions {
+				menuIds = append(menuIds, v.MenuId)
 			}
 		}
 
@@ -176,15 +175,14 @@ func (model *Menu) GetListByAdminId(adminId int) (menuList interface{}, Error er
 		// 三级查询列表
 		db.Client.
 			Where("status = ?", 1).
-			Where("id in (?)", menuIds).
+			Where("id in ?", menuIds).
 			Where("pid <> ?", 0).
 			Order("sort asc").
 			Find(&menus)
-		for key, v := range menus {
+		for _, v := range menus {
 			if v.Pid != 0 {
-				pids1[key] = v.Pid
+				pids1 = append(pids1, v.Pid)
 			}
-			menuKey = key
 		}
 
 		var pids2 []int
@@ -192,29 +190,25 @@ func (model *Menu) GetListByAdminId(adminId int) (menuList interface{}, Error er
 		// 二级查询列表
 		db.Client.
 			Where("status = ?", 1).
-			Where("id in (?)", pids1).
-			Where("pid <> ?", 0).
+			Where("id in ?", pids1).
 			Order("sort asc").
 			Find(&menu2)
-		for key, v := range menu2 {
+		for _, v := range menu2 {
 			if v.Pid != 0 {
-				pids2[key] = v.Pid
+				pids2 = append(pids2, v.Pid)
 			}
-			menuKey = menuKey + key
-			menus[menuKey] = v
+			menus = append(menus, v)
 		}
 
 		menu3 := []Menu{}
 		// 一级查询列表
 		db.Client.
 			Where("status = ?", 1).
-			Where("id in (?)", pids2).
-			Where("pid", 0).
+			Where("id in ?", pids2).
 			Order("sort asc").
 			Find(&menu3)
-		for key, v := range menu3 {
-			menuKey = menuKey + key
-			menus[menuKey] = v
+		for _, v := range menu3 {
+			menus = append(menus, v)
 		}
 	}
 

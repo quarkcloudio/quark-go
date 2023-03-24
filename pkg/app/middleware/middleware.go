@@ -55,7 +55,11 @@ func Handle(ctx *builder.Context) error {
 
 		hasPermission := false
 		for _, v := range permissions {
-			if "/"+v.Name == ctx.Path() {
+			if strings.ToLower(v.Name) == strings.ToLower(ctx.FullPath()) {
+				hasPermission = true
+			}
+
+			if strings.ToLower(v.Name) == strings.ToLower(ctx.Path()) {
 				hasPermission = true
 			}
 		}

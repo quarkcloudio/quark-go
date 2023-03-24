@@ -37,7 +37,7 @@ func (model *Permission) List() (list []map[string]interface{}, Error error) {
 
 // 通过权限id集合获取权限列表
 func (model *Permission) GetListByIds(permissionIds []int) (permissions []Permission, Error error) {
-	err := db.Client.Where("id in (?)", &permissionIds).Find(&permissions).Error
+	err := db.Client.Where("id in ?", permissionIds).Find(&permissions).Error
 
 	return permissions, err
 }

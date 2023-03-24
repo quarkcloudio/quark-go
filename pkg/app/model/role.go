@@ -63,7 +63,7 @@ func (model *ModelHasRole) GetListByAdminId(id int) (modelHasRole *ModelHasRole,
 
 // 通过管理员ID获取角色id集合
 func (model *ModelHasRole) GetRoleIdsByAdminId(id int) (roleIds []int, Error error) {
-	err := db.Client.Model(model).Where("model_id", id).Where("model_type", "admin").Pluck("id", &roleIds).Error
+	err := db.Client.Model(model).Where("model_id", id).Where("model_type", "admin").Pluck("role_id", &roleIds).Error
 
 	return roleIds, err
 }
@@ -71,7 +71,7 @@ func (model *ModelHasRole) GetRoleIdsByAdminId(id int) (roleIds []int, Error err
 // 通过角色id集合获取权限id集合
 func (model *RoleHasPermission) GetPermissionIdsByRoleIds(roleIds []int) (permissionIds []int, Error error) {
 	// 角色权限id
-	err := db.Client.Model(model).Where("role_id in (?)", roleIds).Pluck("id", &permissionIds).Error
+	err := db.Client.Model(model).Where("role_id in ?", roleIds).Pluck("permission_id", &permissionIds).Error
 
 	return permissionIds, err
 }
