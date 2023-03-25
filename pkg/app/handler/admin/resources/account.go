@@ -5,6 +5,8 @@ import (
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/radio"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 )
 
@@ -42,82 +44,50 @@ func (p *Account) Fields(ctx *builder.Context) []interface{} {
 
 		field.Text("nickname", "昵称").
 			SetEditable(true).
-			SetRules(
-				[]string{
-					"required",
-				},
-				map[string]string{
-					"required": "昵称必须填写",
-				},
-			),
+			SetRules([]*rule.Rule{
+				rule.New().SetRequired().SetMessage("昵称必须填写"),
+			}),
 
 		field.Text("email", "邮箱").
-			SetRules(
-				[]string{
-					"required",
-				},
-				map[string]string{
-					"required": "邮箱必须填写",
-				},
-			).
-			SetCreationRules(
-				[]string{
-					"unique:admins,email",
-				},
-				map[string]string{
-					"unique": "邮箱已存在",
-				},
-			).
-			SetUpdateRules(
-				[]string{
-					"unique:admins,email,{id}",
-				},
-				map[string]string{
-					"unique": "邮箱已存在",
-				},
-			),
+			SetRules([]*rule.Rule{
+				rule.New().SetRequired().SetMessage("邮箱必须填写"),
+			}).
+			SetCreationRules([]*rule.Rule{
+				rule.New().SetUnique("admins", "email").SetMessage("邮箱已存在"),
+			}).
+			SetUpdateRules([]*rule.Rule{
+				rule.New().SetUnique("admins", "email", "{id}").SetMessage("邮箱已存在"),
+			}),
 
 		field.Text("phone", "手机号").
-			SetRules(
-				[]string{
-					"required",
-				},
-				map[string]string{
-					"required": "手机号必须填写",
-				},
-			).
-			SetCreationRules(
-				[]string{
-					"unique:admins,phone",
-				},
-				map[string]string{
-					"unique": "手机号已存在",
-				},
-			).
-			SetUpdateRules(
-				[]string{
-					"unique:admins,phone,{id}",
-				},
-				map[string]string{
-					"unique": "手机号已存在",
-				},
-			),
+			SetRules([]*rule.Rule{
+				rule.New().SetRequired().SetMessage("手机号必须填写"),
+			}).
+			SetCreationRules([]*rule.Rule{
+				rule.New().SetUnique("admins", "phone").SetMessage("手机号已存在"),
+			}).
+			SetUpdateRules([]*rule.Rule{
+				rule.New().SetUnique("admins", "phone", "{id}").SetMessage("手机号已存在"),
+			}),
 
 		field.Radio("sex", "性别").
-			SetOptions(map[interface{}]interface{}{
-				1: "男",
-				2: "女",
-			}).SetDefault(1),
+			SetOptions([]*radio.Option{
+				{
+					Value: 1,
+					Label: "男",
+				},
+				{
+					Value: 2,
+					Label: "女",
+				},
+			}).
+			SetDefault(1),
 
 		field.Password("password", "密码").
-			SetCreationRules(
-				[]string{
-					"required",
-				},
-				map[string]string{
-					"required": "密码必须填写",
-				},
-			).OnlyOnForms(),
+			SetCreationRules([]*rule.Rule{
+				rule.New().SetRequired().SetMessage("密码必须填写"),
+			}).
+			OnlyOnForms(),
 	}
 }
 

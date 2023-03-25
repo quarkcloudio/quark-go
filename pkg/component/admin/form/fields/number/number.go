@@ -8,10 +8,10 @@ import (
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/when"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
 	"github.com/quarkcms/quark-go/pkg/component/admin/table"
-	"github.com/quarkcms/quark-go/pkg/untils"
+	"github.com/quarkcms/quark-go/pkg/utils"
 )
 
-type Number struct {
+type Component struct {
 	ComponentKey string `json:"componentkey"` // 组件标识
 	Component    string `json:"component"`    // 组件名称
 
@@ -31,23 +31,23 @@ type Number struct {
 	ValuePropName string      `json:"valuePropName"`          // 子节点的值的属性，如 Switch 的是 'checked'。该属性为 getValueProps 的封装，自定义 getValueProps 后会失效
 	WrapperCol    interface{} `json:"wrapperCol"`             // 需要为输入控件设置布局样式时，使用该属性，用法同 labelCol。你可以通过 Form 的 wrapperCol 进行统一设置，不会作用于嵌套 Item。当和 Form 同时设置时，以 Item 为准
 
-	Api            string        `json:"api,omitempty"` // 获取数据接口
-	Ignore         bool          `json:"ignore"`        // 是否忽略保存到数据库，默认为 false
-	Rules          []*rule.Rule  `json:"-"`             // 全局校验规则
-	CreationRules  []*rule.Rule  `json:"-"`             // 创建页校验规则
-	UpTextRules    []*rule.Rule  `json:"-"`             // 编辑页校验规则
-	FrontendRules  []*rule.Rule  `json:"frontendRules"` // 前端校验规则，设置字段的校验逻辑
-	When           *when.When    `json:"when"`          //
-	WhenItem       []*when.Item  `json:"-"`             //
-	ShowOnIndex    bool          `json:"-"`             // 在列表页展示
-	ShowOnDetail   bool          `json:"-"`             // 在详情页展示
-	ShowOnCreation bool          `json:"-"`             // 在创建页面展示
-	ShowOnUpdate   bool          `json:"-"`             // 在编辑页面展示
-	ShowOnExport   bool          `json:"-"`             // 在导出的Excel上展示
-	ShowOnImport   bool          `json:"-"`             // 在导入Excel上展示
-	Editable       bool          `json:"-"`             // 表格上是否可编辑
-	Column         *table.Column `json:"-"`             // 表格列
-	Callback       interface{}   `json:"-"`             // 回调函数
+	Api            string          `json:"api,omitempty"` // 获取数据接口
+	Ignore         bool            `json:"ignore"`        // 是否忽略保存到数据库，默认为 false
+	Rules          []*rule.Rule    `json:"-"`             // 全局校验规则
+	CreationRules  []*rule.Rule    `json:"-"`             // 创建页校验规则
+	UpTextRules    []*rule.Rule    `json:"-"`             // 编辑页校验规则
+	FrontendRules  []*rule.Rule    `json:"frontendRules"` // 前端校验规则，设置字段的校验逻辑
+	When           *when.Component `json:"when"`          //
+	WhenItem       []*when.Item    `json:"-"`             //
+	ShowOnIndex    bool            `json:"-"`             // 在列表页展示
+	ShowOnDetail   bool            `json:"-"`             // 在详情页展示
+	ShowOnCreation bool            `json:"-"`             // 在创建页面展示
+	ShowOnUpdate   bool            `json:"-"`             // 在编辑页面展示
+	ShowOnExport   bool            `json:"-"`             // 在导出的Excel上展示
+	ShowOnImport   bool            `json:"-"`             // 在导入Excel上展示
+	Editable       bool            `json:"-"`             // 表格上是否可编辑
+	Column         *table.Column   `json:"-"`             // 表格列
+	Callback       interface{}     `json:"-"`             // 回调函数
 
 	AddonAfter       interface{}            `json:"addonAfter,omitempty"`       // 带标签的 input，设置后置标签
 	AddonBefore      interface{}            `json:"addonBefore,omitempty"`      // 带标签的 input，设置前置标签
@@ -73,12 +73,12 @@ type Number struct {
 }
 
 // 初始化组件
-func New() *Number {
-	return (&Number{}).Init()
+func New() *Component {
+	return (&Component{}).Init()
 }
 
 // 初始化
-func (p *Number) Init() *Number {
+func (p *Component) Init() *Component {
 	p.Component = "numberField"
 	p.Colon = true
 	p.LabelAlign = "right"
@@ -98,28 +98,28 @@ func (p *Number) Init() *Number {
 }
 
 // 设置Key
-func (p *Number) SetKey(key string, crypt bool) *Number {
-	p.ComponentKey = untils.MakeKey(key, crypt)
+func (p *Component) SetKey(key string, crypt bool) *Component {
+	p.ComponentKey = utils.MakeKey(key, crypt)
 
 	return p
 }
 
 // Set style.
-func (p *Number) SetStyle(style map[string]interface{}) *Number {
+func (p *Component) SetStyle(style map[string]interface{}) *Component {
 	p.Style = style
 
 	return p
 }
 
 // 会在 label 旁增加一个 icon，悬浮后展示配置的信息
-func (p *Number) SetTooltip(tooltip string) *Number {
+func (p *Component) SetTooltip(tooltip string) *Component {
 	p.Tooltip = tooltip
 
 	return p
 }
 
 // Field 的长度，我们归纳了常用的 Field 长度以及适合的场景，支持了一些枚举 "xs" , "s" , "m" , "l" , "x"
-func (p *Number) SetWidth(width interface{}) *Number {
+func (p *Component) SetWidth(width interface{}) *Component {
 	style := make(map[string]interface{})
 
 	for k, v := range p.Style {
@@ -133,69 +133,69 @@ func (p *Number) SetWidth(width interface{}) *Number {
 }
 
 // 配合 label 属性使用，表示是否显示 label 后面的冒号
-func (p *Number) SetColon(colon bool) *Number {
+func (p *Component) SetColon(colon bool) *Component {
 	p.Colon = colon
 	return p
 }
 
 // 额外的提示信息，和 help 类似，当需要错误信息和提示文案同时出现时，可以使用这个。
-func (p *Number) SetExtra(extra string) *Number {
+func (p *Component) SetExtra(extra string) *Component {
 	p.Extra = extra
 	return p
 }
 
 // 配合 valiTextStatus 属性使用，展示校验状态图标，建议只配合 Input 组件使用
-func (p *Number) SetHasFeedback(hasFeedback bool) *Number {
+func (p *Component) SetHasFeedback(hasFeedback bool) *Component {
 	p.HasFeedback = hasFeedback
 	return p
 }
 
 // 配合 help 属性使用，展示校验状态图标，建议只配合 Input 组件使用
-func (p *Number) SetHelp(help string) *Number {
+func (p *Component) SetHelp(help string) *Component {
 	p.Help = help
 	return p
 }
 
 // 为 true 时不带样式，作为纯字段控件使用
-func (p *Number) SetNoStyle() *Number {
+func (p *Component) SetNoStyle() *Component {
 	p.NoStyle = true
 	return p
 }
 
 // label 标签的文本
-func (p *Number) SetLabel(label string) *Number {
+func (p *Component) SetLabel(label string) *Component {
 	p.Label = label
 
 	return p
 }
 
 // 标签文本对齐方式
-func (p *Number) SetLabelAlign(align string) *Number {
+func (p *Component) SetLabelAlign(align string) *Component {
 	p.LabelAlign = align
 	return p
 }
 
 // label 标签布局，同 <Col> 组件，设置 span offset 值，如 {span: 3, offset: 12} 或 sm: {span: 3, offset: 12}。
 // 你可以通过 Form 的 labelCol 进行统一设置。当和 Form 同时设置时，以 Item 为准
-func (p *Number) SetLabelCol(col interface{}) *Number {
+func (p *Component) SetLabelCol(col interface{}) *Component {
 	p.LabelCol = col
 	return p
 }
 
 // 字段名，支持数组
-func (p *Number) SetName(name string) *Number {
+func (p *Component) SetName(name string) *Component {
 	p.Name = name
 	return p
 }
 
 // 是否必填，如不设置，则会根据校验规则自动生成
-func (p *Number) SetRequired() *Number {
+func (p *Component) SetRequired() *Component {
 	p.Required = true
 	return p
 }
 
 // 获取前端验证规则
-func (p *Number) GetFrontendRules(path string) *Number {
+func (p *Component) GetFrontendRules(path string) *Component {
 	var (
 		frontendRules []*rule.Rule
 		rules         []*rule.Rule
@@ -232,65 +232,65 @@ func (p *Number) GetFrontendRules(path string) *Number {
 }
 
 // 校验规则，设置字段的校验逻辑
-func (p *Number) SetRules(rules []*rule.Rule) *Number {
+func (p *Component) SetRules(rules []*rule.Rule) *Component {
 	p.Rules = rules
 
 	return p
 }
 
 // 校验规则，只在创建表单提交时生效
-func (p *Number) SetCreationRules(rules []*rule.Rule) *Number {
+func (p *Component) SetCreationRules(rules []*rule.Rule) *Component {
 	p.CreationRules = rules
 
 	return p
 }
 
 // 校验规则，只在更新表单提交时生效
-func (p *Number) SetUpTextRules(rules []*rule.Rule) *Number {
+func (p *Component) SetUpTextRules(rules []*rule.Rule) *Component {
 	p.UpTextRules = rules
 
 	return p
 }
 
 // 子节点的值的属性，如 Switch 的是 "checked"
-func (p *Number) SetValuePropName(valuePropName string) *Number {
+func (p *Component) SetValuePropName(valuePropName string) *Component {
 	p.ValuePropName = valuePropName
 	return p
 }
 
 // 需要为输入控件设置布局样式时，使用该属性，用法同 labelCol。
 // 你可以通过 Form 的 wrapperCol 进行统一设置。当和 Form 同时设置时，以 Item 为准。
-func (p *Number) SetWrapperCol(col interface{}) *Number {
+func (p *Component) SetWrapperCol(col interface{}) *Component {
 	p.WrapperCol = col
 	return p
 }
 
 // 设置保存值。
-func (p *Number) SetValue(value interface{}) *Number {
+func (p *Component) SetValue(value interface{}) *Component {
 	p.Value = value
 	return p
 }
 
 // 设置默认值。
-func (p *Number) SetDefault(value interface{}) *Number {
+func (p *Component) SetDefault(value interface{}) *Component {
 	p.DefaultValue = value
 	return p
 }
 
 // 是否禁用状态，默认为 false
-func (p *Number) SetDisabled(disabled bool) *Number {
+func (p *Component) SetDisabled(disabled bool) *Component {
 	p.Disabled = disabled
 	return p
 }
 
 // 是否忽略保存到数据库，默认为 false
-func (p *Number) SetIgnore(ignore bool) *Number {
+func (p *Component) SetIgnore(ignore bool) *Component {
 	p.Ignore = ignore
 	return p
 }
 
 // 表单联动
-func (p *Number) SetWhen(value ...any) *Number {
+func (p *Component) SetWhen(value ...any) *Component {
 	w := when.New()
 	i := when.NewItem()
 	var operator string
@@ -312,7 +312,7 @@ func (p *Number) SetWhen(value ...any) *Number {
 		i.Body = callback()
 	}
 
-	getOption := untils.InterfaceToString(option)
+	getOption := utils.InterfaceToString(option)
 
 	switch operator {
 	case "=":
@@ -352,91 +352,91 @@ func (p *Number) SetWhen(value ...any) *Number {
 }
 
 // Specify that the element should be hidden from the index view.
-func (p *Number) HideFromIndex(callback bool) *Number {
+func (p *Component) HideFromIndex(callback bool) *Component {
 	p.ShowOnIndex = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the detail view.
-func (p *Number) HideFromDetail(callback bool) *Number {
+func (p *Component) HideFromDetail(callback bool) *Component {
 	p.ShowOnDetail = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the creation view.
-func (p *Number) HideWhenCreating(callback bool) *Number {
+func (p *Component) HideWhenCreating(callback bool) *Component {
 	p.ShowOnCreation = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the upText view.
-func (p *Number) HideWhenUpdating(callback bool) *Number {
+func (p *Component) HideWhenUpdating(callback bool) *Component {
 	p.ShowOnUpdate = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the export file.
-func (p *Number) HideWhenExporting(callback bool) *Number {
+func (p *Component) HideWhenExporting(callback bool) *Component {
 	p.ShowOnExport = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the import file.
-func (p *Number) HideWhenImporting(callback bool) *Number {
+func (p *Component) HideWhenImporting(callback bool) *Component {
 	p.ShowOnImport = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the index view.
-func (p *Number) OnIndexShowing(callback bool) *Number {
+func (p *Component) OnIndexShowing(callback bool) *Component {
 	p.ShowOnIndex = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the detail view.
-func (p *Number) OnDetailShowing(callback bool) *Number {
+func (p *Component) OnDetailShowing(callback bool) *Component {
 	p.ShowOnDetail = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the creation view.
-func (p *Number) ShowOnCreating(callback bool) *Number {
+func (p *Component) ShowOnCreating(callback bool) *Component {
 	p.ShowOnCreation = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the upText view.
-func (p *Number) ShowOnUpdating(callback bool) *Number {
+func (p *Component) ShowOnUpdating(callback bool) *Component {
 	p.ShowOnUpdate = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the export file.
-func (p *Number) ShowOnExporting(callback bool) *Number {
+func (p *Component) ShowOnExporting(callback bool) *Component {
 	p.ShowOnExport = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the import file.
-func (p *Number) ShowOnImporting(callback bool) *Number {
+func (p *Component) ShowOnImporting(callback bool) *Component {
 	p.ShowOnImport = callback
 
 	return p
 }
 
 // Specify that the element should only be shown on the index view.
-func (p *Number) OnlyOnIndex() *Number {
+func (p *Component) OnlyOnIndex() *Component {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -448,7 +448,7 @@ func (p *Number) OnlyOnIndex() *Number {
 }
 
 // Specify that the element should only be shown on the detail view.
-func (p *Number) OnlyOnDetail() *Number {
+func (p *Component) OnlyOnDetail() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
@@ -460,7 +460,7 @@ func (p *Number) OnlyOnDetail() *Number {
 }
 
 // Specify that the element should only be shown on forms.
-func (p *Number) OnlyOnForms() *Number {
+func (p *Component) OnlyOnForms() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = true
@@ -472,7 +472,7 @@ func (p *Number) OnlyOnForms() *Number {
 }
 
 // Specify that the element should only be shown on export file.
-func (p *Number) OnlyOnExport() *Number {
+func (p *Component) OnlyOnExport() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -484,7 +484,7 @@ func (p *Number) OnlyOnExport() *Number {
 }
 
 // Specify that the element should only be shown on import file.
-func (p *Number) OnlyOnImport() *Number {
+func (p *Component) OnlyOnImport() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -496,7 +496,7 @@ func (p *Number) OnlyOnImport() *Number {
 }
 
 // Specify that the element should be hidden from forms.
-func (p *Number) ExceptOnForms() *Number {
+func (p *Component) ExceptOnForms() *Component {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
@@ -508,58 +508,58 @@ func (p *Number) ExceptOnForms() *Number {
 }
 
 // Check for showing when updating.
-func (p *Number) IsShownOnUpText() bool {
+func (p *Component) IsShownOnUpText() bool {
 	return p.ShowOnUpdate
 }
 
 // Check showing on index.
-func (p *Number) IsShownOnIndex() bool {
+func (p *Component) IsShownOnIndex() bool {
 	return p.ShowOnIndex
 }
 
 // Check showing on detail.
-func (p *Number) IsShownOnDetail() bool {
+func (p *Component) IsShownOnDetail() bool {
 	return p.ShowOnDetail
 }
 
 // Check for showing when creating.
-func (p *Number) IsShownOnCreation() bool {
+func (p *Component) IsShownOnCreation() bool {
 	return p.ShowOnCreation
 }
 
 // Check for showing when exporting.
-func (p *Number) IsShownOnExport() bool {
+func (p *Component) IsShownOnExport() bool {
 	return p.ShowOnExport
 }
 
 // Check for showing when importing.
-func (p *Number) IsShownOnImport() bool {
+func (p *Component) IsShownOnImport() bool {
 	return p.ShowOnImport
 }
 
 // 设置为可编辑列
-func (p *Number) SetEditable(editable bool) *Number {
+func (p *Component) SetEditable(editable bool) *Component {
 	p.Editable = editable
 
 	return p
 }
 
 // 闭包，透传表格列的属性
-func (p *Number) SetColumn(f func(column *table.Column) *table.Column) *Number {
+func (p *Component) SetColumn(f func(column *table.Column) *table.Column) *Component {
 	p.Column = f(p.Column)
 
 	return p
 }
 
 // 当前列值的枚举 valueEnum
-func (p *Number) GetValueEnum() map[interface{}]interface{} {
+func (p *Component) GetValueEnum() map[interface{}]interface{} {
 	data := map[interface{}]interface{}{}
 
 	return data
 }
 
 // 设置回调函数
-func (p *Number) SetCallback(closure func() interface{}) *Number {
+func (p *Component) SetCallback(closure func() interface{}) *Component {
 	if closure != nil {
 		p.Callback = closure
 	}
@@ -568,137 +568,137 @@ func (p *Number) SetCallback(closure func() interface{}) *Number {
 }
 
 // 获取回调函数
-func (p *Number) GetCallback() interface{} {
+func (p *Component) GetCallback() interface{} {
 	return p.Callback
 }
 
 // 获取数据接口
-func (p *Number) SetApi(api string) *Number {
+func (p *Component) SetApi(api string) *Component {
 	p.Api = api
 	return p
 }
 
 // 带标签的 input，设置后置标签
-func (p *Number) SetAddonAfter(addonAfter interface{}) *Number {
+func (p *Component) SetAddonAfter(addonAfter interface{}) *Component {
 	p.AddonAfter = addonAfter
 
 	return p
 }
 
 // 带标签的 input，设置前置标签
-func (p *Number) SetAddonBefore(addonBefore interface{}) *Number {
+func (p *Component) SetAddonBefore(addonBefore interface{}) *Component {
 	p.AddonBefore = addonBefore
 
 	return p
 }
 
 // 可以点击清除图标删除内容
-func (p *Number) SetAllowClear(allowClear bool) *Number {
+func (p *Component) SetAllowClear(allowClear bool) *Component {
 	p.AllowClear = allowClear
 
 	return p
 }
 
 // 是否有边框，默认true
-func (p *Number) SetBordered(bordered bool) *Number {
+func (p *Component) SetBordered(bordered bool) *Component {
 	p.Bordered = bordered
 
 	return p
 }
 
 // 是否显示增减按钮，也可设置自定义箭头图标
-func (p *Number) SetControls(controls bool) *Number {
+func (p *Component) SetControls(controls bool) *Component {
 	p.Controls = controls
 
 	return p
 }
 
 // 小数点
-func (p *Number) SetDecimalSeparator(decimalSeparator string) *Number {
+func (p *Component) SetDecimalSeparator(decimalSeparator string) *Component {
 	p.DecimalSeparator = decimalSeparator
 
 	return p
 }
 
 // 输入框默认内容
-func (p *Number) SetDefaultValue(defaultValue interface{}) *Number {
+func (p *Component) SetDefaultValue(defaultValue interface{}) *Component {
 	p.DefaultValue = defaultValue
 
 	return p
 }
 
 // 是否启用键盘快捷行为
-func (p *Number) SetKeyboard(keyboard bool) *Number {
+func (p *Component) SetKeyboard(keyboard bool) *Component {
 	p.Keyboard = keyboard
 
 	return p
 }
 
 // 最大值
-func (p *Number) SetMax(max int) *Number {
+func (p *Component) SetMax(max int) *Component {
 	p.Max = max
 
 	return p
 }
 
 // 最小值
-func (p *Number) SetMin(min int) *Number {
+func (p *Component) SetMin(min int) *Component {
 	p.Min = min
 
 	return p
 }
 
 // 数值精度，配置 formatter 时会以 formatter 为准
-func (p *Number) SetPrecision(precision int) *Number {
+func (p *Component) SetPrecision(precision int) *Component {
 	p.Precision = precision
 
 	return p
 }
 
 // 只读
-func (p *Number) SetReadOnly(readOnly bool) *Number {
+func (p *Component) SetReadOnly(readOnly bool) *Component {
 	p.ReadOnly = readOnly
 
 	return p
 }
 
 // 设置校验状态，'error' | 'warning'
-func (p *Number) SetStatus(status string) *Number {
+func (p *Component) SetStatus(status string) *Component {
 	p.Status = status
 
 	return p
 }
 
 // 输入框占位文本
-func (p *Number) SetPlaceholder(placeholder string) *Number {
+func (p *Component) SetPlaceholder(placeholder string) *Component {
 	p.Placeholder = placeholder
 
 	return p
 }
 
 // 带有前缀图标的 input
-func (p *Number) SetPrefix(prefix interface{}) *Number {
+func (p *Component) SetPrefix(prefix interface{}) *Component {
 	p.Prefix = prefix
 
 	return p
 }
 
 // 控件大小。注：标准表单内的输入框大小限制为 large。可选 large default small
-func (p *Number) SetSize(size string) *Number {
+func (p *Component) SetSize(size string) *Component {
 	p.Size = size
 
 	return p
 }
 
 // 每次改变步数，可以为小数
-func (p *Number) SetStep(step interface{}) *Number {
+func (p *Component) SetStep(step interface{}) *Component {
 	p.Step = step
 
 	return p
 }
 
 // 字符值模式，开启后支持高精度小数。同时 onChange 将返回 string 类型
-func (p *Number) SetStringMode(stringMode bool) *Number {
+func (p *Component) SetStringMode(stringMode bool) *Component {
 	p.StringMode = stringMode
 
 	return p

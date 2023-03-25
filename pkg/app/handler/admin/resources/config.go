@@ -6,6 +6,8 @@ import (
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/radio"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
 )
 
 type Config struct {
@@ -38,49 +40,44 @@ func (p *Config) Fields(ctx *builder.Context) []interface{} {
 		field.ID("id", "ID"),
 
 		field.Text("title", "标题").
-			SetRules(
-				[]string{
-					"required",
-				},
-				map[string]string{
-					"required": "标题必须填写",
-				},
-			),
+			SetRules([]*rule.Rule{
+				rule.Required(true, "标题必须填写"),
+			}),
 
 		field.Text("name", "名称").
 			SetEditable(true).
-			SetRules(
-				[]string{
-					"required",
-				},
-				map[string]string{
-					"required": "名称必须填写",
-				},
-			).
-			SetCreationRules(
-				[]string{
-					"unique:configs,name",
-				},
-				map[string]string{
-					"unique": "名称已存在",
-				},
-			).
-			SetUpdateRules(
-				[]string{
-					"unique:configs,name,{id}",
-				},
-				map[string]string{
-					"unique": "名称已存在",
-				},
-			),
+			SetRules([]*rule.Rule{
+				rule.Required(true, "名称必须填写"),
+			}).
+			SetCreationRules([]*rule.Rule{
+				rule.Unique("configs", "name", "名称已存在"),
+			}).
+			SetUpdateRules([]*rule.Rule{
+				rule.Unique("configs", "name", "{id}", "名称已存在"),
+			}),
 
 		field.Radio("type", "表单类型").
-			SetOptions(map[interface{}]interface{}{
-				"text":     "输入框",
-				"textarea": "文本域",
-				"picture":  "图片",
-				"file":     "文件",
-				"switch":   "开关",
+			SetOptions([]*radio.Option{
+				{
+					Value: "text",
+					Label: "输入框",
+				},
+				{
+					Value: "textarea",
+					Label: "文本域",
+				},
+				{
+					Value: "picture",
+					Label: "图片",
+				},
+				{
+					Value: "file",
+					Label: "文件",
+				},
+				{
+					Value: "switch",
+					Label: "开关",
+				},
 			}).
 			SetDefault("text").
 			OnlyOnForms(),
@@ -92,14 +89,9 @@ func (p *Config) Fields(ctx *builder.Context) []interface{} {
 			OnlyOnForms(),
 
 		field.Text("group_name", "分组名称").
-			SetRules(
-				[]string{
-					"required",
-				},
-				map[string]string{
-					"required": "分组名称必须填写",
-				},
-			).OnlyOnForms(),
+			SetRules([]*rule.Rule{
+				rule.Required(true, "分组名称必须填写"),
+			}).OnlyOnForms(),
 
 		field.Text("remark", "备注").
 			OnlyOnForms(),

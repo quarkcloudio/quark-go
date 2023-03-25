@@ -8,7 +8,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/when"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
 	"github.com/quarkcms/quark-go/pkg/component/admin/table"
-	"github.com/quarkcms/quark-go/pkg/untils"
+	"github.com/quarkcms/quark-go/pkg/utils"
 )
 
 type FieldNames struct {
@@ -29,7 +29,7 @@ type TreeData struct {
 	Children        []*TreeData `json:"children,omitempty"`        // 子节点
 }
 
-type Tree struct {
+type Component struct {
 	ComponentKey string `json:"componentkey"` // 组件标识
 	Component    string `json:"component"`    // 组件名称
 
@@ -49,23 +49,23 @@ type Tree struct {
 	ValuePropName string      `json:"valuePropName"`          // 子节点的值的属性，如 Switch 的是 'checked'。该属性为 getValueProps 的封装，自定义 getValueProps 后会失效
 	WrapperCol    interface{} `json:"wrapperCol"`             // 需要为输入控件设置布局样式时，使用该属性，用法同 labelCol。你可以通过 Form 的 wrapperCol 进行统一设置，不会作用于嵌套 Item。当和 Form 同时设置时，以 Item 为准
 
-	Api            string        `json:"api,omitempty"` // 获取数据接口
-	Ignore         bool          `json:"ignore"`        // 是否忽略保存到数据库，默认为 false
-	Rules          []*rule.Rule  `json:"-"`             // 全局校验规则
-	CreationRules  []*rule.Rule  `json:"-"`             // 创建页校验规则
-	UpdateRules    []*rule.Rule  `json:"-"`             // 编辑页校验规则
-	FrontendRules  []*rule.Rule  `json:"frontendRules"` // 前端校验规则，设置字段的校验逻辑
-	When           *when.When    `json:"when"`          //
-	WhenItem       []*when.Item  `json:"-"`             //
-	ShowOnIndex    bool          `json:"-"`             // 在列表页展示
-	ShowOnDetail   bool          `json:"-"`             // 在详情页展示
-	ShowOnCreation bool          `json:"-"`             // 在创建页面展示
-	ShowOnUpdate   bool          `json:"-"`             // 在编辑页面展示
-	ShowOnExport   bool          `json:"-"`             // 在导出的Excel上展示
-	ShowOnImport   bool          `json:"-"`             // 在导入Excel上展示
-	Editable       bool          `json:"-"`             // 表格上是否可编辑
-	Column         *table.Column `json:"-"`             // 表格列
-	Callback       interface{}   `json:"-"`             // 回调函数
+	Api            string          `json:"api,omitempty"` // 获取数据接口
+	Ignore         bool            `json:"ignore"`        // 是否忽略保存到数据库，默认为 false
+	Rules          []*rule.Rule    `json:"-"`             // 全局校验规则
+	CreationRules  []*rule.Rule    `json:"-"`             // 创建页校验规则
+	UpdateRules    []*rule.Rule    `json:"-"`             // 编辑页校验规则
+	FrontendRules  []*rule.Rule    `json:"frontendRules"` // 前端校验规则，设置字段的校验逻辑
+	When           *when.Component `json:"when"`          //
+	WhenItem       []*when.Item    `json:"-"`             //
+	ShowOnIndex    bool            `json:"-"`             // 在列表页展示
+	ShowOnDetail   bool            `json:"-"`             // 在详情页展示
+	ShowOnCreation bool            `json:"-"`             // 在创建页面展示
+	ShowOnUpdate   bool            `json:"-"`             // 在编辑页面展示
+	ShowOnExport   bool            `json:"-"`             // 在导出的Excel上展示
+	ShowOnImport   bool            `json:"-"`             // 在导入Excel上展示
+	Editable       bool            `json:"-"`             // 表格上是否可编辑
+	Column         *table.Column   `json:"-"`             // 表格列
+	Callback       interface{}     `json:"-"`             // 回调函数
 
 	AutoExpandParent    bool                   `json:"autoExpandParent,omitempty"`    // 是否自动展开父节点
 	BockNode            bool                   `json:"blockNode,omitempty"`           // 是否节点占据一行
@@ -85,6 +85,7 @@ type Tree struct {
 	Height              int                    `json:"height,omitempty"`              // 设置虚拟滚动容器高度，设置后内部节点不再支持横向滚动
 	Icon                interface{}            `json:"icon,omitempty"`                // 自定义树节点图标
 	Multiple            bool                   `json:"multiple,omitempty"`            // 支持点选多个节点（节点本身）
+	Placeholder         string                 `json:"placeholder,omitempty"`         // 占位文本
 	RootClassName       string                 `json:"rootClassName,omitempty"`       // 添加在 Tree 最外层的 className
 	RootStyle           interface{}            `json:"rootStyle,omitempty"`           // 添加在 Tree 最外层的 style
 	Selectable          bool                   `json:"selectable,omitempty"`          // 是否可选中
@@ -92,19 +93,19 @@ type Tree struct {
 	ShowIcon            bool                   `json:"showIcon,omitempty"`            // 是否展示 TreeNode title 前的图标，没有默认样式，如设置为 true，需要自行定义图标相关样式
 	ShowLine            bool                   `json:"showLine,omitempty"`            // 是否展示连接线
 	SwitcherIcon        interface{}            `json:"switcherIcon,omitempty"`        // 自定义树节点的展开/折叠图标
-	TreeData            *TreeData              `json:"treeData,omitempty"`            // treeNodes 数据，如果设置则不需要手动构造 TreeNode 节点（value 在整个树范围内唯一）
+	TreeData            []*TreeData            `json:"treeData,omitempty"`            // treeNodes 数据，如果设置则不需要手动构造 TreeNode 节点（value 在整个树范围内唯一）
 	Value               interface{}            `json:"value,omitempty"`               // 指定当前选中的条目，多选时为一个数组。（value 数组引用未变化时，Select 不会更新）
 	Virtual             bool                   `json:"virtual,omitempty"`             // 设置 false 时关闭虚拟滚动
 	Style               map[string]interface{} `json:"style,omitempty"`               // 自定义样式
 }
 
 // 初始化组件
-func New() *Tree {
-	return (&Tree{}).Init()
+func New() *Component {
+	return (&Component{}).Init()
 }
 
 // 初始化
-func (p *Tree) Init() *Tree {
+func (p *Component) Init() *Component {
 	p.Component = "treeField"
 	p.Colon = true
 	p.LabelAlign = "right"
@@ -122,21 +123,21 @@ func (p *Tree) Init() *Tree {
 }
 
 // 设置Key
-func (p *Tree) SetKey(key string, crypt bool) *Tree {
-	p.ComponentKey = untils.MakeKey(key, crypt)
+func (p *Component) SetKey(key string, crypt bool) *Component {
+	p.ComponentKey = utils.MakeKey(key, crypt)
 
 	return p
 }
 
 // 会在 label 旁增加一个 icon，悬浮后展示配置的信息
-func (p *Tree) SetTooltip(tooltip string) *Tree {
+func (p *Component) SetTooltip(tooltip string) *Component {
 	p.Tooltip = tooltip
 
 	return p
 }
 
 // Field 的长度，我们归纳了常用的 Field 长度以及适合的场景，支持了一些枚举 "xs" , "s" , "m" , "l" , "x"
-func (p *Tree) SetWidth(width interface{}) *Tree {
+func (p *Component) SetWidth(width interface{}) *Component {
 	style := make(map[string]interface{})
 
 	for k, v := range p.Style {
@@ -150,69 +151,69 @@ func (p *Tree) SetWidth(width interface{}) *Tree {
 }
 
 // 配合 label 属性使用，表示是否显示 label 后面的冒号
-func (p *Tree) SetColon(colon bool) *Tree {
+func (p *Component) SetColon(colon bool) *Component {
 	p.Colon = colon
 	return p
 }
 
 // 额外的提示信息，和 help 类似，当需要错误信息和提示文案同时出现时，可以使用这个。
-func (p *Tree) SetExtra(extra string) *Tree {
+func (p *Component) SetExtra(extra string) *Component {
 	p.Extra = extra
 	return p
 }
 
 // 配合 validateStatus 属性使用，展示校验状态图标，建议只配合 Input 组件使用
-func (p *Tree) SetHasFeedback(hasFeedback bool) *Tree {
+func (p *Component) SetHasFeedback(hasFeedback bool) *Component {
 	p.HasFeedback = hasFeedback
 	return p
 }
 
 // 配合 help 属性使用，展示校验状态图标，建议只配合 Input 组件使用
-func (p *Tree) SetHelp(help string) *Tree {
+func (p *Component) SetHelp(help string) *Component {
 	p.Help = help
 	return p
 }
 
 // 为 true 时不带样式，作为纯字段控件使用
-func (p *Tree) SetNoStyle() *Tree {
+func (p *Component) SetNoStyle() *Component {
 	p.NoStyle = true
 	return p
 }
 
 // label 标签的文本
-func (p *Tree) SetLabel(label string) *Tree {
+func (p *Component) SetLabel(label string) *Component {
 	p.Label = label
 
 	return p
 }
 
 // 标签文本对齐方式
-func (p *Tree) SetLabelAlign(align string) *Tree {
+func (p *Component) SetLabelAlign(align string) *Component {
 	p.LabelAlign = align
 	return p
 }
 
 // label 标签布局，同 <Col> 组件，设置 span offset 值，如 {span: 3, offset: 12} 或 sm: {span: 3, offset: 12}。
 // 你可以通过 Form 的 labelCol 进行统一设置。当和 Form 同时设置时，以 Item 为准
-func (p *Tree) SetLabelCol(col interface{}) *Tree {
+func (p *Component) SetLabelCol(col interface{}) *Component {
 	p.LabelCol = col
 	return p
 }
 
 // 字段名，支持数组
-func (p *Tree) SetName(name string) *Tree {
+func (p *Component) SetName(name string) *Component {
 	p.Name = name
 	return p
 }
 
 // 是否必填，如不设置，则会根据校验规则自动生成
-func (p *Tree) SetRequired() *Tree {
+func (p *Component) SetRequired() *Component {
 	p.Required = true
 	return p
 }
 
 // 获取前端验证规则
-func (p *Tree) GetFrontendRules(path string) *Tree {
+func (p *Component) GetFrontendRules(path string) *Component {
 	var (
 		frontendRules []*rule.Rule
 		rules         []*rule.Rule
@@ -249,65 +250,65 @@ func (p *Tree) GetFrontendRules(path string) *Tree {
 }
 
 // 校验规则，设置字段的校验逻辑
-func (p *Tree) SetRules(rules []*rule.Rule) *Tree {
+func (p *Component) SetRules(rules []*rule.Rule) *Component {
 	p.Rules = rules
 
 	return p
 }
 
 // 校验规则，只在创建表单提交时生效
-func (p *Tree) SetCreationRules(rules []*rule.Rule) *Tree {
+func (p *Component) SetCreationRules(rules []*rule.Rule) *Component {
 	p.CreationRules = rules
 
 	return p
 }
 
 // 校验规则，只在更新表单提交时生效
-func (p *Tree) SetUpdateRules(rules []*rule.Rule) *Tree {
+func (p *Component) SetUpdateRules(rules []*rule.Rule) *Component {
 	p.UpdateRules = rules
 
 	return p
 }
 
 // 子节点的值的属性，如 Switch 的是 "checked"
-func (p *Tree) SetValuePropName(valuePropName string) *Tree {
+func (p *Component) SetValuePropName(valuePropName string) *Component {
 	p.ValuePropName = valuePropName
 	return p
 }
 
 // 需要为输入控件设置布局样式时，使用该属性，用法同 labelCol。
 // 你可以通过 Form 的 wrapperCol 进行统一设置。当和 Form 同时设置时，以 Item 为准。
-func (p *Tree) SetWrapperCol(col interface{}) *Tree {
+func (p *Component) SetWrapperCol(col interface{}) *Component {
 	p.WrapperCol = col
 	return p
 }
 
 // 指定当前选中的条目，多选时为一个数组。（value 数组引用未变化时，Select 不会更新）
-func (p *Tree) SetValue(value interface{}) *Tree {
+func (p *Component) SetValue(value interface{}) *Component {
 	p.Value = value
 	return p
 }
 
 // 设置默认值。
-func (p *Tree) SetDefault(value interface{}) *Tree {
+func (p *Component) SetDefault(value interface{}) *Component {
 	p.DefaultValue = value
 	return p
 }
 
 // 是否禁用状态，默认为 false
-func (p *Tree) SetDisabled(disabled bool) *Tree {
+func (p *Component) SetDisabled(disabled bool) *Component {
 	p.Disabled = disabled
 	return p
 }
 
 // 是否忽略保存到数据库，默认为 false
-func (p *Tree) SetIgnore(ignore bool) *Tree {
+func (p *Component) SetIgnore(ignore bool) *Component {
 	p.Ignore = ignore
 	return p
 }
 
 // 表单联动
-func (p *Tree) SetWhen(value ...any) *Tree {
+func (p *Component) SetWhen(value ...any) *Component {
 	w := when.New()
 	i := when.NewItem()
 	var operator string
@@ -329,7 +330,7 @@ func (p *Tree) SetWhen(value ...any) *Tree {
 		i.Body = callback()
 	}
 
-	getOption := untils.InterfaceToString(option)
+	getOption := utils.InterfaceToString(option)
 
 	switch operator {
 	case "=":
@@ -369,91 +370,91 @@ func (p *Tree) SetWhen(value ...any) *Tree {
 }
 
 // Specify that the element should be hidden from the index view.
-func (p *Tree) HideFromIndex(callback bool) *Tree {
+func (p *Component) HideFromIndex(callback bool) *Component {
 	p.ShowOnIndex = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the detail view.
-func (p *Tree) HideFromDetail(callback bool) *Tree {
+func (p *Component) HideFromDetail(callback bool) *Component {
 	p.ShowOnDetail = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the creation view.
-func (p *Tree) HideWhenCreating(callback bool) *Tree {
+func (p *Component) HideWhenCreating(callback bool) *Component {
 	p.ShowOnCreation = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the update view.
-func (p *Tree) HideWhenUpdating(callback bool) *Tree {
+func (p *Component) HideWhenUpdating(callback bool) *Component {
 	p.ShowOnUpdate = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the export file.
-func (p *Tree) HideWhenExporting(callback bool) *Tree {
+func (p *Component) HideWhenExporting(callback bool) *Component {
 	p.ShowOnExport = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the import file.
-func (p *Tree) HideWhenImporting(callback bool) *Tree {
+func (p *Component) HideWhenImporting(callback bool) *Component {
 	p.ShowOnImport = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the index view.
-func (p *Tree) OnIndexShowing(callback bool) *Tree {
+func (p *Component) OnIndexShowing(callback bool) *Component {
 	p.ShowOnIndex = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the detail view.
-func (p *Tree) OnDetailShowing(callback bool) *Tree {
+func (p *Component) OnDetailShowing(callback bool) *Component {
 	p.ShowOnDetail = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the creation view.
-func (p *Tree) ShowOnCreating(callback bool) *Tree {
+func (p *Component) ShowOnCreating(callback bool) *Component {
 	p.ShowOnCreation = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the update view.
-func (p *Tree) ShowOnUpdating(callback bool) *Tree {
+func (p *Component) ShowOnUpdating(callback bool) *Component {
 	p.ShowOnUpdate = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the export file.
-func (p *Tree) ShowOnExporting(callback bool) *Tree {
+func (p *Component) ShowOnExporting(callback bool) *Component {
 	p.ShowOnExport = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the import file.
-func (p *Tree) ShowOnImporting(callback bool) *Tree {
+func (p *Component) ShowOnImporting(callback bool) *Component {
 	p.ShowOnImport = callback
 
 	return p
 }
 
 // Specify that the element should only be shown on the index view.
-func (p *Tree) OnlyOnIndex() *Tree {
+func (p *Component) OnlyOnIndex() *Component {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -465,7 +466,7 @@ func (p *Tree) OnlyOnIndex() *Tree {
 }
 
 // Specify that the element should only be shown on the detail view.
-func (p *Tree) OnlyOnDetail() *Tree {
+func (p *Component) OnlyOnDetail() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
@@ -477,7 +478,7 @@ func (p *Tree) OnlyOnDetail() *Tree {
 }
 
 // Specify that the element should only be shown on forms.
-func (p *Tree) OnlyOnForms() *Tree {
+func (p *Component) OnlyOnForms() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = true
@@ -489,7 +490,7 @@ func (p *Tree) OnlyOnForms() *Tree {
 }
 
 // Specify that the element should only be shown on export file.
-func (p *Tree) OnlyOnExport() *Tree {
+func (p *Component) OnlyOnExport() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -501,7 +502,7 @@ func (p *Tree) OnlyOnExport() *Tree {
 }
 
 // Specify that the element should only be shown on import file.
-func (p *Tree) OnlyOnImport() *Tree {
+func (p *Component) OnlyOnImport() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -513,7 +514,7 @@ func (p *Tree) OnlyOnImport() *Tree {
 }
 
 // Specify that the element should be hidden from forms.
-func (p *Tree) ExceptOnForms() *Tree {
+func (p *Component) ExceptOnForms() *Component {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
@@ -525,58 +526,58 @@ func (p *Tree) ExceptOnForms() *Tree {
 }
 
 // Check for showing when updating.
-func (p *Tree) IsShownOnUpdate() bool {
+func (p *Component) IsShownOnUpdate() bool {
 	return p.ShowOnUpdate
 }
 
 // Check showing on index.
-func (p *Tree) IsShownOnIndex() bool {
+func (p *Component) IsShownOnIndex() bool {
 	return p.ShowOnIndex
 }
 
 // Check showing on detail.
-func (p *Tree) IsShownOnDetail() bool {
+func (p *Component) IsShownOnDetail() bool {
 	return p.ShowOnDetail
 }
 
 // Check for showing when creating.
-func (p *Tree) IsShownOnCreation() bool {
+func (p *Component) IsShownOnCreation() bool {
 	return p.ShowOnCreation
 }
 
 // Check for showing when exporting.
-func (p *Tree) IsShownOnExport() bool {
+func (p *Component) IsShownOnExport() bool {
 	return p.ShowOnExport
 }
 
 // Check for showing when importing.
-func (p *Tree) IsShownOnImport() bool {
+func (p *Component) IsShownOnImport() bool {
 	return p.ShowOnImport
 }
 
 // 设置为可编辑列
-func (p *Tree) SetEditable(editable bool) *Tree {
+func (p *Component) SetEditable(editable bool) *Component {
 	p.Editable = editable
 
 	return p
 }
 
 // 闭包，透传表格列的属性
-func (p *Tree) SetColumn(f func(column *table.Column) *table.Column) *Tree {
+func (p *Component) SetColumn(f func(column *table.Column) *table.Column) *Component {
 	p.Column = f(p.Column)
 
 	return p
 }
 
 // 当前列值的枚举 valueEnum
-func (p *Tree) GetValueEnum() map[interface{}]interface{} {
+func (p *Component) GetValueEnum() map[interface{}]interface{} {
 	data := map[interface{}]interface{}{}
 
 	return data
 }
 
 // 设置回调函数
-func (p *Tree) SetCallback(closure func() interface{}) *Tree {
+func (p *Component) SetCallback(closure func() interface{}) *Component {
 	if closure != nil {
 		p.Callback = closure
 	}
@@ -585,194 +586,201 @@ func (p *Tree) SetCallback(closure func() interface{}) *Tree {
 }
 
 // 获取回调函数
-func (p *Tree) GetCallback() interface{} {
+func (p *Component) GetCallback() interface{} {
 	return p.Callback
 }
 
 // 获取数据接口
-func (p *Tree) SetApi(api string) *Tree {
+func (p *Component) SetApi(api string) *Component {
 	p.Api = api
 
 	return p
 }
 
 // 是否自动展开父节点
-func (p *Tree) SetAutoExpandParent(autoExpandParent bool) *Tree {
+func (p *Component) SetAutoExpandParent(autoExpandParent bool) *Component {
 	p.AutoExpandParent = autoExpandParent
 
 	return p
 }
 
 // 是否节点占据一行
-func (p *Tree) SetBockNode(blockNode bool) *Tree {
+func (p *Component) SetBockNode(blockNode bool) *Component {
 	p.BockNode = blockNode
 
 	return p
 }
 
 // 节点前添加 Checkbox 复选框
-func (p *Tree) SetCheckable(checkable bool) *Tree {
+func (p *Component) SetCheckable(checkable bool) *Component {
 	p.Checkable = checkable
 
 	return p
 }
 
 // （受控）选中复选框的树节点（注意：父子节点有关联，如果传入父节点 key，则子节点自动选中；相应当子节点 key 都传入，父节点也自动选中。当设置 checkable 和 checkStrictly，它是一个有checked和halfChecked属性的对象，并且父子节点的选中与否不再关联
-func (p *Tree) SetCheckedKeys(checkedKeys []interface{}) *Tree {
+func (p *Component) SetCheckedKeys(checkedKeys []interface{}) *Component {
 	p.CheckedKeys = checkedKeys
 
 	return p
 }
 
 // checkable 状态下节点选择完全受控（父子节点选中状态不再关联）
-func (p *Tree) SetCheckStrictly(checkStrictly bool) *Tree {
+func (p *Component) SetCheckStrictly(checkStrictly bool) *Component {
 	p.CheckStrictly = checkStrictly
 
 	return p
 }
 
 // 默认选中复选框的树节点
-func (p *Tree) SetDefaultCheckedKeys(defaultCheckedKeys []interface{}) *Tree {
+func (p *Component) SetDefaultCheckedKeys(defaultCheckedKeys []interface{}) *Component {
 	p.DefaultCheckedKeys = defaultCheckedKeys
 
 	return p
 }
 
 // 默认展开所有树节点
-func (p *Tree) SetDefaultExpandAll(defaultExpandAll bool) *Tree {
+func (p *Component) SetDefaultExpandAll(defaultExpandAll bool) *Component {
 	p.DefaultExpandAll = defaultExpandAll
 
 	return p
 }
 
 // 默认展开指定的树节点
-func (p *Tree) SetDefaultExpandedKeys(defaultExpandedKeys []interface{}) *Tree {
+func (p *Component) SetDefaultExpandedKeys(defaultExpandedKeys []interface{}) *Component {
 	p.DefaultExpandedKeys = defaultExpandedKeys
 
 	return p
 }
 
 // 默认展开父节点
-func (p *Tree) SetDefaultExpandParent(defaultExpandParent bool) *Tree {
+func (p *Component) SetDefaultExpandParent(defaultExpandParent bool) *Component {
 	p.DefaultExpandParent = defaultExpandParent
 
 	return p
 }
 
 // 默认选中的树节点
-func (p *Tree) SetDefaultSelectedKeys(defaultSelectedKeys []interface{}) *Tree {
+func (p *Component) SetDefaultSelectedKeys(defaultSelectedKeys []interface{}) *Component {
 	p.DefaultSelectedKeys = defaultSelectedKeys
 
 	return p
 }
 
 // 设置节点可拖拽，可以通过 icon: false 关闭拖拽提示图标
-func (p *Tree) SetDraggable(draggable bool) *Tree {
+func (p *Component) SetDraggable(draggable bool) *Component {
 	p.Draggable = draggable
 
 	return p
 }
 
 // （受控）展开指定的树节点
-func (p *Tree) SetExpandedKeys(expandedKeys []interface{}) *Tree {
+func (p *Component) SetExpandedKeys(expandedKeys []interface{}) *Component {
 	p.ExpandedKeys = expandedKeys
 
 	return p
 }
 
 // 自定义 options 中 label value children 的字段
-func (p *Tree) SetFieldNames(fieldNames *FieldNames) *Tree {
+func (p *Component) SetFieldNames(fieldNames *FieldNames) *Component {
 	p.FieldNames = fieldNames
 
 	return p
 }
 
 // 设置虚拟滚动容器高度，设置后内部节点不再支持横向滚动
-func (p *Tree) SetHeight(height int) *Tree {
+func (p *Component) SetHeight(height int) *Component {
 	p.Height = height
 
 	return p
 }
 
 // 自定义树节点图标
-func (p *Tree) SetIcon(icon interface{}) *Tree {
+func (p *Component) SetIcon(icon interface{}) *Component {
 	p.Icon = icon
 
 	return p
 }
 
 // 支持点选多个节点（节点本身）
-func (p *Tree) SetMultiple(multiple bool) *Tree {
+func (p *Component) SetMultiple(multiple bool) *Component {
 	p.Multiple = multiple
 
 	return p
 }
 
+// 占位文本
+func (p *Component) SetPlaceholder(placeholder string) *Component {
+	p.Placeholder = placeholder
+
+	return p
+}
+
 // 添加在 Tree 最外层的 className
-func (p *Tree) SetRootClassName(rootClassName string) *Tree {
+func (p *Component) SetRootClassName(rootClassName string) *Component {
 	p.RootClassName = rootClassName
 
 	return p
 }
 
 // 添加在 Tree 最外层的 style
-func (p *Tree) SetRootStyle(rootStyle interface{}) *Tree {
+func (p *Component) SetRootStyle(rootStyle interface{}) *Component {
 	p.RootStyle = rootStyle
 
 	return p
 }
 
 // 是否可选中
-func (p *Tree) SetSelectable(selectable bool) *Tree {
+func (p *Component) SetSelectable(selectable bool) *Component {
 	p.Selectable = selectable
 
 	return p
 }
 
 // 设置选中的树节点
-func (p *Tree) SetSelectedKeys(selectedKeys []interface{}) *Tree {
+func (p *Component) SetSelectedKeys(selectedKeys []interface{}) *Component {
 	p.SelectedKeys = selectedKeys
 
 	return p
 }
 
 // 是否展示 TreeNode title 前的图标，没有默认样式，如设置为 true，需要自行定义图标相关样式
-func (p *Tree) SetShowIcon(showIcon bool) *Tree {
+func (p *Component) SetShowIcon(showIcon bool) *Component {
 	p.ShowIcon = showIcon
 
 	return p
 }
 
 // 是否展示连接线
-func (p *Tree) SetShowLine(showLine bool) *Tree {
+func (p *Component) SetShowLine(showLine bool) *Component {
 	p.ShowLine = showLine
 
 	return p
 }
 
 // 自定义树节点的展开/折叠图标
-func (p *Tree) SetSwitcherIcon(switcherIcon interface{}) *Tree {
+func (p *Component) SetSwitcherIcon(switcherIcon interface{}) *Component {
 	p.SwitcherIcon = switcherIcon
 
 	return p
 }
 
 // treeNodes 数据，如果设置则不需要手动构造 TreeNode 节点（value 在整个树范围内唯一）
-func (p *Tree) SetTreeData(treeData *TreeData) *Tree {
+func (p *Component) SetTreeData(treeData []*TreeData) *Component {
 	p.TreeData = treeData
 
 	return p
 }
 
 // treeNodes 数据，如果设置则不需要手动构造 TreeNode 节点（value 在整个树范围内唯一）
-func (p *Tree) SetData(treeData *TreeData) *Tree {
+func (p *Component) SetData(treeData []*TreeData) *Component {
 	p.TreeData = treeData
 
 	return p
 }
 
 // 自定义样式
-func (p *Tree) SetStyle(style map[string]interface{}) *Tree {
+func (p *Component) SetStyle(style map[string]interface{}) *Component {
 	p.Style = style
 
 	return p

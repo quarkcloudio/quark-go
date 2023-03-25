@@ -3,6 +3,7 @@ package model
 import (
 	"time"
 
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/selectfield"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 )
 
@@ -17,7 +18,7 @@ type Permission struct {
 }
 
 // 获取列表
-func (model *Permission) List() (list []map[string]interface{}, Error error) {
+func (model *Permission) List() (list []*selectfield.Option, Error error) {
 	permissions := []Permission{}
 	err := db.Client.Find(&permissions).Error
 	if err != nil {
@@ -25,9 +26,9 @@ func (model *Permission) List() (list []map[string]interface{}, Error error) {
 	}
 
 	for _, v := range permissions {
-		option := map[string]interface{}{
-			"label": v.Name,
-			"value": v.Id,
+		option := &selectfield.Option{
+			Label: v.Name,
+			Value: v.Id,
 		}
 		list = append(list, option)
 	}

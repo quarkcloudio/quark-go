@@ -34,6 +34,59 @@ func ConvertToFrontendRules(rules []*Rule) []*Rule {
 }
 
 // 必须设置 type：string 类型；为字符串最大长度；number 类型时为最大值；array 类型时为数组最大长度
+func Max(max int, message string) *Rule {
+	p := &Rule{}
+
+	return p.SetType("string").SetMax(max).SetMessage(message)
+}
+
+// 必须设置 type：string 类型为字符串最小长度；number 类型时为最小值；array 类型时为数组最小长度
+func Min(min int, message string) *Rule {
+	p := &Rule{}
+
+	return p.SetType("string").SetMin(min).SetMessage(message)
+}
+
+// 是否为必选字段
+func Required(required bool, message string) *Rule {
+	p := &Rule{}
+
+	return p.SetType("string").SetRequired().SetMessage(message)
+}
+
+// 设置unique验证类型，插入数据时：Unique("admins", "username", "用户名已存在")，更新数据时：Unique("admins", "username", "{id}", "用户名已存在")
+func Unique(unique ...string) *Rule {
+	var (
+		uniqueTable       string
+		uniqueTableField  string
+		uniqueIgnoreValue string
+		message           string
+	)
+
+	p := &Rule{}
+	if len(unique) == 3 {
+		uniqueTable = unique[0]
+		uniqueTableField = unique[1]
+		message = unique[2]
+
+		p.SetUnique(uniqueTable, uniqueTableField)
+	}
+
+	if len(unique) == 4 {
+		uniqueTable = unique[0]
+		uniqueTableField = unique[1]
+		uniqueIgnoreValue = unique[2]
+		message = unique[3]
+
+		p.SetUnique(uniqueTable, uniqueTableField, uniqueIgnoreValue)
+	}
+
+	p.SetMessage(message)
+
+	return p
+}
+
+// 必须设置 type：string 类型；为字符串最大长度；number 类型时为最大值；array 类型时为数组最大长度
 func (p *Rule) SetMax(max int) *Rule {
 	p.Max = max
 
@@ -55,13 +108,13 @@ func (p *Rule) SetMin(min int) *Rule {
 }
 
 // 是否为必选字段
-func (p *Rule) SetRequired(required bool) *Rule {
-	p.Required = required
+func (p *Rule) SetRequired() *Rule {
+	p.Required = true
 
 	return p
 }
 
-// 设置unique验证类型，SetUnique("admins","username")|SetUnique("admins","username","{id}")
+// 设置unique验证类型，插入数据：SetUnique("admins","username")，更新数据：SetUnique("admins","username","{id}")
 func (p *Rule) SetUnique(unique ...string) *Rule {
 	p.Type = "unique"
 

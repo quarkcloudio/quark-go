@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/go-basic/uuid"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/tree"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/treeselect"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"github.com/quarkcms/quark-go/pkg/lister"
 	"gorm.io/gorm"
@@ -91,65 +93,89 @@ func (model *Menu) OrderedList() (list []map[string]interface{}, Error error) {
 	return list, nil
 }
 
-// 获取SelectTree组件的数据
-func (model *Menu) SelectTreeData(root bool) (list []interface{}, Error error) {
-	menus := []Menu{}
-	err := db.Client.
-		Where("guard_name = ?", "admin").
-		Order("sort asc,id asc").
-		Select("name", "id", "pid").
-		Find(&menus).Error
-	if err != nil {
-		return list, err
-	}
+// 获取SelectTree组件数据
+func (model *Menu) SelectTree(root bool) (list []*treeselect.TreeData, Error error) {
 
-	menuList := []map[string]interface{}{}
-
-	// 是否有跟节点
+	// 是否有根节点
 	if root {
-		list = append(list, map[string]interface{}{
-			"label": "根节点",
-			"value": 0,
+		list = append(list, &treeselect.TreeData{
+			Title: "根节点",
+			Value: 0,
 		})
 	}
 
-	for _, v := range menus {
-		item := map[string]interface{}{
-			"value": v.Id,
-			"pid":   v.Pid,
-			"label": v.Name,
-		}
-		menuList = append(menuList, item)
-	}
+	list = append(list, model.FindSelectTreeNode(0)...)
 
-	tree, err := lister.ListToTree(menuList, "value", "pid", "children", 0)
-	if err != nil {
-		return list, err
-	}
-	list = append(list, tree...)
-
-	return list, err
+	return list, nil
 }
 
-// 获取菜单的tree
-func (model *Menu) Tree() (list []interface{}, Error error) {
+// 递归获取SelectTree组件数据
+func (model *Menu) FindSelectTreeNode(pid int) (list []*treeselect.TreeData) {
 	menus := []Menu{}
-	err := db.Client.Where("status = ?", 1).Select("name", "id", "pid").Find(&menus).Error
-	if err != nil {
-		return list, err
+	db.Client.
+		Where("guard_name = ?", "admin").
+		Where("pid = ?", pid).
+		Order("sort asc,id asc").
+		Select("name", "id", "pid").
+		Find(&menus)
+
+	if len(menus) == 0 {
+		return list
 	}
 
-	menuList := []map[string]interface{}{}
 	for _, v := range menus {
-		item := map[string]interface{}{
-			"key":   v.Id,
-			"pid":   v.Pid,
-			"title": v.Name,
+		item := &treeselect.TreeData{
+			Value: v.Id,
+			Title: v.Name,
 		}
-		menuList = append(menuList, item)
+
+		children := model.FindSelectTreeNode(v.Id)
+		if len(children) > 0 {
+			item.Children = children
+		}
+
+		list = append(list, item)
 	}
 
-	return lister.ListToTree(menuList, "key", "pid", "children", 0)
+	return list
+}
+
+// 获取Tree组件数据
+func (model *Menu) Tree() (list []*tree.TreeData, Error error) {
+	list = append(list, model.FindTreeNode(0)...)
+
+	return list, nil
+}
+
+// 递归获取Tree组件数据
+func (model *Menu) FindTreeNode(pid int) (list []*tree.TreeData) {
+	menus := []Menu{}
+	db.Client.
+		Where("guard_name = ?", "admin").
+		Where("pid = ?", pid).
+		Order("sort asc,id asc").
+		Select("name", "id", "pid").
+		Find(&menus)
+
+	if len(menus) == 0 {
+		return list
+	}
+
+	for _, v := range menus {
+		item := &tree.TreeData{
+			Key:   v.Id,
+			Title: v.Name,
+		}
+
+		children := model.FindTreeNode(v.Id)
+		if len(children) > 0 {
+			item.Children = children
+		}
+
+		list = append(list, item)
+	}
+
+	return list
 }
 
 // 通过管理员ID权限菜单

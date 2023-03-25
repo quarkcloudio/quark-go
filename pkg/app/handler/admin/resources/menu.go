@@ -8,6 +8,8 @@ import (
 	models "github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/radio"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"github.com/quarkcms/quark-go/pkg/lister"
 	"github.com/quarkcms/quark-go/pkg/msg"
@@ -47,7 +49,7 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 	permissions, _ := (&models.Permission{}).List()
 
 	// 菜单列表
-	menus, _ := (&models.Menu{}).SelectTreeData(true)
+	menus, _ := (&models.Menu{}).SelectTree(true)
 
 	return []interface{}{
 		field.Hidden("id", "ID"), // 列表读取且不展示的字段
@@ -55,14 +57,9 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 		field.Hidden("pid", "PID").OnlyOnIndex(), // 列表读取且不展示的字段
 
 		field.Text("name", "名称").
-			SetRules(
-				[]string{
-					"required",
-				},
-				map[string]string{
-					"required": "名称必须填写",
-				},
-			),
+			SetRules([]*rule.Rule{
+				rule.Required(true, "名称必须填写"),
+			}),
 
 		field.Text("guard_name", "GuardName").
 			SetDefault("admin").
@@ -76,9 +73,15 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 			OnlyOnForms(),
 
 		field.Radio("type", "渲染组件").
-			SetOptions(map[interface{}]interface{}{
-				"default": "无组件",
-				"engine":  "引擎组件",
+			SetOptions([]*radio.Option{
+				{
+					Value: "default",
+					Label: "无组件",
+				},
+				{
+					Value: "engine",
+					Label: "引擎组件",
+				},
 			}).SetDefault("engine"),
 
 		field.Text("path", "路由").

@@ -2,7 +2,7 @@ package when
 
 import (
 	"github.com/quarkcms/quark-go/pkg/component/admin/component"
-	"github.com/quarkcms/quark-go/pkg/untils"
+	"github.com/quarkcms/quark-go/pkg/utils"
 )
 
 type Item struct {
@@ -14,15 +14,15 @@ type Item struct {
 	Body              interface{} `json:"body"`               // 内容
 }
 
-type When struct {
+type Component struct {
 	ComponentKey string  `json:"componentkey"` // 组件标识
 	Component    string  `json:"component"`    // 组件名称
 	Items        []*Item `json:"items"`        // When组件中需要解析的元素
 }
 
 // 初始化组件
-func New() *When {
-	return (&When{}).Init()
+func New() *Component {
+	return (&Component{}).Init()
 }
 
 // 获取Item
@@ -31,7 +31,7 @@ func NewItem() *Item {
 }
 
 // 初始化
-func (p *When) Init() *When {
+func (p *Component) Init() *Component {
 	p.Component = "when"
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
@@ -39,14 +39,14 @@ func (p *When) Init() *When {
 }
 
 // 设置Key
-func (p *When) SetKey(key string, crypt bool) *When {
-	p.ComponentKey = untils.MakeKey(key, crypt)
+func (p *Component) SetKey(key string, crypt bool) *Component {
+	p.ComponentKey = utils.MakeKey(key, crypt)
 
 	return p
 }
 
 // 设置When组件中需要解析的元素
-func (p *When) SetItems(items []*Item) *When {
+func (p *Component) SetItems(items []*Item) *Component {
 	p.Items = items
 	return p
 }

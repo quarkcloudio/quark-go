@@ -3,6 +3,7 @@ package model
 import (
 	"time"
 
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/checkbox"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 )
 
@@ -36,7 +37,7 @@ type ModelHasPermission struct {
 }
 
 // 获取角色列表
-func (model *Role) List() (list []map[string]interface{}, Error error) {
+func (model *Role) List() (list []*checkbox.Option, Error error) {
 	roles := []Role{}
 	err := db.Client.Find(&roles).Error
 	if err != nil {
@@ -44,11 +45,10 @@ func (model *Role) List() (list []map[string]interface{}, Error error) {
 	}
 
 	for _, v := range roles {
-		option := map[string]interface{}{
-			"label": v.Name,
-			"value": v.Id,
-		}
-		list = append(list, option)
+		list = append(list, &checkbox.Option{
+			Label: v.Name,
+			Value: v.Id,
+		})
 	}
 
 	return list, nil

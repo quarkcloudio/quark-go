@@ -8,10 +8,10 @@ import (
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/when"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
 	"github.com/quarkcms/quark-go/pkg/component/admin/table"
-	"github.com/quarkcms/quark-go/pkg/untils"
+	"github.com/quarkcms/quark-go/pkg/utils"
 )
 
-type Icon struct {
+type Component struct {
 	ComponentKey string `json:"componentkey"` // 组件标识
 	Component    string `json:"component"`    // 组件名称
 
@@ -31,40 +31,41 @@ type Icon struct {
 	ValuePropName string      `json:"valuePropName"`          // 子节点的值的属性，如 Switch 的是 'checked'。该属性为 getValueProps 的封装，自定义 getValueProps 后会失效
 	WrapperCol    interface{} `json:"wrapperCol"`             // 需要为输入控件设置布局样式时，使用该属性，用法同 labelCol。你可以通过 Form 的 wrapperCol 进行统一设置，不会作用于嵌套 Item。当和 Form 同时设置时，以 Item 为准
 
-	Api            string        `json:"api,omitempty"` // 获取数据接口
-	Ignore         bool          `json:"ignore"`        // 是否忽略保存到数据库，默认为 false
-	Rules          []*rule.Rule  `json:"-"`             // 全局校验规则
-	CreationRules  []*rule.Rule  `json:"-"`             // 创建页校验规则
-	UpdateRules    []*rule.Rule  `json:"-"`             // 编辑页校验规则
-	FrontendRules  []*rule.Rule  `json:"frontendRules"` // 前端校验规则，设置字段的校验逻辑
-	When           *when.When    `json:"when"`          //
-	WhenItem       []*when.Item  `json:"-"`             //
-	ShowOnIndex    bool          `json:"-"`             // 在列表页展示
-	ShowOnDetail   bool          `json:"-"`             // 在详情页展示
-	ShowOnCreation bool          `json:"-"`             // 在创建页面展示
-	ShowOnUpdate   bool          `json:"-"`             // 在编辑页面展示
-	ShowOnExport   bool          `json:"-"`             // 在导出的Excel上展示
-	ShowOnImport   bool          `json:"-"`             // 在导入Excel上展示
-	Editable       bool          `json:"-"`             // 表格上是否可编辑
-	Column         *table.Column `json:"-"`             // 表格列
-	Callback       interface{}   `json:"-"`             // 回调函数
+	Api            string          `json:"api,omitempty"` // 获取数据接口
+	Ignore         bool            `json:"ignore"`        // 是否忽略保存到数据库，默认为 false
+	Rules          []*rule.Rule    `json:"-"`             // 全局校验规则
+	CreationRules  []*rule.Rule    `json:"-"`             // 创建页校验规则
+	UpdateRules    []*rule.Rule    `json:"-"`             // 编辑页校验规则
+	FrontendRules  []*rule.Rule    `json:"frontendRules"` // 前端校验规则，设置字段的校验逻辑
+	When           *when.Component `json:"when"`          //
+	WhenItem       []*when.Item    `json:"-"`             //
+	ShowOnIndex    bool            `json:"-"`             // 在列表页展示
+	ShowOnDetail   bool            `json:"-"`             // 在详情页展示
+	ShowOnCreation bool            `json:"-"`             // 在创建页面展示
+	ShowOnUpdate   bool            `json:"-"`             // 在编辑页面展示
+	ShowOnExport   bool            `json:"-"`             // 在导出的Excel上展示
+	ShowOnImport   bool            `json:"-"`             // 在导入Excel上展示
+	Editable       bool            `json:"-"`             // 表格上是否可编辑
+	Column         *table.Column   `json:"-"`             // 表格列
+	Callback       interface{}     `json:"-"`             // 回调函数
 
 	DefaultValue interface{}            `json:"defaultValue,omitempty"` // 默认选中的选项
 	Disabled     bool                   `json:"disabled,omitempty"`     // 整组失效
 	Style        map[string]interface{} `json:"style,omitempty"`        // 自定义样式
 	Value        interface{}            `json:"value,omitempty"`        // 指定选中项,string[] | number[]
+	Placeholder  string                 `json:"placeholder,omitempty"`  // 占位符
 	Size         string                 `json:"size"`                   // 大小，large | middle | small
 	AllowClear   bool                   `json:"allowClear"`             // 是否支持清除，默认true
 	Options      []string               `json:"options"`                // 可选项数据源
 }
 
 // 初始化组件
-func New() *Icon {
-	return (&Icon{}).Init()
+func New() *Component {
+	return (&Component{}).Init()
 }
 
 // 初始化
-func (p *Icon) Init() *Icon {
+func (p *Component) Init() *Component {
 	p.Component = "iconField"
 	p.Colon = true
 	p.LabelAlign = "right"
@@ -142,83 +143,83 @@ func (p *Icon) Init() *Icon {
 }
 
 // 设置Key
-func (p *Icon) SetKey(key string, crypt bool) *Icon {
-	p.ComponentKey = untils.MakeKey(key, crypt)
+func (p *Component) SetKey(key string, crypt bool) *Component {
+	p.ComponentKey = utils.MakeKey(key, crypt)
 
 	return p
 }
 
 // 会在 label 旁增加一个 icon，悬浮后展示配置的信息
-func (p *Icon) SetTooltip(tooltip string) *Icon {
+func (p *Component) SetTooltip(tooltip string) *Component {
 	p.Tooltip = tooltip
 
 	return p
 }
 
 // 配合 label 属性使用，表示是否显示 label 后面的冒号
-func (p *Icon) SetColon(colon bool) *Icon {
+func (p *Component) SetColon(colon bool) *Component {
 	p.Colon = colon
 	return p
 }
 
 // 额外的提示信息，和 help 类似，当需要错误信息和提示文案同时出现时，可以使用这个。
-func (p *Icon) SetExtra(extra string) *Icon {
+func (p *Component) SetExtra(extra string) *Component {
 	p.Extra = extra
 	return p
 }
 
 // 配合 validateStatus 属性使用，展示校验状态图标，建议只配合 Input 组件使用
-func (p *Icon) SetHasFeedback(hasFeedback bool) *Icon {
+func (p *Component) SetHasFeedback(hasFeedback bool) *Component {
 	p.HasFeedback = hasFeedback
 	return p
 }
 
 // 配合 help 属性使用，展示校验状态图标，建议只配合 Input 组件使用
-func (p *Icon) SetHelp(help string) *Icon {
+func (p *Component) SetHelp(help string) *Component {
 	p.Help = help
 	return p
 }
 
 // 为 true 时不带样式，作为纯字段控件使用
-func (p *Icon) SetNoStyle() *Icon {
+func (p *Component) SetNoStyle() *Component {
 	p.NoStyle = true
 	return p
 }
 
 // label 标签的文本
-func (p *Icon) SetLabel(label string) *Icon {
+func (p *Component) SetLabel(label string) *Component {
 	p.Label = label
 
 	return p
 }
 
 // 标签文本对齐方式
-func (p *Icon) SetLabelAlign(align string) *Icon {
+func (p *Component) SetLabelAlign(align string) *Component {
 	p.LabelAlign = align
 	return p
 }
 
 // label 标签布局，同 <Col> 组件，设置 span offset 值，如 {span: 3, offset: 12} 或 sm: {span: 3, offset: 12}。
 // 你可以通过 Form 的 labelCol 进行统一设置。当和 Form 同时设置时，以 Item 为准
-func (p *Icon) SetLabelCol(col interface{}) *Icon {
+func (p *Component) SetLabelCol(col interface{}) *Component {
 	p.LabelCol = col
 	return p
 }
 
 // 字段名，支持数组
-func (p *Icon) SetName(name string) *Icon {
+func (p *Component) SetName(name string) *Component {
 	p.Name = name
 	return p
 }
 
 // 是否必填，如不设置，则会根据校验规则自动生成
-func (p *Icon) SetRequired() *Icon {
+func (p *Component) SetRequired() *Component {
 	p.Required = true
 	return p
 }
 
 // 获取前端验证规则
-func (p *Icon) GetFrontendRules(path string) *Icon {
+func (p *Component) GetFrontendRules(path string) *Component {
 	var (
 		frontendRules []*rule.Rule
 		rules         []*rule.Rule
@@ -255,65 +256,65 @@ func (p *Icon) GetFrontendRules(path string) *Icon {
 }
 
 // 校验规则，设置字段的校验逻辑
-func (p *Icon) SetRules(rules []*rule.Rule) *Icon {
+func (p *Component) SetRules(rules []*rule.Rule) *Component {
 	p.Rules = rules
 
 	return p
 }
 
 // 校验规则，只在创建表单提交时生效
-func (p *Icon) SetCreationRules(rules []*rule.Rule) *Icon {
+func (p *Component) SetCreationRules(rules []*rule.Rule) *Component {
 	p.CreationRules = rules
 
 	return p
 }
 
 // 校验规则，只在更新表单提交时生效
-func (p *Icon) SetUpdateRules(rules []*rule.Rule) *Icon {
+func (p *Component) SetUpdateRules(rules []*rule.Rule) *Component {
 	p.UpdateRules = rules
 
 	return p
 }
 
 // 子节点的值的属性，如 Switch 的是 "checked"
-func (p *Icon) SetValuePropName(valuePropName string) *Icon {
+func (p *Component) SetValuePropName(valuePropName string) *Component {
 	p.ValuePropName = valuePropName
 	return p
 }
 
 // 需要为输入控件设置布局样式时，使用该属性，用法同 labelCol。
 // 你可以通过 Form 的 wrapperCol 进行统一设置。当和 Form 同时设置时，以 Item 为准。
-func (p *Icon) SetWrapperCol(col interface{}) *Icon {
+func (p *Component) SetWrapperCol(col interface{}) *Component {
 	p.WrapperCol = col
 	return p
 }
 
 // 设置保存值。
-func (p *Icon) SetValue(value interface{}) *Icon {
+func (p *Component) SetValue(value interface{}) *Component {
 	p.Value = value
 	return p
 }
 
 // 设置默认值。
-func (p *Icon) SetDefault(value interface{}) *Icon {
+func (p *Component) SetDefault(value interface{}) *Component {
 	p.DefaultValue = value
 	return p
 }
 
 // 是否禁用状态，默认为 false
-func (p *Icon) SetDisabled(disabled bool) *Icon {
+func (p *Component) SetDisabled(disabled bool) *Component {
 	p.Disabled = disabled
 	return p
 }
 
 // 是否忽略保存到数据库，默认为 false
-func (p *Icon) SetIgnore(ignore bool) *Icon {
+func (p *Component) SetIgnore(ignore bool) *Component {
 	p.Ignore = ignore
 	return p
 }
 
 // 表单联动
-func (p *Icon) SetWhen(value ...any) *Icon {
+func (p *Component) SetWhen(value ...any) *Component {
 	w := when.New()
 	i := when.NewItem()
 	var operator string
@@ -335,7 +336,7 @@ func (p *Icon) SetWhen(value ...any) *Icon {
 		i.Body = callback()
 	}
 
-	getOption := untils.InterfaceToString(option)
+	getOption := utils.InterfaceToString(option)
 
 	switch operator {
 	case "=":
@@ -375,91 +376,91 @@ func (p *Icon) SetWhen(value ...any) *Icon {
 }
 
 // Specify that the element should be hidden from the index view.
-func (p *Icon) HideFromIndex(callback bool) *Icon {
+func (p *Component) HideFromIndex(callback bool) *Component {
 	p.ShowOnIndex = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the detail view.
-func (p *Icon) HideFromDetail(callback bool) *Icon {
+func (p *Component) HideFromDetail(callback bool) *Component {
 	p.ShowOnDetail = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the creation view.
-func (p *Icon) HideWhenCreating(callback bool) *Icon {
+func (p *Component) HideWhenCreating(callback bool) *Component {
 	p.ShowOnCreation = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the update view.
-func (p *Icon) HideWhenUpdating(callback bool) *Icon {
+func (p *Component) HideWhenUpdating(callback bool) *Component {
 	p.ShowOnUpdate = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the export file.
-func (p *Icon) HideWhenExporting(callback bool) *Icon {
+func (p *Component) HideWhenExporting(callback bool) *Component {
 	p.ShowOnExport = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the import file.
-func (p *Icon) HideWhenImporting(callback bool) *Icon {
+func (p *Component) HideWhenImporting(callback bool) *Component {
 	p.ShowOnImport = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the index view.
-func (p *Icon) OnIndexShowing(callback bool) *Icon {
+func (p *Component) OnIndexShowing(callback bool) *Component {
 	p.ShowOnIndex = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the detail view.
-func (p *Icon) OnDetailShowing(callback bool) *Icon {
+func (p *Component) OnDetailShowing(callback bool) *Component {
 	p.ShowOnDetail = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the creation view.
-func (p *Icon) ShowOnCreating(callback bool) *Icon {
+func (p *Component) ShowOnCreating(callback bool) *Component {
 	p.ShowOnCreation = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the update view.
-func (p *Icon) ShowOnUpdating(callback bool) *Icon {
+func (p *Component) ShowOnUpdating(callback bool) *Component {
 	p.ShowOnUpdate = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the export file.
-func (p *Icon) ShowOnExporting(callback bool) *Icon {
+func (p *Component) ShowOnExporting(callback bool) *Component {
 	p.ShowOnExport = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the import file.
-func (p *Icon) ShowOnImporting(callback bool) *Icon {
+func (p *Component) ShowOnImporting(callback bool) *Component {
 	p.ShowOnImport = callback
 
 	return p
 }
 
 // Specify that the element should only be shown on the index view.
-func (p *Icon) OnlyOnIndex() *Icon {
+func (p *Component) OnlyOnIndex() *Component {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -471,7 +472,7 @@ func (p *Icon) OnlyOnIndex() *Icon {
 }
 
 // Specify that the element should only be shown on the detail view.
-func (p *Icon) OnlyOnDetail() *Icon {
+func (p *Component) OnlyOnDetail() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
@@ -483,7 +484,7 @@ func (p *Icon) OnlyOnDetail() *Icon {
 }
 
 // Specify that the element should only be shown on forms.
-func (p *Icon) OnlyOnForms() *Icon {
+func (p *Component) OnlyOnForms() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = true
@@ -495,7 +496,7 @@ func (p *Icon) OnlyOnForms() *Icon {
 }
 
 // Specify that the element should only be shown on export file.
-func (p *Icon) OnlyOnExport() *Icon {
+func (p *Component) OnlyOnExport() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -507,7 +508,7 @@ func (p *Icon) OnlyOnExport() *Icon {
 }
 
 // Specify that the element should only be shown on import file.
-func (p *Icon) OnlyOnImport() *Icon {
+func (p *Component) OnlyOnImport() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -519,7 +520,7 @@ func (p *Icon) OnlyOnImport() *Icon {
 }
 
 // Specify that the element should be hidden from forms.
-func (p *Icon) ExceptOnForms() *Icon {
+func (p *Component) ExceptOnForms() *Component {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
@@ -531,58 +532,58 @@ func (p *Icon) ExceptOnForms() *Icon {
 }
 
 // Check for showing when updating.
-func (p *Icon) IsShownOnUpdate() bool {
+func (p *Component) IsShownOnUpdate() bool {
 	return p.ShowOnUpdate
 }
 
 // Check showing on index.
-func (p *Icon) IsShownOnIndex() bool {
+func (p *Component) IsShownOnIndex() bool {
 	return p.ShowOnIndex
 }
 
 // Check showing on detail.
-func (p *Icon) IsShownOnDetail() bool {
+func (p *Component) IsShownOnDetail() bool {
 	return p.ShowOnDetail
 }
 
 // Check for showing when creating.
-func (p *Icon) IsShownOnCreation() bool {
+func (p *Component) IsShownOnCreation() bool {
 	return p.ShowOnCreation
 }
 
 // Check for showing when exporting.
-func (p *Icon) IsShownOnExport() bool {
+func (p *Component) IsShownOnExport() bool {
 	return p.ShowOnExport
 }
 
 // Check for showing when importing.
-func (p *Icon) IsShownOnImport() bool {
+func (p *Component) IsShownOnImport() bool {
 	return p.ShowOnImport
 }
 
 // 设置为可编辑列
-func (p *Icon) SetEditable(editable bool) *Icon {
+func (p *Component) SetEditable(editable bool) *Component {
 	p.Editable = editable
 
 	return p
 }
 
 // 闭包，透传表格列的属性
-func (p *Icon) SetColumn(f func(column *table.Column) *table.Column) *Icon {
+func (p *Component) SetColumn(f func(column *table.Column) *table.Column) *Component {
 	p.Column = f(p.Column)
 
 	return p
 }
 
 // 当前列值的枚举 valueEnum
-func (p *Icon) GetValueEnum() map[interface{}]interface{} {
+func (p *Component) GetValueEnum() map[interface{}]interface{} {
 	data := map[interface{}]interface{}{}
 
 	return data
 }
 
 // 设置回调函数
-func (p *Icon) SetCallback(closure func() interface{}) *Icon {
+func (p *Component) SetCallback(closure func() interface{}) *Component {
 	if closure != nil {
 		p.Callback = closure
 	}
@@ -591,18 +592,18 @@ func (p *Icon) SetCallback(closure func() interface{}) *Icon {
 }
 
 // 获取回调函数
-func (p *Icon) GetCallback() interface{} {
+func (p *Component) GetCallback() interface{} {
 	return p.Callback
 }
 
 // 获取数据接口
-func (p *Icon) SetApi(api string) *Icon {
+func (p *Component) SetApi(api string) *Component {
 	p.Api = api
 	return p
 }
 
 // 长度
-func (p *Icon) SetWidth(width interface{}) *Icon {
+func (p *Component) SetWidth(width interface{}) *Component {
 	style := make(map[string]interface{})
 
 	for k, v := range p.Style {
@@ -616,8 +617,15 @@ func (p *Icon) SetWidth(width interface{}) *Icon {
 }
 
 // 设置属性
-func (p *Icon) SetOptions(options []string) *Icon {
+func (p *Component) SetOptions(options []string) *Component {
 	p.Options = options
+
+	return p
+}
+
+// 输入框占位文本
+func (p *Component) SetPlaceholder(placeholder string) *Component {
+	p.Placeholder = placeholder
 
 	return p
 }

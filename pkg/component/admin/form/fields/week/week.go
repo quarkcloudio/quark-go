@@ -8,10 +8,10 @@ import (
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/when"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
 	"github.com/quarkcms/quark-go/pkg/component/admin/table"
-	"github.com/quarkcms/quark-go/pkg/untils"
+	"github.com/quarkcms/quark-go/pkg/utils"
 )
 
-type Week struct {
+type Component struct {
 	ComponentKey string `json:"componentkey"` // 组件标识
 	Component    string `json:"component"`    // 组件名称
 
@@ -31,23 +31,23 @@ type Week struct {
 	ValuePropName string      `json:"valuePropName"`          // 子节点的值的属性，如 Switch 的是 'checked'。该属性为 getValueProps 的封装，自定义 getValueProps 后会失效
 	WrapperCol    interface{} `json:"wrapperCol"`             // 需要为输入控件设置布局样式时，使用该属性，用法同 labelCol。你可以通过 Form 的 wrapperCol 进行统一设置，不会作用于嵌套 Item。当和 Form 同时设置时，以 Item 为准
 
-	Api            string        `json:"api,omitempty"` // 获取数据接口
-	Ignore         bool          `json:"ignore"`        // 是否忽略保存到数据库，默认为 false
-	Rules          []*rule.Rule  `json:"-"`             // 全局校验规则
-	CreationRules  []*rule.Rule  `json:"-"`             // 创建页校验规则
-	UpdateRules    []*rule.Rule  `json:"-"`             // 编辑页校验规则
-	FrontendRules  []*rule.Rule  `json:"frontendRules"` // 前端校验规则，设置字段的校验逻辑
-	When           *when.When    `json:"when"`          //
-	WhenItem       []*when.Item  `json:"-"`             //
-	ShowOnIndex    bool          `json:"-"`             // 在列表页展示
-	ShowOnDetail   bool          `json:"-"`             // 在详情页展示
-	ShowOnCreation bool          `json:"-"`             // 在创建页面展示
-	ShowOnUpdate   bool          `json:"-"`             // 在编辑页面展示
-	ShowOnExport   bool          `json:"-"`             // 在导出的Excel上展示
-	ShowOnImport   bool          `json:"-"`             // 在导入Excel上展示
-	Editable       bool          `json:"-"`             // 表格上是否可编辑
-	Column         *table.Column `json:"-"`             // 表格列
-	Callback       interface{}   `json:"-"`             // 回调函数
+	Api            string          `json:"api,omitempty"` // 获取数据接口
+	Ignore         bool            `json:"ignore"`        // 是否忽略保存到数据库，默认为 false
+	Rules          []*rule.Rule    `json:"-"`             // 全局校验规则
+	CreationRules  []*rule.Rule    `json:"-"`             // 创建页校验规则
+	UpdateRules    []*rule.Rule    `json:"-"`             // 编辑页校验规则
+	FrontendRules  []*rule.Rule    `json:"frontendRules"` // 前端校验规则，设置字段的校验逻辑
+	When           *when.Component `json:"when"`          //
+	WhenItem       []*when.Item    `json:"-"`             //
+	ShowOnIndex    bool            `json:"-"`             // 在列表页展示
+	ShowOnDetail   bool            `json:"-"`             // 在详情页展示
+	ShowOnCreation bool            `json:"-"`             // 在创建页面展示
+	ShowOnUpdate   bool            `json:"-"`             // 在编辑页面展示
+	ShowOnExport   bool            `json:"-"`             // 在导出的Excel上展示
+	ShowOnImport   bool            `json:"-"`             // 在导入Excel上展示
+	Editable       bool            `json:"-"`             // 表格上是否可编辑
+	Column         *table.Column   `json:"-"`             // 表格列
+	Callback       interface{}     `json:"-"`             // 回调函数
 
 	AllowClear     bool                   `json:"allowClear,omitempty"`     // 是否支持清除，默认true
 	AutoFocus      bool                   `json:"autoFocus,omitempty"`      // 自动获取焦点，默认false
@@ -82,12 +82,12 @@ type Week struct {
 }
 
 // 初始化组件
-func New() *Week {
-	return (&Week{}).Init()
+func New() *Component {
+	return (&Component{}).Init()
 }
 
 // 初始化
-func (p *Week) Init() *Week {
+func (p *Component) Init() *Component {
 	p.Component = "weekField"
 	p.Colon = true
 	p.LabelAlign = "right"
@@ -106,28 +106,28 @@ func (p *Week) Init() *Week {
 }
 
 // 设置Key
-func (p *Week) SetKey(key string, crypt bool) *Week {
-	p.ComponentKey = untils.MakeKey(key, crypt)
+func (p *Component) SetKey(key string, crypt bool) *Component {
+	p.ComponentKey = utils.MakeKey(key, crypt)
 
 	return p
 }
 
 // Set style.
-func (p *Week) SetStyle(style map[string]interface{}) *Week {
+func (p *Component) SetStyle(style map[string]interface{}) *Component {
 	p.Style = style
 
 	return p
 }
 
 // 会在 label 旁增加一个 icon，悬浮后展示配置的信息
-func (p *Week) SetTooltip(tooltip string) *Week {
+func (p *Component) SetTooltip(tooltip string) *Component {
 	p.Tooltip = tooltip
 
 	return p
 }
 
 // Field 的长度，我们归纳了常用的 Field 长度以及适合的场景，支持了一些枚举 "xs" , "s" , "m" , "l" , "x"
-func (p *Week) SetWidth(width interface{}) *Week {
+func (p *Component) SetWidth(width interface{}) *Component {
 	style := make(map[string]interface{})
 
 	for k, v := range p.Style {
@@ -141,69 +141,69 @@ func (p *Week) SetWidth(width interface{}) *Week {
 }
 
 // 配合 label 属性使用，表示是否显示 label 后面的冒号
-func (p *Week) SetColon(colon bool) *Week {
+func (p *Component) SetColon(colon bool) *Component {
 	p.Colon = colon
 	return p
 }
 
 // 额外的提示信息，和 help 类似，当需要错误信息和提示文案同时出现时，可以使用这个。
-func (p *Week) SetExtra(extra string) *Week {
+func (p *Component) SetExtra(extra string) *Component {
 	p.Extra = extra
 	return p
 }
 
 // 配合 validateStatus 属性使用，展示校验状态图标，建议只配合 Input 组件使用
-func (p *Week) SetHasFeedback(hasFeedback bool) *Week {
+func (p *Component) SetHasFeedback(hasFeedback bool) *Component {
 	p.HasFeedback = hasFeedback
 	return p
 }
 
 // 配合 help 属性使用，展示校验状态图标，建议只配合 Input 组件使用
-func (p *Week) SetHelp(help string) *Week {
+func (p *Component) SetHelp(help string) *Component {
 	p.Help = help
 	return p
 }
 
 // 为 true 时不带样式，作为纯字段控件使用
-func (p *Week) SetNoStyle() *Week {
+func (p *Component) SetNoStyle() *Component {
 	p.NoStyle = true
 	return p
 }
 
 // label 标签的文本
-func (p *Week) SetLabel(label string) *Week {
+func (p *Component) SetLabel(label string) *Component {
 	p.Label = label
 
 	return p
 }
 
 // 标签文本对齐方式
-func (p *Week) SetLabelAlign(align string) *Week {
+func (p *Component) SetLabelAlign(align string) *Component {
 	p.LabelAlign = align
 	return p
 }
 
 // label 标签布局，同 <Col> 组件，设置 span offset 值，如 {span: 3, offset: 12} 或 sm: {span: 3, offset: 12}。
 // 你可以通过 Form 的 labelCol 进行统一设置。当和 Form 同时设置时，以 Item 为准
-func (p *Week) SetLabelCol(col interface{}) *Week {
+func (p *Component) SetLabelCol(col interface{}) *Component {
 	p.LabelCol = col
 	return p
 }
 
 // 字段名，支持数组
-func (p *Week) SetName(name string) *Week {
+func (p *Component) SetName(name string) *Component {
 	p.Name = name
 	return p
 }
 
 // 是否必填，如不设置，则会根据校验规则自动生成
-func (p *Week) SetRequired() *Week {
+func (p *Component) SetRequired() *Component {
 	p.Required = true
 	return p
 }
 
 // 获取前端验证规则
-func (p *Week) GetFrontendRules(path string) *Week {
+func (p *Component) GetFrontendRules(path string) *Component {
 	var (
 		frontendRules []*rule.Rule
 		rules         []*rule.Rule
@@ -240,65 +240,65 @@ func (p *Week) GetFrontendRules(path string) *Week {
 }
 
 // 校验规则，设置字段的校验逻辑
-func (p *Week) SetRules(rules []*rule.Rule) *Week {
+func (p *Component) SetRules(rules []*rule.Rule) *Component {
 	p.Rules = rules
 
 	return p
 }
 
 // 校验规则，只在创建表单提交时生效
-func (p *Week) SetCreationRules(rules []*rule.Rule) *Week {
+func (p *Component) SetCreationRules(rules []*rule.Rule) *Component {
 	p.CreationRules = rules
 
 	return p
 }
 
 // 校验规则，只在更新表单提交时生效
-func (p *Week) SetUpdateRules(rules []*rule.Rule) *Week {
+func (p *Component) SetUpdateRules(rules []*rule.Rule) *Component {
 	p.UpdateRules = rules
 
 	return p
 }
 
 // 子节点的值的属性，如 Switch 的是 "checked"
-func (p *Week) SetValuePropName(valuePropName string) *Week {
+func (p *Component) SetValuePropName(valuePropName string) *Component {
 	p.ValuePropName = valuePropName
 	return p
 }
 
 // 需要为输入控件设置布局样式时，使用该属性，用法同 labelCol。
 // 你可以通过 Form 的 wrapperCol 进行统一设置。当和 Form 同时设置时，以 Item 为准。
-func (p *Week) SetWrapperCol(col interface{}) *Week {
+func (p *Component) SetWrapperCol(col interface{}) *Component {
 	p.WrapperCol = col
 	return p
 }
 
 // 设置保存值。
-func (p *Week) SetValue(value interface{}) *Week {
+func (p *Component) SetValue(value interface{}) *Component {
 	p.Value = value
 	return p
 }
 
 // 设置默认值。
-func (p *Week) SetDefault(value interface{}) *Week {
+func (p *Component) SetDefault(value interface{}) *Component {
 	p.DefaultValue = value
 	return p
 }
 
 // 是否禁用状态，默认为 false
-func (p *Week) SetDisabled(disabled bool) *Week {
+func (p *Component) SetDisabled(disabled bool) *Component {
 	p.Disabled = disabled
 	return p
 }
 
 // 是否忽略保存到数据库，默认为 false
-func (p *Week) SetIgnore(ignore bool) *Week {
+func (p *Component) SetIgnore(ignore bool) *Component {
 	p.Ignore = ignore
 	return p
 }
 
 // 表单联动
-func (p *Week) SetWhen(value ...any) *Week {
+func (p *Component) SetWhen(value ...any) *Component {
 	w := when.New()
 	i := when.NewItem()
 	var operator string
@@ -320,7 +320,7 @@ func (p *Week) SetWhen(value ...any) *Week {
 		i.Body = callback()
 	}
 
-	getOption := untils.InterfaceToString(option)
+	getOption := utils.InterfaceToString(option)
 
 	switch operator {
 	case "=":
@@ -360,91 +360,91 @@ func (p *Week) SetWhen(value ...any) *Week {
 }
 
 // Specify that the element should be hidden from the index view.
-func (p *Week) HideFromIndex(callback bool) *Week {
+func (p *Component) HideFromIndex(callback bool) *Component {
 	p.ShowOnIndex = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the detail view.
-func (p *Week) HideFromDetail(callback bool) *Week {
+func (p *Component) HideFromDetail(callback bool) *Component {
 	p.ShowOnDetail = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the creation view.
-func (p *Week) HideWhenCreating(callback bool) *Week {
+func (p *Component) HideWhenCreating(callback bool) *Component {
 	p.ShowOnCreation = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the update view.
-func (p *Week) HideWhenUpdating(callback bool) *Week {
+func (p *Component) HideWhenUpdating(callback bool) *Component {
 	p.ShowOnUpdate = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the export file.
-func (p *Week) HideWhenExporting(callback bool) *Week {
+func (p *Component) HideWhenExporting(callback bool) *Component {
 	p.ShowOnExport = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the import file.
-func (p *Week) HideWhenImporting(callback bool) *Week {
+func (p *Component) HideWhenImporting(callback bool) *Component {
 	p.ShowOnImport = !callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the index view.
-func (p *Week) OnIndexShowing(callback bool) *Week {
+func (p *Component) OnIndexShowing(callback bool) *Component {
 	p.ShowOnIndex = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the detail view.
-func (p *Week) OnDetailShowing(callback bool) *Week {
+func (p *Component) OnDetailShowing(callback bool) *Component {
 	p.ShowOnDetail = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the creation view.
-func (p *Week) ShowOnCreating(callback bool) *Week {
+func (p *Component) ShowOnCreating(callback bool) *Component {
 	p.ShowOnCreation = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the update view.
-func (p *Week) ShowOnUpdating(callback bool) *Week {
+func (p *Component) ShowOnUpdating(callback bool) *Component {
 	p.ShowOnUpdate = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the export file.
-func (p *Week) ShowOnExporting(callback bool) *Week {
+func (p *Component) ShowOnExporting(callback bool) *Component {
 	p.ShowOnExport = callback
 
 	return p
 }
 
 // Specify that the element should be hidden from the import file.
-func (p *Week) ShowOnImporting(callback bool) *Week {
+func (p *Component) ShowOnImporting(callback bool) *Component {
 	p.ShowOnImport = callback
 
 	return p
 }
 
 // Specify that the element should only be shown on the index view.
-func (p *Week) OnlyOnIndex() *Week {
+func (p *Component) OnlyOnIndex() *Component {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -456,7 +456,7 @@ func (p *Week) OnlyOnIndex() *Week {
 }
 
 // Specify that the element should only be shown on the detail view.
-func (p *Week) OnlyOnDetail() *Week {
+func (p *Component) OnlyOnDetail() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
@@ -468,7 +468,7 @@ func (p *Week) OnlyOnDetail() *Week {
 }
 
 // Specify that the element should only be shown on forms.
-func (p *Week) OnlyOnForms() *Week {
+func (p *Component) OnlyOnForms() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = true
@@ -480,7 +480,7 @@ func (p *Week) OnlyOnForms() *Week {
 }
 
 // Specify that the element should only be shown on export file.
-func (p *Week) OnlyOnExport() *Week {
+func (p *Component) OnlyOnExport() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -492,7 +492,7 @@ func (p *Week) OnlyOnExport() *Week {
 }
 
 // Specify that the element should only be shown on import file.
-func (p *Week) OnlyOnImport() *Week {
+func (p *Component) OnlyOnImport() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = false
@@ -504,7 +504,7 @@ func (p *Week) OnlyOnImport() *Week {
 }
 
 // Specify that the element should be hidden from forms.
-func (p *Week) ExceptOnForms() *Week {
+func (p *Component) ExceptOnForms() *Component {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = true
 	p.ShowOnCreation = false
@@ -516,58 +516,58 @@ func (p *Week) ExceptOnForms() *Week {
 }
 
 // Check for showing when updating.
-func (p *Week) IsShownOnUpdate() bool {
+func (p *Component) IsShownOnUpdate() bool {
 	return p.ShowOnUpdate
 }
 
 // Check showing on index.
-func (p *Week) IsShownOnIndex() bool {
+func (p *Component) IsShownOnIndex() bool {
 	return p.ShowOnIndex
 }
 
 // Check showing on detail.
-func (p *Week) IsShownOnDetail() bool {
+func (p *Component) IsShownOnDetail() bool {
 	return p.ShowOnDetail
 }
 
 // Check for showing when creating.
-func (p *Week) IsShownOnCreation() bool {
+func (p *Component) IsShownOnCreation() bool {
 	return p.ShowOnCreation
 }
 
 // Check for showing when exporting.
-func (p *Week) IsShownOnExport() bool {
+func (p *Component) IsShownOnExport() bool {
 	return p.ShowOnExport
 }
 
 // Check for showing when importing.
-func (p *Week) IsShownOnImport() bool {
+func (p *Component) IsShownOnImport() bool {
 	return p.ShowOnImport
 }
 
 // 设置为可编辑列
-func (p *Week) SetEditable(editable bool) *Week {
+func (p *Component) SetEditable(editable bool) *Component {
 	p.Editable = editable
 
 	return p
 }
 
 // 闭包，透传表格列的属性
-func (p *Week) SetColumn(f func(column *table.Column) *table.Column) *Week {
+func (p *Component) SetColumn(f func(column *table.Column) *table.Column) *Component {
 	p.Column = f(p.Column)
 
 	return p
 }
 
 // 当前列值的枚举 valueEnum
-func (p *Week) GetValueEnum() map[interface{}]interface{} {
+func (p *Component) GetValueEnum() map[interface{}]interface{} {
 	data := map[interface{}]interface{}{}
 
 	return data
 }
 
 // 设置回调函数
-func (p *Week) SetCallback(closure func() interface{}) *Week {
+func (p *Component) SetCallback(closure func() interface{}) *Component {
 	if closure != nil {
 		p.Callback = closure
 	}
@@ -576,193 +576,193 @@ func (p *Week) SetCallback(closure func() interface{}) *Week {
 }
 
 // 获取回调函数
-func (p *Week) GetCallback() interface{} {
+func (p *Component) GetCallback() interface{} {
 	return p.Callback
 }
 
 // 获取数据接口
-func (p *Week) SetApi(api string) *Week {
+func (p *Component) SetApi(api string) *Component {
 	p.Api = api
 	return p
 }
 
 // 可以点击清除图标删除内容
-func (p *Week) SetAllowClear(allowClear bool) *Week {
+func (p *Component) SetAllowClear(allowClear bool) *Component {
 	p.AllowClear = allowClear
 
 	return p
 }
 
 // 自动获取焦点，默认false
-func (p *Week) SetAutoFocus(autoFocus bool) *Week {
+func (p *Component) SetAutoFocus(autoFocus bool) *Component {
 	p.AutoFocus = autoFocus
 
 	return p
 }
 
 // 是否有边框，默认true
-func (p *Week) SetBordered(bordered bool) *Week {
+func (p *Component) SetBordered(bordered bool) *Component {
 	p.Bordered = bordered
 
 	return p
 }
 
 // 自定义类名
-func (p *Week) SetClassName(className string) *Week {
+func (p *Component) SetClassName(className string) *Component {
 	p.ClassName = className
 
 	return p
 }
 
 // 默认的选中项
-func (p *Week) SetDefaultValue(defaultValue interface{}) *Week {
+func (p *Component) SetDefaultValue(defaultValue interface{}) *Component {
 	p.DefaultValue = defaultValue
 
 	return p
 }
 
 // 设置日期格式，为数组时支持多格式匹配，展示以第一个为准。
-func (p *Week) SetFormat(format string) *Week {
+func (p *Component) SetFormat(format string) *Component {
 	p.Format = format
 
 	return p
 }
 
 // 自定义类名
-func (p *Week) SetPopupClassName(popupClassName string) *Week {
+func (p *Component) SetPopupClassName(popupClassName string) *Component {
 	p.PopupClassName = popupClassName
 
 	return p
 }
 
 // 设置输入框为只读（避免在移动设备上打开虚拟键盘）
-func (p *Week) SetInputReadOnly(inputReadOnly bool) *Week {
+func (p *Component) SetInputReadOnly(inputReadOnly bool) *Component {
 	p.InputReadOnly = inputReadOnly
 
 	return p
 }
 
 // 国际化配置
-func (p *Week) SetLocale(locale interface{}) *Week {
+func (p *Component) SetLocale(locale interface{}) *Component {
 	p.Locale = locale
 
 	return p
 }
 
 // 日期面板的状态 time | date | month | year | decade
-func (p *Week) SetMode(mode string) *Week {
+func (p *Component) SetMode(mode string) *Component {
 	p.Mode = mode
 
 	return p
 }
 
 // 自定义下一个图标
-func (p *Week) SetNextIcon(nextIcon interface{}) *Week {
+func (p *Component) SetNextIcon(nextIcon interface{}) *Component {
 	p.NextIcon = nextIcon
 
 	return p
 }
 
 // 控制浮层显隐
-func (p *Week) SetOpen(open bool) *Week {
+func (p *Component) SetOpen(open bool) *Component {
 	p.Open = open
 
 	return p
 }
 
 // 设置选择器类型 date | week | month | quarter | year
-func (p *Week) SetPicker(picker string) *Week {
+func (p *Component) SetPicker(picker string) *Component {
 	p.Picker = picker
 
 	return p
 }
 
 // 输入框占位文本
-func (p *Week) SetPlaceholder(placeholder string) *Week {
+func (p *Component) SetPlaceholder(placeholder string) *Component {
 	p.Placeholder = placeholder
 
 	return p
 }
 
 // 浮层预设位置，bottomLeft bottomRight topLeft topRight
-func (p *Week) SetPlacement(placement string) *Week {
+func (p *Component) SetPlacement(placement string) *Component {
 	p.Placement = placement
 
 	return p
 }
 
 // 额外的弹出日历样式
-func (p *Week) SetPopupStyle(popupStyle interface{}) *Week {
+func (p *Component) SetPopupStyle(popupStyle interface{}) *Component {
 	p.PopupStyle = popupStyle
 
 	return p
 }
 
 // 自定义上一个图标
-func (p *Week) SetPrevIcon(prevIcon interface{}) *Week {
+func (p *Component) SetPrevIcon(prevIcon interface{}) *Component {
 	p.PrevIcon = prevIcon
 
 	return p
 }
 
 // 控件大小。注：标准表单内的输入框大小限制为 large。可选 large default small
-func (p *Week) SetSize(size string) *Week {
+func (p *Component) SetSize(size string) *Component {
 	p.Size = size
 
 	return p
 }
 
 // 设置校验状态，'error' | 'warning'
-func (p *Week) SetStatus(status string) *Week {
+func (p *Component) SetStatus(status string) *Component {
 	p.Status = status
 
 	return p
 }
 
 // 自定义的选择框后缀图标
-func (p *Week) SetSuffixIcon(suffixIcon interface{}) *Week {
+func (p *Component) SetSuffixIcon(suffixIcon interface{}) *Component {
 	p.SuffixIcon = suffixIcon
 
 	return p
 }
 
 // 自定义 << 切换图标
-func (p *Week) SetSuperNextIcon(superNextIcon interface{}) *Week {
+func (p *Component) SetSuperNextIcon(superNextIcon interface{}) *Component {
 	p.SuperNextIcon = superNextIcon
 
 	return p
 }
 
 // 自定义 >> 切换图标
-func (p *Week) SetSuperPrevIcon(superPrevIcon interface{}) *Week {
+func (p *Component) SetSuperPrevIcon(superPrevIcon interface{}) *Component {
 	p.SuperPrevIcon = superPrevIcon
 
 	return p
 }
 
 // 默认面板日期
-func (p *Week) SetDefaultPickerValue(defaultPickerValue string) *Week {
+func (p *Component) SetDefaultPickerValue(defaultPickerValue string) *Component {
 	p.DefaultPickerValue = defaultPickerValue
 
 	return p
 }
 
 // 当设定了 showTime 的时候，面板是否显示“此刻”按钮
-func (p *Week) SetShowNow(showNow bool) *Week {
+func (p *Component) SetShowNow(showNow bool) *Component {
 	p.ShowNow = showNow
 
 	return p
 }
 
 // 增加时间选择功能
-func (p *Week) SetShowTime(showTime interface{}) *Week {
+func (p *Component) SetShowTime(showTime interface{}) *Component {
 	p.ShowTime = showTime
 
 	return p
 }
 
 // 是否展示“今天”按钮
-func (p *Week) SetShowToday(showToday bool) *Week {
+func (p *Component) SetShowToday(showToday bool) *Component {
 	p.ShowToday = showToday
 
 	return p

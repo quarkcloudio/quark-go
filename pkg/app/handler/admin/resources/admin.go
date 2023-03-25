@@ -10,6 +10,8 @@ import (
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/radio"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
 	"github.com/quarkcms/quark-go/pkg/component/admin/table"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"github.com/quarkcms/quark-go/pkg/hash"
@@ -58,34 +60,17 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 
 			return "<a href='#/index?api=/api/admin/admin/edit&id=" + strconv.Itoa(p.Field["id"].(int)) + "'>" + p.Field["username"].(string) + "</a>"
 		}).
-			SetRules(
-				[]string{
-					"required",
-					"min:6",
-					"max:20",
-				},
-				map[string]string{
-					"required": "用户名必须填写",
-					"min":      "用户名不能少于6个字符",
-					"max":      "用户名不能超过20个字符",
-				},
-			).
-			SetCreationRules(
-				[]string{
-					"unique:admins,username",
-				},
-				map[string]string{
-					"unique": "用户名已存在",
-				},
-			).
-			SetUpdateRules(
-				[]string{
-					"unique:admins,username,{id}",
-				},
-				map[string]string{
-					"unique": "用户名已存在",
-				},
-			),
+			SetRules([]*rule.Rule{
+				rule.Required(true, "用户名必须填写"),
+				rule.Min(6, "用户名不能少于6个字符"),
+				rule.Max(20, "用户名不能超过20个字符"),
+			}).
+			SetCreationRules([]*rule.Rule{
+				rule.Unique("admins", "username", "用户名已存在"),
+			}).
+			SetUpdateRules([]*rule.Rule{
+				rule.Unique("admins", "username", "{id}", "用户名已存在"),
+			}),
 
 		field.Checkbox("role_ids", "角色").
 			SetOptions(roles).
@@ -93,85 +78,52 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 
 		field.Text("nickname", "昵称").
 			SetEditable(true).
-			SetRules(
-				[]string{
-					"required",
-				},
-				map[string]string{
-					"required": "昵称必须填写",
-				},
-			),
+			SetRules([]*rule.Rule{
+				rule.Required(true, "昵称必须填写"),
+			}),
 
 		field.Text("email", "邮箱").
-			SetRules(
-				[]string{
-					"required",
-				},
-				map[string]string{
-					"required": "邮箱必须填写",
-				},
-			).
-			SetCreationRules(
-				[]string{
-					"unique:admins,email",
-				},
-				map[string]string{
-					"unique": "邮箱已存在",
-				},
-			).
-			SetUpdateRules(
-				[]string{
-					"unique:admins,email,{id}",
-				},
-				map[string]string{
-					"unique": "邮箱已存在",
-				},
-			),
+			SetRules([]*rule.Rule{
+				rule.Required(true, "邮箱必须填写"),
+			}).
+			SetCreationRules([]*rule.Rule{
+				rule.Unique("admins", "email", "邮箱已存在"),
+			}).
+			SetUpdateRules([]*rule.Rule{
+				rule.Unique("admins", "email", "{id}", "邮箱已存在"),
+			}),
 
 		field.Text("phone", "手机号").
-			SetRules(
-				[]string{
-					"required",
-				},
-				map[string]string{
-					"required": "手机号必须填写",
-				},
-			).
-			SetCreationRules(
-				[]string{
-					"unique:admins,phone",
-				},
-				map[string]string{
-					"unique": "手机号已存在",
-				},
-			).
-			SetUpdateRules(
-				[]string{
-					"unique:admins,phone,{id}",
-				},
-				map[string]string{
-					"unique": "手机号已存在",
-				},
-			),
+			SetRules([]*rule.Rule{
+				rule.Required(true, "手机号必须填写"),
+			}).
+			SetCreationRules([]*rule.Rule{
+				rule.Unique("admins", "phone", "手机号已存在"),
+			}).
+			SetUpdateRules([]*rule.Rule{
+				rule.Unique("admins", "phone", "{id}", "手机号已存在"),
+			}),
 
 		field.Radio("sex", "性别").
-			SetOptions(map[interface{}]interface{}{
-				1: "男",
-				2: "女",
+			SetOptions([]*radio.Option{
+				{
+					Value: 1,
+					Label: "男",
+				},
+				{
+					Value: 2,
+					Label: "女",
+				},
 			}).SetDefault(1).
 			SetColumn(func(column *table.Column) *table.Column {
 				return column.SetFilters(true)
 			}),
 
 		field.Password("password", "密码").
-			SetCreationRules(
-				[]string{
-					"required",
-				},
-				map[string]string{
-					"required": "密码必须填写",
-				},
-			).OnlyOnForms(),
+			SetCreationRules([]*rule.Rule{
+				rule.Required(true, "密码必须填写"),
+			}).
+			OnlyOnForms(),
 
 		field.Datetime("last_login_time", "最后登录时间", func() interface{} {
 			if p.Field["last_login_time"] == nil {

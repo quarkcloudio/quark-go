@@ -10,6 +10,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
@@ -46,14 +47,9 @@ func (p *Role) Fields(ctx *builder.Context) []interface{} {
 		field.ID("id", "ID"),
 
 		field.Text("name", "名称").
-			SetRules(
-				[]string{
-					"required",
-				},
-				map[string]string{
-					"required": "名称必须填写",
-				},
-			),
+			SetRules([]*rule.Rule{
+				rule.Required(true, "名称必须填写"),
+			}),
 
 		field.Text("guard_name", "GuardName").SetDefault("admin"),
 		field.Tree("menu_ids", "权限").SetData(treeData).OnlyOnForms(),
