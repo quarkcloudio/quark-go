@@ -1,14 +1,23 @@
 package adminresource
 
 import (
+	"reflect"
+
+	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template"
+	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/requests"
+	"github.com/quarkcms/quark-go/pkg/component/admin/footer"
+	"github.com/quarkcms/quark-go/pkg/component/admin/layout"
+	"github.com/quarkcms/quark-go/pkg/component/admin/page"
+	"github.com/quarkcms/quark-go/pkg/component/admin/pagecontainer"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
+	"github.com/quarkcms/quark-go/pkg/msg"
 )
 
 // 后台增删改查模板
 type Template struct {
-	template.AdminTemplate
+	template.Template
 	Title        string // 标题
 	SubTitle     string // 子标题
 	PerPage      interface{}
@@ -90,7 +99,7 @@ func (p *Template) BeforeImporting(ctx *builder.Context, list [][]interface{}) [
 
 // 列表页渲染
 func (p *Template) IndexRender(ctx *builder.Context) interface{} {
-	data := (&IndexRequest{}).QueryData(ctx)
+	data := (&requests.IndexRequest{}).QueryData(ctx)
 	body := p.IndexComponentRender(ctx, data)
 
 	result := ctx.Template.(interface {
@@ -102,12 +111,12 @@ func (p *Template) IndexRender(ctx *builder.Context) interface{} {
 
 // 表格行内编辑
 func (p *Template) EditableRender(ctx *builder.Context) interface{} {
-	return (&EditableRequest{}).Handle(ctx)
+	return (&requests.EditableRequest{}).Handle(ctx)
 }
 
 // 执行行为
 func (p *Template) ActionRender(ctx *builder.Context) interface{} {
-	return (&ActionRequest{}).Handle(ctx)
+	return (&requests.ActionRequest{}).Handle(ctx)
 }
 
 // 创建页面渲染
@@ -132,13 +141,13 @@ func (p *Template) CreationRender(ctx *builder.Context) interface{} {
 
 // 创建方法
 func (p *Template) StoreRender(ctx *builder.Context) interface{} {
-	return (&StoreRequest{}).Handle(ctx)
+	return (&requests.StoreRequest{}).Handle(ctx)
 }
 
 // 编辑页面渲染
 func (p *Template) EditRender(ctx *builder.Context) interface{} {
 	// 获取数据
-	data := (&EditRequest{}).FillData(ctx)
+	data := (&requests.EditRequest{}).FillData(ctx)
 
 	// 断言BeforeEditing方法，获取初始数据
 	data = ctx.Template.(interface {
@@ -160,18 +169,18 @@ func (p *Template) EditRender(ctx *builder.Context) interface{} {
 // 获取编辑表单值
 func (p *Template) EditValuesRender(ctx *builder.Context) interface{} {
 
-	return (&EditRequest{}).Values(ctx)
+	return (&requests.EditRequest{}).Values(ctx)
 }
 
 // 保存编辑值
 func (p *Template) SaveRender(ctx *builder.Context) interface{} {
 
-	return (&UpdateRequest{}).Handle(ctx)
+	return (&requests.UpdateRequest{}).Handle(ctx)
 }
 
 // 详情页渲染
 func (p *Template) DetailRender(ctx *builder.Context) interface{} {
-	data := (&DetailRequest{}).FillData(ctx)
+	data := (&requests.DetailRequest{}).FillData(ctx)
 
 	// 断言方法，获取初始数据
 	data = ctx.Template.(interface {
@@ -193,19 +202,19 @@ func (p *Template) DetailRender(ctx *builder.Context) interface{} {
 // 导出数据
 func (p *Template) ExportRender(ctx *builder.Context) interface{} {
 
-	return (&ExportRequest{}).Handle(ctx)
+	return (&requests.ExportRequest{}).Handle(ctx)
 }
 
 // 导入数据
 func (p *Template) ImportRender(ctx *builder.Context) interface{} {
 
-	return (&ImportRequest{}).Handle(ctx)
+	return (&requests.ImportRequest{}).Handle(ctx, IndexRoute)
 }
 
 // 导入数据模板
 func (p *Template) ImportTemplateRender(ctx *builder.Context) interface{} {
 
-	return (&ImportTemplateRequest{}).Handle(ctx)
+	return (&requests.ImportTemplateRequest{}).Handle(ctx)
 }
 
 // 通用表单资源
@@ -226,4 +235,85 @@ func (p *Template) FormRender(ctx *builder.Context) interface{} {
 	}).PageComponentRender(ctx, body)
 
 	return ctx.JSON(200, result)
+}
+
+// 页面组件渲染
+func (p *Template) PageComponentRender(ctx *builder.Context, body interface{}) interface{} {
+
+	// Layout组件
+	layoutComponent := ctx.Template.(interface {
+		LayoutComponentRender(ctx *builder.Context, body interface{}) interface{}
+	}).LayoutComponentRender(ctx, body)
+
+	return (&page.Component{}).
+		Init().
+		SetStyle(map[string]interface{}{
+			"height": "100vh",
+		}).
+		SetBody(layoutComponent).
+		JsonSerialize()
+}
+
+// 页面布局组件渲染
+func (p *Template) LayoutComponentRender(ctx *builder.Context, body interface{}) interface{} {
+	admin := &model.Admin{}
+	config := ctx.Engine.GetConfig()
+
+	// 获取登录管理员信息
+	adminInfo, err := admin.GetAuthUser(config.AppKey, ctx.Token())
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+
+	// 获取管理员菜单
+	getMenus, err := admin.GetMenuListById(adminInfo.Id)
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+
+	adminLayout := ctx.Engine.GetAdminLayout()
+
+	// 页脚
+	footer := (&footer.Component{}).
+		Init().
+		SetCopyright(adminLayout.Copyright).
+		SetLinks(adminLayout.Links)
+
+	// 页面容器组件渲染
+	pageContainerComponent := ctx.Template.(interface {
+		PageContainerComponentRender(ctx *builder.Context, body interface{}) interface{}
+	}).PageContainerComponentRender(ctx, body)
+
+	return (&layout.Component{}).
+		Init().
+		SetTitle(adminLayout.Title).
+		SetLogo(adminLayout.Logo).
+		SetActions(adminLayout.Actions).
+		SetLayout(adminLayout.Layout).
+		SetSplitMenus(adminLayout.SplitMenus).
+		SetContentWidth(adminLayout.ContentWidth).
+		SetPrimaryColor(adminLayout.PrimaryColor).
+		SetFixSiderbar(adminLayout.FixSiderbar).
+		SetFixedHeader(adminLayout.FixedHeader).
+		SetIconfontUrl(adminLayout.IconfontUrl).
+		SetLocale(adminLayout.Locale).
+		SetSiderWidth(adminLayout.SiderWidth).
+		SetMenu(getMenus).
+		SetBody(pageContainerComponent).
+		SetFooter(footer)
+}
+
+// 页面容器组件渲染
+func (p *Template) PageContainerComponentRender(ctx *builder.Context, body interface{}) interface{} {
+	value := reflect.ValueOf(ctx.Template).Elem()
+	title := value.FieldByName("Title").String()
+	subTitle := value.FieldByName("SubTitle").String()
+
+	// 设置头部
+	header := (&pagecontainer.PageHeader{}).
+		Init().
+		SetTitle(title).
+		SetSubTitle(subTitle)
+
+	return (&pagecontainer.Component{}).Init().SetHeader(header).SetBody(body)
 }

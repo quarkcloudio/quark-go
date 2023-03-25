@@ -28,7 +28,7 @@ import (
 
 // 后台登录模板
 type Template struct {
-	template.MixTemplate
+	template.Template
 	Title string
 	Style string
 }

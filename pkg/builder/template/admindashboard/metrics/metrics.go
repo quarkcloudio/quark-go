@@ -1,6 +1,6 @@
 package metrics
 
-type AdminMetrics struct {
+type Metrics struct {
 	Title string
 	Col   int
 }

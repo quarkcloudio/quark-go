@@ -34,7 +34,7 @@ func (p *Account) FormApi(ctx *builder.Context) string {
 
 // 字段
 func (p *Account) Fields(ctx *builder.Context) []interface{} {
-	field := &builder.AdminField{}
+	field := &adminresource.Field{}
 
 	return []interface{}{
 

@@ -44,7 +44,7 @@ func (p *Admin) Init() interface{} {
 // 字段
 func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 
-	field := &builder.AdminField{}
+	field := &adminresource.Field{}
 
 	// 角色列表
 	roles, _ := (&model.Role{}).List()

@@ -41,7 +41,7 @@ func (p *Menu) Init() interface{} {
 
 // 字段
 func (p *Menu) Fields(ctx *builder.Context) []interface{} {
-	field := &builder.AdminField{}
+	field := &adminresource.Field{}
 
 	// 权限列表
 	permissions, _ := (&models.Permission{}).List()

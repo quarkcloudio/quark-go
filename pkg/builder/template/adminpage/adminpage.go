@@ -13,7 +13,7 @@ import (
 
 // 后台登录模板
 type Template struct {
-	template.AdminTemplate
+	template.Template
 }
 
 // 初始化

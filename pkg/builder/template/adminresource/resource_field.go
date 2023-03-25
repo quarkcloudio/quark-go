@@ -1,4 +1,4 @@
-package builder
+package adminresource
 
 import (
 	"reflect"
@@ -7,10 +7,10 @@ import (
 )
 
 // 后台字段组件
-type AdminField struct{}
+type Field struct{}
 
 // ID组件
-func (p *AdminField) ID(params ...interface{}) *fields.ID {
+func (p *Field) ID(params ...interface{}) *fields.ID {
 	field := (&fields.ID{}).Init()
 
 	if len(params) >= 2 {
@@ -32,7 +32,7 @@ func (p *AdminField) ID(params ...interface{}) *fields.ID {
 }
 
 // Hidden组件
-func (p *AdminField) Hidden(params ...interface{}) *fields.Hidden {
+func (p *Field) Hidden(params ...interface{}) *fields.Hidden {
 	field := (&fields.Hidden{}).Init()
 
 	if len(params) >= 2 {
@@ -54,7 +54,7 @@ func (p *AdminField) Hidden(params ...interface{}) *fields.Hidden {
 }
 
 // 输入框组件
-func (p *AdminField) Text(params ...interface{}) *fields.Text {
+func (p *Field) Text(params ...interface{}) *fields.Text {
 	field := (&fields.Text{}).Init()
 
 	placeholder := reflect.
@@ -89,7 +89,7 @@ func (p *AdminField) Text(params ...interface{}) *fields.Text {
 }
 
 // 文本域组件
-func (p *AdminField) TextArea(params ...interface{}) *fields.TextArea {
+func (p *Field) TextArea(params ...interface{}) *fields.TextArea {
 	field := (&fields.TextArea{}).Init()
 
 	placeholder := reflect.
@@ -124,7 +124,7 @@ func (p *AdminField) TextArea(params ...interface{}) *fields.TextArea {
 }
 
 // 密码框组件
-func (p *AdminField) Password(params ...interface{}) *fields.Password {
+func (p *Field) Password(params ...interface{}) *fields.Password {
 	field := (&fields.Password{}).Init()
 
 	placeholder := reflect.
@@ -159,7 +159,7 @@ func (p *AdminField) Password(params ...interface{}) *fields.Password {
 }
 
 // 单选组件
-func (p *AdminField) Radio(params ...string) *fields.Radio {
+func (p *Field) Radio(params ...string) *fields.Radio {
 	field := &fields.Radio{}
 
 	if len(params) == 2 {
@@ -172,7 +172,7 @@ func (p *AdminField) Radio(params ...string) *fields.Radio {
 }
 
 // 多选组件
-func (p *AdminField) Checkbox(params ...string) *fields.Checkbox {
+func (p *Field) Checkbox(params ...string) *fields.Checkbox {
 	field := &fields.Checkbox{}
 
 	if len(params) == 2 {
@@ -185,7 +185,7 @@ func (p *AdminField) Checkbox(params ...string) *fields.Checkbox {
 }
 
 // 日期组件
-func (p *AdminField) Date(params ...interface{}) *fields.Date {
+func (p *Field) Date(params ...interface{}) *fields.Date {
 	field := &fields.Date{}
 
 	placeholder := reflect.
@@ -220,7 +220,7 @@ func (p *AdminField) Date(params ...interface{}) *fields.Date {
 }
 
 // 日期范围组件
-func (p *AdminField) DateRange(params ...interface{}) *fields.DateRange {
+func (p *Field) DateRange(params ...interface{}) *fields.DateRange {
 	field := &fields.DateRange{}
 
 	placeholder := reflect.
@@ -255,7 +255,7 @@ func (p *AdminField) DateRange(params ...interface{}) *fields.DateRange {
 }
 
 // 日期时间组件
-func (p *AdminField) Datetime(params ...interface{}) *fields.Datetime {
+func (p *Field) Datetime(params ...interface{}) *fields.Datetime {
 	field := &fields.Datetime{}
 
 	placeholder := reflect.
@@ -290,7 +290,7 @@ func (p *AdminField) Datetime(params ...interface{}) *fields.Datetime {
 }
 
 // 日期时间范围组件
-func (p *AdminField) DatetimeRange(params ...interface{}) *fields.DatetimeRange {
+func (p *Field) DatetimeRange(params ...interface{}) *fields.DatetimeRange {
 	field := &fields.DatetimeRange{}
 
 	placeholder := reflect.
@@ -325,7 +325,7 @@ func (p *AdminField) DatetimeRange(params ...interface{}) *fields.DatetimeRange 
 }
 
 // 开关组件
-func (p *AdminField) Switch(params ...string) *fields.Switch {
+func (p *Field) Switch(params ...string) *fields.Switch {
 	field := &fields.Switch{}
 
 	if len(params) == 2 {
@@ -338,7 +338,7 @@ func (p *AdminField) Switch(params ...string) *fields.Switch {
 }
 
 // 树形组件
-func (p *AdminField) Tree(params ...interface{}) *fields.Tree {
+func (p *Field) Tree(params ...interface{}) *fields.Tree {
 	field := (&fields.Tree{}).Init()
 
 	placeholder := reflect.
@@ -373,7 +373,7 @@ func (p *AdminField) Tree(params ...interface{}) *fields.Tree {
 }
 
 // 图标组件
-func (p *AdminField) Icon(params ...interface{}) *fields.Icon {
+func (p *Field) Icon(params ...interface{}) *fields.Icon {
 	field := (&fields.Icon{}).Init()
 
 	placeholder := reflect.
@@ -408,7 +408,7 @@ func (p *AdminField) Icon(params ...interface{}) *fields.Icon {
 }
 
 // 下拉框组件
-func (p *AdminField) Select(params ...interface{}) *fields.Select {
+func (p *Field) Select(params ...interface{}) *fields.Select {
 	field := (&fields.Select{}).Init()
 
 	placeholder := reflect.
@@ -443,7 +443,7 @@ func (p *AdminField) Select(params ...interface{}) *fields.Select {
 }
 
 // 级联菜单组件
-func (p *AdminField) Cascader(params ...interface{}) *fields.Cascader {
+func (p *Field) Cascader(params ...interface{}) *fields.Cascader {
 	field := (&fields.Cascader{}).Init()
 
 	if len(params) >= 2 {
@@ -464,7 +464,7 @@ func (p *AdminField) Cascader(params ...interface{}) *fields.Cascader {
 }
 
 // 图片组件
-func (p *AdminField) Image(params ...interface{}) *fields.Image {
+func (p *Field) Image(params ...interface{}) *fields.Image {
 	field := (&fields.Image{}).Init()
 
 	if len(params) >= 2 {
@@ -487,7 +487,7 @@ func (p *AdminField) Image(params ...interface{}) *fields.Image {
 }
 
 // 文件组件
-func (p *AdminField) File(params ...interface{}) *fields.File {
+func (p *Field) File(params ...interface{}) *fields.File {
 	field := (&fields.File{}).Init()
 
 	if len(params) >= 2 {
@@ -510,7 +510,7 @@ func (p *AdminField) File(params ...interface{}) *fields.File {
 }
 
 // 文本展示组件
-func (p *AdminField) Display(label string) *fields.Display {
+func (p *Field) Display(label string) *fields.Display {
 	field := (&fields.Display{}).Init()
 	field.SetLabel(label)
 
@@ -518,7 +518,7 @@ func (p *AdminField) Display(label string) *fields.Display {
 }
 
 // 编辑器组件
-func (p *AdminField) Editor(params ...interface{}) *fields.Editor {
+func (p *Field) Editor(params ...interface{}) *fields.Editor {
 	field := (&fields.Editor{}).Init()
 
 	if len(params) >= 2 {
@@ -539,7 +539,7 @@ func (p *AdminField) Editor(params ...interface{}) *fields.Editor {
 }
 
 // 分组组件
-func (p *AdminField) Group(label string, items []interface{}) *fields.Group {
+func (p *Field) Group(label string, items []interface{}) *fields.Group {
 	field := (&fields.Group{}).Init()
 
 	field.SetBody(items).SetLabel(label)
@@ -548,7 +548,7 @@ func (p *AdminField) Group(label string, items []interface{}) *fields.Group {
 }
 
 // List组件
-func (p *AdminField) List(params ...interface{}) *fields.List {
+func (p *Field) List(params ...interface{}) *fields.List {
 	field := (&fields.List{}).Init()
 
 	if len(params) >= 2 {
@@ -571,7 +571,7 @@ func (p *AdminField) List(params ...interface{}) *fields.List {
 }
 
 // 地图组件
-func (p *AdminField) Map(params ...interface{}) *fields.Map {
+func (p *Field) Map(params ...interface{}) *fields.Map {
 	field := (&fields.Map{}).Init()
 
 	if len(params) >= 2 {
@@ -594,7 +594,7 @@ func (p *AdminField) Map(params ...interface{}) *fields.Map {
 }
 
 // 地图围栏组件
-func (p *AdminField) Geofence(params ...interface{}) *fields.Geofence {
+func (p *Field) Geofence(params ...interface{}) *fields.Geofence {
 	field := (&fields.Geofence{}).Init()
 
 	if len(params) >= 2 {
@@ -617,7 +617,7 @@ func (p *AdminField) Geofence(params ...interface{}) *fields.Geofence {
 }
 
 // 日期-月组件
-func (p *AdminField) Month(params ...interface{}) *fields.Month {
+func (p *Field) Month(params ...interface{}) *fields.Month {
 	field := &fields.Month{}
 
 	placeholder := reflect.
@@ -652,7 +652,7 @@ func (p *AdminField) Month(params ...interface{}) *fields.Month {
 }
 
 // 数组输入框组件
-func (p *AdminField) Number(params ...interface{}) *fields.Number {
+func (p *Field) Number(params ...interface{}) *fields.Number {
 	field := (&fields.Number{}).Init()
 
 	placeholder := reflect.
@@ -687,7 +687,7 @@ func (p *AdminField) Number(params ...interface{}) *fields.Number {
 }
 
 // 日期-季度组件
-func (p *AdminField) Quarter(params ...interface{}) *fields.Quarter {
+func (p *Field) Quarter(params ...interface{}) *fields.Quarter {
 	field := &fields.Quarter{}
 
 	placeholder := reflect.
@@ -722,7 +722,7 @@ func (p *AdminField) Quarter(params ...interface{}) *fields.Quarter {
 }
 
 // 搜索组件
-func (p *AdminField) Search(params ...interface{}) *fields.Search {
+func (p *Field) Search(params ...interface{}) *fields.Search {
 	field := (&fields.Search{}).Init()
 
 	if len(params) >= 2 {
@@ -745,7 +745,7 @@ func (p *AdminField) Search(params ...interface{}) *fields.Search {
 }
 
 // 时间范围组件
-func (p *AdminField) TimeRange(params ...interface{}) *fields.TimeRange {
+func (p *Field) TimeRange(params ...interface{}) *fields.TimeRange {
 	field := &fields.TimeRange{}
 
 	placeholder := reflect.
@@ -780,7 +780,7 @@ func (p *AdminField) TimeRange(params ...interface{}) *fields.TimeRange {
 }
 
 // 时间组件
-func (p *AdminField) Time(params ...interface{}) *fields.Time {
+func (p *Field) Time(params ...interface{}) *fields.Time {
 	field := &fields.Time{}
 
 	placeholder := reflect.
@@ -815,7 +815,7 @@ func (p *AdminField) Time(params ...interface{}) *fields.Time {
 }
 
 // 周组件
-func (p *AdminField) Week(params ...interface{}) *fields.Week {
+func (p *Field) Week(params ...interface{}) *fields.Week {
 	field := &fields.Week{}
 
 	placeholder := reflect.
@@ -850,7 +850,7 @@ func (p *AdminField) Week(params ...interface{}) *fields.Week {
 }
 
 // 年组件
-func (p *AdminField) Year(params ...interface{}) *fields.Year {
+func (p *Field) Year(params ...interface{}) *fields.Year {
 	field := &fields.Year{}
 
 	placeholder := reflect.
@@ -885,7 +885,7 @@ func (p *AdminField) Year(params ...interface{}) *fields.Year {
 }
 
 // Select组合组件
-func (p *AdminField) Selects(body interface{}) *fields.Selects {
+func (p *Field) Selects(body interface{}) *fields.Selects {
 	field := &fields.Selects{}
 
 	field.Init().SetBody(body)
@@ -894,7 +894,7 @@ func (p *AdminField) Selects(body interface{}) *fields.Selects {
 }
 
 // 树选择组件
-func (p *AdminField) TreeSelect(params ...interface{}) *fields.TreeSelect {
+func (p *Field) TreeSelect(params ...interface{}) *fields.TreeSelect {
 	field := (&fields.TreeSelect{}).Init()
 
 	placeholder := reflect.

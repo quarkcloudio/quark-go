@@ -1,4 +1,4 @@
-package adminresource
+package requests
 
 import (
 	"reflect"

@@ -39,7 +39,7 @@ func (p *WebConfig) FormApi(ctx *builder.Context) string {
 
 // 字段
 func (p *WebConfig) Fields(ctx *builder.Context) []interface{} {
-	field := &builder.AdminField{}
+	field := &adminresource.Field{}
 	groupNames := []string{}
 
 	db.Client.Model(p.Model).Where("status = ?", 1).Distinct("group_name").Pluck("group_name", &groupNames)

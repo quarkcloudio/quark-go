@@ -1,9 +1,9 @@
 package actions
 
 import (
-	models "github.com/quarkcms/quark-go/pkg/app/model"
+	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
-	"github.com/quarkcms/quark-go/pkg/builder/actions"
+	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
@@ -37,13 +37,13 @@ func (p *SyncPermission) Init() *SyncPermission {
 }
 
 // 执行行为句柄
-func (p *SyncPermission) Handle(ctx *builder.Context, model *gorm.DB) interface{} {
+func (p *SyncPermission) Handle(ctx *builder.Context, query *gorm.DB) interface{} {
 	// 获取当前权限
 	permissions := ctx.Engine.GetUrlPaths()
-	data := []models.Permission{}
+	data := []model.Permission{}
 
 	var names []string
-	db.Client.Model(&models.Permission{}).Pluck("name", &names)
+	db.Client.Model(&model.Permission{}).Pluck("name", &names)
 	for _, v := range permissions {
 		has := false
 		for _, nv := range names {
@@ -52,7 +52,7 @@ func (p *SyncPermission) Handle(ctx *builder.Context, model *gorm.DB) interface{
 			}
 		}
 		if has == false {
-			permission := models.Permission{
+			permission := model.Permission{
 				MenuId:    0,
 				Name:      v,
 				GuardName: "admin",
@@ -64,12 +64,12 @@ func (p *SyncPermission) Handle(ctx *builder.Context, model *gorm.DB) interface{
 		return ctx.JSON(200, msg.Error("暂无新增权限！", ""))
 	}
 
-	err := model.Create(data).Error
+	err := query.Create(data).Error
 	if err != nil {
 		return msg.Error(err.Error(), "")
 	}
 
-	err = db.Client.Model(&models.Permission{}).Where("name NOT IN ?", permissions).Delete("").Error
+	err = db.Client.Model(&model.Permission{}).Where("name NOT IN ?", permissions).Delete("").Error
 	if err != nil {
 		return msg.Error(err.Error(), "")
 	}

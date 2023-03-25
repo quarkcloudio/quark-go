@@ -2,13 +2,13 @@ package metrics
 
 import (
 	"github.com/quarkcms/quark-go/pkg/app/model"
-	"github.com/quarkcms/quark-go/pkg/builder/metrics"
+	"github.com/quarkcms/quark-go/pkg/builder/template/admindashboard/metrics"
 	"github.com/quarkcms/quark-go/pkg/component/admin/statistic"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 )
 
 type TotalLog struct {
-	metrics.AdminValue
+	metrics.Value
 }
 
 // 初始化

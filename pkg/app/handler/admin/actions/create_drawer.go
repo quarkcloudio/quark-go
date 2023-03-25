@@ -2,7 +2,7 @@ package actions
 
 import (
 	"github.com/quarkcms/quark-go/pkg/builder"
-	"github.com/quarkcms/quark-go/pkg/builder/actions"
+	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
 	"github.com/quarkcms/quark-go/pkg/component/admin/action"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form"
 )

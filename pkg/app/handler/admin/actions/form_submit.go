@@ -1,7 +1,7 @@
 package actions
 
 import (
-	"github.com/quarkcms/quark-go/pkg/builder/actions"
+	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
 )
 
 type FormSubmit struct {

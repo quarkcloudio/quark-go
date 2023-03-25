@@ -2,7 +2,7 @@ package actions
 
 import (
 	"github.com/quarkcms/quark-go/pkg/builder"
-	"github.com/quarkcms/quark-go/pkg/builder/actions"
+	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
 	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
@@ -12,7 +12,7 @@ type SelectOptions struct {
 }
 
 // 执行行为句柄
-func (p *SelectOptions) Handle(ctx *builder.Context, model *gorm.DB) interface{} {
+func (p *SelectOptions) Handle(ctx *builder.Context, query *gorm.DB) interface{} {
 	resource := ctx.Param("resource")
 	search := ctx.Query("search")
 	lists := []map[string]interface{}{}
@@ -20,7 +20,7 @@ func (p *SelectOptions) Handle(ctx *builder.Context, model *gorm.DB) interface{}
 
 	switch resource {
 	case "Some Field":
-		model.Where("Some Field = ?", search).Find(&lists)
+		query.Where("Some Field = ?", search).Find(&lists)
 		for _, v := range lists {
 			item := map[string]interface{}{
 				"label": v["name"],

@@ -2,7 +2,8 @@ package actions
 
 import (
 	"github.com/quarkcms/quark-go/pkg/builder"
-	"github.com/quarkcms/quark-go/pkg/builder/actions"
+	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
+	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
 	"github.com/quarkcms/quark-go/pkg/component/admin/action"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form"
 	"github.com/quarkcms/quark-go/pkg/component/admin/space"
@@ -49,7 +50,7 @@ func (p *Import) GetBody(ctx *builder.Context) interface{} {
 			SetStyle(map[string]interface{}{
 				"marginBottom": "20px",
 			}),
-		(&builder.AdminField{}).
+		(&adminresource.Field{}).
 			File("fileId", "导入文件").
 			SetLimitNum(1).
 			SetLimitType([]string{

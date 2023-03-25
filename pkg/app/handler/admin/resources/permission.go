@@ -34,7 +34,7 @@ func (p *Permission) Init() interface{} {
 
 // 字段
 func (p *Permission) Fields(ctx *builder.Context) []interface{} {
-	field := &builder.AdminField{}
+	field := &adminresource.Field{}
 
 	return []interface{}{
 		field.ID("id", "ID"),

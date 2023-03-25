@@ -35,7 +35,7 @@ func (p *File) Init() interface{} {
 
 // 字段
 func (p *File) Fields(ctx *builder.Context) []interface{} {
-	field := &builder.AdminField{}
+	field := &adminresource.Field{}
 
 	return []interface{}{
 		field.ID("id", "ID"),

@@ -19,7 +19,7 @@ import (
 
 // 文件上传
 type Template struct {
-	template.AdminTemplate
+	template.Template
 	LimitSize        int64              // 限制文件大小
 	LimitType        interface{}        // 限制文件类型
 	LimitImageWidth  int64              // 限制图片宽度

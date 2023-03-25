@@ -39,7 +39,7 @@ func (p *Role) Init() interface{} {
 
 // 字段
 func (p *Role) Fields(ctx *builder.Context) []interface{} {
-	field := &builder.AdminField{}
+	field := &adminresource.Field{}
 	treeData, _ := (&model.Menu{}).Tree()
 
 	return []interface{}{

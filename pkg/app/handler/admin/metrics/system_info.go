@@ -7,14 +7,14 @@ import (
 	"time"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
-	"github.com/quarkcms/quark-go/pkg/builder/metrics"
+	"github.com/quarkcms/quark-go/pkg/builder/template/admindashboard/metrics"
 	"github.com/quarkcms/quark-go/pkg/component/admin/descriptions"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/mem"
 )
 
 type SystemInfo struct {
-	metrics.AdminDescriptions
+	metrics.Descriptions
 }
 
 // 初始化

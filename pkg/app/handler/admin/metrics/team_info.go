@@ -1,12 +1,12 @@
 package metrics
 
 import (
-	"github.com/quarkcms/quark-go/pkg/builder/metrics"
+	"github.com/quarkcms/quark-go/pkg/builder/template/admindashboard/metrics"
 	"github.com/quarkcms/quark-go/pkg/component/admin/descriptions"
 )
 
 type TeamInfo struct {
-	metrics.AdminDescriptions
+	metrics.Descriptions
 }
 
 // 初始化

@@ -12,7 +12,7 @@ import (
 
 // 后台登录模板
 type Template struct {
-	template.AdminTemplate
+	template.Template
 	Api      string      // 登录接口
 	Redirect string      // 登录后跳转地址
 	Logo     interface{} // 登录页面Logo

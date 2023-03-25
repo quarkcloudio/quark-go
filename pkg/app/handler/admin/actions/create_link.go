@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
-	"github.com/quarkcms/quark-go/pkg/builder/actions"
+	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
 )
 
 type CreateLink struct {

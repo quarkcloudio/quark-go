@@ -5,13 +5,13 @@ import (
 	"gorm.io/gorm"
 )
 
-type AdminValue struct {
-	AdminMetrics
+type Value struct {
+	Metrics
 	Precision int
 }
 
 // 记录条数
-func (p *AdminValue) Count(DB *gorm.DB) *statistic.Component {
+func (p *Value) Count(DB *gorm.DB) *statistic.Component {
 	var count int64
 	DB.Count(&count)
 
@@ -19,6 +19,6 @@ func (p *AdminValue) Count(DB *gorm.DB) *statistic.Component {
 }
 
 // 包含组件的结果
-func (p *AdminValue) Result(value int64) *statistic.Component {
+func (p *Value) Result(value int64) *statistic.Component {
 	return (&statistic.Component{}).Init().SetTitle(p.Title).SetValue(value)
 }

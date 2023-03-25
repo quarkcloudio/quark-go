@@ -1,4 +1,4 @@
-package adminresource
+package requests
 
 import (
 	"encoding/json"
@@ -21,7 +21,7 @@ import (
 type ImportRequest struct{}
 
 // 执行行为
-func (p *ImportRequest) Handle(ctx *builder.Context) interface{} {
+func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) interface{} {
 	data := map[string]interface{}{}
 	json.Unmarshal(ctx.Body(), &data)
 	fileId := data["fileId"]
@@ -131,7 +131,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context) interface{} {
 	}
 
 	if importResult {
-		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
+		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+indexRoute, ":resource", ctx.Param("resource"), -1), ""))
 	} else {
 		importHead = append(importHead, "错误信息")
 

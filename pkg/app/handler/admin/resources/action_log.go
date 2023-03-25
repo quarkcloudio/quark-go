@@ -47,7 +47,7 @@ func (p *ActionLog) Query(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 
 // 字段
 func (p *ActionLog) Fields(ctx *builder.Context) []interface{} {
-	field := &builder.AdminField{}
+	field := &adminresource.Field{}
 
 	return []interface{}{
 		field.ID("id", "ID"),
