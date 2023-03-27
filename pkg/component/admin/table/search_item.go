@@ -154,7 +154,7 @@ func (p *SearchItem) SetLoad(field string, api string) *SearchItem {
  * @param string options
  * @return object
  */
-func (p *SearchItem) Input(options map[interface{}]interface{}) *SearchItem {
+func (p *SearchItem) Input(options interface{}) *SearchItem {
 	p.Component = "textField"
 
 	return p
@@ -166,21 +166,9 @@ func (p *SearchItem) Input(options map[interface{}]interface{}) *SearchItem {
  * @param array options
  * @return object
  */
-func (p *SearchItem) Select(options map[interface{}]interface{}) *SearchItem {
+func (p *SearchItem) Select(options interface{}) *SearchItem {
 	p.Component = "selectField"
-
-	var data []map[string]interface{}
-
-	for k, v := range options {
-		option := map[string]interface{}{
-			"label": v,
-			"value": k,
-		}
-
-		data = append(data, option)
-	}
-
-	p.Options = data
+	p.Options = options
 	p.Placeholder = "请选择" + p.Label
 
 	return p
@@ -192,21 +180,9 @@ func (p *SearchItem) Select(options map[interface{}]interface{}) *SearchItem {
  * @param array options
  * @return object
  */
-func (p *SearchItem) MultipleSelect(options map[interface{}]interface{}) *SearchItem {
+func (p *SearchItem) MultipleSelect(options interface{}) *SearchItem {
 	p.Component = "multipleSelectField"
-
-	var data []map[string]interface{}
-
-	for k, v := range options {
-		option := map[string]interface{}{
-			"label": v,
-			"value": k,
-		}
-
-		data = append(data, option)
-	}
-
-	p.Options = data
+	p.Options = options
 	p.Placeholder = "请选择" + p.Label
 
 	return p
@@ -218,7 +194,7 @@ func (p *SearchItem) MultipleSelect(options map[interface{}]interface{}) *Search
  * @param string options
  * @return object
  */
-func (p *SearchItem) Date(options map[interface{}]interface{}) *SearchItem {
+func (p *SearchItem) Date(options interface{}) *SearchItem {
 	p.Component = "dateField"
 
 	return p
@@ -230,7 +206,7 @@ func (p *SearchItem) Date(options map[interface{}]interface{}) *SearchItem {
  * @param string options
  * @return object
  */
-func (p *SearchItem) Datetime(options map[interface{}]interface{}) *SearchItem {
+func (p *SearchItem) Datetime(options interface{}) *SearchItem {
 	p.Component = "datetimeField"
 
 	return p
@@ -242,7 +218,7 @@ func (p *SearchItem) Datetime(options map[interface{}]interface{}) *SearchItem {
  * @param string options
  * @return object
  */
-func (p *SearchItem) DateRange(options map[interface{}]interface{}) *SearchItem {
+func (p *SearchItem) DateRange(options interface{}) *SearchItem {
 	p.Component = "dateRangeField"
 	p.Placeholder = []string{"请选择开始" + p.Label, "请选择结束" + p.Label}
 
@@ -255,7 +231,7 @@ func (p *SearchItem) DateRange(options map[interface{}]interface{}) *SearchItem 
  * @param string options
  * @return object
  */
-func (p *SearchItem) DatetimeRange(options map[interface{}]interface{}) *SearchItem {
+func (p *SearchItem) DatetimeRange(options interface{}) *SearchItem {
 	p.Component = "datetimeRangeField"
 	p.Placeholder = []string{"请选择开始" + p.Label, "请选择结束" + p.Label}
 
@@ -268,20 +244,9 @@ func (p *SearchItem) DatetimeRange(options map[interface{}]interface{}) *SearchI
  * @param array options
  * @return object
  */
-func (p *SearchItem) Cascader(options map[interface{}]interface{}) *SearchItem {
+func (p *SearchItem) Cascader(options interface{}) *SearchItem {
 	p.Component = "cascaderField"
-
-	var data []map[string]interface{}
-	for k, v := range options {
-		option := map[string]interface{}{
-			"label": v,
-			"value": k,
-		}
-
-		data = append(data, option)
-	}
-
-	p.Options = data
+	p.Options = options
 	p.Placeholder = "请选择" + p.Label
 
 	return p

@@ -25,18 +25,30 @@ func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
 	}
 
 	for _, v := range searches {
-		component := v.(interface{ GetComponent() string }).GetComponent() // 获取组件名称
-		name := v.(interface{ GetName() string }).GetName()                // label 标签的文本
+
+		// 获取组件名称
+		component := v.(interface{ GetComponent() string }).GetComponent()
+
+		// label 标签的文本
+		name := v.(interface{ GetName() string }).GetName()
+
+		// 字段名，支持数组
 		column := v.(interface {
 			GetColumn(search interface{}) string
-		}).GetColumn(v) // 字段名，支持数组
-		api := v.(interface{ GetApi() string }).GetApi() // 获取接口
+		}).GetColumn(v)
+
+		// 获取接口
+		api := v.(interface{ GetApi() string }).GetApi()
+
+		// 获取属性
 		options := v.(interface {
-			Options(ctx *builder.Context) map[interface{}]interface{}
-		}).Options(ctx) // 获取属性
+			Options(ctx *builder.Context) interface{}
+		}).Options(ctx)
+
+		// 获取接口
 		load := v.(interface {
 			Load(ctx *builder.Context) map[string]string
-		}).Load(ctx) // 获取接口
+		}).Load(ctx)
 
 		// 搜索栏表单项
 		item := (&table.SearchItem{}).

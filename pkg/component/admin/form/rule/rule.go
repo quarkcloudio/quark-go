@@ -1,6 +1,8 @@
 package rule
 
 type Rule struct {
+	Name              string `json:"-"`                  // 需要验证的字段名称
+	RuleType          string `json:"-"`                  // 规则类型，max | min | unique | required
 	Max               int    `json:"max,omitempty"`      // 必须设置 type：string 类型为字符串最大长度；number 类型时为最大值；array 类型时为数组最大长度
 	Message           string `json:"message"`            // 错误信息，不设置时会通过模板自动生成
 	Min               int    `json:"min,omitempty"`      // 必须设置 type：string 类型为字符串最小长度；number 类型时为最小值；array 类型时为数组最小长度
@@ -8,13 +10,12 @@ type Rule struct {
 	UniqueTable       string `json:"-"`                  // type：unique时，指定验证的表名
 	UniqueTableField  string `json:"-"`                  // type：unique时，指定需验证表中的字段
 	UniqueIgnoreValue string `json:"-"`                  // type：unique时，忽略符合条件验证的列，例如：{id}
-	Type              string `json:"type"`               // 类型，string |number |boolean |url | email | unique
+	Type              string `json:"type"`               // 字段类型，string | number | boolean | url | email
 }
 
 // 初始化
 func New() *Rule {
 	p := &Rule{}
-
 	p.Type = "string"
 
 	return p
@@ -25,7 +26,7 @@ func ConvertToFrontendRules(rules []*Rule) []*Rule {
 	var newRules []*Rule
 
 	for _, rule := range rules {
-		if rule.Type != "unique" {
+		if rule.RuleType != "unique" {
 			newRules = append(newRules, rule)
 		}
 	}
@@ -37,21 +38,21 @@ func ConvertToFrontendRules(rules []*Rule) []*Rule {
 func Max(max int, message string) *Rule {
 	p := &Rule{}
 
-	return p.SetType("string").SetMax(max).SetMessage(message)
+	return p.SetMax(max).SetMessage(message)
 }
 
 // 必须设置 type：string 类型为字符串最小长度；number 类型时为最小值；array 类型时为数组最小长度
 func Min(min int, message string) *Rule {
 	p := &Rule{}
 
-	return p.SetType("string").SetMin(min).SetMessage(message)
+	return p.SetMin(min).SetMessage(message)
 }
 
 // 是否为必选字段
 func Required(required bool, message string) *Rule {
 	p := &Rule{}
 
-	return p.SetType("string").SetRequired().SetMessage(message)
+	return p.SetRequired().SetMessage(message)
 }
 
 // 设置unique验证类型，插入数据时：Unique("admins", "username", "用户名已存在")，更新数据时：Unique("admins", "username", "{id}", "用户名已存在")
@@ -86,11 +87,18 @@ func Unique(unique ...string) *Rule {
 	return p
 }
 
+// 需要验证的字段名称
+func (p *Rule) SetName(name string) *Rule {
+	p.Name = name
+
+	return p
+}
+
 // 必须设置 type：string 类型；为字符串最大长度；number 类型时为最大值；array 类型时为数组最大长度
 func (p *Rule) SetMax(max int) *Rule {
 	p.Max = max
 
-	return p
+	return p.SetType("string").SetRuleType("max")
 }
 
 // 错误信息，不设置时会通过模板自动生成
@@ -104,14 +112,14 @@ func (p *Rule) SetMessage(message string) *Rule {
 func (p *Rule) SetMin(min int) *Rule {
 	p.Min = min
 
-	return p
+	return p.SetType("string").SetRuleType("min")
 }
 
 // 是否为必选字段
 func (p *Rule) SetRequired() *Rule {
 	p.Required = true
 
-	return p
+	return p.SetType("string").SetRuleType("required")
 }
 
 // 设置unique验证类型，插入数据：SetUnique("admins","username")，更新数据：SetUnique("admins","username","{id}")
@@ -129,7 +137,7 @@ func (p *Rule) SetUnique(unique ...string) *Rule {
 		p.UniqueIgnoreValue = unique[2]
 	}
 
-	return p
+	return p.SetType("string").SetRuleType("unique")
 }
 
 // type：unique时，指定验证的表名
@@ -153,9 +161,16 @@ func (p *Rule) SetUniqueIgnoreValue(uniqueIgnoreValue string) *Rule {
 	return p
 }
 
-// 类型，string | number | boolean | url | email | unique
+// 字段类型，string | number | boolean | url | email
 func (p *Rule) SetType(ruleType string) *Rule {
 	p.Type = ruleType
+
+	return p
+}
+
+// 规则类型，max | min | unique | required
+func (p *Rule) SetRuleType(ruleType string) *Rule {
+	p.RuleType = ruleType
 
 	return p
 }

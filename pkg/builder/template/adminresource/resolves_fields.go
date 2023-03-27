@@ -6,6 +6,12 @@ import (
 
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/component/admin/descriptions"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/cascader"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/checkbox"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/radio"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/selectfield"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/treeselect"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/when"
 	"github.com/quarkcms/quark-go/pkg/component/admin/table"
 	"github.com/quarkcms/quark-go/pkg/component/admin/tabs"
 )
@@ -66,6 +72,8 @@ func (p *Template) IndexColumns(ctx *builder.Context) interface{} {
 
 // 将表单项转换为表格列
 func (p *Template) fieldToColumn(ctx *builder.Context, field interface{}) interface{} {
+	var options interface{}
+
 	reflectElem := reflect.
 		ValueOf(field).
 		Elem()
@@ -118,42 +126,122 @@ func (p *Template) fieldToColumn(ctx *builder.Context, field interface{}) interf
 		column = column.SetValueType("text")
 	case "treeSelectField":
 		// 获取属性
-		treeData := reflectElem.
-			FieldByName("TreeData").
-			Interface()
+		options = field.(interface {
+			GetOptions() []*treeselect.TreeData
+		}).GetOptions()
 
-		column = column.SetValueType("treeSelect").SetFieldProps(map[string]interface{}{
-			"options": treeData,
-		})
+		// 设置表格列
+		column = column.
+			SetValueType("treeSelect").
+			SetFieldProps(map[string]interface{}{
+				"options": options,
+			})
 	case "cascaderField":
 		// 获取属性
-		treeData := reflectElem.
-			FieldByName("TreeData").
-			Interface()
+		options = field.(interface {
+			GetOptions() []*cascader.Option
+		}).GetOptions()
 
-		column = column.SetValueType("cascader").SetFieldProps(map[string]interface{}{
-			"options": treeData,
-		})
+		// 设置表格列
+		column = column.
+			SetValueType("cascader").
+			SetFieldProps(map[string]interface{}{
+				"options": options,
+			})
 	case "selectField":
-		valueEnum := field.(interface {
-			GetValueEnum() map[interface{}]interface{}
-		}).GetValueEnum()
-		column = column.SetValueType("select").SetValueEnum(valueEnum)
+		// 获取属性
+		options = field.(interface {
+			GetOptions() []*selectfield.Option
+		}).GetOptions()
+
+		// 设置表格列
+		column = column.
+			SetValueType("select").
+			SetFieldProps(map[string]interface{}{
+				"options": options,
+			})
+
+		// 是否设置了过滤项
+		filters := column.Filters
+		if getfilters, ok := filters.(bool); ok {
+			if getfilters {
+				// 获取值的枚举，会自动转化把值当成 key 来取出要显示的内容
+				valueEnum := field.(interface {
+					GetValueEnum() interface{}
+				}).GetValueEnum()
+				column.SetValueEnum(valueEnum)
+			}
+		}
 	case "checkboxField":
-		valueEnum := field.(interface {
-			GetValueEnum() map[interface{}]interface{}
-		}).GetValueEnum()
-		column = column.SetValueType("checkbox").SetValueEnum(valueEnum)
+		// 获取属性
+		options = field.(interface {
+			GetOptions() []*checkbox.Option
+		}).GetOptions()
+
+		// 设置表格列
+		column = column.
+			SetValueType("checkbox").
+			SetFieldProps(map[string]interface{}{
+				"options": options,
+			})
+
+		// 是否设置了过滤项
+		filters := column.Filters
+		if getfilters, ok := filters.(bool); ok {
+			if getfilters {
+				// 获取值的枚举，会自动转化把值当成 key 来取出要显示的内容
+				valueEnum := field.(interface {
+					GetValueEnum() interface{}
+				}).GetValueEnum()
+				column.SetValueEnum(valueEnum)
+			}
+		}
 	case "radioField":
-		valueEnum := field.(interface {
-			GetValueEnum() map[interface{}]interface{}
-		}).GetValueEnum()
-		column = column.SetValueType("radio").SetValueEnum(valueEnum)
+		// 获取属性
+		options = field.(interface {
+			GetOptions() []*radio.Option
+		}).GetOptions()
+
+		// 设置表格列
+		column = column.
+			SetValueType("radio").
+			SetFieldProps(map[string]interface{}{
+				"options": options,
+			})
+
+		// 是否设置了过滤项
+		filters := column.Filters
+		if getfilters, ok := filters.(bool); ok {
+			if getfilters {
+				// 获取值的枚举，会自动转化把值当成 key 来取出要显示的内容
+				valueEnum := field.(interface {
+					GetValueEnum() interface{}
+				}).GetValueEnum()
+				column.SetValueEnum(valueEnum)
+			}
+		}
 	case "switchField":
-		valueEnum := field.(interface {
-			GetSwitchValueEnum() map[interface{}]interface{}
-		}).GetSwitchValueEnum()
-		column = column.SetValueType("select").SetValueEnum(valueEnum)
+		// 获取属性
+		options = field.(interface {
+			GetOptions() interface{}
+		}).GetOptions()
+
+		// 设置表格列
+		column = column.
+			SetValueType("select").
+			SetValueEnum(options)
+
+		// 是否设置了过滤项
+		filters := column.Filters
+		if getfilters, ok := filters.(bool); ok {
+			if getfilters {
+				// 获取值的枚举，会自动转化把值当成 key 来取出要显示的内容
+				valueEnum := field.(interface {
+					GetValueEnum() interface{}
+				}).GetValueEnum()
+				column.SetValueEnum(valueEnum)
+			}
+		}
 	case "imageField":
 		column = column.SetValueType("image")
 	default:
@@ -161,10 +249,6 @@ func (p *Template) fieldToColumn(ctx *builder.Context, field interface{}) interf
 	}
 
 	if editable {
-		// 可编辑，设置编辑
-		options := reflectElem.
-			FieldByName("Options").
-			Interface()
 
 		// 可编辑api地址
 		editableApi := strings.Replace(ctx.Path(), "/index", "/editable", -1)
@@ -185,9 +269,7 @@ func (p *Template) CreationFields(ctx *builder.Context) interface{} {
 		if v, ok := v.(interface {
 			IsShownOnCreation() bool
 		}); ok {
-			isShownOnCreation := v.(interface {
-				IsShownOnCreation() bool
-			}).IsShownOnCreation()
+			isShownOnCreation := v.IsShownOnCreation()
 			if isShownOnCreation {
 				items = append(items, v)
 			}
@@ -205,9 +287,7 @@ func (p *Template) CreationFieldsWithoutWhen(ctx *builder.Context) interface{} {
 		if v, ok := v.(interface {
 			IsShownOnCreation() bool
 		}); ok {
-			isShownOnCreation := v.(interface {
-				IsShownOnCreation() bool
-			}).IsShownOnCreation()
+			isShownOnCreation := v.IsShownOnCreation()
 			if isShownOnCreation {
 				items = append(items, v)
 			}
@@ -235,14 +315,16 @@ func (p *Template) CreationFieldsWithinComponents(ctx *builder.Context) interfac
 				FieldByName("Body").Interface()
 			var subItems []interface{}
 			for _, sv := range body.([]interface{}) {
-				isShownOnCreation := sv.(interface {
+				if sv, ok := sv.(interface {
 					IsShownOnCreation() bool
-				}).IsShownOnCreation()
-				if isShownOnCreation {
-					sv.(interface {
-						BuildFrontendRules(string) interface{}
-					}).BuildFrontendRules(ctx.Path())
-					subItems = append(subItems, sv)
+				}); ok {
+					isShownOnCreation := sv.IsShownOnCreation()
+					if isShownOnCreation {
+						sv.(interface {
+							GetFrontendRules(string) interface{}
+						}).GetFrontendRules(ctx.Path())
+						subItems = append(subItems, sv)
+					}
 				}
 			}
 			v.(interface {
@@ -251,14 +333,16 @@ func (p *Template) CreationFieldsWithinComponents(ctx *builder.Context) interfac
 
 			items = append(items, v)
 		} else {
-			isShownOnCreation := v.(interface {
+			if v, ok := v.(interface {
 				IsShownOnCreation() bool
-			}).IsShownOnCreation()
-			if isShownOnCreation {
-				v.(interface {
-					BuildFrontendRules(string) interface{}
-				}).BuildFrontendRules(ctx.Path())
-				items = append(items, v)
+			}); ok {
+				isShownOnCreation := v.IsShownOnCreation()
+				if isShownOnCreation {
+					v.(interface {
+						GetFrontendRules(string) interface{}
+					}).GetFrontendRules(ctx.Path())
+					items = append(items, v)
+				}
 			}
 		}
 	}
@@ -275,9 +359,7 @@ func (p *Template) UpdateFields(ctx *builder.Context) interface{} {
 		if v, ok := v.(interface {
 			IsShownOnUpdate() bool
 		}); ok {
-			isShownOnUpdate := v.(interface {
-				IsShownOnUpdate() bool
-			}).IsShownOnUpdate()
+			isShownOnUpdate := v.IsShownOnUpdate()
 			if isShownOnUpdate {
 				items = append(items, v)
 			}
@@ -296,9 +378,7 @@ func (p *Template) UpdateFieldsWithoutWhen(ctx *builder.Context) interface{} {
 		if v, ok := v.(interface {
 			IsShownOnUpdate() bool
 		}); ok {
-			isShownOnUpdate := v.(interface {
-				IsShownOnUpdate() bool
-			}).IsShownOnUpdate()
+			isShownOnUpdate := v.IsShownOnUpdate()
 			if isShownOnUpdate {
 				items = append(items, v)
 			}
@@ -327,14 +407,16 @@ func (p *Template) UpdateFieldsWithinComponents(ctx *builder.Context) interface{
 				FieldByName("Body").Interface()
 			var subItems []interface{}
 			for _, sv := range body.([]interface{}) {
-				isShownOnUpdate := sv.(interface {
+				if sv, ok := sv.(interface {
 					IsShownOnUpdate() bool
-				}).IsShownOnUpdate()
-				if isShownOnUpdate {
-					sv.(interface {
-						BuildFrontendRules(string) interface{}
-					}).BuildFrontendRules(ctx.Path())
-					subItems = append(subItems, sv)
+				}); ok {
+					isShownOnUpdate := sv.IsShownOnUpdate()
+					if isShownOnUpdate {
+						sv.(interface {
+							GetFrontendRules(string) interface{}
+						}).GetFrontendRules(ctx.Path())
+						subItems = append(subItems, sv)
+					}
 				}
 			}
 			v.(interface {
@@ -343,14 +425,16 @@ func (p *Template) UpdateFieldsWithinComponents(ctx *builder.Context) interface{
 
 			items = append(items, v)
 		} else {
-			isShownOnUpdate := v.(interface {
+			if v, ok := v.(interface {
 				IsShownOnUpdate() bool
-			}).IsShownOnUpdate()
-			if isShownOnUpdate {
-				v.(interface {
-					BuildFrontendRules(string) interface{}
-				}).BuildFrontendRules(ctx.Path())
-				items = append(items, v)
+			}); ok {
+				isShownOnUpdate := v.IsShownOnUpdate()
+				if isShownOnUpdate {
+					v.(interface {
+						GetFrontendRules(string) interface{}
+					}).GetFrontendRules(ctx.Path())
+					items = append(items, v)
+				}
 			}
 		}
 	}
@@ -366,9 +450,7 @@ func (p *Template) DetailFields(ctx *builder.Context) interface{} {
 		if v, ok := v.(interface {
 			IsShownOnDetail() bool
 		}); ok {
-			isShownOnDetail := v.(interface {
-				IsShownOnDetail() bool
-			}).IsShownOnDetail()
+			isShownOnDetail := v.IsShownOnDetail()
 			if isShownOnDetail {
 				items = append(items, v)
 			}
@@ -403,13 +485,14 @@ func (p *Template) DetailFieldsWithinComponents(ctx *builder.Context, data map[s
 
 			var subItems []interface{}
 			for _, sv := range body.([]interface{}) {
-				isShownOnDetail := sv.(interface {
+				if sv, ok := sv.(interface {
 					IsShownOnDetail() bool
-				}).IsShownOnDetail()
-
-				if isShownOnDetail {
-					getColumn := p.fieldToColumn(ctx, sv)
-					subItems = append(subItems, getColumn)
+				}); ok {
+					isShownOnDetail := sv.IsShownOnDetail()
+					if isShownOnDetail {
+						getColumn := p.fieldToColumn(ctx, sv)
+						subItems = append(subItems, getColumn)
+					}
 				}
 			}
 
@@ -425,13 +508,14 @@ func (p *Template) DetailFieldsWithinComponents(ctx *builder.Context, data map[s
 			v.(interface{ SetBody(interface{}) interface{} }).SetBody(descriptions)
 			items = append(items, v)
 		} else {
-			isShownOnDetail := v.(interface {
+			if v, ok := v.(interface {
 				IsShownOnDetail() bool
-			}).IsShownOnDetail()
-
-			if isShownOnDetail {
-				getColumn := p.fieldToColumn(ctx, v)
-				items = append(items, getColumn)
+			}); ok {
+				isShownOnDetail := v.IsShownOnDetail()
+				if isShownOnDetail {
+					getColumn := p.fieldToColumn(ctx, v)
+					items = append(items, getColumn)
+				}
 			}
 		}
 	}
@@ -460,9 +544,7 @@ func (p *Template) ExportFields(ctx *builder.Context) interface{} {
 		if v, ok := v.(interface {
 			IsShownOnExport() bool
 		}); ok {
-			isShownOnExport := v.(interface {
-				IsShownOnExport() bool
-			}).IsShownOnExport()
+			isShownOnExport := v.IsShownOnExport()
 			if isShownOnExport {
 				items = append(items, v)
 			}
@@ -480,9 +562,7 @@ func (p *Template) ImportFields(ctx *builder.Context) interface{} {
 		if v, ok := v.(interface {
 			IsShownOnImport() bool
 		}); ok {
-			isShownOnImport := v.(interface {
-				IsShownOnImport() bool
-			}).IsShownOnImport()
+			isShownOnImport := v.IsShownOnImport()
 			if isShownOnImport {
 				items = append(items, v)
 			}
@@ -497,13 +577,13 @@ func (p *Template) ImportFieldsWithoutWhen(ctx *builder.Context) interface{} {
 	fields := p.getFieldsWithoutWhen(ctx)
 	var items []interface{}
 	for _, v := range fields.([]interface{}) {
-
-		isShownOnImport := v.(interface {
+		if v, ok := v.(interface {
 			IsShownOnImport() bool
-		}).IsShownOnImport()
-
-		if isShownOnImport {
-			items = append(items, v)
+		}); ok {
+			isShownOnImport := v.IsShownOnImport()
+			if isShownOnImport {
+				items = append(items, v)
+			}
 		}
 	}
 
@@ -574,32 +654,35 @@ func (p *Template) findFields(fields interface{}, when bool) interface{} {
 // 获取When组件中的字段
 func (p *Template) getWhenFields(item interface{}) []interface{} {
 	var items []interface{}
-	when := reflect.
+	whenIsValid := reflect.
 		ValueOf(item).
 		Elem().
-		FieldByName("When").Interface()
-	if when == nil {
+		FieldByName("When").IsValid()
+	if !whenIsValid {
 		return items
 	}
 
-	whenItems := when.(map[string]interface{})["items"]
+	getWhen := item.(interface {
+		GetWhen() *when.Component
+	}).GetWhen()
+
+	if getWhen == nil {
+		return items
+	}
+	whenItems := getWhen.Items
 	if whenItems == nil {
 		return items
 	}
 
-	whenItems, ok := whenItems.([]interface{})
-	if ok {
-		for _, v := range whenItems.([]interface{}) {
-			body := v.(map[string]interface{})["body"]
-			if body != nil {
-				if body, ok := body.([]interface{}); ok {
-					if len(body) > 0 {
-						items = append(items, body...)
-					}
+	for _, v := range whenItems {
+		if v.Body != nil {
+			if body, ok := v.Body.([]interface{}); ok {
+				if len(body) > 0 {
+					items = append(items, body...)
 				}
-				if body, ok := body.(interface{}); ok {
-					items = append(items, body)
-				}
+			}
+			if body, ok := v.Body.(interface{}); ok {
+				items = append(items, body)
 			}
 		}
 	}

@@ -35,7 +35,7 @@ type Component struct {
 	Ignore         bool            `json:"ignore"`        // 是否忽略保存到数据库，默认为 false
 	Rules          []*rule.Rule    `json:"-"`             // 全局校验规则
 	CreationRules  []*rule.Rule    `json:"-"`             // 创建页校验规则
-	UpTextRules    []*rule.Rule    `json:"-"`             // 编辑页校验规则
+	UpdateRules    []*rule.Rule    `json:"-"`             // 编辑页校验规则
 	FrontendRules  []*rule.Rule    `json:"frontendRules"` // 前端校验规则，设置字段的校验逻辑
 	When           *when.Component `json:"when"`          //
 	WhenItem       []*when.Item    `json:"-"`             //
@@ -195,12 +195,12 @@ func (p *Component) SetRequired() *Component {
 }
 
 // 获取前端验证规则
-func (p *Component) GetFrontendRules(path string) *Component {
+func (p *Component) GetFrontendRules(path string) interface{} {
 	var (
 		frontendRules []*rule.Rule
 		rules         []*rule.Rule
 		creationRules []*rule.Rule
-		upTextRules   []*rule.Rule
+		UpdateRules   []*rule.Rule
 	)
 
 	uri := strings.Split(path, "/")
@@ -213,8 +213,8 @@ func (p *Component) GetFrontendRules(path string) *Component {
 	if isCreating && len(p.CreationRules) > 0 {
 		creationRules = rule.ConvertToFrontendRules(p.CreationRules)
 	}
-	if isEditing && len(p.UpTextRules) > 0 {
-		upTextRules = rule.ConvertToFrontendRules(p.UpTextRules)
+	if isEditing && len(p.UpdateRules) > 0 {
+		UpdateRules = rule.ConvertToFrontendRules(p.UpdateRules)
 	}
 	if len(rules) > 0 {
 		frontendRules = append(frontendRules, rules...)
@@ -222,8 +222,8 @@ func (p *Component) GetFrontendRules(path string) *Component {
 	if len(creationRules) > 0 {
 		frontendRules = append(frontendRules, creationRules...)
 	}
-	if len(upTextRules) > 0 {
-		frontendRules = append(frontendRules, upTextRules...)
+	if len(UpdateRules) > 0 {
+		frontendRules = append(frontendRules, UpdateRules...)
 	}
 
 	p.FrontendRules = frontendRules
@@ -233,6 +233,9 @@ func (p *Component) GetFrontendRules(path string) *Component {
 
 // 校验规则，设置字段的校验逻辑
 func (p *Component) SetRules(rules []*rule.Rule) *Component {
+	for k, v := range rules {
+		rules[k] = v.SetName(p.Name)
+	}
 	p.Rules = rules
 
 	return p
@@ -240,16 +243,40 @@ func (p *Component) SetRules(rules []*rule.Rule) *Component {
 
 // 校验规则，只在创建表单提交时生效
 func (p *Component) SetCreationRules(rules []*rule.Rule) *Component {
+	for k, v := range rules {
+		rules[k] = v.SetName(p.Name)
+	}
 	p.CreationRules = rules
 
 	return p
 }
 
 // 校验规则，只在更新表单提交时生效
-func (p *Component) SetUpTextRules(rules []*rule.Rule) *Component {
-	p.UpTextRules = rules
+func (p *Component) SetUpdateRules(rules []*rule.Rule) *Component {
+	for k, v := range rules {
+		rules[k] = v.SetName(p.Name)
+	}
+	p.UpdateRules = rules
 
 	return p
+}
+
+// 获取全局验证规则
+func (p *Component) GetRules() []*rule.Rule {
+
+	return p.Rules
+}
+
+// 获取创建表单验证规则
+func (p *Component) GetCreationRules() []*rule.Rule {
+
+	return p.CreationRules
+}
+
+// 获取更新表单验证规则
+func (p *Component) GetUpdateRules() []*rule.Rule {
+
+	return p.UpdateRules
 }
 
 // 子节点的值的属性，如 Switch 的是 "checked"
@@ -289,7 +316,7 @@ func (p *Component) SetIgnore(ignore bool) *Component {
 	return p
 }
 
-// 表单联动
+// 设置When组件数据
 func (p *Component) SetWhen(value ...any) *Component {
 	w := when.New()
 	i := when.NewItem()
@@ -313,7 +340,6 @@ func (p *Component) SetWhen(value ...any) *Component {
 	}
 
 	getOption := utils.InterfaceToString(option)
-
 	switch operator {
 	case "=":
 		i.Condition = "<%=String(" + p.Name + ") === '" + getOption + "' %>"
@@ -349,6 +375,12 @@ func (p *Component) SetWhen(value ...any) *Component {
 	p.When = w.SetItems(p.WhenItem)
 
 	return p
+}
+
+// 获取When组件数据
+func (p *Component) GetWhen() *when.Component {
+
+	return p.When
 }
 
 // Specify that the element should be hidden from the index view.
@@ -508,7 +540,7 @@ func (p *Component) ExceptOnForms() *Component {
 }
 
 // Check for showing when updating.
-func (p *Component) IsShownOnUpText() bool {
+func (p *Component) IsShownOnUpdate() bool {
 	return p.ShowOnUpdate
 }
 

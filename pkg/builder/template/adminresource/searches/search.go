@@ -81,7 +81,7 @@ func (p *Search) Apply(ctx *builder.Context, query *gorm.DB, value interface{}) 
 }
 
 // 属性
-func (p *Search) Options(ctx *builder.Context) map[interface{}]interface{} {
+func (p *Search) Options(ctx *builder.Context) interface{} {
 	return nil
 }
 

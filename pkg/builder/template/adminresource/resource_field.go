@@ -47,10 +47,8 @@ func (p *Field) ID(params ...interface{}) *id.Component {
 	field := id.New()
 
 	if len(params) >= 2 {
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -69,10 +67,8 @@ func (p *Field) Hidden(params ...interface{}) *hidden.Component {
 	field := hidden.New()
 
 	if len(params) >= 2 {
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -96,14 +92,11 @@ func (p *Field) Text(params ...interface{}) *text.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.SetPlaceholder("请输入" + params[1].(string))
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -131,14 +124,11 @@ func (p *Field) TextArea(params ...interface{}) *textarea.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.SetPlaceholder("请输入" + params[1].(string))
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -166,14 +156,11 @@ func (p *Field) Password(params ...interface{}) *password.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.SetPlaceholder("请输入" + params[1].(string))
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -184,7 +171,6 @@ func (p *Field) Password(params ...interface{}) *password.Component {
 		if placeholder == "" {
 			field.SetPlaceholder("请输入" + params[1].(string))
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -227,14 +213,11 @@ func (p *Field) Date(params ...interface{}) *date.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -245,7 +228,6 @@ func (p *Field) Date(params ...interface{}) *date.Component {
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -262,14 +244,11 @@ func (p *Field) DateRange(params ...interface{}) *daterange.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -280,7 +259,6 @@ func (p *Field) DateRange(params ...interface{}) *daterange.Component {
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -297,14 +275,11 @@ func (p *Field) Datetime(params ...interface{}) *datetime.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -315,7 +290,6 @@ func (p *Field) Datetime(params ...interface{}) *datetime.Component {
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -332,14 +306,11 @@ func (p *Field) DatetimeRange(params ...interface{}) *datetimerange.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -350,7 +321,6 @@ func (p *Field) DatetimeRange(params ...interface{}) *datetimerange.Component {
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -380,14 +350,11 @@ func (p *Field) Tree(params ...interface{}) *tree.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.SetPlaceholder("请选择" + params[1].(string))
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -398,7 +365,6 @@ func (p *Field) Tree(params ...interface{}) *tree.Component {
 		if placeholder == "" {
 			field.SetPlaceholder("请选择" + params[1].(string))
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -415,14 +381,11 @@ func (p *Field) Icon(params ...interface{}) *icon.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.SetPlaceholder("请选择" + params[1].(string))
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -433,7 +396,6 @@ func (p *Field) Icon(params ...interface{}) *icon.Component {
 		if placeholder == "" {
 			field.SetPlaceholder("请选择" + params[1].(string))
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -450,14 +412,11 @@ func (p *Field) Select(params ...interface{}) *selectfield.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.SetPlaceholder("请选择" + params[1].(string))
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -468,7 +427,6 @@ func (p *Field) Select(params ...interface{}) *selectfield.Component {
 		if placeholder == "" {
 			field.SetPlaceholder("请选择" + params[1].(string))
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -482,7 +440,6 @@ func (p *Field) Cascader(params ...interface{}) *cascader.Component {
 	if len(params) >= 2 {
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -501,10 +458,8 @@ func (p *Field) Image(params ...interface{}) *image.Component {
 	field := image.New()
 
 	if len(params) >= 2 {
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -512,7 +467,6 @@ func (p *Field) Image(params ...interface{}) *image.Component {
 			}
 		}
 	} else {
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -524,10 +478,8 @@ func (p *Field) File(params ...interface{}) *file.Component {
 	field := file.New()
 
 	if len(params) >= 2 {
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -535,7 +487,6 @@ func (p *Field) File(params ...interface{}) *file.Component {
 			}
 		}
 	} else {
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -558,7 +509,6 @@ func (p *Field) Editor(params ...interface{}) *editor.Component {
 	if len(params) >= 2 {
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -587,10 +537,8 @@ func (p *Field) List(params ...interface{}) *list.Component {
 	field := list.New()
 
 	if len(params) >= 2 {
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -598,7 +546,6 @@ func (p *Field) List(params ...interface{}) *list.Component {
 			}
 		}
 	} else {
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -610,10 +557,8 @@ func (p *Field) Map(params ...interface{}) *mapfield.Component {
 	field := mapfield.New()
 
 	if len(params) >= 2 {
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -621,7 +566,6 @@ func (p *Field) Map(params ...interface{}) *mapfield.Component {
 			}
 		}
 	} else {
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -633,10 +577,8 @@ func (p *Field) Geofence(params ...interface{}) *geofence.Component {
 	field := geofence.New()
 
 	if len(params) >= 2 {
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -644,7 +586,6 @@ func (p *Field) Geofence(params ...interface{}) *geofence.Component {
 			}
 		}
 	} else {
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -661,14 +602,11 @@ func (p *Field) Month(params ...interface{}) *month.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -679,7 +617,6 @@ func (p *Field) Month(params ...interface{}) *month.Component {
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -696,14 +633,11 @@ func (p *Field) Number(params ...interface{}) *number.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.SetPlaceholder("请输入" + params[1].(string))
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -714,7 +648,6 @@ func (p *Field) Number(params ...interface{}) *number.Component {
 		if placeholder == "" {
 			field.SetPlaceholder("请输入" + params[1].(string))
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -731,14 +664,11 @@ func (p *Field) Quarter(params ...interface{}) *quarter.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -749,7 +679,6 @@ func (p *Field) Quarter(params ...interface{}) *quarter.Component {
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -761,10 +690,8 @@ func (p *Field) Search(params ...interface{}) *search.Component {
 	field := search.New()
 
 	if len(params) >= 2 {
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -772,7 +699,6 @@ func (p *Field) Search(params ...interface{}) *search.Component {
 			}
 		}
 	} else {
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -789,14 +715,11 @@ func (p *Field) TimeRange(params ...interface{}) *timerange.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -807,7 +730,6 @@ func (p *Field) TimeRange(params ...interface{}) *timerange.Component {
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -824,14 +746,11 @@ func (p *Field) Time(params ...interface{}) *time.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -842,7 +761,6 @@ func (p *Field) Time(params ...interface{}) *time.Component {
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -859,14 +777,11 @@ func (p *Field) Week(params ...interface{}) *week.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -877,7 +792,6 @@ func (p *Field) Week(params ...interface{}) *week.Component {
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -894,14 +808,11 @@ func (p *Field) Year(params ...interface{}) *year.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -912,7 +823,6 @@ func (p *Field) Year(params ...interface{}) *year.Component {
 		if placeholder == "" {
 			field.Init().SetPlaceholder("请选择")
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
@@ -938,14 +848,11 @@ func (p *Field) TreeSelect(params ...interface{}) *treeselect.Component {
 		FieldByName("Placeholder").String()
 
 	if len(params) >= 2 {
-
 		if placeholder == "" {
 			field.SetPlaceholder("请选择" + params[1].(string))
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
-
 			// 判断是否为闭包函数
 			closure, ok := params[2].(func() interface{})
 			if ok {
@@ -956,7 +863,6 @@ func (p *Field) TreeSelect(params ...interface{}) *treeselect.Component {
 		if placeholder == "" {
 			field.SetPlaceholder("请选择" + params[1].(string))
 		}
-
 		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 

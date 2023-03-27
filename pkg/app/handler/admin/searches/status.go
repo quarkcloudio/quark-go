@@ -20,7 +20,6 @@ func (p *Status) Init() *Status {
 
 // 执行查询
 func (p *Status) Apply(ctx *builder.Context, query *gorm.DB, value interface{}) *gorm.DB {
-
 	var status int
 
 	if value.(string) == "on" {
@@ -33,9 +32,10 @@ func (p *Status) Apply(ctx *builder.Context, query *gorm.DB, value interface{}) 
 }
 
 // 属性
-func (p *Status) Options(ctx *builder.Context) map[interface{}]interface{} {
-	return map[interface{}]interface{}{
-		"on":  "正常",
-		"off": "禁用",
+func (p *Status) Options(ctx *builder.Context) interface{} {
+
+	return []*searches.SelectOption{
+		p.Option(0, "禁用"),
+		p.Option(1, "正常"),
 	}
 }
