@@ -125,6 +125,9 @@ func (p *Component) Init() *Component {
 	p.ShowOnImport = true
 	p.AllowClear = true
 	p.Column = (&table.Column{}).Init()
+	p.TreeDefaultExpandAll = true
+	p.TreeLine = true
+
 	p.SetWidth(200)
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
