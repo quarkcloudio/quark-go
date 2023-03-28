@@ -3,10 +3,12 @@ package requests
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -64,63 +66,44 @@ func (p *ImportTemplateRequest) getFieldRemark(field interface{}) string {
 
 	switch component {
 	case "inputNumberField":
-
-	}
-
-	switch component {
-	case "inputNumberField":
 		remark = "数字格式"
-
 	case "textField":
 		remark = ""
-
 	case "selectField":
-
-		options := reflect.
-			ValueOf(field).
-			Elem().
-			FieldByName("Options").Interface()
-
 		mode := reflect.
 			ValueOf(field).
 			Elem().
 			FieldByName("Mode").String()
 
-		fieldOptionLabel := p.getFieldOptionLabels(options)
+		optionLabels := field.(interface {
+			GetOptionLabels() string
+		}).GetOptionLabels()
 
 		if mode != "" {
-			remark = "可多选：" + fieldOptionLabel + "；多值请用“,”分割"
+			remark = "可多选：" + optionLabels + "；多值请用“,”分割"
 		} else {
-			remark = "可选：" + fieldOptionLabel
+			remark = "可选：" + optionLabels
 		}
-
 	case "cascaderField":
 		remark = "级联格式，例如：省，市，县"
-
 	case "checkboxField":
-		options := reflect.
-			ValueOf(field).
-			Elem().
-			FieldByName("Options").Interface()
+		optionLabels := field.(interface {
+			GetOptionLabels() string
+		}).GetOptionLabels()
 
-		remark = "可多选项：" + p.getFieldOptionLabels(options) + "；多值请用“,”分割"
-
+		remark = "可多选项：" + optionLabels + "；多值请用“,”分割"
 	case "radioField":
-		options := reflect.
-			ValueOf(field).
-			Elem().
-			FieldByName("Options").Interface()
+		optionLabels := field.(interface {
+			GetOptionLabels() string
+		}).GetOptionLabels()
 
-		remark = "可选项：" + p.getFieldOptionLabels(options)
-
+		remark = "可选项：" + optionLabels
 	case "switchField":
-		options := reflect.
-			ValueOf(field).
-			Elem().
-			FieldByName("Options").Interface()
+		optionLabels := field.(interface {
+			GetOptionLabels() string
+		}).GetOptionLabels()
 
-		remark = "可选项：" + p.getSwitchLabels(options)
-
+		remark = "可选项：" + optionLabels
 	case "dateField":
 		remark = "日期格式，例如：1987-02-15"
 
@@ -128,28 +111,20 @@ func (p *ImportTemplateRequest) getFieldRemark(field interface{}) string {
 		remark = "日期时间格式，例如：1987-02-15 20:00:00"
 	}
 
-	rules := reflect.
-		ValueOf(field).
-		Elem().
-		FieldByName("Rules").Interface()
-
-	creationRules := reflect.
-		ValueOf(field).
-		Elem().
-		FieldByName("CreationRules").Interface()
-
-	items := []interface{}{}
-
-	for _, v := range rules.([]string) {
-		items = append(items, v)
+	var rules []*rule.Rule
+	if v, ok := field.(interface {
+		GetRules() []*rule.Rule
+	}); ok {
+		rules = append(rules, v.GetRules()...)
 	}
 
-	for _, v := range creationRules.([]string) {
-		items = append(items, v)
+	if v, ok := field.(interface {
+		GetCreationRules() []*rule.Rule
+	}); ok {
+		rules = append(rules, v.GetCreationRules()...)
 	}
 
-	ruleMessage := p.getFieldRuleMessage(items)
-
+	ruleMessage := p.getFieldRuleMessage(rules)
 	if ruleMessage != "" {
 		remark = remark + " 条件：" + ruleMessage
 	}
@@ -162,58 +137,37 @@ func (p *ImportTemplateRequest) getFieldRemark(field interface{}) string {
 }
 
 // 导入字段的规则
-func (p *ImportTemplateRequest) getFieldRuleMessage(rules []interface{}) string {
+func (p *ImportTemplateRequest) getFieldRuleMessage(rules []*rule.Rule) string {
 	var message []string
-	rule := ""
-
 	for _, v := range rules {
-		var arr []string
-
-		if strings.Contains(v.(string), ":") {
-			arr = strings.Split(v.(string), ":")
-			rule = arr[0]
-		} else {
-			rule = v.(string)
-		}
-
-		switch rule {
-
+		switch v.RuleType {
 		case "required":
 			// 必填
 			message = append(message, "必填")
-
 		case "min":
 			// 最小字符串数
-			message = append(message, "大于"+arr[1]+"个字符")
-
+			message = append(message, "大于"+strconv.Itoa(v.Min)+"个字符")
 		case "max":
 			// 最大字符串数
-			message = append(message, "小于"+arr[1]+"个字符")
-
+			message = append(message, "小于"+strconv.Itoa(v.Max)+"个字符")
 		case "email":
 			// 必须为邮箱
 			message = append(message, "必须为邮箱格式")
-
 		case "numeric":
 			// 必须为数字
 			message = append(message, "必须为数字格式")
-
 		case "url":
 			// 必须为url
 			message = append(message, "必须为链接格式")
-
 		case "integer":
 			// 必须为整数
 			message = append(message, "必须为整数格式")
-
 		case "date":
 			// 必须为日期
 			message = append(message, "必须为日期格式")
-
 		case "boolean":
 			// 必须为布尔值
 			message = append(message, "必须为布尔格式")
-
 		case "unique":
 			// 必须为布尔值
 			message = append(message, "不可重复")
@@ -225,20 +179,4 @@ func (p *ImportTemplateRequest) getFieldRuleMessage(rules []interface{}) string 
 	} else {
 		return ""
 	}
-}
-
-// 获取字段的可选值
-func (p *ImportTemplateRequest) getFieldOptionLabels(options interface{}) string {
-	result := []string{}
-
-	for _, v := range options.([]map[string]interface{}) {
-		result = append(result, v["label"].(string))
-	}
-
-	return strings.Replace(strings.Trim(fmt.Sprint(result), "[]"), " ", "，", -1)
-}
-
-// 获取开关组件值
-func (p *ImportTemplateRequest) getSwitchLabels(options interface{}) string {
-	return options.(map[string]interface{})["on"].(string) + "，" + options.(map[string]interface{})["off"].(string)
 }

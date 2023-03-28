@@ -214,12 +214,10 @@ func (p *ImportRequest) transformFormValues(fields interface{}, data []interface
 
 	for k, v := range fields.([]interface{}) {
 		if data[k] != nil {
-
 			name := reflect.
 				ValueOf(v).
 				Elem().
 				FieldByName("Name").String()
-
 			result[name] = data[k]
 		}
 	}
@@ -229,18 +227,16 @@ func (p *ImportRequest) transformFormValues(fields interface{}, data []interface
 
 // 获取提交表单的数据
 func (p *ImportRequest) getSubmitData(fields interface{}, submitData interface{}) map[string]interface{} {
-
 	result := make(map[string]interface{})
 
-	for _, v := range fields.([]interface{}) {
-
+	for _, field := range fields.([]interface{}) {
 		component := reflect.
-			ValueOf(v).
+			ValueOf(field).
 			Elem().
 			FieldByName("Component").String()
 
 		name := reflect.
-			ValueOf(v).
+			ValueOf(field).
 			Elem().
 			FieldByName("Name").String()
 
@@ -250,40 +246,29 @@ func (p *ImportRequest) getSubmitData(fields interface{}, submitData interface{}
 		case "textField":
 			result[name] = strings.Trim(submitData.(map[string]interface{})[name].(string), "\n")
 		case "selectField":
-			options := reflect.
-				ValueOf(v).
-				Elem().
-				FieldByName("Options").Interface()
+			optionValue := field.(interface {
+				GetOptionValue(label string) interface{}
+			}).GetOptionValue(submitData.(map[string]interface{})[name].(string))
 
-			result[name] = p.getOptionValue(options, submitData.(map[string]interface{})[name].(string))
-		case "cascaderField":
-			options := reflect.
-				ValueOf(v).
-				Elem().
-				FieldByName("Options").Interface()
-
-			result[name] = p.getOptionValue(options, submitData.(map[string]interface{})[name].(string))
+			result[name] = optionValue
 		case "checkboxField":
-			options := reflect.
-				ValueOf(v).
-				Elem().
-				FieldByName("Options").Interface()
+			optionValue := field.(interface {
+				GetOptionValue(label string) interface{}
+			}).GetOptionValue(submitData.(map[string]interface{})[name].(string))
 
-			result[name] = p.getOptionValue(options, submitData.(map[string]interface{})[name].(string))
+			result[name] = optionValue
 		case "radioField":
-			options := reflect.
-				ValueOf(v).
-				Elem().
-				FieldByName("Options").Interface()
+			optionValue := field.(interface {
+				GetOptionValue(label string) interface{}
+			}).GetOptionValue(submitData.(map[string]interface{})[name].(string))
 
-			result[name] = p.getOptionValue(options, submitData.(map[string]interface{})[name].(string))
+			result[name] = optionValue
 		case "switchField":
-			options := reflect.
-				ValueOf(v).
-				Elem().
-				FieldByName("Options").Interface()
+			optionValue := field.(interface {
+				GetOptionValue(label string) bool
+			}).GetOptionValue(submitData.(map[string]interface{})[name].(string))
 
-			result[name] = p.getSwitchValue(options, submitData.(map[string]interface{})[name].(string))
+			result[name] = optionValue
 		default:
 			result[name] = submitData.(map[string]interface{})[name]
 		}
@@ -302,51 +287,6 @@ func (p *ImportRequest) getSubmitData(fields interface{}, submitData interface{}
 	}
 
 	return result
-}
-
-// 获取属性值
-func (p *ImportRequest) getOptionValue(options interface{}, label string) interface{} {
-	var result1 []interface{}
-	var result2 interface{}
-
-	labels1 := strings.Split(label, ",")
-	labels2 := strings.Split(label, "，")
-
-	if len(labels1) > 1 || len(labels2) > 1 {
-		labels := []string{}
-		if len(labels1) > 1 {
-			labels = labels1
-		}
-
-		if len(labels2) > 1 {
-			labels = labels2
-		}
-
-		for _, v := range options.([]map[string]interface{}) {
-			for _, label := range labels {
-				if v["label"] == label {
-					result1 = append(result1, v["value"])
-				}
-			}
-		}
-	} else {
-		for _, v := range options.([]map[string]interface{}) {
-			if v["label"] == label {
-				result2 = v["value"]
-			}
-		}
-	}
-
-	if len(result1) > 0 {
-		return result1
-	}
-
-	return result2
-}
-
-// 获取开关组件值
-func (p *ImportRequest) getSwitchValue(options interface{}, label string) interface{} {
-	return (options.(map[string]interface{})["on"] == label)
 }
 
 // if file or directory exits

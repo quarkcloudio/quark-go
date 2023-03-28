@@ -616,3 +616,90 @@ func (p *Component) GetValueEnum() interface{} {
 
 	return data
 }
+
+// 根据value值获取Option的Label
+func (p *Component) GetOptionLabel(value interface{}) string {
+	var (
+		labels      []string
+		values      []interface{}
+		labelString string
+	)
+
+	if value, ok := value.(string); ok {
+		if strings.Contains(value, "[") || strings.Contains(value, "{") {
+			json.Unmarshal([]byte(value), &values)
+		}
+	}
+
+	if len(values) > 0 {
+		for _, option := range p.Options {
+			for _, v := range values {
+				if v == option.Value {
+					labels = append(labels, option.Label)
+				}
+			}
+		}
+	} else {
+		for _, option := range p.Options {
+			if value == option.Value {
+				labels = append(labels, option.Label)
+			}
+		}
+	}
+
+	for _, v := range labels {
+		labelString = labelString + "," + v
+	}
+	labelString = strings.Trim(labelString, ",")
+
+	return labelString
+}
+
+// 根据label值获取Option的Value
+func (p *Component) GetOptionValue(label string) interface{} {
+	var values []interface{}
+	var value interface{}
+	var labels []string
+
+	getLabels := strings.Split(label, ",")
+	if len(getLabels) > 1 {
+		labels = getLabels
+	}
+	getLabels = strings.Split(label, "，")
+	if len(getLabels) > 1 {
+		labels = getLabels
+	}
+
+	if len(labels) > 1 {
+		for _, v := range p.Options {
+			for _, getLabel := range labels {
+				if v.Label == getLabel {
+					values = append(values, v.Label)
+				}
+			}
+		}
+	} else {
+		for _, v := range p.Options {
+			if v.Label == label {
+				value = v.Label
+			}
+		}
+	}
+
+	if len(values) > 0 {
+		return values
+	}
+
+	return value
+}
+
+// 获取Option的Labels
+func (p *Component) GetOptionLabels() string {
+	var labelString string
+
+	for _, option := range p.Options {
+		labelString = labelString + "," + option.Label
+	}
+
+	return strings.Trim(labelString, ",")
+}

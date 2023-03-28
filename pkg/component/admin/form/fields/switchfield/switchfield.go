@@ -672,3 +672,31 @@ func (p *Component) GetValueEnum() interface{} {
 
 	return data
 }
+
+// 根据value值获取Option的Label
+func (p *Component) GetOptionLabel(value interface{}) interface{} {
+
+	if value == 1 {
+		return p.CheckedChildren
+	} else {
+		return p.UnCheckedChildren
+	}
+}
+
+// 根据label值获取Option的Value
+func (p *Component) GetOptionValue(label string) bool {
+	return (p.CheckedChildren == label)
+}
+
+// 获取Option的Labels
+func (p *Component) GetOptionLabels() string {
+	var labelString string
+
+	if checkedChildren, ok := p.CheckedChildren.(string); ok {
+		if unCheckedChildren, ok := p.UnCheckedChildren.(string); ok {
+			labelString = checkedChildren + "," + unCheckedChildren
+		}
+	}
+
+	return strings.Trim(labelString, ",")
+}

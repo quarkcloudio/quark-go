@@ -41,15 +41,15 @@ func (p *ExportRequest) Handle(ctx *builder.Context) interface{} {
 
 	for dataKey, dataValue := range data.([]interface{}) {
 		var a = 'a'
-		for _, fieldValue := range fields.([]interface{}) {
+		for _, field := range fields.([]interface{}) {
 
 			name := reflect.
-				ValueOf(fieldValue).
+				ValueOf(field).
 				Elem().
 				FieldByName("Name").String()
 
 			component := reflect.
-				ValueOf(fieldValue).
+				ValueOf(field).
 				Elem().
 				FieldByName("Component").String()
 
@@ -59,35 +59,29 @@ func (p *ExportRequest) Handle(ctx *builder.Context) interface{} {
 			case "textField":
 				rowData[name] = dataValue.(map[string]interface{})[name]
 			case "selectField":
-				options := reflect.
-					ValueOf(fieldValue).
-					Elem().
-					FieldByName("Options").Interface()
-				rowData[name] = p.getOptionValue(options, dataValue.(map[string]interface{})[name])
-			case "cascaderField":
-				options := reflect.
-					ValueOf(fieldValue).
-					Elem().
-					FieldByName("Options").Interface()
-				rowData[name] = p.getOptionValue(options, dataValue.(map[string]interface{})[name])
+				optionLabel := field.(interface {
+					GetOptionLabel(interface{}) string
+				}).GetOptionLabel(dataValue.(map[string]interface{})[name])
+
+				rowData[name] = optionLabel
 			case "checkboxField":
-				options := reflect.
-					ValueOf(fieldValue).
-					Elem().
-					FieldByName("Options").Interface()
-				rowData[name] = p.getOptionValue(options, dataValue.(map[string]interface{})[name])
+				optionLabel := field.(interface {
+					GetOptionLabel(interface{}) string
+				}).GetOptionLabel(dataValue.(map[string]interface{})[name])
+
+				rowData[name] = optionLabel
 			case "radioField":
-				options := reflect.
-					ValueOf(fieldValue).
-					Elem().
-					FieldByName("Options").Interface()
-				rowData[name] = p.getOptionValue(options, dataValue.(map[string]interface{})[name])
+				optionLabel := field.(interface {
+					GetOptionLabel(interface{}) string
+				}).GetOptionLabel(dataValue.(map[string]interface{})[name])
+
+				rowData[name] = optionLabel
 			case "switchField":
-				options := reflect.
-					ValueOf(fieldValue).
-					Elem().
-					FieldByName("Options").Interface()
-				rowData[name] = p.getSwitchValue(options, dataValue.(map[string]interface{})[name].(int))
+				optionLabel := field.(interface {
+					GetOptionLabel(interface{}) interface{}
+				}).GetOptionLabel(dataValue.(map[string]interface{})[name])
+
+				rowData[name] = optionLabel
 			default:
 				rowData[name] = dataValue.(map[string]interface{})[name]
 			}
@@ -105,65 +99,6 @@ func (p *ExportRequest) Handle(ctx *builder.Context) interface{} {
 	ctx.Writer.Write(buf.Bytes())
 
 	return nil
-}
-
-// 获取属性值
-func (p *ExportRequest) getOptionValue(options interface{}, value interface{}) string {
-	result := ""
-	arr := []interface{}{}
-
-	if value, ok := value.(string); ok {
-		if strings.Contains(value, "[") || strings.Contains(value, "{") {
-			json.Unmarshal([]byte(value), &arr)
-		}
-	}
-
-	if len(arr) > 0 {
-		if getOptions, ok := options.([]interface{}); ok {
-			for _, option := range getOptions {
-				for _, v := range arr {
-					if v == option.(map[string]interface{})["value"] {
-						result = result + option.(map[string]interface{})["label"].(string)
-					}
-				}
-			}
-		}
-		if getOptions, ok := options.([]map[string]interface{}); ok {
-			for _, option := range getOptions {
-				for _, v := range arr {
-					if v == option["value"] {
-						result = result + option["label"].(string)
-					}
-				}
-			}
-		}
-	} else {
-		if getOptions, ok := options.([]interface{}); ok {
-			for _, option := range getOptions {
-				if value == option.(map[string]interface{})["value"] {
-					result = option.(map[string]interface{})["label"].(string)
-				}
-			}
-		}
-		if getOptions, ok := options.([]map[string]interface{}); ok {
-			for _, option := range getOptions {
-				if value == option["value"] {
-					result = option["label"].(string)
-				}
-			}
-		}
-	}
-
-	return result
-}
-
-// 获取开关组件值
-func (p *ExportRequest) getSwitchValue(options interface{}, value int) string {
-	if value == 1 {
-		return options.(map[string]interface{})["on"].(string)
-	} else {
-		return options.(map[string]interface{})["off"].(string)
-	}
 }
 
 // 列表查询
