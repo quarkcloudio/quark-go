@@ -189,11 +189,10 @@ func (model *Picture) GetPaths(id interface{}) []string {
 	if getId, ok := id.(string); ok {
 		// json字符串
 		if strings.Contains(getId, "{") {
-			var jsonData interface{}
-			json.Unmarshal([]byte(getId), &jsonData)
-			// 如果为数组，返回第一个key的path
-			if arrayData, ok := jsonData.([]map[string]interface{}); ok {
-				for _, v := range arrayData {
+			var jsonData []map[string]interface{}
+			err := json.Unmarshal([]byte(getId), &jsonData)
+			if err == nil {
+				for _, v := range jsonData {
 					path = v["url"].(string)
 					if strings.Contains(path, "//") {
 						paths = append(paths, v["url"].(string))
