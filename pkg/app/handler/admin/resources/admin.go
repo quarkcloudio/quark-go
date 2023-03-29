@@ -38,7 +38,7 @@ func (p *Admin) Init() interface{} {
 	// 分页
 	p.PerPage = 10
 
-	p.WithExport = true
+	// p.WithExport = true
 
 	return p
 }
@@ -156,7 +156,7 @@ func (p *Admin) Searches(ctx *builder.Context) []interface{} {
 func (p *Admin) Actions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
-		(&actions.Import{}).Init(),
+		// (&actions.Import{}).Init(),
 		(&actions.CreateLink{}).Init(p.Title),
 		(&actions.Delete{}).Init("批量删除"),
 		(&actions.Disable{}).Init("批量禁用"),
