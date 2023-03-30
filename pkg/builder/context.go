@@ -3,6 +3,7 @@ package builder
 import (
 	"bytes"
 	"encoding/json"
+	"encoding/xml"
 	"errors"
 	"io/ioutil"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/derekstavis/go-qs"
 	"github.com/gobeam/stringy"
+	"github.com/quarkcms/quark-go/pkg/msg"
 )
 
 // Context is the most important part of gin. It allows us to pass variables between middleware,
@@ -30,11 +32,17 @@ type ParamValue struct {
 	Value string
 }
 
-// 设置SetFullPath
-func (c *Context) SetFullPath(fullPath string) *Context {
-	c.fullPath = fullPath
+// ContentType returns the Content-Type header of the request.
+func (p *Context) ContentType() string {
 
-	return c
+	return p.Request.Header.Get("Content-Type")
+}
+
+// 设置SetFullPath
+func (p *Context) SetFullPath(fullPath string) *Context {
+	p.fullPath = fullPath
+
+	return p
 }
 
 // FullPath returns a matched route full path. For not found routes
@@ -43,15 +51,15 @@ func (c *Context) SetFullPath(fullPath string) *Context {
 //	router.GET("/user/:id", func(c *gin.Context) {
 //	    c.FullPath() == "/user/:id" // true
 //	})
-func (c *Context) FullPath() string {
-	return c.fullPath
+func (p *Context) FullPath() string {
+	return p.fullPath
 }
 
 // Method return request method.
 //
 // Returned value is valid until returning from RequestHandler.
-func (c *Context) Method() string {
-	return c.Request.Method
+func (p *Context) Method() string {
+	return p.Request.Method
 }
 
 // Host returns requested host.
@@ -192,7 +200,55 @@ func (p *Context) RouterPathToUrl(routerPath string) string {
 // application/json, application/xml, application/x-www-form-urlencoded, multipart/form-data
 // If none of the content types above are matched, it will return a ErrUnprocessableEntity error
 func (p *Context) BodyParser(out interface{}) error {
-	return json.Unmarshal(p.Body(), out)
+	var err error
+
+	contentType := p.ContentType()
+	switch strings.ToLower(contentType) {
+	case "application/json":
+		err = json.Unmarshal(p.Body(), out)
+	case "application/xml":
+		err = xml.Unmarshal(p.Body(), out)
+	case "application/x-www-form-urlencoded":
+		if p.Request.Form == nil {
+			p.Request.ParseForm()
+		}
+
+		fv := map[string]interface{}{}
+		for k, v := range p.Request.Form {
+			if len(v) > 0 {
+				fv[k] = v[0]
+			}
+		}
+
+		fvj, err := json.Marshal(fv)
+		if err != nil {
+			return err
+		}
+
+		err = json.Unmarshal(fvj, out)
+	}
+
+	if strings.Contains(contentType, "multipart/form-data") {
+		if p.Request.Form == nil {
+			p.Request.ParseMultipartForm(33554432)
+		}
+
+		fv := map[string]interface{}{}
+		for k, v := range p.Request.Form {
+			if len(v) > 0 {
+				fv[k] = v[0]
+			}
+		}
+
+		fvj, err := json.Marshal(fv)
+		if err != nil {
+			return err
+		}
+
+		err = json.Unmarshal(fvj, out)
+	}
+
+	return err
 }
 
 // 获取请求头数据
@@ -364,6 +420,51 @@ func (p *Context) JSON(code int, data interface{}) error {
 	}
 
 	return nil
+}
+
+// 输出成功状态的Json数据，SimpleSuccess("成功") | SimpleSuccess("成功", "/home/index", map[string]interface{}{"title":"标题"})
+func (p *Context) SimpleSuccess(data ...interface{}) error {
+	var (
+		message = ""
+		url     = ""
+		getData interface{}
+	)
+
+	if len(data) == 1 {
+		message = data[0].(string)
+	}
+
+	if len(data) == 2 {
+		message = data[0].(string)
+		url = data[1].(string)
+	}
+
+	if len(data) >= 3 {
+		message = data[0].(string)
+		url = data[1].(string)
+		getData = data[2]
+	}
+
+	return p.JSON(200, msg.Success(message, url, getData))
+}
+
+// 输出失败状态的Json数据，SimpleError("错误") | SimpleError("操作失败", "/home/index")
+func (p *Context) SimpleError(data ...interface{}) error {
+	var (
+		message = ""
+		url     = ""
+	)
+
+	if len(data) == 1 {
+		message = data[0].(string)
+	}
+
+	if len(data) == 2 {
+		message = data[0].(string)
+		url = data[1].(string)
+	}
+
+	return p.JSON(200, msg.Error(message, url))
 }
 
 // 输出String数据
