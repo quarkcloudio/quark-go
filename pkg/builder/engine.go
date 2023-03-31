@@ -19,7 +19,7 @@ const (
 	AppName = "QuarkGo"
 
 	// Version of current package
-	Version = "1.1.45"
+	Version = "1.1.46"
 
 	// 静态文件URL
 	RespositoryURL = "https://github.com/quarkcms/quark-go/tree/main/website/"
@@ -27,7 +27,6 @@ const (
 
 type Engine struct {
 	echo        *echo.Echo                 // Echo框架实例
-	echoContext echo.Context               // Echo框架上下文
 	useHandlers []func(ctx *Context) error // 中间件方法
 	config      *Config                    // 配置
 	providers   []interface{}              // 服务列表
@@ -174,12 +173,13 @@ func (p *Engine) GetProviders() []interface{} {
 
 // 创建上下文
 func (p *Engine) NewContext(writer http.ResponseWriter, request *http.Request) *Context {
-	p.echoContext = p.echo.NewContext(request, writer)
+	echoContext := p.echo.NewContext(request, writer)
 
 	return &Context{
-		Engine:  p,
-		Request: request,
-		Writer:  writer,
+		Engine:      p,
+		EchoContext: echoContext,
+		Request:     request,
+		Writer:      writer,
 	}
 }
 
