@@ -1,4 +1,4 @@
-package adminpage
+package adminfrontpage
 
 import (
 	"github.com/quarkcms/quark-go/pkg/component/admin/page"
@@ -27,7 +27,7 @@ func (p *Template) Init() interface{} {
 func (p *Template) TemplateInit() interface{} {
 
 	// 注册路由映射
-	p.GET("/api/admin/page/:resource/:component", "Render") // 自定义模板路由
+	p.GET("/api/admin/frontpage/:resource/:component", "Render") // 自定义模板路由
 
 	return p
 }

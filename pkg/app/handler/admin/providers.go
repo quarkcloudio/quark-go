@@ -2,8 +2,8 @@ package admin
 
 import (
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/dashboards"
+	"github.com/quarkcms/quark-go/pkg/app/handler/admin/frontpages"
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/logins"
-	"github.com/quarkcms/quark-go/pkg/app/handler/admin/pages"
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/resources"
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/uploads"
 )
@@ -12,7 +12,6 @@ import (
 var Providers = []interface{}{
 	&logins.Index{},
 	&dashboards.Index{},
-	&pages.Component{},
 	&resources.Admin{},
 	&resources.Role{},
 	&resources.Permission{},
@@ -23,6 +22,7 @@ var Providers = []interface{}{
 	&resources.Picture{},
 	&resources.WebConfig{},
 	&resources.Account{},
+	&frontpages.Component{},
 	&uploads.File{},
 	&uploads.Image{},
 }

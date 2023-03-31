@@ -1,11 +1,11 @@
-package pages
+package frontpages
 
 import (
-	"github.com/quarkcms/quark-go/pkg/builder/template/adminpage"
+	"github.com/quarkcms/quark-go/pkg/builder/template/adminfrontpage"
 )
 
 type Component struct {
-	adminpage.Template
+	adminfrontpage.Template
 }
 
 // 初始化
