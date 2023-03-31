@@ -78,24 +78,17 @@ func (p *Image) AfterHandle(ctx *builder.Context, result *storage.FileInfo) inte
 		result.Url = (&model.Picture{}).GetPath(result.Url)
 	}
 
-	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
-	if err != nil {
-		return msg.Error(err.Error(), "")
-	}
-
 	// 插入数据库
 	id, err := (&model.Picture{}).InsertGetId(&model.Picture{
-		ObjType: "ADMINID",
-		ObjId:   adminInfo.Id,
-		Name:    result.Name,
-		Size:    result.Size,
-		Width:   result.Width,
-		Height:  result.Height,
-		Ext:     result.Ext,
-		Path:    result.Path,
-		Url:     result.Url,
-		Hash:    result.Hash,
-		Status:  1,
+		Name:   result.Name,
+		Size:   result.Size,
+		Width:  result.Width,
+		Height: result.Height,
+		Ext:    result.Ext,
+		Path:   result.Path,
+		Url:    result.Url,
+		Hash:   result.Hash,
+		Status: 1,
 	})
 
 	if err != nil {

@@ -88,22 +88,15 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) inter
 		result.Url = (&model.File{}).GetPath(result.Url)
 	}
 
-	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
-	if err != nil {
-		return ctx.JSON(200, msg.Error(err.Error(), ""))
-	}
-
 	// 插入数据库
 	id, err := (&model.File{}).InsertGetId(&model.File{
-		ObjType: "ADMINID",
-		ObjId:   adminInfo.Id,
-		Name:    result.Name,
-		Size:    result.Size,
-		Ext:     result.Ext,
-		Path:    result.Path,
-		Url:     result.Url,
-		Hash:    result.Hash,
-		Status:  1,
+		Name:   result.Name,
+		Size:   result.Size,
+		Ext:    result.Ext,
+		Path:   result.Path,
+		Url:    result.Url,
+		Hash:   result.Hash,
+		Status: 1,
 	})
 	if err != nil {
 		return ctx.JSON(200, msg.Error(err.Error(), ""))
