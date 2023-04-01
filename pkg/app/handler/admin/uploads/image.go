@@ -70,7 +70,7 @@ func (p *Image) GetList(ctx *builder.Context) interface{} {
 	pagination := map[string]interface{}{
 		"defaultCurrent": 1,
 		"current":        currentPage,
-		"pageSize":       12,
+		"pageSize":       8,
 		"total":          total,
 	}
 

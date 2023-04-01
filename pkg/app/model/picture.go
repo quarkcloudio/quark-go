@@ -38,7 +38,11 @@ func (model *Picture) GetListBySearch(appKey string, tokenString string, categor
 		return pictures, 0, err
 	}
 
-	query := db.Client.Model(&Picture{})
+	query := db.Client.Model(&Picture{}).
+		Where("status =?", 1).
+		Where("obj_type = ?", "ADMINID").
+		Where("obj_id", adminInfo.Id)
+
 	if categoryId != "" {
 		query.Where("picture_category_id =?", categoryId)
 	}
@@ -51,9 +55,6 @@ func (model *Picture) GetListBySearch(appKey string, tokenString string, categor
 
 	query.Count(&total)
 	query.
-		Where("status =?", 1).
-		Where("obj_type = ?", "ADMINID").
-		Where("obj_id", adminInfo.Id).
 		Order("id desc").
 		Limit(8).
 		Offset((page - 1) * 8).
