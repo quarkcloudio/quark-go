@@ -21,15 +21,7 @@ func (p *Status) Init() *Status {
 
 // 执行查询
 func (p *Status) Apply(ctx *builder.Context, query *gorm.DB, value interface{}) *gorm.DB {
-	var status int
-
-	if value.(string) == "on" {
-		status = 1
-	} else {
-		status = 0
-	}
-
-	return query.Where("status = ?", status)
+	return query.Where("status = ?", value)
 }
 
 // 属性

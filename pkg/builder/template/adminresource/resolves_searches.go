@@ -54,29 +54,47 @@ func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
 
 		switch component {
 		case "textField":
-			item = field.Text(name, label)
+			item = field.
+				Text(name, label).
+				SetWidth(nil)
 		case "selectField":
-			item = field.Select(name, label).
+			item = field.
+				Select(name, label).
+				SetWidth(nil).
 				SetOptions(options.([]*selectfield.Option))
 		case "multipleSelectField":
 			item = field.
 				Select(name, label).
 				SetMode("multiple").
+				SetWidth(nil).
 				SetOptions(options.([]*selectfield.Option))
 		case "dateField":
-			item = field.Date(name, label)
+			item = field.
+				Date(name, label).
+				SetWidth(nil)
 		case "datetimeField":
-			item = field.Datetime(name, label)
+			item = field.
+				Datetime(name, label).
+				SetWidth(nil)
 		case "dateRangeField":
-			item = field.DateRange(name, label)
+			item = field.
+				DateRange(name, label).
+				SetWidth(nil)
 		case "datetimeRangeField":
-			item = field.DatetimeRange(name, label)
+			item = field.
+				DatetimeRange(name, label).
+				SetWidth(nil)
 		case "cascaderField":
-			item = field.Cascader(name, label).
-				SetOptions(options.([]*cascader.Option)).
-				SetApi(api)
+			item = field.
+				Cascader(name, label).
+				SetApi(api).
+				SetWidth(nil).
+				SetOptions(options.([]*cascader.Option))
+
 		case "treeSelectField":
-			item = field.TreeSelect(name, label).
+			item = field.
+				TreeSelect(name, label).
+				SetWidth(nil).
 				SetData(options.([]*treeselect.TreeData))
 		}
 
