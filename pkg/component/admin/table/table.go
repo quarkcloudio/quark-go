@@ -43,12 +43,6 @@ func NewSearch() *Search {
 }
 
 // 获取SearchItem
-func NewSearchItem() *SearchItem {
-
-	return (&SearchItem{}).Init()
-}
-
-// 获取SearchItem
 func NewToolBar() *ToolBar {
 
 	return (&ToolBar{}).Init()

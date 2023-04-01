@@ -1,10 +1,6 @@
 package searches
 
-type SelectOption struct {
-	Label    string      `json:"label"`
-	Value    interface{} `json:"value"`
-	Disabled bool        `json:"disabled,omitempty"`
-}
+import "github.com/quarkcms/quark-go/pkg/component/admin/form/fields/selectfield"
 
 type Select struct {
 	Search
@@ -18,9 +14,9 @@ func (p *Select) ParentInit() interface{} {
 }
 
 // 设置Option
-func (p *Select) Option(value interface{}, label string) *SelectOption {
+func (p *Select) Option(value interface{}, label string) *selectfield.Option {
 
-	return &SelectOption{
+	return &selectfield.Option{
 		Value: value,
 		Label: label,
 	}

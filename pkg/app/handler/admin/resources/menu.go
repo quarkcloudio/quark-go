@@ -49,7 +49,7 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 	permissions, _ := (&models.Permission{}).List()
 
 	// 菜单列表
-	menus, _ := (&models.Menu{}).SelectTree(true)
+	menus, _ := (&models.Menu{}).TreeSelect(true)
 
 	return []interface{}{
 		field.Hidden("id", "ID"), // 列表读取且不展示的字段

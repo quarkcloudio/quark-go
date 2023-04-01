@@ -3,6 +3,7 @@ package searches
 import (
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/searches"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/selectfield"
 	"gorm.io/gorm"
 )
 
@@ -34,7 +35,7 @@ func (p *Status) Apply(ctx *builder.Context, query *gorm.DB, value interface{}) 
 // 属性
 func (p *Status) Options(ctx *builder.Context) interface{} {
 
-	return []*searches.SelectOption{
+	return []*selectfield.Option{
 		p.Option(0, "禁用"),
 		p.Option(1, "正常"),
 	}

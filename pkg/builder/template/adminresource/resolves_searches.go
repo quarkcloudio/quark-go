@@ -5,6 +5,9 @@ import (
 	"strings"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/cascader"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/selectfield"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/treeselect"
 	"github.com/quarkcms/quark-go/pkg/component/admin/table"
 )
 
@@ -30,10 +33,10 @@ func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
 		component := v.(interface{ GetComponent() string }).GetComponent()
 
 		// label 标签的文本
-		name := v.(interface{ GetName() string }).GetName()
+		label := v.(interface{ GetName() string }).GetName()
 
 		// 字段名，支持数组
-		column := v.(interface {
+		name := v.(interface {
 			GetColumn(search interface{}) string
 		}).GetColumn(v)
 
@@ -45,38 +48,36 @@ func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
 			Options(ctx *builder.Context) interface{}
 		}).Options(ctx)
 
-		// 获取接口
-		load := v.(interface {
-			Load(ctx *builder.Context) map[string]string
-		}).Load(ctx)
-
 		// 搜索栏表单项
-		item := (&table.SearchItem{}).
-			Init().
-			SetName(column).
-			SetLabel(name).
-			SetApi(api)
+		var item interface{}
+		var field = &Field{}
 
 		switch component {
 		case "textField":
-			item = item.Input(options)
+			item = field.Text(name, label)
 		case "selectField":
-			if load != nil {
-				item.SetLoad(load["field"], load["api"])
-			}
-			item = item.Select(options)
+			item = field.Select(name, label).
+				SetOptions(options.([]*selectfield.Option))
 		case "multipleSelectField":
-			item = item.MultipleSelect(options)
+			item = field.
+				Select(name, label).
+				SetMode("multiple").
+				SetOptions(options.([]*selectfield.Option))
 		case "dateField":
-			item = item.Date(options)
+			item = field.Date(name, label)
 		case "datetimeField":
-			item = item.Datetime(options)
+			item = field.Datetime(name, label)
 		case "dateRangeField":
-			item = item.DateRange(options)
+			item = field.DateRange(name, label)
 		case "datetimeRangeField":
-			item = item.DatetimeRange(options)
+			item = field.DatetimeRange(name, label)
 		case "cascaderField":
-			item = item.Cascader(options)
+			item = field.Cascader(name, label).
+				SetOptions(options.([]*cascader.Option)).
+				SetApi(api)
+		case "treeSelectField":
+			item = field.TreeSelect(name, label).
+				SetData(options.([]*treeselect.TreeData))
 		}
 
 		search = search.SetItems(item)

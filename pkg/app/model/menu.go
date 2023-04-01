@@ -93,8 +93,8 @@ func (model *Menu) OrderedList() (list []map[string]interface{}, Error error) {
 	return list, nil
 }
 
-// 获取SelectTree组件数据
-func (model *Menu) SelectTree(root bool) (list []*treeselect.TreeData, Error error) {
+// 获取TreeSelect组件数据
+func (model *Menu) TreeSelect(root bool) (list []*treeselect.TreeData, Error error) {
 
 	// 是否有根节点
 	if root {
@@ -104,13 +104,13 @@ func (model *Menu) SelectTree(root bool) (list []*treeselect.TreeData, Error err
 		})
 	}
 
-	list = append(list, model.FindSelectTreeNode(0)...)
+	list = append(list, model.FindTreeSelectNode(0)...)
 
 	return list, nil
 }
 
-// 递归获取SelectTree组件数据
-func (model *Menu) FindSelectTreeNode(pid int) (list []*treeselect.TreeData) {
+// 递归获取TreeSelect组件数据
+func (model *Menu) FindTreeSelectNode(pid int) (list []*treeselect.TreeData) {
 	menus := []Menu{}
 	db.Client.
 		Where("guard_name = ?", "admin").
@@ -129,7 +129,7 @@ func (model *Menu) FindSelectTreeNode(pid int) (list []*treeselect.TreeData) {
 			Title: v.Name,
 		}
 
-		children := model.FindSelectTreeNode(v.Id)
+		children := model.FindTreeSelectNode(v.Id)
 		if len(children) > 0 {
 			item.Children = children
 		}
