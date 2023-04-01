@@ -96,6 +96,7 @@ func (p *Component) Init() *Component {
 	p.ShowOnImport = true
 	p.Column = (&table.Column{}).Init()
 	p.Format = "HH:mm"
+	p.Placeholder = []string{"开始时间", "结束时间"}
 	p.DefaultValue = []interface{}{nil, nil}
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)

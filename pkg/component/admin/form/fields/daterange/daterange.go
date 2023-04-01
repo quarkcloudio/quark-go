@@ -100,6 +100,7 @@ func (p *Component) Init() *Component {
 	p.Column = (&table.Column{}).Init()
 	p.Picker = "date"
 	p.Format = "YYYY-MM-DD"
+	p.Placeholder = []string{"开始日期", "结束日期"}
 	p.DefaultValue = []interface{}{nil, nil}
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
