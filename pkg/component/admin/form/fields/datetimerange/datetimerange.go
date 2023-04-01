@@ -63,7 +63,7 @@ type Component struct {
 	NextIcon       interface{}            `json:"nextIcon,omitempty"`       // 自定义下一个图标
 	Open           bool                   `json:"open,omitempty"`           // 控制浮层显隐
 	Picker         string                 `json:"picker,omitempty"`         // 设置选择器类型 date | week | month | quarter | year
-	Placeholder    string                 `json:"placeholder,omitempty"`    // 输入框占位文本
+	Placeholder    []string               `json:"placeholder,omitempty"`    // 输入框占位文本
 	Placement      string                 `json:"placement,omitempty"`      // 浮层预设位置，bottomLeft bottomRight topLeft topRight
 	PopupStyle     interface{}            `json:"popupStyle,omitempty"`     // 额外的弹出日历样式
 	PrevIcon       interface{}            `json:"prevIcon,omitempty"`       // 自定义上一个图标
@@ -98,7 +98,6 @@ func (p *Component) Init() *Component {
 	p.ShowOnExport = true
 	p.ShowOnImport = true
 	p.Column = (&table.Column{}).Init()
-	p.Placeholder = "请选择"
 	p.Format = "YYYY-MM-DD HH:mm:ss"
 	p.DefaultValue = []interface{}{nil, nil}
 
@@ -712,7 +711,7 @@ func (p *Component) SetPicker(picker string) *Component {
 }
 
 // 输入框占位文本
-func (p *Component) SetPlaceholder(placeholder string) *Component {
+func (p *Component) SetPlaceholder(placeholder []string) *Component {
 	p.Placeholder = placeholder
 
 	return p

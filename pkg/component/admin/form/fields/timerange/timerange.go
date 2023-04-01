@@ -64,7 +64,7 @@ type Component struct {
 	InputReadOnly       bool                   `json:"inputReadOnly,omitempty"`       // 设置输入框为只读（避免在移动设备上打开虚拟键盘）
 	MinuteStep          int                    `json:"minuteStep,omitempty"`          // 分钟选项间隔
 	Open                bool                   `json:"open,omitempty"`                // 控制浮层显隐
-	Placeholder         string                 `json:"placeholder,omitempty"`         // 输入框占位文本
+	Placeholder         []string               `json:"placeholder,omitempty"`         // 输入框占位文本
 	Placement           string                 `json:"placement,omitempty"`           // 浮层预设位置，bottomLeft bottomRight topLeft topRight
 	PopupClassName      string                 `json:"popupClassName,omitempty"`      // 额外的弹出日历 className
 	PopupStyle          interface{}            `json:"popupStyle,omitempty"`          // 额外的弹出日历样式
@@ -95,7 +95,6 @@ func (p *Component) Init() *Component {
 	p.ShowOnExport = true
 	p.ShowOnImport = true
 	p.Column = (&table.Column{}).Init()
-	p.Placeholder = "请选择"
 	p.Format = "HH:mm"
 	p.DefaultValue = []interface{}{nil, nil}
 
@@ -737,7 +736,7 @@ func (p *Component) SetOpen(open bool) *Component {
 }
 
 // 输入框占位文本
-func (p *Component) SetPlaceholder(placeholder string) *Component {
+func (p *Component) SetPlaceholder(placeholder []string) *Component {
 	p.Placeholder = placeholder
 
 	return p
