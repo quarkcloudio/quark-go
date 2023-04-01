@@ -10,13 +10,12 @@ type Rule struct {
 	UniqueTable       string `json:"-"`                  // type：unique时，指定验证的表名
 	UniqueTableField  string `json:"-"`                  // type：unique时，指定需验证表中的字段
 	UniqueIgnoreValue string `json:"-"`                  // type：unique时，忽略符合条件验证的列，例如：{id}
-	Type              string `json:"type"`               // 字段类型，string | number | boolean | url | email
+	Type              string `json:"type,omitempty"`     // 字段类型，string | number | boolean | url | email
 }
 
 // 初始化
 func New() *Rule {
 	p := &Rule{}
-	p.Type = "string"
 
 	return p
 }
@@ -98,7 +97,7 @@ func (p *Rule) SetName(name string) *Rule {
 func (p *Rule) SetMax(max int) *Rule {
 	p.Max = max
 
-	return p.SetType("string").SetRuleType("max")
+	return p.SetRuleType("max")
 }
 
 // 错误信息，不设置时会通过模板自动生成
@@ -112,14 +111,14 @@ func (p *Rule) SetMessage(message string) *Rule {
 func (p *Rule) SetMin(min int) *Rule {
 	p.Min = min
 
-	return p.SetType("string").SetRuleType("min")
+	return p.SetRuleType("min")
 }
 
 // 是否为必选字段
 func (p *Rule) SetRequired() *Rule {
 	p.Required = true
 
-	return p.SetType("string").SetRuleType("required")
+	return p.SetRuleType("required")
 }
 
 // 设置unique验证类型，插入数据：SetUnique("admins","username")，更新数据：SetUnique("admins","username","{id}")
@@ -137,7 +136,7 @@ func (p *Rule) SetUnique(unique ...string) *Rule {
 		p.UniqueIgnoreValue = unique[2]
 	}
 
-	return p.SetType("string").SetRuleType("unique")
+	return p.SetRuleType("unique")
 }
 
 // type：unique时，指定验证的表名
