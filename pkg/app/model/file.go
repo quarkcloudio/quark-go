@@ -131,9 +131,9 @@ func (model *File) GetPaths(id interface{}) []string {
 			err := json.Unmarshal([]byte(getId), &jsonData)
 			if err == nil {
 				for _, v := range jsonData {
-					path = v["path"].(string)
+					path = v["url"].(string)
 					if strings.Contains(path, "//") {
-						paths = append(paths, v["path"].(string))
+						paths = append(paths, v["url"].(string))
 					} else {
 						if strings.Contains(path, "./") {
 							path = strings.Replace(path, "./website/", "/", -1)
