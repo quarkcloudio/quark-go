@@ -85,6 +85,7 @@ func (p *Component) Init() *Component {
 	p.Placeholder = "请输入要搜索的内容"
 	p.AllowClear = true
 	p.Column = (&table.Column{}).Init()
+	p.SetWidth(200)
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
@@ -282,6 +283,13 @@ func (p *Component) SetWrapperCol(col interface{}) *Component {
 // 设置保存值。
 func (p *Component) SetValue(value interface{}) *Component {
 	p.Value = value
+	return p
+}
+
+// 输入框占位文本
+func (p *Component) SetPlaceholder(placeholder string) *Component {
+	p.Placeholder = placeholder
+
 	return p
 }
 
