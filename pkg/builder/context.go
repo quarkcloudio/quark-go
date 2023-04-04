@@ -543,7 +543,7 @@ func (p *Context) IsCreating() bool {
 func (p *Context) IsEditing() bool {
 	uri := strings.Split(p.Path(), "/")
 
-	return (uri[len(uri)-1] == "edit") || (uri[len(uri)-1] == "update")
+	return (uri[len(uri)-1] == "edit") || (uri[len(uri)-1] == "save")
 }
 
 // 判断当前页面是否为详情页面

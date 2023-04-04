@@ -182,6 +182,7 @@ func (p *Admin) BeforeEditing(ctx *builder.Context, data map[string]interface{})
 		Model(&model.ModelHasRole{}).
 		Where("model_id = ?", data["id"]).
 		Where("model_type = ?", "admin").
+		Distinct().
 		Pluck("role_id", &roleIds)
 
 	data["role_ids"] = roleIds
@@ -211,13 +212,13 @@ func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interfa
 		return true
 	}
 
-	if data["role_ids"] == nil {
-		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
-	}
-
 	// 编辑操作，先清空用户对应的角色
 	if ctx.IsEditing() {
 		db.Client.Model(&model.ModelHasRole{}).Where("model_id = ?", id).Where("model_type = ?", "admin").Delete("")
+	}
+
+	if data["role_ids"] == nil {
+		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
 	}
 
 	roleData := []map[string]interface{}{}
