@@ -48,7 +48,7 @@ func makeRand(seed string, length int) string {
 	}
 	charArr := strings.Split(seed, "")
 	charlen := len(charArr)
-	ran := rand.New(rand.NewSource(time.Now().Unix()))
+	ran := rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	var rchar string = ""
 	for i := 1; i <= length; i++ {
