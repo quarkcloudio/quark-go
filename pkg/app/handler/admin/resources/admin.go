@@ -130,6 +130,10 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 				return p.Field["last_login_time"]
 			}
 
+			if p.Field["last_login_time"].(time.Time).Format("2006-01-02 15:04:05") == "0001-01-01 00:00:00" {
+				return nil
+			}
+
 			return p.Field["last_login_time"].(time.Time).Format("2006-01-02 15:04:05")
 		}).OnlyOnIndex(),
 
