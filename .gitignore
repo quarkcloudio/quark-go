@@ -28,3 +28,6 @@ install.lock
 
 # examples web site static files
 examples/*/website/
+
+# examples web site static files
+examples/*/data.db
