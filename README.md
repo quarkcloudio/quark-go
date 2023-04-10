@@ -13,6 +13,12 @@ QuarkGO 是一个基于golang的低代码工具；它提供的丰富组件，能
 
 ## 示例
 
+1. 创建 demo 文件夹，进入该目录中执行如下命令，初始化项目：
+``` bash
+go mod init demo/hello
+```
+2. 创建 main.go 文件
+3. 在 main.go 文件中添加如下代码：
 ```go
 package main
 
@@ -66,6 +72,14 @@ func main() {
 	// 启动服务
 	b.Run(":3000")
 }
+```
+4. 拉取依赖
+``` bash
+go mod tidy
+```
+5. 启动服务
+``` bash
+go run main.go
 ```
 
 后台地址： ```http://127.0.0.1:3000/admin/```
