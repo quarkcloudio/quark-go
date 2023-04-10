@@ -75,7 +75,7 @@ func main() {
 
 ## 特别注意
 1. **因为众所周知的原因，国内用户拉取静态文件可能会失败；建议您手动下载 [website](https://github.com/quarkcms/quark-go/tree/main/website) 静态文件后，将其复制到项目根目录，并在website目录内创建install.lock锁定文件。**
-2. **后台登录、权限认证使用了AppKey作为JWT加密密串，生成环境请务必更改**
+2. **后台用户认证使用了AppKey作为JWT加密密串，生成环境请务必更改**
 
 ## 相关项目
 - [QuarkSmart](https://github.com/quarkcms/quark-smart) 单体应用
