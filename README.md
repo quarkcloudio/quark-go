@@ -21,20 +21,27 @@ import (
 	"github.com/quarkcms/quark-go/pkg/app/install"
 	"github.com/quarkcms/quark-go/pkg/app/middleware"
 	"github.com/quarkcms/quark-go/pkg/builder"
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 func main() {
+
+	// 定义服务
+	var providers []interface{}
+
 	// 数据库配置信息
-	dsn := "root:Bc5HQFJc4bLjZCcC@tcp(127.0.0.1:3306)/quarkgo?charset=utf8&parseTime=True&loc=Local"
+	dsn := "./data.db"
+
+	// 加载后台服务
+	providers = append(providers, admin.Providers...)
 
 	// 配置资源
 	config := &builder.Config{
 		AppKey:    "123456",
-		Providers: admin.Providers,
+		Providers: providers,
 		DBConfig: &builder.DBConfig{
-			Dialector: mysql.Open(dsn),
+			Dialector: sqlite.Open(dsn),
 			Opts:      &gorm.Config{},
 		},
 	}
@@ -65,6 +72,10 @@ func main() {
 
 账号：```administrator```
 密码：```123456```
+
+## 特别注意
+1. **因为众所周知的原因，国内用户拉取静态文件可能会失败；建议您手动下载 [website](https://github.com/quarkcms/quark-go/tree/main/website) 静态文件后，将其复制到项目根目录，并在website目录内创建install.lock锁定文件。**
+2. **后台登录、权限认证使用了AppKey作为JWT加密密串，生成环境请务必更改**
 
 ## 相关项目
 - [QuarkSmart](https://github.com/quarkcms/quark-smart) 单体应用
