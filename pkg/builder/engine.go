@@ -19,10 +19,10 @@ const (
 	AppName = "QuarkGo"
 
 	// Version of current package
-	Version = "1.2.8"
+	Version = "1.2.9"
 
 	// 静态文件URL
-	RespositoryURL = "https://github.com/quarkcms/quark-go/tree/main/website/"
+	RespositoryURL = "https://github.com/quarkcms/quark-go/tree/1.2/website/"
 )
 
 type Engine struct {
