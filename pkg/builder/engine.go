@@ -22,8 +22,8 @@ const (
 	// Version of current package
 	Version = "1.2.10"
 
-	// 静态文件URL
-	RespositoryURL = "https://github.com/quarkcms/quark-go/tree/1.2/website/"
+	// Path of current package
+	PkgName = "github.com/quarkcms/quark-go"
 )
 
 type Engine struct {
@@ -114,7 +114,7 @@ func New(config *Config) *Engine {
 	// 下载静态文件
 	_, err := os.Stat(config.StaticPath + "/install.lock")
 	if os.IsNotExist(err) {
-		err := gopkg.New("github.com/quarkcms/quark-go", Version).Save("website", config.StaticPath)
+		err := gopkg.New(PkgName, Version).Save("website", config.StaticPath)
 		if err == nil {
 			// 创建锁定文件
 			file, _ := os.Create(config.StaticPath + "/install.lock")
