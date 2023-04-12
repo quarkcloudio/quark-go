@@ -3,6 +3,7 @@ package builder
 import (
 	"io"
 	"net/http"
+	"os"
 	"reflect"
 	"strings"
 	"time"
@@ -10,7 +11,7 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"github.com/quarkcms/quark-go/pkg/dal"
-	"github.com/quarkcms/quark-go/pkg/github"
+	"github.com/quarkcms/quark-go/pkg/gopkg"
 	"gorm.io/gorm"
 )
 
@@ -19,7 +20,7 @@ const (
 	AppName = "QuarkGo"
 
 	// Version of current package
-	Version = "1.2.9"
+	Version = "1.2.10"
 
 	// 静态文件URL
 	RespositoryURL = "https://github.com/quarkcms/quark-go/tree/1.2/website/"
@@ -105,8 +106,21 @@ func New(config *Config) *Engine {
 		config:    config,
 	}
 
+	// 默认静态文件目录
+	if config.StaticPath == "" {
+		config.StaticPath = "./website"
+	}
+
 	// 下载静态文件
-	github.Download(RespositoryURL, config.StaticPath)
+	_, err := os.Stat(config.StaticPath + "/install.lock")
+	if os.IsNotExist(err) {
+		err := gopkg.New("github.com/quarkcms/quark-go", Version).Save("website", config.StaticPath)
+		if err == nil {
+			// 创建锁定文件
+			file, _ := os.Create(config.StaticPath + "/install.lock")
+			file.Close()
+		}
+	}
 
 	// 初始化请求列表
 	engine.initPaths()
