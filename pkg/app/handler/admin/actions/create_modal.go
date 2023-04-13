@@ -55,6 +55,9 @@ func (p *CreateModal) GetBody(ctx *builder.Context) interface{} {
 
 	return (&form.Component{}).
 		Init().
+		SetStyle(map[string]interface{}{
+			"paddingTop": "24px",
+		}).
 		SetKey("createModalForm", false).
 		SetApi(api).
 		SetBody(fields).

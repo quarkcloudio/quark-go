@@ -54,6 +54,9 @@ func (p *EditModal) GetBody(ctx *builder.Context) interface{} {
 
 	return (&form.Component{}).
 		Init().
+		SetStyle(map[string]interface{}{
+			"paddingTop": "24px",
+		}).
 		SetKey("editModalForm", false).
 		SetApi(api).
 		SetInitApi(initApi).
