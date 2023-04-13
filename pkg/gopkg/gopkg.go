@@ -40,6 +40,11 @@ func (p *PkgGo) Download() error {
 	}
 	defer resp.Body.Close()
 
+	_, err = os.Stat("./tmp")
+	if os.IsNotExist(err) {
+		os.MkdirAll("./tmp", 0775)
+	}
+
 	// 创建文件用于保存
 	out, err := os.Create("./tmp/v" + p.Version + ".zip")
 	if err != nil {
