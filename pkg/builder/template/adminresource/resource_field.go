@@ -41,6 +41,8 @@ import (
 type Field struct{}
 
 // ID组件
+//
+// field.ID("id", "ID") 或 field.ID("id", "ID", func() interface{} { return p.Field["username"] })
 func (p *Field) ID(params ...interface{}) *id.Component {
 	field := id.New()
 
@@ -61,6 +63,8 @@ func (p *Field) ID(params ...interface{}) *id.Component {
 }
 
 // Hidden组件
+//
+// field.Hidden("id", "ID") 或 field.Hidden("id", "ID", func() interface{} { return p.Field["username"] })
 func (p *Field) Hidden(params ...interface{}) *hidden.Component {
 	field := hidden.New()
 
@@ -81,6 +85,8 @@ func (p *Field) Hidden(params ...interface{}) *hidden.Component {
 }
 
 // 输入框组件
+//
+// field.Text("username", "用户名") 或 field.Text("username", "用户名", func() interface{} { return p.Field["username"] })
 func (p *Field) Text(params ...interface{}) *text.Component {
 	field := text.New()
 
@@ -106,6 +112,8 @@ func (p *Field) Text(params ...interface{}) *text.Component {
 }
 
 // 文本域组件
+//
+// field.TextArea("name", "文本") 或 field.TextArea("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) TextArea(params ...interface{}) *textarea.Component {
 	field := textarea.New()
 
@@ -131,6 +139,8 @@ func (p *Field) TextArea(params ...interface{}) *textarea.Component {
 }
 
 // 密码框组件
+//
+// field.Password("name", "文本") 或 field.Password("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Password(params ...interface{}) *password.Component {
 	field := password.New()
 
@@ -156,6 +166,8 @@ func (p *Field) Password(params ...interface{}) *password.Component {
 }
 
 // 单选组件
+//
+// field.Radio("name", "文本") 或 field.Radio("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Radio(params ...string) *radio.Component {
 	field := radio.New()
 
@@ -169,6 +181,8 @@ func (p *Field) Radio(params ...string) *radio.Component {
 }
 
 // 多选组件
+//
+// field.Checkbox("name", "文本") 或 field.Checkbox("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Checkbox(params ...string) *checkbox.Component {
 	field := checkbox.New()
 
@@ -182,6 +196,8 @@ func (p *Field) Checkbox(params ...string) *checkbox.Component {
 }
 
 // 日期组件
+//
+// field.Date("name", "文本") 或 field.Date("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Date(params ...interface{}) *date.Component {
 	field := date.New()
 
@@ -202,6 +218,8 @@ func (p *Field) Date(params ...interface{}) *date.Component {
 }
 
 // 日期范围组件
+//
+// field.DateRange("name", "文本") 或 field.DateRange("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) DateRange(params ...interface{}) *daterange.Component {
 	field := daterange.New()
 
@@ -222,6 +240,8 @@ func (p *Field) DateRange(params ...interface{}) *daterange.Component {
 }
 
 // 日期时间组件
+//
+// field.Datetime("name", "文本") 或 field.Datetime("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Datetime(params ...interface{}) *datetime.Component {
 	field := datetime.New()
 
@@ -242,6 +262,8 @@ func (p *Field) Datetime(params ...interface{}) *datetime.Component {
 }
 
 // 日期时间范围组件
+//
+// field.DatetimeRange("name", "文本") 或 field.DatetimeRange("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) DatetimeRange(params ...interface{}) *datetimerange.Component {
 	field := datetimerange.New()
 
@@ -262,6 +284,8 @@ func (p *Field) DatetimeRange(params ...interface{}) *datetimerange.Component {
 }
 
 // 开关组件
+//
+// field.Switch("name", "文本") 或 field.Switch("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Switch(params ...string) *switchfield.Component {
 	field := switchfield.New()
 
@@ -275,6 +299,8 @@ func (p *Field) Switch(params ...string) *switchfield.Component {
 }
 
 // 树形组件
+//
+// field.Tree("name", "文本") 或 field.Tree("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Tree(params ...interface{}) *tree.Component {
 	field := tree.New()
 
@@ -300,6 +326,8 @@ func (p *Field) Tree(params ...interface{}) *tree.Component {
 }
 
 // 图标组件
+//
+// field.Icon("name", "文本") 或 field.Icon("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Icon(params ...interface{}) *icon.Component {
 	field := icon.New()
 
@@ -325,6 +353,8 @@ func (p *Field) Icon(params ...interface{}) *icon.Component {
 }
 
 // 下拉框组件
+//
+// field.Select("name", "文本") 或 field.Select("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Select(params ...interface{}) *selectfield.Component {
 	field := selectfield.New()
 
@@ -350,6 +380,8 @@ func (p *Field) Select(params ...interface{}) *selectfield.Component {
 }
 
 // 级联菜单组件
+//
+// field.Cascader("name", "文本") 或 field.Cascader("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Cascader(params ...interface{}) *cascader.Component {
 	field := cascader.New()
 
@@ -370,6 +402,8 @@ func (p *Field) Cascader(params ...interface{}) *cascader.Component {
 }
 
 // 图片组件
+//
+// field.Image("name", "文本") 或 field.Image("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Image(params ...interface{}) *image.Component {
 	field := image.New()
 
@@ -390,6 +424,8 @@ func (p *Field) Image(params ...interface{}) *image.Component {
 }
 
 // 文件组件
+//
+// field.File("name", "文本") 或 field.File("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) File(params ...interface{}) *file.Component {
 	field := file.New()
 
@@ -410,6 +446,8 @@ func (p *Field) File(params ...interface{}) *file.Component {
 }
 
 // 文本展示组件
+//
+// field.Display("文本")
 func (p *Field) Display(label string) *display.Component {
 	field := display.
 		New().
@@ -419,6 +457,8 @@ func (p *Field) Display(label string) *display.Component {
 }
 
 // 编辑器组件
+//
+// field.Editor("name", "文本") 或 field.Editor("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Editor(params ...interface{}) *editor.Component {
 	field := editor.New()
 
@@ -439,6 +479,8 @@ func (p *Field) Editor(params ...interface{}) *editor.Component {
 }
 
 // 分组组件
+//
+// field.Group("文本",[]interface{}{field.Text("title", "标题"),field.Number("num","奖品数量")})
 func (p *Field) Group(label string, items []interface{}) *group.Component {
 	field := group.
 		New().
@@ -449,6 +491,8 @@ func (p *Field) Group(label string, items []interface{}) *group.Component {
 }
 
 // List组件
+//
+// field.List("name", "文本") 或 field.List("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) List(params ...interface{}) *list.Component {
 	field := list.New()
 
@@ -469,6 +513,8 @@ func (p *Field) List(params ...interface{}) *list.Component {
 }
 
 // 地图组件
+//
+// field.Map("name", "文本") 或 field.Map("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Map(params ...interface{}) *mapfield.Component {
 	field := mapfield.New()
 
@@ -489,6 +535,8 @@ func (p *Field) Map(params ...interface{}) *mapfield.Component {
 }
 
 // 地图围栏组件
+//
+// field.Geofence("name", "文本") 或 field.Geofence("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Geofence(params ...interface{}) *geofence.Component {
 	field := geofence.New()
 
@@ -509,6 +557,8 @@ func (p *Field) Geofence(params ...interface{}) *geofence.Component {
 }
 
 // 日期-月组件
+//
+// field.Month("name", "文本") 或 field.Month("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Month(params ...interface{}) *month.Component {
 	field := month.New()
 
@@ -529,6 +579,8 @@ func (p *Field) Month(params ...interface{}) *month.Component {
 }
 
 // 数组输入框组件
+//
+// field.Number("name", "文本") 或 field.Number("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Number(params ...interface{}) *number.Component {
 	field := number.New()
 
@@ -555,6 +607,8 @@ func (p *Field) Number(params ...interface{}) *number.Component {
 }
 
 // 日期-季度组件
+//
+// field.Quarter("name", "文本") 或 field.Quarter("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Quarter(params ...interface{}) *quarter.Component {
 	field := quarter.New()
 
@@ -575,6 +629,8 @@ func (p *Field) Quarter(params ...interface{}) *quarter.Component {
 }
 
 // 搜索组件
+//
+// field.Search("name", "文本") 或 field.Search("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Search(params ...interface{}) *search.Component {
 	field := search.New()
 
@@ -595,6 +651,8 @@ func (p *Field) Search(params ...interface{}) *search.Component {
 }
 
 // 时间范围组件
+//
+// field.TimeRange("name", "文本") 或 field.TimeRange("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) TimeRange(params ...interface{}) *timerange.Component {
 	field := timerange.New()
 
@@ -615,6 +673,8 @@ func (p *Field) TimeRange(params ...interface{}) *timerange.Component {
 }
 
 // 时间组件
+//
+// field.Time("name", "文本") 或 field.Time("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Time(params ...interface{}) *time.Component {
 	field := time.New()
 
@@ -635,6 +695,8 @@ func (p *Field) Time(params ...interface{}) *time.Component {
 }
 
 // 周组件
+//
+// field.Week("name", "文本") 或 field.Week("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Week(params ...interface{}) *week.Component {
 	field := week.New()
 
@@ -655,6 +717,8 @@ func (p *Field) Week(params ...interface{}) *week.Component {
 }
 
 // 年组件
+//
+// field.Year("name", "文本") 或 field.Year("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Year(params ...interface{}) *year.Component {
 	field := year.New()
 
@@ -674,7 +738,19 @@ func (p *Field) Year(params ...interface{}) *year.Component {
 	return field
 }
 
-// Select组合组件
+// Select联动组件
+//
+// [
+//	field.Select("province", "省").
+//		SetOptions([]*selectfield.Option{
+//			{Value: 1, Label: "北京"},
+//			{Value: 2, Label: "天津"},
+//			{Value: 3, Label: "河北省"},
+//		}).
+//		SetLoad("city","/api/admin/area/cities"),
+//
+//    Field::select("city", "市"),
+// ]
 func (p *Field) Selects(body interface{}) *selects.Component {
 	field := selects.
 		New().
@@ -684,6 +760,8 @@ func (p *Field) Selects(body interface{}) *selects.Component {
 }
 
 // 树选择组件
+//
+// field.TreeSelect("name", "文本") 或 field.TreeSelect("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) TreeSelect(params ...interface{}) *treeselect.Component {
 	field := treeselect.New()
 
