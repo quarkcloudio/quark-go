@@ -52,11 +52,12 @@ type Component struct {
 	AddonAfter   interface{}            `json:"addonAfter,omitempty"`   // 带标签的 input，设置后置标签
 	AddonBefore  interface{}            `json:"addonBefore,omitempty"`  // 带标签的 input，设置前置标签
 	AllowClear   bool                   `json:"allowClear,omitempty"`   // 可以点击清除图标删除内容
+	AutoSize     interface{}            `json:"autoSize,omitempty"`     // 自适应内容高度，可设置为 true | false 或对象：{ minRows: 2, maxRows: 6 }
 	Bordered     bool                   `json:"bordered,omitempty"`     // 是否有边框，默认true
 	DefaultValue interface{}            `json:"defaultValue,omitempty"` // 默认的选中项
 	Disabled     interface{}            `json:"disabled,omitempty"`     // 禁用
 	Id           string                 `json:"id,omitempty"`           // 输入框的 id
-	MaxLength    int                    `json:"maxLength,omitempty"`    //最大长度
+	MaxLength    int                    `json:"maxLength,omitempty"`    // 最大长度
 	ShowCount    bool                   `json:"showCount,omitempty"`    // 是否展示字数
 	Status       string                 `json:"status,omitempty"`       // 设置校验状态,'error' | 'warning'
 	Prefix       interface{}            `json:"prefix,omitempty"`       // 带有前缀图标的 input
@@ -66,7 +67,7 @@ type Component struct {
 	Value        interface{}            `json:"value,omitempty"`        // 指定选中项,string[] | number[]
 	Placeholder  string                 `json:"placeholder,omitempty"`  // 占位符
 	Style        map[string]interface{} `json:"style,omitempty"`        // 自定义样式
-
+	Rows         int                    `json:"rows,omitempty"`         // 用于多行输入
 }
 
 // 初始化组件
@@ -655,6 +656,13 @@ func (p *Component) SetAllowClear(allowClear bool) *Component {
 	return p
 }
 
+// 自适应内容高度，可设置为 true | false 或对象：{ minRows: 2, maxRows: 6 }
+func (p *Component) SetAutoSize(autoSize interface{}) *Component {
+	p.AutoSize = autoSize
+
+	return p
+}
+
 // 是否有边框，默认true
 func (p *Component) SetBordered(bordered bool) *Component {
 	p.Bordered = bordered
@@ -728,6 +736,13 @@ func (p *Component) SetSuffix(suffix interface{}) *Component {
 // 声明 input 类型，同原生 input 标签的 type 属性，见：MDN(请直接使用 Input.TextArea 代替 type="TextArea")
 func (p *Component) SetType(Type string) *Component {
 	p.Type = Type
+
+	return p
+}
+
+// 用于多行输入
+func (p *Component) SetRows(rows int) *Component {
+	p.Rows = rows
 
 	return p
 }
