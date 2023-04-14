@@ -11,8 +11,10 @@ import (
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/daterange"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/datetime"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/datetimerange"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/dependency"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/display"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/editor"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/fieldset"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/file"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/geofence"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/group"
@@ -310,15 +312,17 @@ func (p *Field) Year(params ...interface{}) *year.Component {
 // Select联动组件
 //
 // [
-//	field.Select("province", "省").
-//		SetOptions([]*selectfield.Option{
-//			{Value: 1, Label: "北京"},
-//			{Value: 2, Label: "天津"},
-//			{Value: 3, Label: "河北省"},
-//		}).
-//		SetLoad("city","/api/admin/area/cities"),
 //
-//    Field::select("city", "市"),
+//		field.Select("province", "省").
+//			SetOptions([]*selectfield.Option{
+//				{Value: 1, Label: "北京"},
+//				{Value: 2, Label: "天津"},
+//				{Value: 3, Label: "河北省"},
+//			}).
+//			SetLoad("city","/api/admin/area/cities"),
+//
+//	   Field::select("city", "市"),
+//
 // ]
 func (p *Field) Selects(body interface{}) *selects.Component {
 	field := selects.
@@ -355,6 +359,22 @@ func (p *Field) Compact(label string, items []interface{}) *compact.Component {
 		New().
 		SetLabel(label).
 		SetBody(items)
+
+	return field
+}
+
+// 录入结构化的一维数组数据
+//
+// field.FieldSet("name", "组件列表") 或 field.FieldSet("name", "组件列表", func() interface{} { return p.Field["name"] })
+func (p *Field) FieldSet(params ...interface{}) *fieldset.Component {
+	return fieldParser(fieldset.New(), params, "").(*fieldset.Component)
+}
+
+// 数据联动组件
+//
+// field.Dependency()
+func (p *Field) Dependency() *dependency.Component {
+	field := dependency.New()
 
 	return field
 }
