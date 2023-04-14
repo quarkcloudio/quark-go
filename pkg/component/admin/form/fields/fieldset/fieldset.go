@@ -141,6 +141,12 @@ func (p *Component) SetName(name string) *Component {
 	return p
 }
 
+// 字段名转标签，只支持英文
+func (p *Component) SetNameAsLabel() *Component {
+	p.Label = strings.Title(p.Name)
+	return p
+}
+
 // 是否必填，如不设置，则会根据校验规则自动生成
 func (p *Component) SetRequired() *Component {
 	p.Required = true

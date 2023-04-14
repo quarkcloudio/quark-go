@@ -2,7 +2,6 @@ package adminresource
 
 import (
 	"reflect"
-	"strings"
 
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/cascader"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/checkbox"
@@ -54,7 +53,6 @@ func fieldParser(field interface{}, params []interface{}, placeholder string) in
 	switch len(params) {
 	case 1:
 		v.FieldByName("Name").Set(reflect.ValueOf(params[0].(string)))
-		v.FieldByName("Label").Set(reflect.ValueOf(strings.Title(params[0].(string))))
 	case 2:
 		v.FieldByName("Name").Set(reflect.ValueOf(params[0]))
 		v.FieldByName("Label").Set(reflect.ValueOf(params[1]))

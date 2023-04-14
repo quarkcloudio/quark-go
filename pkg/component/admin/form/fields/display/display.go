@@ -168,6 +168,12 @@ func (p *Component) SetName(name string) *Component {
 	return p
 }
 
+// 字段名转标签，只支持英文
+func (p *Component) SetNameAsLabel() *Component {
+	p.Label = strings.Title(p.Name)
+	return p
+}
+
 // 是否必填，如不设置，则会根据校验规则自动生成
 func (p *Component) SetRequired() *Component {
 	p.Required = true
@@ -213,11 +219,11 @@ func (p *Component) GetFrontendRules(path string) interface{} {
 
 // 校验规则，设置字段的校验逻辑
 //
-// []*rule.Rule{
-//	rule.Required(true, "用户名必须填写"),
-//	rule.Min(6, "用户名不能少于6个字符"),
-//	rule.Max(20, "用户名不能超过20个字符"),
-// }
+//	[]*rule.Rule{
+//		rule.Required(true, "用户名必须填写"),
+//		rule.Min(6, "用户名不能少于6个字符"),
+//		rule.Max(20, "用户名不能超过20个字符"),
+//	}
 func (p *Component) SetRules(rules []*rule.Rule) *Component {
 	for k, v := range rules {
 		rules[k] = v.SetName(p.Name)
@@ -229,9 +235,9 @@ func (p *Component) SetRules(rules []*rule.Rule) *Component {
 
 // 校验规则，只在创建表单提交时生效
 //
-// []*rule.Rule{
-//	rule.Unique("admins", "username", "用户名已存在"),
-// }
+//	[]*rule.Rule{
+//		rule.Unique("admins", "username", "用户名已存在"),
+//	}
 func (p *Component) SetCreationRules(rules []*rule.Rule) *Component {
 	for k, v := range rules {
 		rules[k] = v.SetName(p.Name)
@@ -243,9 +249,9 @@ func (p *Component) SetCreationRules(rules []*rule.Rule) *Component {
 
 // 校验规则，只在更新表单提交时生效
 //
-// []*rule.Rule{
-//	rule.Unique("admins", "username", "{id}", "用户名已存在"),
-// }
+//	[]*rule.Rule{
+//		rule.Unique("admins", "username", "{id}", "用户名已存在"),
+//	}
 func (p *Component) SetUpdateRules(rules []*rule.Rule) *Component {
 	for k, v := range rules {
 		rules[k] = v.SetName(p.Name)
@@ -306,17 +312,17 @@ func (p *Component) SetIgnore(ignore bool) *Component {
 
 // 设置When组件数据
 //
-// SetWhen(1, func () interface{} {
-//	return []interface{}{
-//        field.Text("name", "姓名"),
-//    }
-// })
+//	SetWhen(1, func () interface{} {
+//		return []interface{}{
+//	       field.Text("name", "姓名"),
+//	   }
+//	})
 //
-// SetWhen(">", 1, func () interface{} {
-//	return []interface{}{
-//        field.Text("name", "姓名"),
-//    }
-// })
+//	SetWhen(">", 1, func () interface{} {
+//		return []interface{}{
+//	       field.Text("name", "姓名"),
+//	   }
+//	})
 func (p *Component) SetWhen(value ...any) *Component {
 	w := when.New()
 	i := when.NewItem()
