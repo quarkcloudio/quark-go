@@ -20,7 +20,7 @@ const (
 	AppName = "QuarkGo"
 
 	// Version of current package
-	Version = "1.2.13"
+	Version = "1.2.14"
 
 	// Path of current package
 	PkgName = "github.com/quarkcms/quark-go"

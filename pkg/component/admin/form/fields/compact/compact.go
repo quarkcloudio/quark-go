@@ -1,4 +1,4 @@
-package group
+package compact
 
 import (
 	"encoding/json"
@@ -49,9 +49,10 @@ type Component struct {
 	Column         *table.Column   `json:"-"`             // 表格列
 	Callback       interface{}     `json:"-"`             // 回调函数
 
-	Title string      `json:"title,omitempty"` // 分组标题
-	Body  interface{} `json:"body,omitempty"`  // 组件内容
-	Size  int         `json:"size,omitempty"`  // 子元素个数
+	Block     bool        `json:"block,omitempty"`     // 将宽度调整为父元素宽度的选项,默认值false
+	Direction string      `json:"direction,omitempty"` // 间距方向
+	Size      string      `json:"size,omitempty"`      // 间距大小
+	Body      interface{} `json:"body,omitempty"`      // 组件内容
 }
 
 // 初始化组件
@@ -61,11 +62,10 @@ func New() *Component {
 
 // 初始化
 func (p *Component) Init() *Component {
-	p.Component = "groupField"
+	p.Component = "compactField"
 	p.Colon = true
 	p.LabelAlign = "right"
 	p.Column = (&table.Column{}).Init()
-	p.Size = 32
 	p.OnlyOnForms()
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
@@ -114,6 +114,13 @@ func (p *Component) SetHelp(help string) *Component {
 // 为 true 时不带样式，作为纯字段控件使用
 func (p *Component) SetNoStyle() *Component {
 	p.NoStyle = true
+	return p
+}
+
+// label 标签的文本
+func (p *Component) SetLabel(label string) *Component {
+	p.Label = label
+
 	return p
 }
 
@@ -566,23 +573,31 @@ func (p *Component) SetApi(api string) *Component {
 	return p
 }
 
-// 分组标题
-func (p *Component) SetTitle(title string) *Component {
-	p.Title = title
+// 将宽度调整为父元素宽度的选项
+func (p *Component) SetBlock(block bool) *Component {
+
+	p.Block = block
 
 	return p
 }
 
-// 组件内容
+// 间距方向
+func (p *Component) SetDirection(direction string) *Component {
+	p.Direction = direction
+
+	return p
+}
+
+// 间距大小,'small' | 'middle' | 'large' | number
+func (p *Component) SetSize(size string) *Component {
+	p.Size = size
+
+	return p
+}
+
+// 容器控件里面的内容
 func (p *Component) SetBody(body interface{}) *Component {
 	p.Body = body
-
-	return p
-}
-
-// 子元素个数
-func (p *Component) SetSize(size int) *Component {
-	p.Size = size
 
 	return p
 }
