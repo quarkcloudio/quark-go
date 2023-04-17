@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-basic/uuid"
 	"github.com/quarkcms/quark-go/pkg/component/admin/component"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/when"
 )
 
 type Component struct {
@@ -114,6 +115,13 @@ func (p *Component) SetColon(colon bool) *Component {
 
 // 解析initialValue
 func (p *Component) parseInitialValue(item interface{}, initialValues map[string]interface{}) interface{} {
+	var value any
+
+	// 数组直接返回
+	if _, ok := item.([]interface{}); ok {
+		return nil
+	}
+
 	reflectElem := reflect.
 		ValueOf(item).
 		Elem()
@@ -121,15 +129,13 @@ func (p *Component) parseInitialValue(item interface{}, initialValues map[string
 	name := reflectElem.
 		FieldByName("Name").
 		String()
-
 	if name == "" {
 		return nil
 	}
 
-	var value any
-
 	issetDefaultValue := reflectElem.
-		FieldByName("DefaultValue").IsValid()
+		FieldByName("DefaultValue").
+		IsValid()
 
 	if issetDefaultValue {
 		defaultValue := reflectElem.
@@ -146,7 +152,8 @@ func (p *Component) parseInitialValue(item interface{}, initialValues map[string
 	}
 
 	issetValue := reflectElem.
-		FieldByName("Value").IsValid()
+		FieldByName("Value").
+		IsValid()
 
 	if issetValue {
 		getValue := reflectElem.
@@ -161,18 +168,151 @@ func (p *Component) parseInitialValue(item interface{}, initialValues map[string
 	return value
 }
 
+// 查找字段
+func (p *Component) findFields(fields interface{}, when bool) interface{} {
+	var items []interface{}
+
+	if getFields, ok := fields.([]interface{}); ok {
+		for _, v := range getFields {
+			items = append(items, p.fieldParser(v, when)...)
+		}
+	} else {
+		items = append(items, p.fieldParser(fields, when)...)
+	}
+
+	return items
+}
+
+// 解析字段
+func (p *Component) fieldParser(v interface{}, when bool) []interface{} {
+	var items []interface{}
+
+	// 数组直接返回
+	if _, ok := v.([]interface{}); ok {
+		return items
+	}
+
+	hasBody := reflect.
+		ValueOf(v).
+		Elem().
+		FieldByName("Body").
+		IsValid()
+
+	// 存在body的情况下
+	if hasBody {
+		body := reflect.
+			ValueOf(v).
+			Elem().
+			FieldByName("Body").
+			Interface()
+
+		getItems := p.findFields(body, true)
+		if getItems, ok := getItems.([]interface{}); ok {
+			if len(getItems) > 0 {
+				items = append(items, getItems...)
+			}
+		}
+
+		return items
+	}
+
+	hasTabPanes := reflect.
+		ValueOf(v).
+		Elem().
+		FieldByName("TabPanes").
+		IsValid()
+
+	// 存在TabPanes情况下
+	if hasTabPanes {
+		body := reflect.
+			ValueOf(v).
+			Elem().
+			FieldByName("TabPanes").
+			Interface()
+
+		getItems := p.findFields(body, true)
+		if getItems, ok := getItems.([]interface{}); ok {
+			if len(getItems) > 0 {
+				items = append(items, getItems...)
+			}
+		}
+
+		return items
+	}
+
+	// 默认情况
+	component := reflect.
+		ValueOf(v).
+		Elem().
+		FieldByName("Component").
+		String()
+	if strings.Contains(component, "Field") {
+		items = append(items, v)
+		if when {
+			whenFields := p.getWhenFields(v)
+			if len(whenFields) > 0 {
+				items = append(items, whenFields...)
+			}
+		}
+	}
+
+	return items
+}
+
+// 获取When组件中的字段
+func (p *Component) getWhenFields(item interface{}) []interface{} {
+	var items []interface{}
+	whenIsValid := reflect.
+		ValueOf(item).
+		Elem().
+		FieldByName("When").
+		IsValid()
+	if !whenIsValid {
+		return items
+	}
+
+	getWhen := item.(interface {
+		GetWhen() *when.Component
+	}).GetWhen()
+
+	if getWhen == nil {
+		return items
+	}
+	whenItems := getWhen.Items
+	if whenItems == nil {
+		return items
+	}
+
+	for _, v := range whenItems {
+		if v.Body != nil {
+			if body, ok := v.Body.([]interface{}); ok {
+				if len(body) > 0 {
+					items = append(items, body...)
+				}
+			}
+			if body, ok := v.Body.(interface{}); ok {
+				items = append(items, body)
+			}
+		}
+	}
+
+	return items
+}
+
 // 表单默认值，只有初始化以及重置时生效
 func (p *Component) SetInitialValues(initialValues map[string]interface{}) *Component {
 	data := initialValues
+	fields := p.findFields(p.Body, true)
 
-	if body, ok := p.Body.([]any); ok {
+	if body, ok := fields.([]any); ok {
 		for _, v := range body {
 			value := p.parseInitialValue(v, initialValues)
 			if value != nil {
 				name := reflect.
 					ValueOf(v).
 					Elem().
-					FieldByName("Name").String()
+					FieldByName("Name").
+					String()
 
 				data[name] = value
 			}
