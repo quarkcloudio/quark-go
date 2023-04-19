@@ -20,13 +20,14 @@ type Column struct {
 	HideInSearch  bool        `json:"hideInSearch"`
 	HideInTable   bool        `json:"hideInTable"`
 	HideInForm    bool        `json:"hideInForm"`
-	Filters       interface{} `json:"filters"`
-	Order         int         `json:"order"`
-	Sorter        interface{} `json:"sorter"`
-	Width         int         `json:"width"`
-	Editable      interface{} `json:"editable"`
-	Actions       interface{} `json:"actions"`
-	FormItemProps interface{} `json:"formItemProps"`
+	Filters       interface{} `json:"filters,omitempty"`
+	Order         int         `json:"order,omitempty"`
+	Sorter        interface{} `json:"sorter,omitempty"`
+	Span          int         `json:"span,omitempty"`
+	Width         int         `json:"width,omitempty"`
+	Editable      interface{} `json:"editable,omitempty"`
+	Actions       interface{} `json:"actions,omitempty"`
+	FormItemProps interface{} `json:"formItemProps,omitempty"`
 	FieldProps    interface{} `json:"fieldProps,omitempty"`
 }
 
@@ -251,6 +252,12 @@ func (p *Column) SetOrder(order int) *Column {
  */
 func (p *Column) SetSorter(sorter bool) *Column {
 	p.Sorter = sorter
+	return p
+}
+
+// 包含列的数量
+func (p *Column) SetSpan(span int) *Column {
+	p.Span = span
 	return p
 }
 

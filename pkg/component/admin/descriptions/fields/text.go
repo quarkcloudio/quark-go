@@ -6,7 +6,9 @@ type Text struct {
 	component.Element
 	Label     string      `json:"label"`
 	Tooltip   string      `json:"tooltip"`
-	Span      string      `json:"span"`
+	Ellipsis  bool        `json:"ellipsis"`
+	Copyable  bool        `json:"copyable"`
+	Span      int         `json:"span"`
 	ValueType string      `json:"valueType"`
 	ValueEnum string      `json:"valueEnum"`
 	DataIndex string      `json:"dataIndex"`
@@ -49,8 +51,22 @@ func (p *Text) SetTooltip(tooltip string) *Text {
 	return p
 }
 
+// 是否自动缩略
+func (p *Text) SetEllipsis(ellipsis bool) *Text {
+	p.Ellipsis = ellipsis
+
+	return p
+}
+
+// 是否支持复制
+func (p *Text) SetCopyable(copyable bool) *Text {
+	p.Copyable = copyable
+
+	return p
+}
+
 // 列数
-func (p *Text) SetSpan(span string) *Text {
+func (p *Text) SetSpan(span int) *Text {
 	p.Span = span
 
 	return p
