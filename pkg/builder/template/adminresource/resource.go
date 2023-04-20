@@ -100,7 +100,7 @@ func (p *Template) BeforeImporting(ctx *builder.Context, list [][]interface{}) [
 
 // 表格行内编辑执行完之后回调
 func (p *Template) AfterEditable(ctx *builder.Context, id interface{}, field string, value interface{}) interface{} {
-	return ctx.SimpleSuccess("操作成功")
+	return nil
 }
 
 // 行为执行完之后回调

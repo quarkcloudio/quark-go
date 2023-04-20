@@ -66,7 +66,12 @@ func (p *EditableRequest) Handle(ctx *builder.Context) interface{} {
 		return ctx.SimpleError(err.Error())
 	}
 
-	return ctx.Template.(interface {
+	result := ctx.Template.(interface {
 		AfterEditable(ctx *builder.Context, id interface{}, field string, value interface{}) interface{}
 	}).AfterEditable(ctx, id, field, value)
+	if result != nil {
+		return result
+	}
+
+	return ctx.SimpleSuccess("操作成功")
 }
