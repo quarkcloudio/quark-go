@@ -5,34 +5,68 @@ import (
 
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
-	"github.com/quarkcms/quark-go/pkg/msg"
 )
 
 type EditableRequest struct{}
 
 // 执行行为
 func (p *EditableRequest) Handle(ctx *builder.Context) interface{} {
+	var (
+		id    interface{}
+		field string
+		value interface{}
+	)
+
+	// 获取模型结构体
 	modelInstance := reflect.
 		ValueOf(ctx.Template).
 		Elem().
-		FieldByName("Model").Interface()
+		FieldByName("Model").
+		Interface()
+
+	// 创建Gorm对象
 	model := db.Client.Model(&modelInstance)
 
+	// 获取所有Query数据
 	data := ctx.AllQuerys()
+	if data == nil {
+		return ctx.SimpleError("参数错误！")
+	}
+
+	id = data["id"]
+	if id == nil {
+		return ctx.SimpleError("id不能为空！")
+	}
+
+	// 解析数据
 	for k, v := range data {
 		if v == "true" {
 			v = 1
-		}
-		if v == "false" {
+		} else if v == "false" {
 			v = 0
 		}
-		data[k] = v
+
+		if k != "id" {
+			field = k
+			value = v
+		}
 	}
 
-	err := model.Where("id = ?", data["id"]).Updates(data).Error
+	if field == "" {
+		return ctx.SimpleError("参数错误！")
+	}
+
+	if value == nil {
+		return ctx.SimpleError("参数错误！")
+	}
+
+	// 更新数据
+	err := model.Where("id = ?", id).Update(field, value).Error
 	if err != nil {
-		msg.Error(err.Error(), "")
+		return ctx.SimpleError(err.Error())
 	}
 
-	return ctx.JSON(200, msg.Success("操作成功", "", ""))
+	return ctx.Template.(interface {
+		AfterEditable(ctx *builder.Context, id interface{}, field string, value interface{}) interface{}
+	}).AfterEditable(ctx, id, field, value)
 }

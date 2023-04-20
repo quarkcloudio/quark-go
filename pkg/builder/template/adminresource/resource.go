@@ -13,6 +13,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/component/admin/pagecontainer"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"github.com/quarkcms/quark-go/pkg/msg"
+	"gorm.io/gorm"
 )
 
 // 后台增删改查模板
@@ -95,6 +96,16 @@ func (p *Template) BeforeExporting(ctx *builder.Context, list []map[string]inter
 // 数据导入前回调
 func (p *Template) BeforeImporting(ctx *builder.Context, list [][]interface{}) [][]interface{} {
 	return list
+}
+
+// 表格行内编辑执行完之后回调
+func (p *Template) AfterEditable(ctx *builder.Context, id interface{}, field string, value interface{}) interface{} {
+	return ctx.SimpleSuccess("操作成功")
+}
+
+// 行为执行完之后回调
+func (p *Template) AfterAction(ctx *builder.Context, uriKey string, query *gorm.DB) interface{} {
+	return nil
 }
 
 // 列表页渲染

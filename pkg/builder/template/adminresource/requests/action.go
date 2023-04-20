@@ -14,10 +14,15 @@ type ActionRequest struct{}
 // 执行行为
 func (p *ActionRequest) Handle(ctx *builder.Context) interface{} {
 	var result interface{}
+
+	// 获取模型结构体
 	modelInstance := reflect.
 		ValueOf(ctx.Template).
 		Elem().
-		FieldByName("Model").Interface()
+		FieldByName("Model").
+		Interface()
+
+	// 创建Gorm对象
 	model := db.Client.Model(&modelInstance)
 
 	id := ctx.Query("id", "")
@@ -53,6 +58,14 @@ func (p *ActionRequest) Handle(ctx *builder.Context) interface{} {
 						Handle(*builder.Context, *gorm.DB) interface{}
 					}).Handle(ctx, model)
 
+					// 执行完后回调
+					err := ctx.Template.(interface {
+						AfterAction(ctx *builder.Context, uriKey string, query *gorm.DB) interface{}
+					}).AfterAction(ctx, uriKey, model)
+					if err != nil {
+						return err
+					}
+
 					return result
 				}
 			}
@@ -61,6 +74,14 @@ func (p *ActionRequest) Handle(ctx *builder.Context) interface{} {
 				result = v.(interface {
 					Handle(*builder.Context, *gorm.DB) interface{}
 				}).Handle(ctx, model)
+
+				// 执行完后回调
+				err := ctx.Template.(interface {
+					AfterAction(ctx *builder.Context, uriKey string, query *gorm.DB) interface{}
+				}).AfterAction(ctx, uriKey, model)
+				if err != nil {
+					return err
+				}
 
 				return result
 			}
