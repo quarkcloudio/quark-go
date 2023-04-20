@@ -12,7 +12,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/radio"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
-	"github.com/quarkcms/quark-go/pkg/component/admin/table"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"github.com/quarkcms/quark-go/pkg/hash"
 	"github.com/quarkcms/quark-go/pkg/msg"
@@ -114,10 +113,9 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 					Value: 2,
 					Label: "女",
 				},
-			}).SetDefault(1).
-			SetColumn(func(column *table.Column) *table.Column {
-				return column.SetFilters(true)
-			}),
+			}).
+			SetFilters(true).
+			SetDefault(1),
 
 		field.Password("password", "密码").
 			SetCreationRules([]*rule.Rule{

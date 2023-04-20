@@ -31,6 +31,18 @@ type Component struct {
 	ValuePropName string      `json:"valuePropName,omitempty"` // 子节点的值的属性，如 Switch 的是 'checked'。该属性为 getValueProps 的封装，自定义 getValueProps 后会失效
 	WrapperCol    interface{} `json:"wrapperCol,omitempty"`    // 需要为输入控件设置布局样式时，使用该属性，用法同 labelCol。你可以通过 Form 的 wrapperCol 进行统一设置，不会作用于嵌套 Item。当和 Form 同时设置时，以 Item 为准
 
+	Column      *table.Column `json:"-"` // 列表页、详情页中列属性
+	Align       string        `json:"-"` // 设置列的对齐方式,left | right | center，只在列表页、详情页中有效
+	Fixed       interface{}   `json:"-"` // （IE 下无效）列是否固定，可选 true (等效于 left) left rightr，只在列表页中有效
+	Editable    bool          `json:"-"` // 表格列是否可编辑，只在列表页中有效
+	Ellipsis    bool          `json:"-"` // 是否自动缩略，只在列表页、详情页中有效
+	Copyable    bool          `json:"-"` // 是否支持复制，只在列表页、详情页中有效
+	Filters     interface{}   `json:"-"` // 表头的筛选菜单项，当值为 true 时，自动使用 valueEnum 生成，只在列表页中有效
+	Order       int           `json:"-"` // 查询表单中的权重，权重大排序靠前，只在列表页中有效
+	Sorter      interface{}   `json:"-"` // 可排序列，只在列表页中有效
+	Span        int           `json:"-"` // 包含列的数量，只在详情页中有效
+	ColumnWidth int           `json:"-"` // 设置列宽，只在列表页中有效
+
 	Api            string          `json:"api,omitempty"` // 获取数据接口
 	Ignore         bool            `json:"ignore"`        // 是否忽略保存到数据库，默认为 false
 	Rules          []*rule.Rule    `json:"-"`             // 全局校验规则
@@ -45,8 +57,6 @@ type Component struct {
 	ShowOnUpdate   bool            `json:"-"`             // 在编辑页面展示
 	ShowOnExport   bool            `json:"-"`             // 在导出的Excel上展示
 	ShowOnImport   bool            `json:"-"`             // 在导入Excel上展示
-	Editable       bool            `json:"-"`             // 表格上是否可编辑
-	Column         *table.Column   `json:"-"`             // 表格列
 	Callback       interface{}     `json:"-"`             // 回调函数
 
 	AllowClear     bool                   `json:"allowClear,omitempty"`     // 是否支持清除，默认true
@@ -318,6 +328,88 @@ func (p *Component) SetValuePropName(valuePropName string) *Component {
 // 你可以通过 Form 的 wrapperCol 进行统一设置。当和 Form 同时设置时，以 Item 为准。
 func (p *Component) SetWrapperCol(col interface{}) *Component {
 	p.WrapperCol = col
+	return p
+}
+
+// 列表页、详情页中列属性
+func (p *Component) SetColumn(f func(column *table.Column) *table.Column) *Component {
+	p.Column = f(p.Column)
+
+	return p
+}
+
+// 设置列的对齐方式,left | right | center，只在列表页、详情页中有效
+func (p *Component) SetAlign(align string) *Component {
+	p.Align = align
+	return p
+}
+
+// （IE 下无效）列是否固定，可选 true (等效于 left) left rightr，只在列表页中有效
+func (p *Component) SetFixed(fixed interface{}) *Component {
+	p.Fixed = fixed
+	return p
+}
+
+// 表格列是否可编辑，只在列表页中有效
+func (p *Component) SetEditable(editable bool) *Component {
+	p.Editable = editable
+
+	return p
+}
+
+// 是否自动缩略，只在列表页、详情页中有效
+func (p *Component) SetEllipsis(ellipsis bool) *Component {
+	p.Ellipsis = ellipsis
+	return p
+}
+
+// 是否支持复制，只在列表页、详情页中有效
+func (p *Component) SetCopyable(copyable bool) *Component {
+	p.Copyable = copyable
+	return p
+}
+
+// 表头的筛选菜单项，当值为 true 时，自动使用 valueEnum 生成，只在列表页中有效
+func (p *Component) SetFilters(filters interface{}) *Component {
+	getFilters, ok := filters.(map[string]string)
+
+	if ok {
+		tmpFilters := []map[string]string{}
+		for k, v := range getFilters {
+			tmpFilters = append(tmpFilters, map[string]string{
+				"text":  v,
+				"value": k,
+			})
+		}
+		p.Filters = tmpFilters
+	} else {
+		p.Filters = filters
+	}
+
+	return p
+}
+
+// 查询表单中的权重，权重大排序靠前，只在列表页中有效
+func (p *Component) SetOrder(order int) *Component {
+	p.Order = order
+	return p
+}
+
+// 可排序列，只在列表页中有效
+func (p *Component) SetSorter(sorter bool) *Component {
+	p.Sorter = sorter
+	return p
+}
+
+// 包含列的数量，只在详情页中有效
+func (p *Component) SetSpan(span int) *Component {
+	p.Span = span
+	return p
+}
+
+// 设置列宽，只在列表页中有效
+func (p *Component) SetColumnWidth(width int) *Component {
+	p.ColumnWidth = width
 	return p
 }
 
@@ -608,20 +700,6 @@ func (p *Component) IsShownOnExport() bool {
 // Check for showing when importing.
 func (p *Component) IsShownOnImport() bool {
 	return p.ShowOnImport
-}
-
-// 设置为可编辑列
-func (p *Component) SetEditable(editable bool) *Component {
-	p.Editable = editable
-
-	return p
-}
-
-// 闭包，透传表格列的属性
-func (p *Component) SetColumn(f func(column *table.Column) *table.Column) *Component {
-	p.Column = f(p.Column)
-
-	return p
 }
 
 // 当前列值的枚举 valueEnum

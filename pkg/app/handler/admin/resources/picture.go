@@ -8,7 +8,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
-	"github.com/quarkcms/quark-go/pkg/component/admin/table"
 )
 
 type Picture struct {
@@ -43,13 +42,8 @@ func (p *Picture) Fields(ctx *builder.Context) []interface{} {
 
 			return "<img src='" + (&model.Picture{}).GetPath(p.Field["id"]) + "' width=50 height=50 />"
 		}),
-		field.Text("name", "名称").SetColumn(func(column *table.Column) *table.Column {
-			return column.SetEllipsis(true)
-		}),
-		field.Text("size", "大小").
-			SetColumn(func(column *table.Column) *table.Column {
-				return column.SetSorter(true)
-			}),
+		field.Text("name", "名称").SetEllipsis(true),
+		field.Text("size", "大小").SetSorter(true),
 		field.Text("width", "宽度"),
 		field.Text("height", "高度"),
 		field.Text("ext", "扩展名"),

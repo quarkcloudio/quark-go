@@ -8,7 +8,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
-	"github.com/quarkcms/quark-go/pkg/component/admin/table"
 )
 
 type File struct {
@@ -40,10 +39,7 @@ func (p *File) Fields(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		field.ID("id", "ID"),
 		field.Text("name", "名称"),
-		field.Text("size", "大小").
-			SetColumn(func(column *table.Column) *table.Column {
-				return column.SetSorter(true)
-			}),
+		field.Text("size", "大小").SetSorter(true),
 		field.Text("ext", "扩展名"),
 		field.Datetime("created_at", "上传时间", func() interface{} {
 			if p.Field["created_at"] == nil {
