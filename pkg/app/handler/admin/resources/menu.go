@@ -185,5 +185,5 @@ func (p *Menu) AfterSaved(ctx *builder.Context, id int, data map[string]interfac
 		return ctx.JSON(200, msg.Error(result.Error.Error(), ""))
 	}
 
-	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
+	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
 }

@@ -131,7 +131,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) interfac
 	}
 
 	if importResult {
-		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+indexRoute, ":resource", ctx.Param("resource"), -1), ""))
+		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/layout/index?api="+indexRoute, ":resource", ctx.Param("resource"), -1), ""))
 	} else {
 		importHead = append(importHead, "错误信息")
 

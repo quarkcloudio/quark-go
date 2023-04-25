@@ -249,7 +249,7 @@ func (model *Menu) GetListByAdminId(adminId int) (menuList interface{}, Error er
 		}
 
 		if v.Type == "engine" {
-			v.Path = "/index?api=" + v.Path
+			v.Path = "/layout/index?api=" + v.Path
 		}
 
 		menus[k] = v

@@ -1,3 +1,7 @@
 {
-  "api": "/api/admin/login/index/index"
+  "host":"",
+  "api":{
+    "default":"/api/admin/login/index/index",
+    "layout": "/api/admin/layout/index/index"
+  }
 }

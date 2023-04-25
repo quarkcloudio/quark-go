@@ -33,5 +33,5 @@ func (p *CreateLink) Init(name string) *CreateLink {
 
 // 跳转链接
 func (p *CreateLink) GetHref(ctx *builder.Context) string {
-	return "#/index?api=" + strings.Replace(ctx.Path(), "/index", "/create", -1)
+	return "#/layout/index?api=" + strings.Replace(ctx.Path(), "/index", "/create", -1)
 }

@@ -57,7 +57,7 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 
 		field.Text("username", "用户名", func() interface{} {
 
-			return "<a href='#/index?api=/api/admin/admin/edit&id=" + strconv.Itoa(p.Field["id"].(int)) + "'>" + p.Field["username"].(string) + "</a>"
+			return "<a href='#/layout/index?api=/api/admin/admin/edit&id=" + strconv.Itoa(p.Field["id"].(int)) + "'>" + p.Field["username"].(string) + "</a>"
 		}).
 			SetRules([]*rule.Rule{
 				rule.Required(true, "用户名必须填写"),
@@ -220,7 +220,7 @@ func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interfa
 	}
 
 	if data["role_ids"] == nil {
-		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
+		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
 	}
 
 	roleData := []map[string]interface{}{}
@@ -240,5 +240,5 @@ func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interfa
 		}
 	}
 
-	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
+	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
 }
