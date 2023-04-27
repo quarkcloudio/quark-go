@@ -77,9 +77,7 @@ type AdminLayout struct {
 	Links        []map[string]interface{} // 友情链接
 }
 
-// Handle is a function that can be registered to a route to handle HTTP
-// requests. Like http.HandlerFunc, but has a third parameter for the values of
-// wildcards (path variables).
+// 定义路由方法类型
 type Handle func(ctx *Context) error
 
 // 初始化对象
@@ -224,11 +222,9 @@ func (p *Engine) initPaths() {
 		urlPaths   []string
 		routePaths []*RouteMapping
 	)
-
 	if p.urlPaths != nil && p.routePaths != nil {
 		return
 	}
-
 	for _, provider := range p.providers {
 
 		// 初始化
@@ -253,14 +249,11 @@ func (p *Engine) initPaths() {
 					actions := getTemplateInstance.(interface {
 						Actions(ctx *Context) []interface{}
 					}).Actions(&Context{})
-
 					for _, av := range actions {
-
 						// uri唯一标识
 						uriKey := av.(interface {
 							GetUriKey(interface{}) string
 						}).GetUriKey(av)
-
 						actionType := av.(interface{ GetActionType() string }).GetActionType()
 						if actionType == "dropdown" {
 							dropdownActions := av.(interface{ GetActions() []interface{} }).GetActions()
@@ -268,7 +261,6 @@ func (p *Engine) initPaths() {
 								uriKey := dropdownAction.(interface {
 									GetUriKey(interface{}) string
 								}).GetUriKey(dropdownAction) // uri唯一标识
-
 								path = strings.Replace(path, ":uriKey", uriKey, -1)
 							}
 						} else {
@@ -460,12 +452,12 @@ func (p *Engine) echoHandle(path string, handle Handle, c echo.Context) error {
 	return err
 }
 
-// tatic registers a new route with path prefix to serve static files from the provided root directory.
+// 加载静态文件
 func (p *Engine) Static(pathPrefix string, fsRoot string) {
 	p.echo.Static(pathPrefix, fsRoot)
 }
 
-// GET is a shortcut for router.Handle(http.MethodGet, path, handle)
+// GET请求
 func (p *Engine) GET(path string, handle Handle) error {
 	p.echo.GET(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -474,7 +466,7 @@ func (p *Engine) GET(path string, handle Handle) error {
 	return nil
 }
 
-// HEAD is a shortcut for router.Handle(http.MethodHead, path, handle)
+// HEAD请求
 func (p *Engine) HEAD(path string, handle Handle) error {
 	p.echo.HEAD(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -483,7 +475,7 @@ func (p *Engine) HEAD(path string, handle Handle) error {
 	return nil
 }
 
-// OPTIONS is a shortcut for router.Handle(http.MethodOptions, path, handle)
+// OPTIONS请求
 func (p *Engine) OPTIONS(path string, handle Handle) error {
 	p.echo.OPTIONS(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -492,7 +484,7 @@ func (p *Engine) OPTIONS(path string, handle Handle) error {
 	return nil
 }
 
-// POST is a shortcut for router.Handle(http.MethodPost, path, handle)
+// POST请求
 func (p *Engine) POST(path string, handle Handle) error {
 	p.echo.POST(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -501,7 +493,7 @@ func (p *Engine) POST(path string, handle Handle) error {
 	return nil
 }
 
-// PUT is a shortcut for router.Handle(http.MethodPut, path, handle)
+// PUT请求
 func (p *Engine) PUT(path string, handle Handle) error {
 	p.echo.PUT(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -510,7 +502,7 @@ func (p *Engine) PUT(path string, handle Handle) error {
 	return nil
 }
 
-// PATCH is a shortcut for router.Handle(http.MethodPatch, path, handle)
+// PATCH请求
 func (p *Engine) PATCH(path string, handle Handle) error {
 	p.echo.PATCH(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -519,7 +511,7 @@ func (p *Engine) PATCH(path string, handle Handle) error {
 	return nil
 }
 
-// DELETE is a shortcut for router.Handle(http.MethodDelete, path, handle)
+// DELETE请求
 func (p *Engine) DELETE(path string, handle Handle) error {
 	p.echo.DELETE(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -528,7 +520,7 @@ func (p *Engine) DELETE(path string, handle Handle) error {
 	return nil
 }
 
-// Any is a shortcut for router.Handle(http.MethodGet, path, handle)
+// Any请求
 func (p *Engine) Any(path string, handle Handle) error {
 	p.echo.Any(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -537,7 +529,7 @@ func (p *Engine) Any(path string, handle Handle) error {
 	return nil
 }
 
-// Group creates a new router group with prefix and optional group-level middleware.
+// 路由组
 func (p *Engine) Group(path string, handlers ...Handle) *Group {
 	echoGroup := p.echo.Group(path, func(next echo.HandlerFunc) echo.HandlerFunc {
 		if len(handlers) > 0 {
@@ -562,7 +554,7 @@ func (p *Engine) Group(path string, handlers ...Handle) *Group {
 	return &Group{engine: p, echoGroup: echoGroup}
 }
 
-// GET is a shortcut for router.Handle(http.MethodGet, path, handle)
+// GET请求
 func (p *Group) GET(path string, handle Handle) error {
 	p.echoGroup.GET(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -571,7 +563,7 @@ func (p *Group) GET(path string, handle Handle) error {
 	return nil
 }
 
-// HEAD is a shortcut for router.Handle(http.MethodHead, path, handle)
+// HEAD请求
 func (p *Group) HEAD(path string, handle Handle) error {
 	p.echoGroup.HEAD(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -580,7 +572,7 @@ func (p *Group) HEAD(path string, handle Handle) error {
 	return nil
 }
 
-// OPTIONS is a shortcut for router.Handle(http.MethodOptions, path, handle)
+// OPTIONS请求
 func (p *Group) OPTIONS(path string, handle Handle) error {
 	p.echoGroup.OPTIONS(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -589,7 +581,7 @@ func (p *Group) OPTIONS(path string, handle Handle) error {
 	return nil
 }
 
-// POST is a shortcut for router.Handle(http.MethodPost, path, handle)
+// POST请求
 func (p *Group) POST(path string, handle Handle) error {
 	p.echoGroup.POST(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -598,7 +590,7 @@ func (p *Group) POST(path string, handle Handle) error {
 	return nil
 }
 
-// PUT is a shortcut for router.Handle(http.MethodPut, path, handle)
+// PUT请求
 func (p *Group) PUT(path string, handle Handle) error {
 	p.echoGroup.PUT(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -607,7 +599,7 @@ func (p *Group) PUT(path string, handle Handle) error {
 	return nil
 }
 
-// PATCH is a shortcut for router.Handle(http.MethodPatch, path, handle)
+// PATCH请求
 func (p *Group) PATCH(path string, handle Handle) error {
 	p.echoGroup.PATCH(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -616,7 +608,7 @@ func (p *Group) PATCH(path string, handle Handle) error {
 	return nil
 }
 
-// DELETE is a shortcut for router.Handle(http.MethodDelete, path, handle)
+// DELETE请求
 func (p *Group) DELETE(path string, handle Handle) error {
 	p.echoGroup.DELETE(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -625,7 +617,7 @@ func (p *Group) DELETE(path string, handle Handle) error {
 	return nil
 }
 
-// Any is a shortcut for router.Handle(http.MethodGet, path, handle)
+// Any请求
 func (p *Group) Any(path string, handle Handle) error {
 	p.echoGroup.Any(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -634,7 +626,7 @@ func (p *Group) Any(path string, handle Handle) error {
 	return nil
 }
 
-// Group creates a new router group with prefix and optional group-level middleware.
+// 路由组
 func (p *Group) Group(path string, handlers ...Handle) *Group {
 	echoGroup := p.engine.echo.Group(path, func(next echo.HandlerFunc) echo.HandlerFunc {
 		if len(handlers) > 0 {

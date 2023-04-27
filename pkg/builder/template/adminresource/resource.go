@@ -25,19 +25,19 @@ type Template struct {
 }
 
 const (
-	IndexRoute          = "/api/admin/:resource/index"           // 后台增删改查，列表路由
-	EditableRoute       = "/api/admin/:resource/editable"        // 后台增删改查，表格行内编辑路由
-	ActionRoute         = "/api/admin/:resource/action/:uriKey"  // 后台增删改查，执行行为路由
-	CreateRoute         = "/api/admin/:resource/create"          // 后台增删改查，创建页面路由
-	StoreRoute          = "/api/admin/:resource/store"           // 后台增删改查，创建方法路由
-	EditRoute           = "/api/admin/:resource/edit"            // 后台增删改查，编辑页面路由
-	EditValuesRoute     = "/api/admin/:resource/edit/values"     // 后台增删改查，获取编辑表单值路由
-	SaveRoute           = "/api/admin/:resource/save"            // 后台增删改查，保存编辑值路由
-	ImportRoute         = "/api/admin/:resource/import"          // 后台增删改查，详情页面路由
-	ExportRoute         = "/api/admin/:resource/export"          // 后台增删改查，导出数据路由
-	DetailRoute         = "/api/admin/:resource/detail"          // 后台增删改查，导入数据路由
-	ImportTemplateRoute = "/api/admin/:resource/import/template" // 后台增删改查，导入模板路由
-	FormRoute           = "/api/admin/:resource/:uriKey/form"    // 后台增删改查，通用表单资源
+	IndexRoute          = "/api/admin/:resource/index"           // 列表路由
+	EditableRoute       = "/api/admin/:resource/editable"        // 表格行内编辑路由
+	ActionRoute         = "/api/admin/:resource/action/:uriKey"  // 执行行为路由
+	CreateRoute         = "/api/admin/:resource/create"          // 创建页面路由
+	StoreRoute          = "/api/admin/:resource/store"           // 创建方法路由
+	EditRoute           = "/api/admin/:resource/edit"            // 编辑页面路由
+	EditValuesRoute     = "/api/admin/:resource/edit/values"     // 获取编辑表单值路由
+	SaveRoute           = "/api/admin/:resource/save"            // 保存编辑值路由
+	ImportRoute         = "/api/admin/:resource/import"          // 详情页面路由
+	ExportRoute         = "/api/admin/:resource/export"          // 导出数据路由
+	DetailRoute         = "/api/admin/:resource/detail"          // 导入数据路由
+	ImportTemplateRoute = "/api/admin/:resource/import/template" // 导入模板路由
+	FormRoute           = "/api/admin/:resource/:uriKey/form"    // 通用表单资源
 )
 
 // 初始化
@@ -54,19 +54,19 @@ func (p *Template) TemplateInit() interface{} {
 	p.DB = db.Client
 
 	// 注册路由映射
-	p.GET(IndexRoute, "IndexRender")                   // 后台增删改查，列表路由
-	p.GET(EditableRoute, "EditableRender")             // 后台增删改查，表格行内编辑路由
-	p.Any(ActionRoute, "ActionRender")                 // 后台增删改查，执行行为路由
-	p.GET(CreateRoute, "CreationRender")               // 后台增删改查，创建页面路由
-	p.POST(StoreRoute, "StoreRender")                  // 后台增删改查，创建方法路由
-	p.GET(EditRoute, "EditRender")                     // 后台增删改查，编辑页面路由
-	p.GET(EditValuesRoute, "EditValuesRender")         // 后台增删改查，获取编辑表单值路由
-	p.POST(SaveRoute, "SaveRender")                    // 后台增删改查，保存编辑值路由
-	p.GET(DetailRoute, "DetailRender")                 // 后台增删改查，详情页面路由
-	p.GET(ExportRoute, "ExportRender")                 // 后台增删改查，导出数据路由
-	p.POST(ImportRoute, "ImportRender")                // 后台增删改查，导入数据路由
-	p.GET(ImportTemplateRoute, "ImportTemplateRender") // 后台增删改查，导入模板路由
-	p.GET(FormRoute, "FormRender")                     // 后台增删改查，通用表单资源
+	p.GET(IndexRoute, "IndexRender")                   // 列表
+	p.GET(EditableRoute, "EditableRender")             // 表格行内编辑
+	p.Any(ActionRoute, "ActionRender")                 // 执行行为
+	p.GET(CreateRoute, "CreationRender")               // 创建页面
+	p.POST(StoreRoute, "StoreRender")                  // 创建方法
+	p.GET(EditRoute, "EditRender")                     // 编辑页面
+	p.GET(EditValuesRoute, "EditValuesRender")         // 获取编辑表单值
+	p.POST(SaveRoute, "SaveRender")                    // 保存编辑值
+	p.GET(DetailRoute, "DetailRender")                 // 详情页面
+	p.GET(ExportRoute, "ExportRender")                 // 导出数据
+	p.POST(ImportRoute, "ImportRender")                // 导入数据
+	p.GET(ImportTemplateRoute, "ImportTemplateRender") // 导入模板
+	p.GET(FormRoute, "FormRender")                     // 通用表单资源
 
 	return p
 }
