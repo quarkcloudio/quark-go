@@ -16,13 +16,13 @@ import (
 )
 
 const (
-	// Name of current package
+	// 应用名称
 	AppName = "QuarkGo"
 
-	// Version of current package
+	// 版本号
 	Version = "1.2.21"
 
-	// Path of current package
+	// 包名
 	PkgName = "github.com/quarkcms/quark-go"
 )
 
@@ -387,7 +387,6 @@ func (p *Engine) Render(ctx *Context) error {
 // 处理模版上的路由映射关系
 func (p *Engine) routeMappingParser() {
 	for _, routePath := range p.routePaths {
-
 		switch routePath.Method {
 		case "GET":
 			p.GET(routePath.Path, func(ctx *Context) error {
@@ -432,6 +431,7 @@ func (p *Engine) Echo() *echo.Echo {
 
 // 适配Echo框架方法
 func (p *Engine) echoHandle(path string, handle Handle, c echo.Context) error {
+	// 创建上下文
 	ctx := p.NewContext(c.Response().Writer, c.Request())
 
 	// 设置路由路径
