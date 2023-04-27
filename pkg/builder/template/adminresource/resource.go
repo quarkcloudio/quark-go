@@ -106,8 +106,13 @@ func (p *Template) AfterAction(ctx *builder.Context, uriKey string, query *gorm.
 
 // 列表页渲染
 func (p *Template) IndexRender(ctx *builder.Context) interface{} {
+	// 获取数据
 	data := (&requests.IndexRequest{}).QueryData(ctx)
-	body := p.IndexComponentRender(ctx, data)
+
+	// 获取列表页组件
+	body := ctx.Template.(interface {
+		IndexComponentRender(ctx *builder.Context, data interface{}) interface{}
+	}).IndexComponentRender(ctx, data)
 
 	result := ctx.Template.(interface {
 		PageComponentRender(ctx *builder.Context, body interface{}) interface{}

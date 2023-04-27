@@ -325,7 +325,7 @@ func (p *Engine) UseHandlers() []func(ctx *Context) error {
 // 解析模版方法
 func (p *Engine) handleParser(ctx *Context) error {
 	var (
-		result           interface{}
+		result           []reflect.Value
 		err              error
 		templateInstance interface{}
 	)
@@ -339,20 +339,30 @@ func (p *Engine) handleParser(ctx *Context) error {
 	// 执行挂载的方法
 	for _, v := range p.routePaths {
 		if v.Path == ctx.FullPath() {
+
+			// 反射实例值
 			value := reflect.ValueOf(templateInstance)
-			if value.IsValid() {
-				method := value.MethodByName(v.HandlerName)
-				if method.IsValid() {
-					getResult := method.Call([]reflect.Value{
-						reflect.ValueOf(ctx),
-					})
-					if len(getResult) == 1 {
-						result = getResult[0].Interface()
-						if v, ok := result.(error); ok {
-							err = v
-						}
-					}
-				}
+			if !value.IsValid() {
+				continue
+			}
+
+			// 获取实例上方法
+			method := value.MethodByName(v.HandlerName)
+			if !method.IsValid() {
+				continue
+			}
+
+			// 反射执行结果
+			result = method.Call([]reflect.Value{
+				reflect.ValueOf(ctx),
+			})
+			if len(result) != 1 {
+				continue
+			}
+
+			// 执行结果
+			if v, ok := result[0].Interface().(error); ok {
+				err = v
 			}
 		}
 	}
