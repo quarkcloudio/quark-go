@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"runtime"
 	"strings"
 	"time"
 
@@ -325,6 +326,7 @@ func (p *Engine) UseHandlers() []func(ctx *Context) error {
 // 解析模版方法
 func (p *Engine) handleParser(ctx *Context) error {
 	var (
+		result           []reflect.Value
 		err              error
 		templateInstance interface{}
 	)
@@ -338,7 +340,46 @@ func (p *Engine) handleParser(ctx *Context) error {
 	// 执行挂载的方法
 	for _, v := range p.routePaths {
 		if v.Path == ctx.FullPath() {
-			err = v.Handler(ctx)
+
+			// 反射实例值
+			value := reflect.ValueOf(templateInstance)
+			if !value.IsValid() {
+				continue
+			}
+
+			// 获取指针
+			pc := reflect.ValueOf(v.Handler).Pointer()
+
+			// 获取func全路径
+			fn := runtime.FuncForPC(pc)
+			fullPaths := strings.Split(fn.Name(), ".")
+			lastPathName := fullPaths[len(fullPaths)-1]
+
+			// 获取方法名称
+			funcNames := strings.Split(lastPathName, "-")
+			if len(funcNames) <= 0 {
+				continue
+			}
+			funcName := funcNames[0]
+
+			// 获取实例上方法
+			method := value.MethodByName(funcName)
+			if !method.IsValid() {
+				continue
+			}
+
+			// 反射执行结果
+			result = method.Call([]reflect.Value{
+				reflect.ValueOf(ctx),
+			})
+			if len(result) != 1 {
+				continue
+			}
+
+			// 执行结果
+			if v, ok := result[0].Interface().(error); ok {
+				err = v
+			}
 		}
 	}
 

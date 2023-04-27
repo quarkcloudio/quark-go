@@ -1,8 +1,10 @@
 package adminlogin
 
 import (
+	"bytes"
 	"reflect"
 
+	"github.com/dchest/captcha"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template"
 	"github.com/quarkcms/quark-go/pkg/component/admin/login"
@@ -53,12 +55,20 @@ func (p *Template) TemplateInit() interface{} {
 
 // 验证码ID
 func (p *Template) CaptchaId(ctx *builder.Context) error {
-	return ctx.JSONError("请实现创建验证码ID方法")
+
+	return ctx.JSONOk("获取成功", "", map[string]string{
+		"captchaId": captcha.NewLen(4),
+	})
 }
 
 // 生成验证码
 func (p *Template) Captcha(ctx *builder.Context) error {
-	return ctx.JSONError("请实现生成验证码方法")
+	id := ctx.Param("id")
+	writer := bytes.Buffer{}
+	captcha.WriteImage(&writer, id, 110, 38)
+	ctx.Write(writer.Bytes())
+
+	return nil
 }
 
 // 登录方法
@@ -68,7 +78,7 @@ func (p *Template) Handle(ctx *builder.Context) error {
 
 // 退出方法
 func (p *Template) Logout(ctx *builder.Context) error {
-	return ctx.JSONError("请实现退出方法")
+	return ctx.JSONOk("退出成功")
 }
 
 // 组件渲染
