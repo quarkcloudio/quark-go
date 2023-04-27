@@ -11,6 +11,23 @@ import (
 	"gorm.io/gorm"
 )
 
+// 路由路径
+const (
+	IndexPath          = "/api/admin/:resource/index"           // 列表路径
+	EditablePath       = "/api/admin/:resource/editable"        // 表格行内编辑路径
+	ActionPath         = "/api/admin/:resource/action/:uriKey"  // 执行行为路径
+	CreatePath         = "/api/admin/:resource/create"          // 创建页面路径
+	StorePath          = "/api/admin/:resource/store"           // 创建方法路径
+	EditPath           = "/api/admin/:resource/edit"            // 编辑页面路径
+	EditValuesPath     = "/api/admin/:resource/edit/values"     // 获取编辑表单值路径
+	SavePath           = "/api/admin/:resource/save"            // 保存编辑值路径
+	ImportPath         = "/api/admin/:resource/import"          // 详情页面路径
+	ExportPath         = "/api/admin/:resource/export"          // 导出数据路径
+	DetailPath         = "/api/admin/:resource/detail"          // 导入数据路径
+	ImportTemplatePath = "/api/admin/:resource/import/template" // 导入模板路径
+	FormPath           = "/api/admin/:resource/:uriKey/form"    // 通用表单资源路径
+)
+
 // 后台增删改查模板
 type Template struct {
 	template.Template
@@ -23,22 +40,6 @@ type Template struct {
 	Field        map[string]interface{} // 注入的字段数据
 	WithExport   bool                   // 是否具有导出功能
 }
-
-const (
-	IndexPath          = "/api/admin/:resource/index"           // 列表路由
-	EditablePath       = "/api/admin/:resource/editable"        // 表格行内编辑路由
-	ActionPath         = "/api/admin/:resource/action/:uriKey"  // 执行行为路由
-	CreatePath         = "/api/admin/:resource/create"          // 创建页面路由
-	StorePath          = "/api/admin/:resource/store"           // 创建方法路由
-	EditPath           = "/api/admin/:resource/edit"            // 编辑页面路由
-	EditValuesPath     = "/api/admin/:resource/edit/values"     // 获取编辑表单值路由
-	SavePath           = "/api/admin/:resource/save"            // 保存编辑值路由
-	ImportPath         = "/api/admin/:resource/import"          // 详情页面路由
-	ExportPath         = "/api/admin/:resource/export"          // 导出数据路由
-	DetailPath         = "/api/admin/:resource/detail"          // 导入数据路由
-	ImportTemplatePath = "/api/admin/:resource/import/template" // 导入模板路由
-	FormPath           = "/api/admin/:resource/:uriKey/form"    // 通用表单资源
-)
 
 // 初始化
 func (p *Template) Init() interface{} {

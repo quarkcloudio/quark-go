@@ -54,7 +54,7 @@ type Config struct {
 	AdminLayout *AdminLayout  // 后台布局
 }
 
-// 定义Group
+// 定义路由组
 type Group struct {
 	engine    *Engine
 	echoGroup *echo.Group
