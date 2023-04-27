@@ -14,7 +14,10 @@ func (p *Template) IndexExtraRender(ctx *builder.Context) interface{} {
 
 // 列表页工具栏
 func (p *Template) IndexToolBar(ctx *builder.Context) interface{} {
-	return (&table.ToolBar{}).Init().SetTitle(p.IndexTitle(ctx)).SetActions(p.IndexActions(ctx))
+	return (&table.ToolBar{}).
+		Init().
+		SetTitle(p.IndexTitle(ctx)).
+		SetActions(p.IndexActions(ctx))
 }
 
 // 列表标题
@@ -33,9 +36,12 @@ func (p *Template) IndexComponentRender(ctx *builder.Context, data interface{}) 
 	// 列表标题
 	title := p.IndexTitle(ctx)
 
-	// 反射获取参数
-	value := reflect.ValueOf(ctx.Template).Elem()
-	indexPolling := value.FieldByName("IndexPolling").Int()
+	// 列表页轮询数据
+	indexPolling := reflect.
+		ValueOf(ctx.Template).
+		Elem().
+		FieldByName("IndexPolling").
+		Int()
 
 	// 列表页表格主体
 	indexExtraRender := p.IndexExtraRender(ctx)

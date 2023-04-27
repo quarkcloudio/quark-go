@@ -14,14 +14,14 @@ import (
 // 后台增删改查模板
 type Template struct {
 	template.Template
-	Title        string // 标题
-	SubTitle     string // 子标题
-	PerPage      interface{}
-	IndexPolling int
-	IndexOrder   string
-	Model        interface{}
-	Field        map[string]interface{}
-	WithExport   bool
+	Title        string                 // 标题
+	SubTitle     string                 // 子标题
+	PerPage      interface{}            // 分页配置
+	IndexPolling int                    // 轮询数据
+	IndexOrder   string                 // 排序规则
+	Model        interface{}            // 挂载模型
+	Field        map[string]interface{} // 注入的字段数据
+	WithExport   bool                   // 是否具有导出功能
 }
 
 const (
