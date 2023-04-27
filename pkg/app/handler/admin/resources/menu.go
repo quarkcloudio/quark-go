@@ -12,7 +12,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"github.com/quarkcms/quark-go/pkg/lister"
-	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
@@ -168,7 +167,7 @@ func (p *Menu) BeforeEditing(ctx *builder.Context, data map[string]interface{}) 
 }
 
 // 保存后回调
-func (p *Menu) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{} {
+func (p *Menu) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
 	result = db.Client.
 		Model(&models.Permission{}).
 		Where("menu_id = ?", id).
@@ -182,8 +181,8 @@ func (p *Menu) AfterSaved(ctx *builder.Context, id int, data map[string]interfac
 	}
 
 	if result.Error != nil {
-		return ctx.JSON(200, msg.Error(result.Error.Error(), ""))
+		return ctx.JSONError(result.Error.Error())
 	}
 
-	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexPath, ":resource", ctx.Param("resource"), -1), ""))
+	return ctx.JSONOk("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexPath, ":resource", ctx.Param("resource"), -1))
 }

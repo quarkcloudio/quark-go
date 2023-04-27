@@ -46,7 +46,7 @@ func (p *Index) Init() interface{} {
 }
 
 // 验证码ID
-func (p *Index) CaptchaId(ctx *builder.Context) interface{} {
+func (p *Index) CaptchaId(ctx *builder.Context) error {
 
 	return ctx.JSON(200, msg.Success("获取成功", "", map[string]string{
 		"captchaId": captcha.NewLen(4),
@@ -54,7 +54,7 @@ func (p *Index) CaptchaId(ctx *builder.Context) interface{} {
 }
 
 // 生成验证码
-func (p *Index) Captcha(ctx *builder.Context) interface{} {
+func (p *Index) Captcha(ctx *builder.Context) error {
 	id := ctx.Param("id")
 	writer := bytes.Buffer{}
 	captcha.WriteImage(&writer, id, 110, 38)
@@ -64,7 +64,7 @@ func (p *Index) Captcha(ctx *builder.Context) interface{} {
 }
 
 // 登录方法
-func (p *Index) Handle(ctx *builder.Context) interface{} {
+func (p *Index) Handle(ctx *builder.Context) error {
 	loginRequest := &LoginRequest{}
 	if err := ctx.BodyParser(loginRequest); err != nil {
 		return ctx.JSON(200, msg.Error(err.Error(), ""))
@@ -111,6 +111,6 @@ func (p *Index) Handle(ctx *builder.Context) interface{} {
 }
 
 // 退出方法
-func (p *Index) Logout(ctx *builder.Context) interface{} {
+func (p *Index) Logout(ctx *builder.Context) error {
 	return ctx.JSON(200, msg.Success("退出成功", "", ""))
 }

@@ -76,7 +76,7 @@ func (p *File) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem
 }
 
 // 上传完成后回调
-func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{} {
+func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error {
 	driver := reflect.
 		ValueOf(ctx.Template).
 		Elem().

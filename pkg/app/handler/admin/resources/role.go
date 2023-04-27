@@ -12,7 +12,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
-	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
@@ -141,7 +140,7 @@ func (p *Role) BeforeSaving(ctx *builder.Context, submitData map[string]interfac
 }
 
 // 保存后回调
-func (p *Role) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{} {
+func (p *Role) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
 	// 根据菜单id获取所有权限
 	var permissionIds []int
 	db.Client.
@@ -150,17 +149,16 @@ func (p *Role) AfterSaved(ctx *builder.Context, id int, data map[string]interfac
 		Pluck("id", &permissionIds)
 
 	if len(permissionIds) == 0 {
-		return ctx.JSON(200, msg.Error("获取的权限为空，请先在菜单管理中绑定权限", ""))
+		return ctx.JSONError("获取的权限为空，请先在菜单管理中绑定权限")
 	}
 
 	// 同步权限
 	result = p.syncPermissions(id, permissionIds)
-
 	if result.Error != nil {
-		return ctx.JSON(200, msg.Error(result.Error.Error(), ""))
+		return ctx.JSONError(result.Error.Error())
 	}
 
-	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexPath, ":resource", ctx.Param("resource"), -1), ""))
+	return ctx.JSONOk("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexPath, ":resource", ctx.Param("resource"), -1))
 }
 
 // 保存后回调

@@ -123,7 +123,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 			getModel.Order("id desc").First(&lastData)
 
 			ctx.Template.(interface {
-				AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{}
+				AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error
 			}).AfterSaved(ctx, lastData["id"].(int), data, getModel)
 
 			importSuccessedNum = importSuccessedNum + 1

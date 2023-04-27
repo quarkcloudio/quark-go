@@ -290,7 +290,7 @@ func (p *Image) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSyste
 }
 
 // 上传完成后回调
-func (p *Image) AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{} {
+func (p *Image) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error {
 	driver := reflect.
 		ValueOf(ctx.Template).
 		Elem().

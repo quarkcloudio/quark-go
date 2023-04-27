@@ -14,7 +14,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"github.com/quarkcms/quark-go/pkg/hash"
-	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
@@ -204,14 +203,14 @@ func (p *Admin) BeforeSaving(ctx *builder.Context, submitData map[string]interfa
 }
 
 // 保存后回调
-func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{} {
+func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
 	if result.Error != nil {
-		return ctx.JSON(200, msg.Error(result.Error.Error(), ""))
+		return ctx.JSONError(result.Error.Error())
 	}
 
 	// 导入操作，直接返回
 	if ctx.IsImport() {
-		return true
+		return nil
 	}
 
 	// 编辑操作，先清空用户对应的角色
@@ -220,7 +219,7 @@ func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interfa
 	}
 
 	if data["role_ids"] == nil {
-		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexPath, ":resource", ctx.Param("resource"), -1), ""))
+		return ctx.JSONOk("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexPath, ":resource", ctx.Param("resource"), -1))
 	}
 
 	roleData := []map[string]interface{}{}
@@ -236,9 +235,9 @@ func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interfa
 		// 同步角色
 		err := db.Client.Model(&model.ModelHasRole{}).Create(roleData).Error
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return ctx.JSONError(err.Error())
 		}
 	}
 
-	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexPath, ":resource", ctx.Param("resource"), -1), ""))
+	return ctx.JSONOk("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexPath, ":resource", ctx.Param("resource"), -1))
 }
