@@ -489,7 +489,6 @@ func (p *Context) InitTemplate() error {
 // 获取当前模板实例
 func (p *Context) getTemplate() (interface{}, error) {
 	var templateInstance interface{}
-
 	for _, provider := range p.Engine.providers {
 
 		// 初始化
@@ -567,8 +566,8 @@ func (p *Context) IsImport() bool {
 	return (uri[len(uri)-1] == "import")
 }
 
-// 输出成功状态的Json数据，SimpleSuccess("成功") | SimpleSuccess("成功", "/home/index", map[string]interface{}{"title":"标题"})
-func (p *Context) SimpleSuccess(data ...interface{}) error {
+// 输出成功状态的JSON数据，JSONOk("成功") | JSONOk("成功", "/home/index", map[string]interface{}{"title":"标题"})
+func (p *Context) JSONOk(data ...interface{}) error {
 	var (
 		message = ""
 		url     = ""
@@ -593,8 +592,8 @@ func (p *Context) SimpleSuccess(data ...interface{}) error {
 	return p.JSON(200, msg.Success(message, url, getData))
 }
 
-// 输出失败状态的Json数据，SimpleError("错误") | SimpleError("操作失败", "/home/index")
-func (p *Context) SimpleError(data ...interface{}) error {
+// 输出失败状态的JSON数据，JSONError("错误") | JSONError("操作失败", "/home/index")
+func (p *Context) JSONError(data ...interface{}) error {
 	var (
 		message = ""
 		url     = ""

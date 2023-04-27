@@ -30,12 +30,12 @@ func (p *EditableRequest) Handle(ctx *builder.Context) interface{} {
 	// 获取所有Query数据
 	data := ctx.AllQuerys()
 	if data == nil {
-		return ctx.SimpleError("参数错误！")
+		return ctx.JSONError("参数错误！")
 	}
 
 	id = data["id"]
 	if id == nil {
-		return ctx.SimpleError("id不能为空！")
+		return ctx.JSONError("id不能为空！")
 	}
 
 	// 解析数据
@@ -53,17 +53,17 @@ func (p *EditableRequest) Handle(ctx *builder.Context) interface{} {
 	}
 
 	if field == "" {
-		return ctx.SimpleError("参数错误！")
+		return ctx.JSONError("参数错误！")
 	}
 
 	if value == nil {
-		return ctx.SimpleError("参数错误！")
+		return ctx.JSONError("参数错误！")
 	}
 
 	// 更新数据
 	err := model.Where("id = ?", id).Update(field, value).Error
 	if err != nil {
-		return ctx.SimpleError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	result := ctx.Template.(interface {
@@ -73,5 +73,5 @@ func (p *EditableRequest) Handle(ctx *builder.Context) interface{} {
 		return result
 	}
 
-	return ctx.SimpleSuccess("操作成功")
+	return ctx.JSONOk("操作成功！")
 }

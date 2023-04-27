@@ -25,19 +25,19 @@ type Template struct {
 }
 
 const (
-	IndexRoute          = "/api/admin/:resource/index"           // 列表路由
-	EditableRoute       = "/api/admin/:resource/editable"        // 表格行内编辑路由
-	ActionRoute         = "/api/admin/:resource/action/:uriKey"  // 执行行为路由
-	CreateRoute         = "/api/admin/:resource/create"          // 创建页面路由
-	StoreRoute          = "/api/admin/:resource/store"           // 创建方法路由
-	EditRoute           = "/api/admin/:resource/edit"            // 编辑页面路由
-	EditValuesRoute     = "/api/admin/:resource/edit/values"     // 获取编辑表单值路由
-	SaveRoute           = "/api/admin/:resource/save"            // 保存编辑值路由
-	ImportRoute         = "/api/admin/:resource/import"          // 详情页面路由
-	ExportRoute         = "/api/admin/:resource/export"          // 导出数据路由
-	DetailRoute         = "/api/admin/:resource/detail"          // 导入数据路由
-	ImportTemplateRoute = "/api/admin/:resource/import/template" // 导入模板路由
-	FormRoute           = "/api/admin/:resource/:uriKey/form"    // 通用表单资源
+	IndexPath          = "/api/admin/:resource/index"           // 列表路由
+	EditablePath       = "/api/admin/:resource/editable"        // 表格行内编辑路由
+	ActionPath         = "/api/admin/:resource/action/:uriKey"  // 执行行为路由
+	CreatePath         = "/api/admin/:resource/create"          // 创建页面路由
+	StorePath          = "/api/admin/:resource/store"           // 创建方法路由
+	EditPath           = "/api/admin/:resource/edit"            // 编辑页面路由
+	EditValuesPath     = "/api/admin/:resource/edit/values"     // 获取编辑表单值路由
+	SavePath           = "/api/admin/:resource/save"            // 保存编辑值路由
+	ImportPath         = "/api/admin/:resource/import"          // 详情页面路由
+	ExportPath         = "/api/admin/:resource/export"          // 导出数据路由
+	DetailPath         = "/api/admin/:resource/detail"          // 导入数据路由
+	ImportTemplatePath = "/api/admin/:resource/import/template" // 导入模板路由
+	FormPath           = "/api/admin/:resource/:uriKey/form"    // 通用表单资源
 )
 
 // 初始化
@@ -54,19 +54,19 @@ func (p *Template) TemplateInit() interface{} {
 	p.DB = db.Client
 
 	// 注册路由映射
-	p.GET(IndexRoute, "IndexRender")                   // 列表
-	p.GET(EditableRoute, "EditableRender")             // 表格行内编辑
-	p.Any(ActionRoute, "ActionRender")                 // 执行行为
-	p.GET(CreateRoute, "CreationRender")               // 创建页面
-	p.POST(StoreRoute, "StoreRender")                  // 创建方法
-	p.GET(EditRoute, "EditRender")                     // 编辑页面
-	p.GET(EditValuesRoute, "EditValuesRender")         // 获取编辑表单值
-	p.POST(SaveRoute, "SaveRender")                    // 保存编辑值
-	p.GET(DetailRoute, "DetailRender")                 // 详情页面
-	p.GET(ExportRoute, "ExportRender")                 // 导出数据
-	p.POST(ImportRoute, "ImportRender")                // 导入数据
-	p.GET(ImportTemplateRoute, "ImportTemplateRender") // 导入模板
-	p.GET(FormRoute, "FormRender")                     // 通用表单资源
+	p.GET(IndexPath, "IndexRender")                   // 列表
+	p.GET(EditablePath, "EditableRender")             // 表格行内编辑
+	p.Any(ActionPath, "ActionRender")                 // 执行行为
+	p.GET(CreatePath, "CreationRender")               // 创建页面
+	p.POST(StorePath, "StoreRender")                  // 创建方法
+	p.GET(EditPath, "EditRender")                     // 编辑页面
+	p.GET(EditValuesPath, "EditValuesRender")         // 获取编辑表单值
+	p.POST(SavePath, "SaveRender")                    // 保存编辑值
+	p.GET(DetailPath, "DetailRender")                 // 详情页面
+	p.GET(ExportPath, "ExportRender")                 // 导出数据
+	p.POST(ImportPath, "ImportRender")                // 导入数据
+	p.GET(ImportTemplatePath, "ImportTemplateRender") // 导入模板
+	p.GET(FormPath, "FormRender")                     // 通用表单资源
 
 	return p
 }
@@ -214,7 +214,7 @@ func (p *Template) ExportRender(ctx *builder.Context) interface{} {
 // 导入数据
 func (p *Template) ImportRender(ctx *builder.Context) interface{} {
 
-	return (&requests.ImportRequest{}).Handle(ctx, IndexRoute)
+	return (&requests.ImportRequest{}).Handle(ctx, IndexPath)
 }
 
 // 导入数据模板

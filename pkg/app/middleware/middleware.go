@@ -38,19 +38,19 @@ func Handle(ctx *builder.Context) error {
 	// 获取登录管理员信息
 	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
-		return ctx.JSON(200, msg.Error(err.Error(), ""))
+		return ctx.JSON(401, msg.Error(err.Error(), ""))
 	}
 
 	guardName := adminInfo.GuardName
 	if guardName != "admin" {
-		return ctx.JSON(200, msg.Error("401 Unauthozied", ""))
+		return ctx.JSON(401, msg.Error("401 Unauthozied", ""))
 	}
 
 	// 管理员id
 	if adminInfo.Id != 1 {
 		permissions, err := (&model.Permission{}).GetListByAdminId(adminInfo.Id)
 		if err != nil {
-			return ctx.JSON(200, msg.Error("403 Forbidden", ""))
+			return ctx.JSON(403, msg.Error("403 Forbidden", ""))
 		}
 
 		hasPermission := false
@@ -65,7 +65,7 @@ func Handle(ctx *builder.Context) error {
 		}
 
 		if !hasPermission {
-			return ctx.JSON(200, msg.Error("403 Forbidden", ""))
+			return ctx.JSON(403, msg.Error("403 Forbidden", ""))
 		}
 	}
 

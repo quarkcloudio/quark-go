@@ -8,7 +8,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/component/admin/card"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form"
 	"github.com/quarkcms/quark-go/pkg/component/admin/tabs"
-	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
@@ -120,8 +119,8 @@ func (p *Template) BeforeSaving(ctx *builder.Context, submitData map[string]inte
 // 保存数据后回调
 func (p *Template) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{} {
 	if result.Error != nil {
-		return ctx.JSON(200, msg.Error(result.Error.Error(), ""))
+		return ctx.JSONError(result.Error.Error())
 	}
 
-	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/layout/index?api="+IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
+	return ctx.JSONOk("操作成功！", strings.Replace("/layout/index?api="+IndexPath, ":resource", ctx.Param("resource"), -1))
 }

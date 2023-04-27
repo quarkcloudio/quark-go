@@ -220,7 +220,7 @@ func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interfa
 	}
 
 	if data["role_ids"] == nil {
-		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
+		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexPath, ":resource", ctx.Param("resource"), -1), ""))
 	}
 
 	roleData := []map[string]interface{}{}
@@ -240,5 +240,5 @@ func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interfa
 		}
 	}
 
-	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
+	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexPath, ":resource", ctx.Param("resource"), -1), ""))
 }

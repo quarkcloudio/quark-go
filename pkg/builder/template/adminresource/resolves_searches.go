@@ -24,7 +24,7 @@ func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
 		FieldByName("WithExport").Bool()
 
 	if withExport {
-		search = search.SetExportText("导出").SetExportApi(strings.Replace(ExportRoute, ":resource", ctx.Param("resource"), -1))
+		search = search.SetExportText("导出").SetExportApi(strings.Replace(ExportPath, ":resource", ctx.Param("resource"), -1))
 	}
 
 	for _, v := range searches {
