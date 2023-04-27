@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// 路由路径
+// 路由路径常量
 const (
 	IndexPath          = "/api/admin/:resource/index"           // 列表路径
 	EditablePath       = "/api/admin/:resource/editable"        // 表格行内编辑路径
@@ -28,7 +28,7 @@ const (
 	FormPath           = "/api/admin/:resource/:uriKey/form"    // 通用表单资源路径
 )
 
-// 后台增删改查模板
+// 增删改查模板
 type Template struct {
 	template.Template
 	Title        string                 // 标题
@@ -175,13 +175,11 @@ func (p *Template) EditRender(ctx *builder.Context) interface{} {
 
 // 获取编辑表单值
 func (p *Template) EditValuesRender(ctx *builder.Context) interface{} {
-
 	return (&requests.EditRequest{}).Values(ctx)
 }
 
 // 保存编辑值
 func (p *Template) SaveRender(ctx *builder.Context) interface{} {
-
 	return (&requests.UpdateRequest{}).Handle(ctx)
 }
 
@@ -208,19 +206,16 @@ func (p *Template) DetailRender(ctx *builder.Context) interface{} {
 
 // 导出数据
 func (p *Template) ExportRender(ctx *builder.Context) interface{} {
-
 	return (&requests.ExportRequest{}).Handle(ctx)
 }
 
 // 导入数据
 func (p *Template) ImportRender(ctx *builder.Context) interface{} {
-
 	return (&requests.ImportRequest{}).Handle(ctx, IndexPath)
 }
 
 // 导入数据模板
 func (p *Template) ImportTemplateRender(ctx *builder.Context) interface{} {
-
 	return (&requests.ImportTemplateRequest{}).Handle(ctx)
 }
 
@@ -256,7 +251,11 @@ func (p *Template) PageComponentRender(ctx *builder.Context, body interface{}) i
 // 页面容器组件渲染
 func (p *Template) PageContainerComponentRender(ctx *builder.Context, body interface{}) interface{} {
 	value := reflect.ValueOf(ctx.Template).Elem()
+
+	// 页面标题
 	title := value.FieldByName("Title").String()
+
+	// 页面子标题
 	subTitle := value.FieldByName("SubTitle").String()
 
 	// 设置头部
@@ -265,5 +264,8 @@ func (p *Template) PageContainerComponentRender(ctx *builder.Context, body inter
 		SetTitle(title).
 		SetSubTitle(subTitle)
 
-	return (&pagecontainer.Component{}).Init().SetHeader(header).SetBody(body)
+	return (&pagecontainer.Component{}).
+		Init().
+		SetHeader(header).
+		SetBody(body)
 }
