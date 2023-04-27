@@ -10,7 +10,7 @@ import (
 type EditableRequest struct{}
 
 // 执行行为
-func (p *EditableRequest) Handle(ctx *builder.Context) interface{} {
+func (p *EditableRequest) Handle(ctx *builder.Context) error {
 	var (
 		id    interface{}
 		field string
@@ -67,7 +67,7 @@ func (p *EditableRequest) Handle(ctx *builder.Context) interface{} {
 	}
 
 	result := ctx.Template.(interface {
-		AfterEditable(ctx *builder.Context, id interface{}, field string, value interface{}) interface{}
+		AfterEditable(ctx *builder.Context, id interface{}, field string, value interface{}) error
 	}).AfterEditable(ctx, id, field, value)
 	if result != nil {
 		return result

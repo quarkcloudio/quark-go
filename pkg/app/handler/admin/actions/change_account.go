@@ -7,7 +7,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
 	"github.com/quarkcms/quark-go/pkg/hash"
-	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
@@ -16,7 +15,7 @@ type ChangeAccount struct {
 }
 
 // 执行行为句柄
-func (p *ChangeAccount) Handle(ctx *builder.Context, query *gorm.DB) interface{} {
+func (p *ChangeAccount) Handle(ctx *builder.Context, query *gorm.DB) error {
 	data := map[string]interface{}{}
 	json.Unmarshal(ctx.Body(), &data)
 	if data["avatar"] != "" {
@@ -33,13 +32,13 @@ func (p *ChangeAccount) Handle(ctx *builder.Context, query *gorm.DB) interface{}
 	// 获取登录管理员信息
 	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSONError(err.Error())
 	}
 
 	err = query.Where("id", adminInfo.Id).Updates(data).Error
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.JSON(200, msg.Success("操作成功", "", ""))
+	return ctx.JSONOk("操作成功")
 }

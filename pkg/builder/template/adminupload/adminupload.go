@@ -13,7 +13,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
-	"github.com/quarkcms/quark-go/pkg/msg"
 	"github.com/quarkcms/quark-go/pkg/storage"
 )
 
@@ -46,14 +45,14 @@ func (p *Template) TemplateInit() interface{} {
 	p.Driver = storage.LocalDriver
 
 	// 注册路由映射
-	p.POST("/api/admin/upload/:resource/handle", "Handle")
-	p.POST("/api/admin/upload/:resource/base64Handle", "HandleFromBase64")
+	p.POST("/api/admin/upload/:resource/handle", p.Handle)
+	p.POST("/api/admin/upload/:resource/base64Handle", p.HandleFromBase64)
 
 	return p
 }
 
 // 执行上传
-func (p *Template) Handle(ctx *builder.Context) interface{} {
+func (p *Template) Handle(ctx *builder.Context) error {
 	var (
 		result *storage.FileInfo
 		err    error
@@ -64,10 +63,10 @@ func (p *Template) Handle(ctx *builder.Context) interface{} {
 
 	contentTypes := strings.Split(ctx.Header("Content-Type"), "; ")
 	if len(contentTypes) != 2 {
-		return ctx.JSON(200, msg.Error("Content-Type error", ""))
+		return ctx.JSONError("Content-Type error")
 	}
 	if contentTypes[0] != "multipart/form-data" {
-		return ctx.JSON(200, msg.Error("Content-Type must use multipart/form-data", ""))
+		return ctx.JSONError("Content-Type must use multipart/form-data")
 	}
 
 	limitSize := reflect.
@@ -145,11 +144,11 @@ func (p *Template) Handle(ctx *builder.Context) interface{} {
 				BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error)
 			}).BeforeHandle(ctx, fileSystem)
 			if err != nil {
-				return ctx.JSON(200, msg.Error(err.Error(), ""))
+				return ctx.JSONError(err.Error())
 			}
 			if fileInfo != nil {
 				return ctx.Template.(interface {
-					AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
+					AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 				}).AfterHandle(ctx, fileInfo)
 			}
 
@@ -159,22 +158,22 @@ func (p *Template) Handle(ctx *builder.Context) interface{} {
 				Path(savePath).
 				Save()
 			if err != nil {
-				return ctx.JSON(200, msg.Error(err.Error(), ""))
+				return ctx.JSONError(err.Error())
 			}
 		}
 	}
 
 	if err != nil {
-		return ctx.JSON(200, msg.Error(err.Error(), ""))
+		return ctx.JSONError(err.Error())
 	}
 
 	return ctx.Template.(interface {
-		AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
+		AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 	}).AfterHandle(ctx, result)
 }
 
 // 通过Base64执行上传
-func (p *Template) HandleFromBase64(ctx *builder.Context) interface{} {
+func (p *Template) HandleFromBase64(ctx *builder.Context) error {
 	var (
 		result *storage.FileInfo
 		err    error
@@ -185,20 +184,20 @@ func (p *Template) HandleFromBase64(ctx *builder.Context) interface{} {
 
 	data := map[string]interface{}{}
 	if err := ctx.BodyParser(&data); err != nil {
-		return ctx.JSON(200, msg.Error(err.Error(), ""))
+		return ctx.JSONError(err.Error())
 	}
 	if data["file"] == nil {
-		return ctx.JSON(200, msg.Error("参数错误", ""))
+		return ctx.JSONError("参数错误")
 	}
 
 	files := strings.Split(data["file"].(string), ",")
 	if len(files) != 2 {
-		return ctx.JSON(200, msg.Error("格式错误", ""))
+		return ctx.JSONError("格式错误")
 	}
 
 	fileData, err := base64.StdEncoding.DecodeString(files[1]) //成图片文件并把文件写入到buffer
 	if err != nil {
-		return ctx.JSON(200, msg.Error(err.Error(), ""))
+		return ctx.JSONError(err.Error())
 	}
 
 	limitSize := reflect.
@@ -269,11 +268,11 @@ func (p *Template) HandleFromBase64(ctx *builder.Context) interface{} {
 		BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error)
 	}).BeforeHandle(ctx, fileSystem)
 	if err != nil {
-		return ctx.JSON(200, msg.Error(err.Error(), ""))
+		return ctx.JSONError(err.Error())
 	}
 	if fileInfo != nil {
 		return ctx.Template.(interface {
-			AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
+			AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 		}).AfterHandle(ctx, fileInfo)
 	}
 
@@ -284,22 +283,20 @@ func (p *Template) HandleFromBase64(ctx *builder.Context) interface{} {
 		Save()
 
 	if err != nil {
-		return ctx.JSON(200, msg.Error(err.Error(), ""))
+		return ctx.JSONError(err.Error())
 	}
 
 	return ctx.Template.(interface {
-		AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
+		AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 	}).AfterHandle(ctx, result)
 }
 
 // 上传前回调
 func (p *Template) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error) {
-
 	return fileSystem, nil, nil
 }
 
 // 执行上传
-func (p *Template) AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{} {
-
-	return ctx.JSON(200, msg.Success("上传成功", "", result))
+func (p *Template) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error {
+	return ctx.JSONOk("上传成功", "", result)
 }

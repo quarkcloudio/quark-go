@@ -3,7 +3,6 @@ package actions
 import (
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
-	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
@@ -54,11 +53,11 @@ func (p *Delete) GetApiParams() []string {
 }
 
 // 执行行为句柄
-func (p *Delete) Handle(ctx *builder.Context, query *gorm.DB) interface{} {
+func (p *Delete) Handle(ctx *builder.Context, query *gorm.DB) error {
 	err := query.Delete("").Error
 	if err != nil {
-		return ctx.JSON(200, msg.Error(err.Error(), ""))
+		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.JSON(200, msg.Success("操作成功", "", ""))
+	return ctx.JSONOk("操作成功")
 }

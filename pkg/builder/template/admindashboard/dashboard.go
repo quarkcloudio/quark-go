@@ -11,7 +11,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/component/admin/pagecontainer"
 	"github.com/quarkcms/quark-go/pkg/component/admin/statistic"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
-	"github.com/quarkcms/quark-go/pkg/msg"
 )
 
 // 后台登录模板
@@ -35,7 +34,7 @@ func (p *Template) TemplateInit() interface{} {
 	p.DB = db.Client
 
 	// 注册路由映射
-	p.GET("/api/admin/dashboard/:resource/index", "Render") // 后台仪表盘路由
+	p.GET("/api/admin/dashboard/:resource/index", p.Render) // 后台仪表盘路由
 
 	// 标题
 	p.Title = "仪表盘"
@@ -49,12 +48,12 @@ func (p *Template) Cards(ctx *builder.Context) interface{} {
 }
 
 // 组件渲染
-func (p *Template) Render(ctx *builder.Context) interface{} {
+func (p *Template) Render(ctx *builder.Context) error {
 	cards := ctx.Template.(interface {
 		Cards(*builder.Context) interface{}
 	}).Cards(ctx)
 	if cards == nil {
-		return ctx.JSON(200, msg.Error("请实现Cards内容", ""))
+		return ctx.JSONError("请实现Cards内容")
 	}
 
 	var cols []interface{}

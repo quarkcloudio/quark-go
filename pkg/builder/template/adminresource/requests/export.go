@@ -16,7 +16,7 @@ import (
 type ExportRequest struct{}
 
 // 执行行为
-func (p *ExportRequest) Handle(ctx *builder.Context) interface{} {
+func (p *ExportRequest) Handle(ctx *builder.Context) error {
 	data := p.QueryData(ctx)
 
 	// 获取列表字段

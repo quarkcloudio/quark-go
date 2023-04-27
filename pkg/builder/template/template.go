@@ -20,10 +20,10 @@ func (p *Template) GetRouteMapping() []*builder.RouteMapping {
 }
 
 // 是否存在路由
-func (p *Template) hasRouteMapping(method string, path string, handlerName string) bool {
+func (p *Template) hasRouteMapping(method string, path string, handler func(ctx *builder.Context) error) bool {
 	has := false
 	for _, v := range p.RouteMapping {
-		if v.Method == method && v.Path == path && v.HandlerName == handlerName {
+		if v.Method == method && v.Path == path {
 			has = true
 		}
 	}
@@ -31,12 +31,12 @@ func (p *Template) hasRouteMapping(method string, path string, handlerName strin
 }
 
 // 注册路由
-func (p *Template) AddRouteMapping(method string, path string, handlerName string) *Template {
-	if !p.hasRouteMapping(method, path, handlerName) {
+func (p *Template) AddRouteMapping(method string, path string, handler func(ctx *builder.Context) error) *Template {
+	if !p.hasRouteMapping(method, path, handler) {
 		getRoute := &builder.RouteMapping{
-			Method:      method,
-			Path:        path,
-			HandlerName: handlerName,
+			Method:  method,
+			Path:    path,
+			Handler: handler,
 		}
 
 		p.RouteMapping = append(p.RouteMapping, getRoute)
@@ -45,43 +45,43 @@ func (p *Template) AddRouteMapping(method string, path string, handlerName strin
 }
 
 // ANY请求
-func (p *Template) Any(path string, handlerName string) {
-	p.AddRouteMapping("Any", path, handlerName)
+func (p *Template) Any(path string, handler func(ctx *builder.Context) error) {
+	p.AddRouteMapping("Any", path, handler)
 }
 
 // GET请求
-func (p *Template) GET(path string, handlerName string) {
-	p.AddRouteMapping(http.MethodGet, path, handlerName)
+func (p *Template) GET(path string, handler func(ctx *builder.Context) error) {
+	p.AddRouteMapping(http.MethodGet, path, handler)
 }
 
 // HEAD请求
-func (p *Template) HEAD(path string, handlerName string) {
-	p.AddRouteMapping(http.MethodHead, path, handlerName)
+func (p *Template) HEAD(path string, handler func(ctx *builder.Context) error) {
+	p.AddRouteMapping(http.MethodHead, path, handler)
 }
 
 // OPTIONS请求
-func (p *Template) OPTIONS(path string, handlerName string) {
-	p.AddRouteMapping(http.MethodOptions, path, handlerName)
+func (p *Template) OPTIONS(path string, handler func(ctx *builder.Context) error) {
+	p.AddRouteMapping(http.MethodOptions, path, handler)
 }
 
 // POST请求
-func (p *Template) POST(path string, handlerName string) {
-	p.AddRouteMapping(http.MethodPost, path, handlerName)
+func (p *Template) POST(path string, handler func(ctx *builder.Context) error) {
+	p.AddRouteMapping(http.MethodPost, path, handler)
 }
 
 // PUT请求
-func (p *Template) PUT(path string, handlerName string) {
-	p.AddRouteMapping(http.MethodPut, path, handlerName)
+func (p *Template) PUT(path string, handler func(ctx *builder.Context) error) {
+	p.AddRouteMapping(http.MethodPut, path, handler)
 }
 
 // PATCH请求
-func (p *Template) PATCH(path string, handlerName string) {
-	p.AddRouteMapping(http.MethodPatch, path, handlerName)
+func (p *Template) PATCH(path string, handler func(ctx *builder.Context) error) {
+	p.AddRouteMapping(http.MethodPatch, path, handler)
 }
 
 // DELETE请求
-func (p *Template) DELETE(path string, handlerName string) {
-	p.AddRouteMapping(http.MethodDelete, path, handlerName)
+func (p *Template) DELETE(path string, handler func(ctx *builder.Context) error) {
+	p.AddRouteMapping(http.MethodDelete, path, handler)
 }
 
 // 默认组件渲染

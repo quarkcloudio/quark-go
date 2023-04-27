@@ -36,9 +36,9 @@ type Engine struct {
 }
 
 type RouteMapping struct {
-	Method      string
-	Path        string
-	HandlerName string
+	Method  string
+	Path    string
+	Handler func(ctx *Context) error
 }
 
 type DBConfig struct {
@@ -272,7 +272,7 @@ func (p *Engine) initPaths() {
 			}
 
 			if !hasRoutePath(routePaths, v.Method, v.Path) {
-				routePaths = append(routePaths, &RouteMapping{v.Method, v.Path, v.HandlerName})
+				routePaths = append(routePaths, &RouteMapping{v.Method, v.Path, v.Handler})
 			}
 		}
 	}
@@ -325,7 +325,6 @@ func (p *Engine) UseHandlers() []func(ctx *Context) error {
 // 解析模版方法
 func (p *Engine) handleParser(ctx *Context) error {
 	var (
-		result           []reflect.Value
 		err              error
 		templateInstance interface{}
 	)
@@ -339,31 +338,7 @@ func (p *Engine) handleParser(ctx *Context) error {
 	// 执行挂载的方法
 	for _, v := range p.routePaths {
 		if v.Path == ctx.FullPath() {
-
-			// 反射实例值
-			value := reflect.ValueOf(templateInstance)
-			if !value.IsValid() {
-				continue
-			}
-
-			// 获取实例上方法
-			method := value.MethodByName(v.HandlerName)
-			if !method.IsValid() {
-				continue
-			}
-
-			// 反射执行结果
-			result = method.Call([]reflect.Value{
-				reflect.ValueOf(ctx),
-			})
-			if len(result) != 1 {
-				continue
-			}
-
-			// 执行结果
-			if v, ok := result[0].Interface().(error); ok {
-				err = v
-			}
+			err = v.Handler(ctx)
 		}
 	}
 

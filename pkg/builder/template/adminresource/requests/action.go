@@ -12,8 +12,8 @@ import (
 type ActionRequest struct{}
 
 // 执行行为
-func (p *ActionRequest) Handle(ctx *builder.Context) interface{} {
-	var result interface{}
+func (p *ActionRequest) Handle(ctx *builder.Context) error {
+	var result error
 
 	// 获取模型结构体
 	modelInstance := reflect.
@@ -55,12 +55,12 @@ func (p *ActionRequest) Handle(ctx *builder.Context) interface{} {
 
 				if ctx.Param("uriKey") == uriKey {
 					result = dropdownAction.(interface {
-						Handle(*builder.Context, *gorm.DB) interface{}
+						Handle(*builder.Context, *gorm.DB) error
 					}).Handle(ctx, model)
 
 					// 执行完后回调
 					err := ctx.Template.(interface {
-						AfterAction(ctx *builder.Context, uriKey string, query *gorm.DB) interface{}
+						AfterAction(ctx *builder.Context, uriKey string, query *gorm.DB) error
 					}).AfterAction(ctx, uriKey, model)
 					if err != nil {
 						return err
@@ -72,12 +72,12 @@ func (p *ActionRequest) Handle(ctx *builder.Context) interface{} {
 		} else {
 			if ctx.Param("uriKey") == uriKey {
 				result = v.(interface {
-					Handle(*builder.Context, *gorm.DB) interface{}
+					Handle(*builder.Context, *gorm.DB) error
 				}).Handle(ctx, model)
 
 				// 执行完后回调
 				err := ctx.Template.(interface {
-					AfterAction(ctx *builder.Context, uriKey string, query *gorm.DB) interface{}
+					AfterAction(ctx *builder.Context, uriKey string, query *gorm.DB) error
 				}).AfterAction(ctx, uriKey, model)
 				if err != nil {
 					return err

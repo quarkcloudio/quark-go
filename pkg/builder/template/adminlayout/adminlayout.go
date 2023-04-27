@@ -7,7 +7,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/component/admin/footer"
 	"github.com/quarkcms/quark-go/pkg/component/admin/layout"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
-	"github.com/quarkcms/quark-go/pkg/msg"
 )
 
 // 后台登录模板
@@ -29,13 +28,13 @@ func (p *Template) TemplateInit() interface{} {
 	p.DB = db.Client
 
 	// 注册路由映射
-	p.GET("/api/admin/layout/:resource/index", "Render") // 获取布局配置
+	p.GET("/api/admin/layout/:resource/index", p.Render) // 获取布局配置
 
 	return p
 }
 
 // 组件渲染
-func (p *Template) Render(ctx *builder.Context) interface{} {
+func (p *Template) Render(ctx *builder.Context) error {
 	adminLayout := ctx.Engine.GetAdminLayout()
 
 	admin := &model.Admin{}
@@ -44,13 +43,13 @@ func (p *Template) Render(ctx *builder.Context) interface{} {
 	// 获取登录管理员信息
 	adminInfo, err := admin.GetAuthUser(config.AppKey, ctx.Token())
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSONError(err.Error())
 	}
 
 	// 获取管理员菜单
 	getMenus, err := admin.GetMenuListById(adminInfo.Id)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSONError(err.Error())
 	}
 
 	// 页脚

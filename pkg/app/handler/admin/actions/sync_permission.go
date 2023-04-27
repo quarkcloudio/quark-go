@@ -5,7 +5,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
-	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
@@ -37,7 +36,7 @@ func (p *SyncPermission) Init() *SyncPermission {
 }
 
 // 执行行为句柄
-func (p *SyncPermission) Handle(ctx *builder.Context, query *gorm.DB) interface{} {
+func (p *SyncPermission) Handle(ctx *builder.Context, query *gorm.DB) error {
 	// 获取当前权限
 	permissions := ctx.Engine.GetUrlPaths()
 	data := []model.Permission{}
@@ -61,18 +60,18 @@ func (p *SyncPermission) Handle(ctx *builder.Context, query *gorm.DB) interface{
 		}
 	}
 	if len(data) == 0 {
-		return ctx.JSON(200, msg.Error("暂无新增权限！", ""))
+		return ctx.JSONError("暂无新增权限！")
 	}
 
 	err := query.Create(data).Error
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSONError(err.Error())
 	}
 
 	err = db.Client.Model(&model.Permission{}).Where("name NOT IN ?", permissions).Delete("").Error
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.JSON(200, msg.Success("操作成功", "", ""))
+	return ctx.JSONOk("操作成功")
 }

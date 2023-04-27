@@ -84,11 +84,7 @@ func (p *IndexRequest) QueryData(ctx *builder.Context) interface{} {
 	}
 }
 
-/**
- * Get the column filters for the request.
- *
- * @return array
- */
+// Get the column filters for the request.
 func (p *IndexRequest) columnFilters(ctx *builder.Context) map[string]interface{} {
 	querys := ctx.AllQuerys()
 	var data map[string]interface{}
@@ -103,11 +99,7 @@ func (p *IndexRequest) columnFilters(ctx *builder.Context) map[string]interface{
 	return data
 }
 
-/**
- * Get the orderings for the request.
- *
- * @return array
- */
+// Get the orderings for the request.
 func (p *IndexRequest) orderings(ctx *builder.Context) map[string]interface{} {
 	querys := ctx.AllQuerys()
 	var data map[string]interface{}

@@ -55,19 +55,19 @@ func (p *Template) TemplateInit() interface{} {
 	p.DB = db.Client
 
 	// 注册路由映射
-	p.GET(IndexPath, "IndexRender")                   // 列表
-	p.GET(EditablePath, "EditableRender")             // 表格行内编辑
-	p.Any(ActionPath, "ActionRender")                 // 执行行为
-	p.GET(CreatePath, "CreationRender")               // 创建页面
-	p.POST(StorePath, "StoreRender")                  // 创建方法
-	p.GET(EditPath, "EditRender")                     // 编辑页面
-	p.GET(EditValuesPath, "EditValuesRender")         // 获取编辑表单值
-	p.POST(SavePath, "SaveRender")                    // 保存编辑值
-	p.GET(DetailPath, "DetailRender")                 // 详情页面
-	p.GET(ExportPath, "ExportRender")                 // 导出数据
-	p.POST(ImportPath, "ImportRender")                // 导入数据
-	p.GET(ImportTemplatePath, "ImportTemplateRender") // 导入模板
-	p.GET(FormPath, "FormRender")                     // 通用表单资源
+	p.GET(IndexPath, p.IndexRender)                   // 列表
+	p.GET(EditablePath, p.EditableRender)             // 表格行内编辑
+	p.Any(ActionPath, p.ActionRender)                 // 执行行为
+	p.GET(CreatePath, p.CreationRender)               // 创建页面
+	p.POST(StorePath, p.StoreRender)                  // 创建方法
+	p.GET(EditPath, p.EditRender)                     // 编辑页面
+	p.GET(EditValuesPath, p.EditValuesRender)         // 获取编辑表单值
+	p.POST(SavePath, p.SaveRender)                    // 保存编辑值
+	p.GET(DetailPath, p.DetailRender)                 // 详情页面
+	p.GET(ExportPath, p.ExportRender)                 // 导出数据
+	p.POST(ImportPath, p.ImportRender)                // 导入数据
+	p.GET(ImportTemplatePath, p.ImportTemplateRender) // 导入模板
+	p.GET(FormPath, p.FormRender)                     // 通用表单资源
 
 	return p
 }
@@ -95,17 +95,17 @@ func (p *Template) BeforeImporting(ctx *builder.Context, list [][]interface{}) [
 }
 
 // 表格行内编辑执行完之后回调
-func (p *Template) AfterEditable(ctx *builder.Context, id interface{}, field string, value interface{}) interface{} {
+func (p *Template) AfterEditable(ctx *builder.Context, id interface{}, field string, value interface{}) error {
 	return nil
 }
 
 // 行为执行完之后回调
-func (p *Template) AfterAction(ctx *builder.Context, uriKey string, query *gorm.DB) interface{} {
+func (p *Template) AfterAction(ctx *builder.Context, uriKey string, query *gorm.DB) error {
 	return nil
 }
 
 // 列表页渲染
-func (p *Template) IndexRender(ctx *builder.Context) interface{} {
+func (p *Template) IndexRender(ctx *builder.Context) error {
 	// 获取数据
 	data := (&requests.IndexRequest{}).QueryData(ctx)
 
@@ -122,17 +122,17 @@ func (p *Template) IndexRender(ctx *builder.Context) interface{} {
 }
 
 // 表格行内编辑
-func (p *Template) EditableRender(ctx *builder.Context) interface{} {
+func (p *Template) EditableRender(ctx *builder.Context) error {
 	return (&requests.EditableRequest{}).Handle(ctx)
 }
 
 // 执行行为
-func (p *Template) ActionRender(ctx *builder.Context) interface{} {
+func (p *Template) ActionRender(ctx *builder.Context) error {
 	return (&requests.ActionRequest{}).Handle(ctx)
 }
 
 // 创建页面渲染
-func (p *Template) CreationRender(ctx *builder.Context) interface{} {
+func (p *Template) CreationRender(ctx *builder.Context) error {
 
 	// 断言BeforeCreating方法，获取初始数据
 	data := ctx.Template.(interface {
@@ -152,12 +152,12 @@ func (p *Template) CreationRender(ctx *builder.Context) interface{} {
 }
 
 // 创建方法
-func (p *Template) StoreRender(ctx *builder.Context) interface{} {
+func (p *Template) StoreRender(ctx *builder.Context) error {
 	return (&requests.StoreRequest{}).Handle(ctx)
 }
 
 // 编辑页面渲染
-func (p *Template) EditRender(ctx *builder.Context) interface{} {
+func (p *Template) EditRender(ctx *builder.Context) error {
 	// 获取数据
 	data := (&requests.EditRequest{}).FillData(ctx)
 
@@ -179,17 +179,17 @@ func (p *Template) EditRender(ctx *builder.Context) interface{} {
 }
 
 // 获取编辑表单值
-func (p *Template) EditValuesRender(ctx *builder.Context) interface{} {
+func (p *Template) EditValuesRender(ctx *builder.Context) error {
 	return (&requests.EditRequest{}).Values(ctx)
 }
 
 // 保存编辑值
-func (p *Template) SaveRender(ctx *builder.Context) interface{} {
+func (p *Template) SaveRender(ctx *builder.Context) error {
 	return (&requests.UpdateRequest{}).Handle(ctx)
 }
 
 // 详情页渲染
-func (p *Template) DetailRender(ctx *builder.Context) interface{} {
+func (p *Template) DetailRender(ctx *builder.Context) error {
 	data := (&requests.DetailRequest{}).FillData(ctx)
 
 	// 断言方法，获取初始数据
@@ -210,22 +210,22 @@ func (p *Template) DetailRender(ctx *builder.Context) interface{} {
 }
 
 // 导出数据
-func (p *Template) ExportRender(ctx *builder.Context) interface{} {
+func (p *Template) ExportRender(ctx *builder.Context) error {
 	return (&requests.ExportRequest{}).Handle(ctx)
 }
 
 // 导入数据
-func (p *Template) ImportRender(ctx *builder.Context) interface{} {
+func (p *Template) ImportRender(ctx *builder.Context) error {
 	return (&requests.ImportRequest{}).Handle(ctx, IndexPath)
 }
 
 // 导入数据模板
-func (p *Template) ImportTemplateRender(ctx *builder.Context) interface{} {
+func (p *Template) ImportTemplateRender(ctx *builder.Context) error {
 	return (&requests.ImportTemplateRequest{}).Handle(ctx)
 }
 
 // 通用表单资源
-func (p *Template) FormRender(ctx *builder.Context) interface{} {
+func (p *Template) FormRender(ctx *builder.Context) error {
 
 	// 断言BeforeCreating方法，获取初始数据
 	data := ctx.Template.(interface {

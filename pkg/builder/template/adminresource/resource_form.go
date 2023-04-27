@@ -117,7 +117,7 @@ func (p *Template) BeforeSaving(ctx *builder.Context, submitData map[string]inte
 }
 
 // 保存数据后回调
-func (p *Template) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{} {
+func (p *Template) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
 	if result.Error != nil {
 		return ctx.JSONError(result.Error.Error())
 	}

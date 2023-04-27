@@ -7,7 +7,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
-	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
@@ -16,7 +15,7 @@ type ChangeWebConfig struct {
 }
 
 // 执行行为句柄
-func (p *ChangeWebConfig) Handle(ctx *builder.Context, query *gorm.DB) interface{} {
+func (p *ChangeWebConfig) Handle(ctx *builder.Context, query *gorm.DB) error {
 	data := map[string]interface{}{}
 	json.Unmarshal(ctx.Body(), &data)
 	result := true
@@ -40,12 +39,12 @@ func (p *ChangeWebConfig) Handle(ctx *builder.Context, query *gorm.DB) interface
 	}
 
 	if !result {
-		return ctx.JSON(200, msg.Error("操作失败，请重试！", ""))
+		return ctx.JSONError("操作失败，请重试！")
 	}
 
 	// 刷新网站配置
 	(&model.Config{}).Refresh()
 
 	// 返回成功
-	return ctx.JSON(200, msg.Success("操作成功", "", ""))
+	return ctx.JSONOk("操作成功")
 }

@@ -7,7 +7,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder/template"
 	"github.com/quarkcms/quark-go/pkg/component/admin/login"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
-	"github.com/quarkcms/quark-go/pkg/msg"
 )
 
 // 后台登录模板
@@ -34,11 +33,11 @@ func (p *Template) TemplateInit() interface{} {
 	p.DB = db.Client
 
 	// 注册路由映射
-	p.GET("/api/admin/login/:resource/index", "Render")        // 渲染登录页面路由
-	p.POST("/api/admin/login/:resource/handle", "Handle")      // 后台登录执行路由
-	p.GET("/api/admin/login/:resource/captchaId", "CaptchaId") // 后台登录获取验证码ID路由
-	p.GET("/api/admin/login/:resource/captcha/:id", "Captcha") // 后台登录验证码路由
-	p.GET("/api/admin/logout/:resource/handle", "Logout")      // 后台退出执行路由
+	p.GET("/api/admin/login/:resource/index", p.Render)        // 渲染登录页面路由
+	p.POST("/api/admin/login/:resource/handle", p.Handle)      // 后台登录执行路由
+	p.GET("/api/admin/login/:resource/captchaId", p.CaptchaId) // 后台登录获取验证码ID路由
+	p.GET("/api/admin/login/:resource/captcha/:id", p.Captcha) // 后台登录验证码路由
+	p.GET("/api/admin/logout/:resource/handle", p.Logout)      // 后台退出执行路由
 
 	// 标题
 	p.Title = "QuarkGo"
@@ -53,32 +52,32 @@ func (p *Template) TemplateInit() interface{} {
 }
 
 // 验证码ID
-func (p *Template) CaptchaId(ctx *builder.Context) interface{} {
-	return ctx.JSON(200, msg.Error("请实现创建验证码ID方法", ""))
+func (p *Template) CaptchaId(ctx *builder.Context) error {
+	return ctx.JSONError("请实现创建验证码ID方法")
 }
 
 // 生成验证码
-func (p *Template) Captcha(ctx *builder.Context) interface{} {
-	return ctx.JSON(200, msg.Error("请实现生成验证码方法", ""))
+func (p *Template) Captcha(ctx *builder.Context) error {
+	return ctx.JSONError("请实现生成验证码方法")
 }
 
 // 登录方法
-func (p *Template) Handle(ctx *builder.Context) interface{} {
-	return ctx.JSON(200, msg.Error("请实现登录方法", ""))
+func (p *Template) Handle(ctx *builder.Context) error {
+	return ctx.JSONError("请实现登录方法")
 }
 
 // 退出方法
-func (p *Template) Logout(ctx *builder.Context) interface{} {
-	return ctx.JSON(200, msg.Error("请实现退出方法", ""))
+func (p *Template) Logout(ctx *builder.Context) error {
+	return ctx.JSONError("请实现退出方法")
 }
 
 // 组件渲染
-func (p *Template) Render(ctx *builder.Context) interface{} {
+func (p *Template) Render(ctx *builder.Context) error {
 
 	// 模板实例
 	templateInstance := ctx.Template
 	if templateInstance == nil {
-		return ctx.JSON(200, msg.Error("模板实例获取失败", ""))
+		return ctx.JSONError("模板实例获取失败")
 	}
 
 	// 默认登录接口

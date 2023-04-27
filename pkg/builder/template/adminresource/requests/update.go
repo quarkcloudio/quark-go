@@ -8,14 +8,13 @@ import (
 	"github.com/gobeam/stringy"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
-	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
 type UpdateRequest struct{}
 
 // 执行行为
-func (p *UpdateRequest) Handle(ctx *builder.Context) interface{} {
+func (p *UpdateRequest) Handle(ctx *builder.Context) error {
 	modelInstance := reflect.
 		ValueOf(ctx.Template).
 		Elem().
@@ -29,21 +28,21 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) interface{} {
 	data := map[string]interface{}{}
 	json.Unmarshal(ctx.Body(), &data)
 	if data["id"] == "" {
-		return ctx.JSON(200, msg.Error("参数错误！", ""))
+		return ctx.JSONError("参数错误！")
 	}
 
 	data, err := ctx.Template.(interface {
 		BeforeSaving(ctx *builder.Context, data map[string]interface{}) (map[string]interface{}, error)
 	}).BeforeSaving(ctx, data)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return ctx.JSONError(err.Error())
 	}
 
 	validator := ctx.Template.(interface {
 		ValidatorForUpdate(ctx *builder.Context, data map[string]interface{}) error
 	}).ValidatorForUpdate(ctx, data)
 	if validator != nil {
-		return validator
+		return ctx.JSONError(validator.Error())
 	}
 	zeroValues := map[string]interface{}{}
 	for _, v := range fields.([]interface{}) {
@@ -119,7 +118,7 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) interface{} {
 
 				if reflectValue.IsValid() {
 					if reflectFieldName.Type().String() != reflectValue.Type().String() {
-						return ctx.JSON(200, msg.Error("结构体类型与传参类型不一致！", ""))
+						return ctx.JSONError("结构体类型与传参类型不一致！")
 					}
 
 					reflectFieldName.Set(reflectValue)
@@ -137,6 +136,6 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) interface{} {
 	}
 
 	return ctx.Template.(interface {
-		AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{}
+		AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error
 	}).AfterSaved(ctx, int(data["id"].(float64)), data, getModel)
 }

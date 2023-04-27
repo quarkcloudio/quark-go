@@ -3,7 +3,6 @@ package actions
 import (
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
-	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +11,7 @@ type SelectOptions struct {
 }
 
 // 执行行为句柄
-func (p *SelectOptions) Handle(ctx *builder.Context, query *gorm.DB) interface{} {
+func (p *SelectOptions) Handle(ctx *builder.Context, query *gorm.DB) error {
 	resource := ctx.Param("resource")
 	search := ctx.Query("search")
 	lists := []map[string]interface{}{}
@@ -31,5 +30,5 @@ func (p *SelectOptions) Handle(ctx *builder.Context, query *gorm.DB) interface{}
 		}
 	}
 
-	return ctx.JSON(200, msg.Success("操作成功", "", results))
+	return ctx.JSONOk("操作成功")
 }

@@ -7,7 +7,6 @@ import (
 
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
-	"github.com/quarkcms/quark-go/pkg/msg"
 )
 
 type EditRequest struct{}
@@ -80,7 +79,7 @@ func (p *EditRequest) FillData(ctx *builder.Context) map[string]interface{} {
 }
 
 // 获取表单初始化数据
-func (p *EditRequest) Values(ctx *builder.Context) interface{} {
+func (p *EditRequest) Values(ctx *builder.Context) error {
 	data := p.FillData(ctx)
 
 	// 断言BeforeEditing方法，获取初始数据
@@ -88,5 +87,5 @@ func (p *EditRequest) Values(ctx *builder.Context) interface{} {
 		BeforeEditing(*builder.Context, map[string]interface{}) map[string]interface{}
 	}).BeforeEditing(ctx, data)
 
-	return ctx.JSON(200, msg.Success("获取成功", "", data))
+	return ctx.JSONOk("获取成功", "", data)
 }

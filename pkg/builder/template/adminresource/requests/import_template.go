@@ -15,7 +15,7 @@ import (
 type ImportTemplateRequest struct{}
 
 // 导入数据模板
-func (p *ImportTemplateRequest) Handle(ctx *builder.Context) interface{} {
+func (p *ImportTemplateRequest) Handle(ctx *builder.Context) error {
 	fields := ctx.Template.(interface {
 		ImportFields(ctx *builder.Context) interface{}
 	}).ImportFields(ctx)
@@ -176,7 +176,7 @@ func (p *ImportTemplateRequest) getFieldRuleMessage(rules []*rule.Rule) string {
 
 	if len(message) > 0 {
 		return strings.Replace(strings.Trim(fmt.Sprint(message), "/"), " ", "，", -1)
-	} else {
-		return ""
 	}
+
+	return ""
 }

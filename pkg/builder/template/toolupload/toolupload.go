@@ -46,16 +46,16 @@ func (p *Template) TemplateInit() interface{} {
 	p.Driver = storage.LocalDriver
 
 	// 注册路由映射
-	p.POST("/api/tool/upload/:resource/handle", "Handle")
-	p.POST("/api/tool/upload/:resource/base64Handle", "HandleFromBase64")
-	p.POST("/api/upload/:resource/handle", "Handle")
-	p.POST("/api/upload/:resource/base64Handle", "HandleFromBase64")
+	p.POST("/api/tool/upload/:resource/handle", p.Handle)
+	p.POST("/api/tool/upload/:resource/base64Handle", p.HandleFromBase64)
+	p.POST("/api/upload/:resource/handle", p.Handle)
+	p.POST("/api/upload/:resource/base64Handle", p.HandleFromBase64)
 
 	return p
 }
 
 // 执行上传
-func (p *Template) Handle(ctx *builder.Context) interface{} {
+func (p *Template) Handle(ctx *builder.Context) error {
 	var (
 		result *storage.FileInfo
 		err    error
@@ -151,7 +151,7 @@ func (p *Template) Handle(ctx *builder.Context) interface{} {
 			}
 			if fileInfo != nil {
 				return ctx.Template.(interface {
-					AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
+					AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 				}).AfterHandle(ctx, fileInfo)
 			}
 
@@ -171,12 +171,12 @@ func (p *Template) Handle(ctx *builder.Context) interface{} {
 	}
 
 	return ctx.Template.(interface {
-		AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
+		AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 	}).AfterHandle(ctx, result)
 }
 
 // 通过Base64执行上传
-func (p *Template) HandleFromBase64(ctx *builder.Context) interface{} {
+func (p *Template) HandleFromBase64(ctx *builder.Context) error {
 	var (
 		result *storage.FileInfo
 		err    error
@@ -275,7 +275,7 @@ func (p *Template) HandleFromBase64(ctx *builder.Context) interface{} {
 	}
 	if fileInfo != nil {
 		return ctx.Template.(interface {
-			AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
+			AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 		}).AfterHandle(ctx, fileInfo)
 	}
 
@@ -290,7 +290,7 @@ func (p *Template) HandleFromBase64(ctx *builder.Context) interface{} {
 	}
 
 	return ctx.Template.(interface {
-		AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
+		AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 	}).AfterHandle(ctx, result)
 }
 
@@ -301,7 +301,7 @@ func (p *Template) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSy
 }
 
 // 执行上传
-func (p *Template) AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{} {
+func (p *Template) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error {
 
 	return ctx.JSON(200, msg.Success("上传成功", "", result))
 }
