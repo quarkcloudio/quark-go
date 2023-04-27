@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/quarkcms/quark-go/pkg/builder"
-	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
@@ -88,5 +87,5 @@ func (p *Template) DELETE(path string, handlerName string) {
 // 默认组件渲染
 func (p *Template) Render(ctx *builder.Context) interface{} {
 
-	return ctx.JSON(200, msg.Error("请实现组件渲染方法", ""))
+	return ctx.JSONError("请实现组件渲染方法")
 }
