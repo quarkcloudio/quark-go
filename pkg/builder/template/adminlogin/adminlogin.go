@@ -45,7 +45,7 @@ func (p *Template) TemplateInit() interface{} {
 	p.Title = "QuarkGo"
 
 	// 跳转地址
-	p.Redirect = "/index?api=/api/admin/dashboard/index/index"
+	p.Redirect = "/layout/index?api=/api/admin/dashboard/index/index"
 
 	// 子标题
 	p.SubTitle = "信息丰富的世界里，唯一稀缺的就是人类的注意力"
