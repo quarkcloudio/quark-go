@@ -52,7 +52,7 @@ func Download(respositoryURL string, path string) {
 // failedPrint
 func failedPrint(err error) {
 	if err != nil {
-		fmt.Println("The static file download failed. Please go to the url:" + respositoryDownloadURL + " to download and copy it to the project root directory, and create an install.lock lock file in the website directory.\n\n")
+		fmt.Println("The static file download failed. Please go to the url:" + respositoryDownloadURL + " to download and copy it to the project root directory, and create an install.lock lock file in the web directory.\n\n")
 		panic(err)
 	}
 }

@@ -33,8 +33,8 @@ func main() {
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
-	// 加载静态文件
-	staticFile("/", "./website", server)
+	// WEB根目录
+	staticFile("/", "./web/app", server)
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)

@@ -15,8 +15,8 @@ import (
 func main() {
 	r := gin.Default()
 
-	// 静态文件
-	r.Use(static.Serve("/", static.LocalFile("./website", false)))
+	// WEB根目录
+	r.Use(static.Serve("/", static.LocalFile("./web/app", false)))
 
 	// 数据库配置信息
 	dsn := "root:Bc5HQFJc4bLjZCcC@tcp(127.0.0.1:3306)/quarkgo?charset=utf8&parseTime=True&loc=Local"

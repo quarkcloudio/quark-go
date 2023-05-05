@@ -32,7 +32,7 @@ func (p *Image) Init() interface{} {
 	}
 
 	// 设置文件上传路径
-	p.SavePath = "./website/storage/images/" + time.Now().Format("20060102") + "/"
+	p.SavePath = "./web/app/storage/images/" + time.Now().Format("20060102") + "/"
 
 	return p
 }

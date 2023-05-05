@@ -21,10 +21,10 @@ func main() {
 	register(h)
 
 	// 静态文件
-	h.StaticFile("/admin/", "./website/admin/index.html")
+	h.StaticFile("/admin/", "./web/app/admin/index.html")
 
-	// 静态文件目录
-	fs := &app.FS{Root: "./website", IndexNames: []string{"index.html"}}
+	// WEB根目录
+	fs := &app.FS{Root: "./web/app", IndexNames: []string{"index.html"}}
 	h.StaticFS("/", fs)
 
 	// 数据库配置信息

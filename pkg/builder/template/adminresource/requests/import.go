@@ -163,7 +163,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 
 		f.SetActiveSheet(index)
 
-		filePath := "./website/storage/failImports/"
+		filePath := "./web/app/storage/failImports/"
 		fileName := rand.MakeAlphanumeric(40) + ".xlsx"
 
 		// 不存在路径，则创建

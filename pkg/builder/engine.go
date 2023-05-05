@@ -21,7 +21,7 @@ const (
 	AppName = "QuarkGo"
 
 	// 版本号
-	Version = "1.2.22"
+	Version = "1.2.23"
 
 	// 包名
 	PkgName = "github.com/quarkcms/quark-go"
@@ -105,15 +105,15 @@ func New(config *Config) *Engine {
 		config:    config,
 	}
 
-	// 默认静态文件目录
+	// 默认WEB资源目录
 	if config.StaticPath == "" {
-		config.StaticPath = "./website"
+		config.StaticPath = "./web"
 	}
 
 	// 下载静态文件
 	_, err := os.Stat(config.StaticPath + "/install.lock")
 	if os.IsNotExist(err) {
-		err := gopkg.New(PkgName, Version).Save("website", config.StaticPath)
+		err := gopkg.New(PkgName, Version).Save("web", config.StaticPath)
 		if err == nil {
 			// 创建锁定文件
 			file, _ := os.Create(config.StaticPath + "/install.lock")

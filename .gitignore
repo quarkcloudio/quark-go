@@ -27,7 +27,7 @@ tmp/
 install.lock
 
 # examples web site static files
-examples/*/website/
+examples/*/web/
 
-# examples web site static files
+# examples web site sqlite files
 examples/*/data.db

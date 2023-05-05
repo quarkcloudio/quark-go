@@ -55,8 +55,8 @@ func main() {
 	// 实例化对象
 	b := builder.New(config)
 
-	// 静态文件
-	b.Static("/", "./website")
+	// WEB根目录
+	b.Static("/", "./web/app")
 
 	// 自动构建数据库、拉取静态文件
 	install.Handle()
@@ -88,8 +88,7 @@ go run main.go
 密码：```123456```
 
 ## 特别注意
-1. **因为众所周知的原因，国内用户拉取静态文件可能会失败；建议您手动下载 [website](https://github.com/quarkcms/quark-go/tree/1.2/website) 静态文件后，将其复制到项目根目录，并在website目录内创建install.lock锁定文件。**
-2. **后台用户认证使用了AppKey作为JWT的加密密串，生成环境请务必更改**
+1. **后台用户认证使用了AppKey作为JWT的加密密串，生成环境请务必更改**
 
 ## 相关项目
 - [QuarkSmart](https://github.com/quarkcms/quark-smart) 单体应用

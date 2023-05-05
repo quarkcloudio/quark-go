@@ -28,8 +28,8 @@ func main() {
 		return c.Next()
 	})
 
-	// 静态资源
-	app.Static("/", "./website", fiber.Static{
+	// WEB根目录
+	app.Static("/", "./web/app", fiber.Static{
 		Compress:      true,
 		ByteRange:     true,
 		Browse:        false,

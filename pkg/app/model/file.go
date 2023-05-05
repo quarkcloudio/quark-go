@@ -61,7 +61,7 @@ func (model *File) GetPath(id interface{}) string {
 			return getId
 		}
 		if strings.Contains(getId, "./") && !strings.Contains(getId, "{") {
-			return http + webSiteDomain + strings.Replace(getId, "./website/", "/", -1)
+			return http + webSiteDomain + strings.Replace(getId, "./web/app/", "/", -1)
 		}
 		if strings.Contains(getId, "/") && !strings.Contains(getId, "{") {
 			return http + webSiteDomain + getId
@@ -85,7 +85,7 @@ func (model *File) GetPath(id interface{}) string {
 			return path
 		}
 		if strings.Contains(path, "./") {
-			path = strings.Replace(path, "./website/", "/", -1)
+			path = strings.Replace(path, "./web/app/", "/", -1)
 		}
 		if path != "" {
 			return http + webSiteDomain + path
@@ -100,7 +100,7 @@ func (model *File) GetPath(id interface{}) string {
 			return path
 		}
 		if strings.Contains(path, "./") {
-			path = strings.Replace(path, "./website/", "/", -1)
+			path = strings.Replace(path, "./web/app/", "/", -1)
 		}
 		if path != "" {
 			return http + webSiteDomain + path
@@ -136,7 +136,7 @@ func (model *File) GetPaths(id interface{}) []string {
 						paths = append(paths, v["url"].(string))
 					} else {
 						if strings.Contains(path, "./") {
-							path = strings.Replace(path, "./website/", "/", -1)
+							path = strings.Replace(path, "./web/app/", "/", -1)
 						}
 						if path != "" {
 							path = http + webSiteDomain + path
