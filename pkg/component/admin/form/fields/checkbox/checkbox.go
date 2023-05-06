@@ -759,14 +759,14 @@ func (p *Component) GetOptionValue(label string) interface{} {
 		for _, v := range p.Options {
 			for _, getLabel := range labels {
 				if v.Label == getLabel {
-					values = append(values, v.Label)
+					values = append(values, v.Value)
 				}
 			}
 		}
 	} else {
 		for _, v := range p.Options {
 			if v.Label == label {
-				value = v.Label
+				value = v.Value
 			}
 		}
 	}
