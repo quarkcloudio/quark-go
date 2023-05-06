@@ -206,7 +206,7 @@ func (p *Admin) BeforeSaving(ctx *builder.Context, submitData map[string]interfa
 // 保存后回调
 func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
 
-	// 导入操作直接返回
+	// 导入操作，直接返回
 	if ctx.IsImport() {
 		return result.Error
 	}
