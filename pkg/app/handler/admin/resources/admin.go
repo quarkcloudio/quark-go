@@ -120,7 +120,8 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 			SetCreationRules([]*rule.Rule{
 				rule.Required(true, "密码必须填写"),
 			}).
-			OnlyOnForms(),
+			OnlyOnForms().
+			ShowOnImporting(true),
 
 		field.Datetime("last_login_time", "最后登录时间", func() interface{} {
 			if p.Field["last_login_time"] == nil {
@@ -204,13 +205,15 @@ func (p *Admin) BeforeSaving(ctx *builder.Context, submitData map[string]interfa
 
 // 保存后回调
 func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
-	if result.Error != nil {
-		return ctx.JSONError(result.Error.Error())
+
+	// 导入操作直接返回
+	if ctx.IsImport() {
+		return result.Error
 	}
 
-	// 导入操作，直接返回
-	if ctx.IsImport() {
-		return nil
+	// 返回错误信息
+	if result.Error != nil {
+		return ctx.JSONError(result.Error.Error())
 	}
 
 	// 编辑操作，先清空用户对应的角色

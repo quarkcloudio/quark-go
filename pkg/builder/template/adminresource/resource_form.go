@@ -118,6 +118,13 @@ func (p *Template) BeforeSaving(ctx *builder.Context, submitData map[string]inte
 
 // 保存数据后回调
 func (p *Template) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
+
+	// 导入操作直接返回
+	if ctx.IsImport() {
+		return result.Error
+	}
+
+	// 返回错误信息
 	if result.Error != nil {
 		return ctx.JSONError(result.Error.Error())
 	}

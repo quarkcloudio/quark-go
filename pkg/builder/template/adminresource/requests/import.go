@@ -122,9 +122,18 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 		model.Order("id desc").First(&getLastData)
 
 		// 保存后回调
-		ctx.Template.(interface {
+		err = ctx.Template.(interface {
 			AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error
 		}).AfterSaved(ctx, getLastData["id"].(int), data, result)
+		if err != nil {
+			importResult = false
+			importFailedNum = importFailedNum + 1
+			item = append(item, err.Error())
+			importFailedData = append(importFailedData, item)
+
+			// 跳出本次循环
+			continue
+		}
 
 		importSuccessedNum = importSuccessedNum + 1
 	}
