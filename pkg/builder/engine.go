@@ -111,14 +111,9 @@ func New(config *Config) *Engine {
 	}
 
 	// 下载静态文件
-	_, err := os.Stat(config.StaticPath + "/install.lock")
+	_, err := os.Stat(config.StaticPath)
 	if os.IsNotExist(err) {
-		err := gopkg.New(PkgName, Version).Save("web", config.StaticPath)
-		if err == nil {
-			// 创建锁定文件
-			file, _ := os.Create(config.StaticPath + "/install.lock")
-			file.Close()
-		}
+		gopkg.New(PkgName, Version).Save("web", config.StaticPath)
 	}
 
 	// 初始化请求列表
@@ -198,6 +193,7 @@ func (p *Engine) NewContext(writer http.ResponseWriter, request *http.Request) *
 
 // 转换Request、Response对象
 func (p *Engine) TransformContext(fullPath string, header map[string][]string, method string, url string, body io.Reader, writer io.Writer) *Context {
+
 	// 转换为http.ResponseWriter
 	w := NewResponse(writer)
 

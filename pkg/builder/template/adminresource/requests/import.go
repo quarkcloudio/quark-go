@@ -12,7 +12,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/component/admin/space"
 	"github.com/quarkcms/quark-go/pkg/component/admin/tpl"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
-	"github.com/quarkcms/quark-go/pkg/msg"
 	"github.com/quarkcms/quark-go/pkg/rand"
 	"github.com/xuri/excelize/v2"
 	"gorm.io/gorm"
@@ -42,7 +41,8 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 	modelInstance := reflect.
 		ValueOf(ctx.Template).
 		Elem().
-		FieldByName("Model").Interface()
+		FieldByName("Model").
+		Interface()
 	model := db.Client.Model(&modelInstance)
 
 	importData, err := (&models.File{}).GetExcelData(getFileId)
@@ -73,20 +73,21 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 	}).ImportFields(ctx)
 
 	for _, item := range lists {
-
 		formValues := p.transformFormValues(fields, item)
-
 		validator := ctx.Template.(interface {
 			ValidatorForImport(ctx *builder.Context, data map[string]interface{}) error
 		}).ValidatorForImport(ctx, formValues)
 
 		if validator != nil {
-
 			importResult = false
-			importFailedNum = importFailedNum + 1  // 记录错误条数
-			item = append(item, validator.Error()) // 记录错误信息
 
-			//记录错误数据
+			// 记录错误条数
+			importFailedNum = importFailedNum + 1
+
+			// 记录错误信息
+			item = append(item, validator.Error())
+
+			// 记录错误数据
 			importFailedData = append(importFailedData, item)
 		}
 
@@ -95,10 +96,14 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 		}).BeforeSaving(ctx, formValues)
 		if err != nil {
 			importResult = false
-			importFailedNum = importFailedNum + 1 // 记录错误条数
-			item = append(item, err.Error())      // 记录错误信息
 
-			//记录错误数据
+			// 记录错误条数
+			importFailedNum = importFailedNum + 1
+
+			// 记录错误信息
+			item = append(item, err.Error())
+
+			// 记录错误数据
 			importFailedData = append(importFailedData, item)
 		}
 
@@ -109,16 +114,18 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 
 		// 获取对象
 		getModel := model.Create(data)
-
 		if getModel.Error != nil {
 			importResult = false
-			importFailedNum = importFailedNum + 1       // 记录错误条数
-			item = append(item, getModel.Error.Error()) // 记录错误信息
+
+			// 记录错误条数
+			importFailedNum = importFailedNum + 1
+
+			// 记录错误信息
+			item = append(item, getModel.Error.Error())
 
 			//记录错误数据
 			importFailedData = append(importFailedData, item)
 		} else {
-
 			lastData := map[string]interface{}{}
 			getModel.Order("id desc").First(&lastData)
 
@@ -130,32 +137,37 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 		}
 	}
 
-	if importResult {
-		return ctx.JSONOk("操作成功！", strings.Replace("/layout/index?api="+indexRoute, ":resource", ctx.Param("resource"), -1))
-	} else {
-		importHead = append(importHead, "错误信息")
+	// 返回导入失败错误数据
+	if !importResult {
+		filePath := ctx.Engine.GetConfig().StaticPath + "/app/storage/failImports/"
+		fileName := rand.MakeAlphanumeric(40) + ".xlsx"
+		fileUrl := "//" + ctx.Host() + "/storage/failImports/" + fileName
+
+		// 不存在路径，则创建
+		if isExist(filePath) == false {
+			err := os.MkdirAll(filePath, 0666)
+			if err != nil {
+				return ctx.JSONError(err.Error())
+			}
+		}
 
 		f := excelize.NewFile()
-		// Create a new sheet.
+
+		// 创建Sheet
 		index, _ := f.NewSheet("Sheet1")
 
-		//定义一个字符 变量a 是一个byte类型的 表示单个字符
+		// 创建表头
+		importHead = append(importHead, "错误信息")
 		var a = 'a'
-
-		//生成26个字符
 		for i := 1; i <= len(importHead); i++ {
-			// 设置单元格的值
 			f.SetCellValue("Sheet1", string(a)+"1", importHead[i-1])
 			a++
 		}
 
+		// 创建数据
 		for k, v := range importFailedData {
-			//定义一个字符 变量a 是一个byte类型的 表示单个字符
 			var a = 'a'
-
-			//生成26个字符
 			for i := 1; i <= len(v); i++ {
-				// 设置单元格的值
 				f.SetCellValue("Sheet1", string(a)+strconv.Itoa(k+2), v[i-1])
 				a++
 			}
@@ -163,39 +175,28 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 
 		f.SetActiveSheet(index)
 
-		filePath := "./web/app/storage/failImports/"
-		fileName := rand.MakeAlphanumeric(40) + ".xlsx"
-
-		// 不存在路径，则创建
-		if isExist(filePath) == false {
-			err := os.MkdirAll(filePath, 0666)
-			if err != nil {
-				return ctx.JSON(200, msg.Error(err.Error(), ""))
-			}
-		}
-
 		if err := f.SaveAs(filePath + fileName); err != nil {
-			return ctx.JSON(200, msg.Error(err.Error(), ""))
+			return ctx.JSONError(err.Error())
 		}
 
-		importTotalNumTpl := (&tpl.Component{}).
+		tpl1 := (&tpl.Component{}).
 			Init().
 			SetBody("导入总量: " + strconv.Itoa(importTotalNum))
 
-		importSuccessedNumTpl := (&tpl.Component{}).
+		tpl2 := (&tpl.Component{}).
 			Init().
 			SetBody("成功数量: " + strconv.Itoa(importSuccessedNum))
 
-		importFailedNumTpl := (&tpl.Component{}).
+		tpl3 := (&tpl.Component{}).
 			Init().
-			SetBody("失败数量: <span style='color:#ff4d4f'>" + strconv.Itoa(importFailedNum) + "</span> <a href='//" + ctx.Host() + "/storage/failImports/" + fileName + "' target='_blank'>下载失败数据</a>")
+			SetBody("失败数量: <span style='color:#ff4d4f'>" + strconv.Itoa(importFailedNum) + "</span> <a href='" + fileUrl + "' target='_blank'>下载失败数据</a>")
 
 		component := (&space.Component{}).
 			Init().
 			SetBody([]interface{}{
-				importTotalNumTpl,
-				importSuccessedNumTpl,
-				importFailedNumTpl,
+				tpl1,
+				tpl2,
+				tpl3,
 			}).
 			SetDirection("vertical").
 			SetSize("small").
@@ -206,6 +207,8 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 
 		return ctx.JSON(200, component)
 	}
+
+	return ctx.JSONOk("操作成功！", strings.Replace("/layout/index?api="+indexRoute, ":resource", ctx.Param("resource"), -1))
 }
 
 // 将表格数据转换成表单数据
@@ -233,12 +236,14 @@ func (p *ImportRequest) getSubmitData(fields interface{}, submitData interface{}
 		component := reflect.
 			ValueOf(field).
 			Elem().
-			FieldByName("Component").String()
+			FieldByName("Component").
+			String()
 
 		name := reflect.
 			ValueOf(field).
 			Elem().
-			FieldByName("Name").String()
+			FieldByName("Name").
+			String()
 
 		switch component {
 		case "inputNumberField":
@@ -289,7 +294,7 @@ func (p *ImportRequest) getSubmitData(fields interface{}, submitData interface{}
 	return result
 }
 
-// if file or directory exits
+// 判断文件是否存在
 func isExist(path string) bool {
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {
