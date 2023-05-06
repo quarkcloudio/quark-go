@@ -73,68 +73,60 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 	}).ImportFields(ctx)
 
 	for _, item := range lists {
+
+		// 获取表单数据
 		formValues := p.transformFormValues(fields, item)
+
+		// 验证表单条件
 		validator := ctx.Template.(interface {
 			ValidatorForImport(ctx *builder.Context, data map[string]interface{}) error
 		}).ValidatorForImport(ctx, formValues)
-
 		if validator != nil {
 			importResult = false
-
-			// 记录错误条数
 			importFailedNum = importFailedNum + 1
-
-			// 记录错误信息
 			item = append(item, validator.Error())
-
-			// 记录错误数据
 			importFailedData = append(importFailedData, item)
+
+			// 跳出本次循环
+			continue
 		}
 
+		// 验证保存前回调条件
 		submitData, err := ctx.Template.(interface {
 			BeforeSaving(ctx *builder.Context, data map[string]interface{}) (map[string]interface{}, error)
 		}).BeforeSaving(ctx, formValues)
 		if err != nil {
 			importResult = false
-
-			// 记录错误条数
 			importFailedNum = importFailedNum + 1
-
-			// 记录错误信息
 			item = append(item, err.Error())
-
-			// 记录错误数据
 			importFailedData = append(importFailedData, item)
+
+			// 跳出本次循环
+			continue
 		}
 
-		data := p.getSubmitData(
-			fields,
-			submitData,
-		)
-
-		// 获取对象
-		getModel := model.Create(data)
-		if getModel.Error != nil {
+		// 插入数据库
+		data := p.getSubmitData(fields, submitData)
+		result := model.Create(data)
+		if result.Error != nil {
 			importResult = false
-
-			// 记录错误条数
 			importFailedNum = importFailedNum + 1
-
-			// 记录错误信息
-			item = append(item, getModel.Error.Error())
-
-			//记录错误数据
+			item = append(item, result.Error.Error())
 			importFailedData = append(importFailedData, item)
-		} else {
-			lastData := map[string]interface{}{}
-			getModel.Order("id desc").First(&lastData)
 
-			ctx.Template.(interface {
-				AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error
-			}).AfterSaved(ctx, lastData["id"].(int), data, getModel)
-
-			importSuccessedNum = importSuccessedNum + 1
+			// 跳出本次循环
+			continue
 		}
+
+		getLastData := map[string]interface{}{}
+		model.Order("id desc").First(&getLastData)
+
+		// 保存后回调
+		ctx.Template.(interface {
+			AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error
+		}).AfterSaved(ctx, getLastData["id"].(int), data, result)
+
+		importSuccessedNum = importSuccessedNum + 1
 	}
 
 	// 返回导入失败错误数据
@@ -158,7 +150,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 
 		// 创建表头
 		importHead = append(importHead, "错误信息")
-		var a = 'a'
+		a := 'a'
 		for i := 1; i <= len(importHead); i++ {
 			f.SetCellValue("Sheet1", string(a)+"1", importHead[i-1])
 			a++
@@ -166,7 +158,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 
 		// 创建数据
 		for k, v := range importFailedData {
-			var a = 'a'
+			a := 'a'
 			for i := 1; i <= len(v); i++ {
 				f.SetCellValue("Sheet1", string(a)+strconv.Itoa(k+2), v[i-1])
 				a++
@@ -174,7 +166,6 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 		}
 
 		f.SetActiveSheet(index)
-
 		if err := f.SaveAs(filePath + fileName); err != nil {
 			return ctx.JSONError(err.Error())
 		}
@@ -214,7 +205,6 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 // 将表格数据转换成表单数据
 func (p *ImportRequest) transformFormValues(fields interface{}, data []interface{}) map[string]interface{} {
 	result := make(map[string]interface{})
-
 	for k, v := range fields.([]interface{}) {
 		if data[k] != nil {
 			name := reflect.
@@ -231,7 +221,6 @@ func (p *ImportRequest) transformFormValues(fields interface{}, data []interface
 // 获取提交表单的数据
 func (p *ImportRequest) getSubmitData(fields interface{}, submitData interface{}) map[string]interface{} {
 	result := make(map[string]interface{})
-
 	for _, field := range fields.([]interface{}) {
 		component := reflect.
 			ValueOf(field).
@@ -247,45 +236,42 @@ func (p *ImportRequest) getSubmitData(fields interface{}, submitData interface{}
 
 		switch component {
 		case "inputNumberField":
+
 			result[name] = submitData.(map[string]interface{})[name]
 		case "textField":
+
 			result[name] = strings.Trim(submitData.(map[string]interface{})[name].(string), "\n")
 		case "selectField":
-			optionValue := field.(interface {
+
+			result[name] = field.(interface {
 				GetOptionValue(label string) interface{}
 			}).GetOptionValue(submitData.(map[string]interface{})[name].(string))
-
-			result[name] = optionValue
 		case "checkboxField":
-			optionValue := field.(interface {
+
+			result[name] = field.(interface {
 				GetOptionValue(label string) interface{}
 			}).GetOptionValue(submitData.(map[string]interface{})[name].(string))
-
-			result[name] = optionValue
 		case "radioField":
-			optionValue := field.(interface {
+
+			result[name] = field.(interface {
 				GetOptionValue(label string) interface{}
 			}).GetOptionValue(submitData.(map[string]interface{})[name].(string))
-
-			result[name] = optionValue
 		case "switchField":
-			optionValue := field.(interface {
+
+			result[name] = field.(interface {
 				GetOptionValue(label string) bool
 			}).GetOptionValue(submitData.(map[string]interface{})[name].(string))
-
-			result[name] = optionValue
 		default:
+
 			result[name] = submitData.(map[string]interface{})[name]
 		}
 
 		if getValue, ok := result[name].([]interface{}); ok {
 			result[name], _ = json.Marshal(getValue)
 		}
-
 		if getValue, ok := result[name].([]map[string]interface{}); ok {
 			result[name], _ = json.Marshal(getValue)
 		}
-
 		if getValue, ok := result[name].(map[string]interface{}); ok {
 			result[name], _ = json.Marshal(getValue)
 		}
