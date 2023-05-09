@@ -18,7 +18,8 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) error {
 	modelInstance := reflect.
 		ValueOf(ctx.Template).
 		Elem().
-		FieldByName("Model").Interface()
+		FieldByName("Model").
+		Interface()
 
 	// 获取字段
 	fields := ctx.Template.(interface {
@@ -26,7 +27,7 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) error {
 	}).UpdateFields(ctx)
 
 	data := map[string]interface{}{}
-	json.Unmarshal(ctx.Body(), &data)
+	ctx.Bind(&data)
 	if data["id"] == "" {
 		return ctx.JSONError("参数错误！")
 	}
@@ -44,6 +45,7 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) error {
 	if validator != nil {
 		return ctx.JSONError(validator.Error())
 	}
+
 	zeroValues := map[string]interface{}{}
 	for _, v := range fields.([]interface{}) {
 		name := reflect.
@@ -52,7 +54,6 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) error {
 			FieldByName("Name").String()
 
 		formValue := data[name]
-
 		if getValue, ok := formValue.([]interface{}); ok {
 			formValue, _ = json.Marshal(getValue)
 		}

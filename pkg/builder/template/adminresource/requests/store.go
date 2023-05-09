@@ -18,7 +18,9 @@ func (p *StoreRequest) Handle(ctx *builder.Context) error {
 	modelInstance := reflect.
 		ValueOf(ctx.Template).
 		Elem().
-		FieldByName("Model").Interface()
+		FieldByName("Model").
+		Interface()
+
 	model := db.Client.Model(&modelInstance)
 
 	// 获取字段
@@ -27,7 +29,8 @@ func (p *StoreRequest) Handle(ctx *builder.Context) error {
 	}).CreationFields(ctx)
 
 	data := map[string]interface{}{}
-	json.Unmarshal(ctx.Body(), &data)
+	ctx.Bind(&data)
+
 	data, err := ctx.Template.(interface {
 		BeforeSaving(ctx *builder.Context, data map[string]interface{}) (map[string]interface{}, error)
 	}).BeforeSaving(ctx, data)
@@ -41,6 +44,7 @@ func (p *StoreRequest) Handle(ctx *builder.Context) error {
 	if validator != nil {
 		return ctx.JSONError(validator.Error())
 	}
+
 	zeroValues := map[string]interface{}{}
 	for _, v := range fields.([]interface{}) {
 		name := reflect.
