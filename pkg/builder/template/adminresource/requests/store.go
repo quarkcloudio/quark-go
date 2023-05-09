@@ -3,9 +3,9 @@ package requests
 import (
 	"encoding/json"
 	"reflect"
-	"time"
 
 	"github.com/gobeam/stringy"
+	"github.com/gookit/goutil/structs"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"gorm.io/gorm"
@@ -21,12 +21,11 @@ func (p *StoreRequest) Handle(ctx *builder.Context) error {
 		FieldByName("Model").
 		Interface()
 
-	model := db.Client.Model(&modelInstance)
-
-	// 获取字段
-	fields := ctx.Template.(interface {
-		CreationFields(ctx *builder.Context) interface{}
-	}).CreationFields(ctx)
+	dataInstance := reflect.
+		ValueOf(ctx.Template).
+		Elem().
+		FieldByName("Model").
+		Interface()
 
 	data := map[string]interface{}{}
 	ctx.Bind(&data)
@@ -45,103 +44,57 @@ func (p *StoreRequest) Handle(ctx *builder.Context) error {
 		return ctx.JSONError(validator.Error())
 	}
 
-	zeroValues := map[string]interface{}{}
-	for _, v := range fields.([]interface{}) {
-		name := reflect.
-			ValueOf(v).
+	newData := map[string]interface{}{}
+	for k, v := range data {
+		nv := v
+
+		// 将数组、map数据转换为字符串存储
+		if gv, ok := v.([]interface{}); ok {
+			nv, _ = json.Marshal(gv)
+		}
+		if gv, ok := v.([]map[string]interface{}); ok {
+			nv, _ = json.Marshal(gv)
+		}
+		if gv, ok := v.(map[string]interface{}); ok {
+			nv, _ = json.Marshal(gv)
+		}
+
+		camelCaseName := stringy.
+			New(k).
+			CamelCase("?", "")
+
+		fieldIsValid := reflect.
+			ValueOf(modelInstance).
 			Elem().
-			FieldByName("Name").String()
-		formValue := data[name]
-		if getValue, ok := formValue.([]interface{}); ok {
-			formValue, _ = json.Marshal(getValue)
-		}
-		if getValue, ok := formValue.([]map[string]interface{}); ok {
-			formValue, _ = json.Marshal(getValue)
-		}
-		if getValue, ok := formValue.(map[string]interface{}); ok {
-			formValue, _ = json.Marshal(getValue)
-		}
-		if name != "" && formValue != nil {
-			fieldName := stringy.New(name).CamelCase("?", "")
-			reflectFieldName := reflect.
-				ValueOf(modelInstance).
-				Elem().
-				FieldByName(fieldName)
-
-			if reflectFieldName.IsValid() {
-				var reflectValue reflect.Value
-				switch reflectFieldName.Type().String() {
-				case "int":
-					if value, ok := formValue.(bool); ok {
-						if value {
-							reflectValue = reflect.ValueOf(1)
-						} else {
-							reflectValue = reflect.ValueOf(0)
-							zeroValues[fieldName] = 0
-						}
-					}
-					if value, ok := formValue.(float64); ok {
-						reflectValue = reflect.ValueOf(int(value))
-						if int(value) == 0 {
-							zeroValues[fieldName] = 0
-						}
-					}
-				case "float64":
-					if value, ok := formValue.(float64); ok {
-						reflectValue = reflect.ValueOf(float64(value))
-						if float64(value) == 0 {
-							zeroValues[fieldName] = 0
-						}
-					}
-				case "float32":
-					if value, ok := formValue.(float64); ok {
-						reflectValue = reflect.ValueOf(float32(value))
-						if float32(value) == 0 {
-							zeroValues[fieldName] = 0
-						}
-					}
-				case "time.Time":
-					getTime, _ := time.ParseInLocation("2006-01-02 15:04:05", formValue.(string), time.Local)
-					reflectValue = reflect.ValueOf(getTime)
-				default:
-					reflectValue = reflect.ValueOf(formValue)
-					if reflect.ValueOf(formValue).Type().String() == "[]uint8" {
-						reflectValue = reflect.ValueOf(string(formValue.([]uint8)))
-					}
-					if reflectValue.IsZero() {
-						zeroValues[fieldName] = nil
-					}
-				}
-
-				if reflectValue.IsValid() {
-					if reflectFieldName.Type().String() != reflectValue.Type().String() {
-						return ctx.JSONError("结构体类型与传参类型不一致！")
-					}
-
-					reflectFieldName.Set(reflectValue)
-				}
-			}
+			FieldByName(camelCaseName).
+			IsValid()
+		if fieldIsValid {
+			newData[k] = nv
 		}
 	}
+
+	structs.SetValues(dataInstance, newData)
 
 	// 获取对象
-	getModel := model.Create(modelInstance)
+	model := db.Client.Model(&modelInstance).Create(dataInstance)
 
 	// 因为gorm使用结构体，不更新零值，需要使用map更新零值
-	id := 0
 	reflectId := reflect.
-		ValueOf(modelInstance).
+		ValueOf(dataInstance).
 		Elem().
 		FieldByName("Id")
-	if reflectId.IsValid() {
-		if len(zeroValues) > 0 {
-			db.Client.Model(&modelInstance).Where("id = ?", reflectId.Int()).Updates(zeroValues)
-		}
-
-		id = int(reflectId.Int())
+	if !reflectId.IsValid() {
+		return ctx.JSONError("参数错误!")
 	}
+
+	id := int(reflectId.Int())
+	db.
+		Client.
+		Model(&modelInstance).
+		Where("id = ?", id).
+		Updates(newData)
 
 	return ctx.Template.(interface {
 		AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error
-	}).AfterSaved(ctx, id, data, getModel)
+	}).AfterSaved(ctx, id, data, model)
 }
