@@ -3,6 +3,7 @@ package middleware
 import (
 	"strings"
 
+	"github.com/quarkcms/quark-go/pkg/app/handler/admin/logins"
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/msg"
@@ -10,9 +11,22 @@ import (
 
 // 中间件
 func Handle(ctx *builder.Context) error {
+	loginIndex := (&logins.Index{}).Init()
+
+	// 获取登录模板定义的路由
+	loginIndexRoutes := loginIndex.(interface {
+		GetRouteMapping() []*builder.RouteMapping
+	}).GetRouteMapping()
+
+	inLoginRoute := false
+	for _, v := range loginIndexRoutes {
+		if v.Path == ctx.FullPath() {
+			inLoginRoute = true
+		}
+	}
 
 	// 排除登录路由
-	if strings.Contains(ctx.FullPath(), "api/admin/login") {
+	if inLoginRoute {
 		return ctx.Next()
 	}
 

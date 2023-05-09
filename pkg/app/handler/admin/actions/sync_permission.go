@@ -1,9 +1,6 @@
 package actions
 
 import (
-	"strings"
-
-	"github.com/gobeam/stringy"
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
@@ -47,29 +44,19 @@ func (p *SyncPermission) Handle(ctx *builder.Context, query *gorm.DB) error {
 	var names []string
 	db.Client.Model(&model.Permission{}).Pluck("name", &names)
 	for _, v := range permissions {
-		if strings.Contains(v.Url, "/api/admin/") {
-			url := strings.Replace(v.Url, "/api/admin/", "", -1)
-			name := stringy.
-				New(url).
-				CamelCase("?", "")
-
-			has := false
-			for _, nv := range names {
-				if nv == name {
-					has = true
-				}
+		has := false
+		for _, nv := range names {
+			if nv == v {
+				has = true
 			}
-
-			if has == false {
-				permission := model.Permission{
-					MenuId:    0,
-					Name:      name,
-					Path:      v.Url,
-					Method:    v.Method,
-					GuardName: "admin",
-				}
-				data = append(data, permission)
+		}
+		if has == false {
+			permission := model.Permission{
+				MenuId:    0,
+				Name:      v,
+				GuardName: "admin",
 			}
+			data = append(data, permission)
 		}
 	}
 	if len(data) == 0 {
