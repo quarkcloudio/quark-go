@@ -32,14 +32,13 @@ type Engine struct {
 	useHandlers []func(ctx *Context) error // 中间件方法
 	config      *Config                    // 配置
 	providers   []interface{}              // 服务列表
-	urlPaths    []string                   // 请求路径列表
+	urlPaths    []*UrlPath                 // 请求路径列表
 	routePaths  []*RouteMapping            // 路由路径列表
 }
 
-type RouteMapping struct {
-	Method  string
-	Path    string
-	Handler func(ctx *Context) error
+type UrlPath struct {
+	Method string
+	Url    string
 }
 
 type DBConfig struct {
@@ -215,34 +214,27 @@ func (p *Engine) TransformContext(fullPath string, header map[string][]string, m
 
 // 初始化请求列表
 func (p *Engine) initPaths() {
-	var (
-		urlPaths   []string
-		routePaths []*RouteMapping
-	)
-	if p.urlPaths != nil && p.routePaths != nil {
-		return
-	}
 	for _, provider := range p.providers {
+		provider.(interface {
+			Init() interface{}
+		}).Init()
+	}
 
-		// 初始化
+	// 获取定义的路由
+	routeMappings := GetRouteMapping()
+	for _, provider := range p.providers {
 		getTemplateInstance := provider.(interface {
 			Init() interface{}
 		}).Init()
 
-		// 获取模板定义的路由
-		templateInstanceRoutes := getTemplateInstance.(interface {
-			GetRouteMapping() []*RouteMapping
-		}).GetRouteMapping()
-
-		for _, v := range templateInstanceRoutes {
+		for _, v := range routeMappings {
 			providerName := reflect.TypeOf(provider).String()
 			getNames := strings.Split(providerName, ".")
 			structName := getNames[len(getNames)-1]
-
 			if strings.Contains(v.Path, ":resource") {
-				path := strings.Replace(v.Path, ":resource", strings.ToLower(structName), -1)
+				url := strings.Replace(v.Path, ":resource", strings.ToLower(structName), -1)
 				//处理行为
-				if strings.Contains(path, ":uriKey") {
+				if strings.Contains(url, ":uriKey") {
 					actions := getTemplateInstance.(interface {
 						Actions(ctx *Context) []interface{}
 					}).Actions(&Context{})
@@ -258,40 +250,26 @@ func (p *Engine) initPaths() {
 								uriKey := dropdownAction.(interface {
 									GetUriKey(interface{}) string
 								}).GetUriKey(dropdownAction) // uri唯一标识
-								path = strings.Replace(path, ":uriKey", uriKey, -1)
+								url = strings.Replace(url, ":uriKey", uriKey, -1)
 							}
 						} else {
-							path = strings.Replace(path, ":uriKey", uriKey, -1)
+							url = strings.Replace(url, ":uriKey", uriKey, -1)
 						}
 					}
 				}
-				urlPaths = append(urlPaths, path)
-			}
-
-			if !hasRoutePath(routePaths, v.Method, v.Path) {
-				routePaths = append(routePaths, &RouteMapping{v.Method, v.Path, v.Handler})
+				p.urlPaths = append(p.urlPaths, &UrlPath{
+					Method: v.Method,
+					Url:    url,
+				})
 			}
 		}
 	}
 
-	p.urlPaths = urlPaths
-	p.routePaths = routePaths
-}
-
-// 判断是否存在RoutePath
-func hasRoutePath(routePaths []*RouteMapping, method string, path string) bool {
-	var has bool
-	for _, v := range routePaths {
-		if v.Method == method && v.Path == path {
-			has = true
-		}
-	}
-
-	return has
+	p.routePaths = routeMappings
 }
 
 // 获取请求列表
-func (p *Engine) GetUrlPaths() []string {
+func (p *Engine) GetUrlPaths() []*UrlPath {
 	return p.urlPaths
 }
 
