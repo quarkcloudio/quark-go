@@ -71,30 +71,70 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 			SetDefault(0).
 			OnlyOnForms(),
 
-		field.Radio("type", "渲染组件").
+		field.Radio("type", "类型").
 			SetOptions([]*radio.Option{
 				{
-					Value: "default",
-					Label: "无组件",
+					Value: 1,
+					Label: "目录",
 				},
 				{
-					Value: "engine",
-					Label: "引擎组件",
+					Value: 2,
+					Label: "菜单",
 				},
-			}).SetDefault("engine"),
-
-		field.Text("path", "路由").
-			SetEditable(true).
-			SetHelp("前端路由或后端api"),
+				{
+					Value: 3,
+					Label: "按钮",
+				},
+			}).
+			SetWhen(1, func() interface{} {
+				return []interface{}{
+					field.Text("path", "路由").
+						SetEditable(true).
+						SetHelp("前端路由"),
+				}
+			}).
+			SetWhen(2, func() interface{} {
+				return []interface{}{
+					field.Radio("is_engine", "引擎组件").
+						SetOptions([]*radio.Option{
+							{
+								Value: 1,
+								Label: "是",
+							},
+							{
+								Value: 0,
+								Label: "否",
+							},
+						}),
+					field.Radio("is_link", "外部链接").
+						SetOptions([]*radio.Option{
+							{
+								Value: 1,
+								Label: "是",
+							},
+							{
+								Value: 0,
+								Label: "否",
+							},
+						}),
+					field.Text("path", "路由").
+						SetEditable(true).
+						SetHelp("前端路由或后端api"),
+				}
+			}).
+			SetWhen(3, func() interface{} {
+				return []interface{}{
+					field.Select("permission_ids", "绑定权限").
+						SetMode("tags").
+						SetOptions(permissions).
+						OnlyOnForms(),
+				}
+			}).
+			SetDefault(1),
 
 		field.Number("sort", "排序").
 			SetEditable(true).
 			SetDefault(0),
-
-		field.Select("permission_ids", "绑定权限").
-			SetMode("tags").
-			SetOptions(permissions).
-			OnlyOnForms(),
 
 		field.Switch("status", "状态").
 			SetTrueValue("正常").

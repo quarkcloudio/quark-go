@@ -11,8 +11,11 @@ import (
 type Permission struct {
 	Id        int       `json:"id" gorm:"autoIncrement"`
 	MenuId    int       `json:"menu_id" gorm:"size:11;default:0"`
-	Name      string    `json:"name" gorm:"size:100;not null"`
-	GuardName string    `json:"guard_name" gorm:"size:100"`
+	Name      string    `json:"name" gorm:"size:500;not null"`
+	GuardName string    `json:"group_name" gorm:"size:100;not null"`
+	Path      string    `json:"path" gorm:"size:500;not null"`
+	Method    string    `json:"method" gorm:"size:500;not null"`
+	Remark    string    `json:"remark" gorm:"size:100"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

@@ -44,6 +44,7 @@ func Handle() {
 		&model.ModelHasRole{},
 		&model.RoleHasPermission{},
 		&model.ModelHasPermission{},
+		&model.CasbinRule{},
 	)
 
 	// 如果超级管理员不存在，初始化数据库数据
