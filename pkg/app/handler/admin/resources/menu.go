@@ -1,6 +1,7 @@
 package resources
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/actions"
@@ -10,7 +11,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/radio"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
-	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"github.com/quarkcms/quark-go/pkg/lister"
 	"gorm.io/gorm"
 )
@@ -95,31 +95,20 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 			}).
 			SetWhen(2, func() interface{} {
 				return []interface{}{
-					field.Radio("is_engine", "引擎组件").
-						SetOptions([]*radio.Option{
-							{
-								Value: 1,
-								Label: "是",
-							},
-							{
-								Value: 0,
-								Label: "否",
-							},
-						}),
-					field.Radio("is_link", "外部链接").
-						SetOptions([]*radio.Option{
-							{
-								Value: 1,
-								Label: "是",
-							},
-							{
-								Value: 0,
-								Label: "否",
-							},
-						}),
+					field.Switch("is_engine", "引擎组件").
+						SetTrueValue("是").
+						SetFalseValue("否").
+						SetDefault(true),
+
+					field.Switch("is_link", "外部链接").
+						SetTrueValue("是").
+						SetFalseValue("否").
+						SetDefault(false),
+
 					field.Text("path", "路由").
 						SetEditable(true).
-						SetHelp("前端路由或后端api"),
+						SetHelp("前端路由或后端api").
+						OnlyOnForms(),
 				}
 			}).
 			SetWhen(3, func() interface{} {
@@ -191,16 +180,17 @@ func (p *Menu) BeforeIndexShowing(ctx *builder.Context, list []map[string]interf
 // 编辑页面显示前回调
 func (p *Menu) BeforeEditing(ctx *builder.Context, data map[string]interface{}) map[string]interface{} {
 	id := ctx.Query("id", "")
+	idInt, err := strconv.Atoi(id.(string))
 
-	if id != "" {
-		menus := []int{}
-
-		db.Client.
-			Model(&models.Permission{}).
-			Where("menu_id = ?", id).
-			Pluck("id", &menus)
-
-		data["permission_ids"] = menus
+	if id != "" && err == nil {
+		permissionIds := []int{}
+		permissions, err := (&models.CasbinRule{}).GetMenuPermissions(idInt)
+		if err == nil {
+			for _, v := range permissions {
+				permissionIds = append(permissionIds, v.Id)
+			}
+		}
+		data["permission_ids"] = permissionIds
 	}
 
 	return data
@@ -208,16 +198,11 @@ func (p *Menu) BeforeEditing(ctx *builder.Context, data map[string]interface{}) 
 
 // 保存后回调
 func (p *Menu) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
-	result = db.Client.
-		Model(&models.Permission{}).
-		Where("menu_id = ?", id).
-		Update("menu_id", 0)
-
 	if data["permission_ids"] != nil {
-		result = db.Client.
-			Model(&models.Permission{}).
-			Where("id In ?", data["permission_ids"]).
-			Update("menu_id", id)
+		err := (&models.CasbinRule{}).AddMenuPermission(id, data["permission_ids"])
+		if err != nil {
+			return ctx.JSONError(err.Error())
+		}
 	}
 
 	if result.Error != nil {

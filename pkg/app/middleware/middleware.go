@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/logins"
@@ -48,23 +49,14 @@ func Handle(ctx *builder.Context) error {
 
 	// 管理员id
 	if adminInfo.Id != 1 {
-		permissions, err := (&model.Permission{}).GetListByAdminId(adminInfo.Id)
+		result1, err := (&model.CasbinRule{}).Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.FullPath(), "Any")
+		result2, err := (&model.CasbinRule{}).Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.FullPath(), ctx.Method())
+		result3, err := (&model.CasbinRule{}).Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.Path(), "Any")
+		result4, err := (&model.CasbinRule{}).Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.Path(), ctx.Method())
 		if err != nil {
-			return ctx.JSON(403, msg.Error("403 Forbidden", ""))
+			return ctx.JSON(500, msg.Error(err.Error(), ""))
 		}
-
-		hasPermission := false
-		for _, v := range permissions {
-			if strings.ToLower(v.Name) == strings.ToLower(ctx.FullPath()) {
-				hasPermission = true
-			}
-
-			if strings.ToLower(v.Name) == strings.ToLower(ctx.Path()) {
-				hasPermission = true
-			}
-		}
-
-		if !hasPermission {
+		if !(result1 || result2 || result3 || result4) {
 			return ctx.JSON(403, msg.Error("403 Forbidden", ""))
 		}
 	}

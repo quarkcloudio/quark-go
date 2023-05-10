@@ -12,7 +12,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/radio"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
-	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"github.com/quarkcms/quark-go/pkg/hash"
 	"gorm.io/gorm"
 )
@@ -177,17 +176,18 @@ func (p *Admin) Actions(ctx *builder.Context) []interface{} {
 
 // 编辑页面显示前回调
 func (p *Admin) BeforeEditing(ctx *builder.Context, data map[string]interface{}) map[string]interface{} {
+
+	// 编辑页面清理password
 	delete(data, "password")
 
-	roleIds := []int{}
-	db.Client.
-		Model(&model.ModelHasRole{}).
-		Where("model_id = ?", data["id"]).
-		Where("model_type = ?", "admin").
-		Distinct().
-		Pluck("role_id", &roleIds)
-
-	data["role_ids"] = roleIds
+	roles, err := (&model.CasbinRule{}).GetUserRoles(data["id"].(int))
+	if err == nil {
+		roleIds := []int{}
+		for _, role := range roles {
+			roleIds = append(roleIds, role.Id)
+		}
+		data["role_ids"] = roleIds
+	}
 
 	return data
 }
@@ -216,29 +216,18 @@ func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interfa
 		return ctx.JSONError(result.Error.Error())
 	}
 
-	// 编辑操作，先清空用户对应的角色
-	if ctx.IsEditing() {
-		db.Client.Model(&model.ModelHasRole{}).Where("model_id = ?", id).Where("model_type = ?", "admin").Delete("")
-	}
+	if data["role_ids"] != nil {
+		if roleIds, ok := data["role_ids"].([]interface{}); ok {
+			ids := []int{}
+			for _, v := range roleIds {
+				roleId := int(v.(float64))
+				ids = append(ids, roleId)
+			}
 
-	if data["role_ids"] == nil {
-		return ctx.JSONOk("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexPath, ":resource", ctx.Param("resource"), -1))
-	}
-
-	roleData := []map[string]interface{}{}
-	for _, v := range data["role_ids"].([]interface{}) {
-		item := map[string]interface{}{
-			"role_id":    v,
-			"model_type": "admin",
-			"model_id":   id,
-		}
-		roleData = append(roleData, item)
-	}
-	if len(roleData) > 0 {
-		// 同步角色
-		err := db.Client.Model(&model.ModelHasRole{}).Create(roleData).Error
-		if err != nil {
-			return ctx.JSONError(err.Error())
+			err := (&model.CasbinRule{}).AddUserRole(id, ids)
+			if err != nil {
+				return ctx.JSONError(err.Error())
+			}
 		}
 	}
 

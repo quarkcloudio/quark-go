@@ -32,7 +32,7 @@ type Engine struct {
 	useHandlers []func(ctx *Context) error // 中间件方法
 	config      *Config                    // 配置
 	providers   []interface{}              // 服务列表
-	urlPaths    []string                   // 请求路径列表
+	urlPaths    []*UrlPath                 // 请求路径列表
 	routePaths  []*RouteMapping            // 路由路径列表
 }
 
@@ -40,6 +40,11 @@ type RouteMapping struct {
 	Method  string
 	Path    string
 	Handler func(ctx *Context) error
+}
+
+type UrlPath struct {
+	Method string
+	Url    string
 }
 
 type DBConfig struct {
@@ -216,7 +221,7 @@ func (p *Engine) TransformContext(fullPath string, header map[string][]string, m
 // 初始化请求列表
 func (p *Engine) initPaths() {
 	var (
-		urlPaths   []string
+		urlPaths   []*UrlPath
 		routePaths []*RouteMapping
 	)
 	if p.urlPaths != nil && p.routePaths != nil {
@@ -240,9 +245,9 @@ func (p *Engine) initPaths() {
 			structName := getNames[len(getNames)-1]
 
 			if strings.Contains(v.Path, ":resource") {
-				path := strings.Replace(v.Path, ":resource", strings.ToLower(structName), -1)
+				url := strings.Replace(v.Path, ":resource", strings.ToLower(structName), -1)
 				//处理行为
-				if strings.Contains(path, ":uriKey") {
+				if strings.Contains(url, ":uriKey") {
 					actions := getTemplateInstance.(interface {
 						Actions(ctx *Context) []interface{}
 					}).Actions(&Context{})
@@ -258,14 +263,17 @@ func (p *Engine) initPaths() {
 								uriKey := dropdownAction.(interface {
 									GetUriKey(interface{}) string
 								}).GetUriKey(dropdownAction) // uri唯一标识
-								path = strings.Replace(path, ":uriKey", uriKey, -1)
+								url = strings.Replace(url, ":uriKey", uriKey, -1)
 							}
 						} else {
-							path = strings.Replace(path, ":uriKey", uriKey, -1)
+							url = strings.Replace(url, ":uriKey", uriKey, -1)
 						}
 					}
 				}
-				urlPaths = append(urlPaths, path)
+				urlPaths = append(urlPaths, &UrlPath{
+					Method: v.Method,
+					Url:    url,
+				})
 			}
 
 			if !hasRoutePath(routePaths, v.Method, v.Path) {
@@ -291,7 +299,7 @@ func hasRoutePath(routePaths []*RouteMapping, method string, path string) bool {
 }
 
 // 获取请求列表
-func (p *Engine) GetUrlPaths() []string {
+func (p *Engine) GetUrlPaths() []*UrlPath {
 	return p.urlPaths
 }
 

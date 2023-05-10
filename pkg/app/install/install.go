@@ -41,9 +41,6 @@ func Handle() {
 		&model.PictureCategory{},
 		&model.Permission{},
 		&model.Role{},
-		&model.ModelHasRole{},
-		&model.RoleHasPermission{},
-		&model.ModelHasPermission{},
 		&model.CasbinRule{},
 	)
 

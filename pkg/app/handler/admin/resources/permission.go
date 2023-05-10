@@ -1,13 +1,12 @@
 package resources
 
 import (
-	"time"
-
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/actions"
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/searches"
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
+	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/selectfield"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
 )
 
@@ -45,21 +44,49 @@ func (p *Permission) Fields(ctx *builder.Context) []interface{} {
 				rule.Required(true, "名称必须填写"),
 			}),
 
-		field.Text("guard_name", "GuardName").SetDefault("admin"),
-		field.Datetime("created_at", "创建时间", func() interface{} {
-			if p.Field["created_at"] == nil {
-				return p.Field["created_at"]
-			}
+		field.Text("path", "路径").
+			SetRules([]*rule.Rule{
+				rule.Required(true, "路径必须填写"),
+			}),
 
-			return p.Field["created_at"].(time.Time).Format("2006-01-02 15:04:05")
-		}).OnlyOnIndex(),
-		field.Datetime("updated_at", "更新时间", func() interface{} {
-			if p.Field["updated_at"] == nil {
-				return p.Field["updated_at"]
-			}
-
-			return p.Field["updated_at"].(time.Time).Format("2006-01-02 15:04:05")
-		}).OnlyOnIndex(),
+		field.Select("method", "方法").
+			SetOptions([]*selectfield.Option{
+				{
+					Value: "Any",
+					Label: "Any",
+				},
+				{
+					Value: "GET",
+					Label: "GET",
+				},
+				{
+					Value: "HEAD",
+					Label: "HEAD",
+				},
+				{
+					Value: "OPTIONS",
+					Label: "OPTIONS",
+				},
+				{
+					Value: "POST",
+					Label: "POST",
+				},
+				{
+					Value: "PUT",
+					Label: "PUT",
+				},
+				{
+					Value: "PATCH",
+					Label: "PATCH",
+				},
+				{
+					Value: "DELETE",
+					Label: "DELETE",
+				},
+			}).
+			SetFilters(true).
+			SetDefault("GET"),
+		field.TextArea("remark", "备注"),
 	}
 }
 

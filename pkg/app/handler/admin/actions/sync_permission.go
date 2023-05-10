@@ -1,6 +1,9 @@
 package actions
 
 import (
+	"strings"
+
+	"github.com/gobeam/stringy"
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
@@ -37,26 +40,35 @@ func (p *SyncPermission) Init() *SyncPermission {
 
 // 执行行为句柄
 func (p *SyncPermission) Handle(ctx *builder.Context, query *gorm.DB) error {
-	// 获取当前权限
 	permissions := ctx.Engine.GetUrlPaths()
 	data := []model.Permission{}
 
 	var names []string
+	var currentNames []string
 	db.Client.Model(&model.Permission{}).Pluck("name", &names)
 	for _, v := range permissions {
-		has := false
-		for _, nv := range names {
-			if nv == v {
-				has = true
+		if strings.Contains(v.Url, "/api/admin") {
+			has := false
+			url := strings.ReplaceAll(v.Url, "/api/admin/", "")
+			url = strings.ReplaceAll(url, "/", "_") + "_" + strings.ToLower(v.Method)
+			name := stringy.
+				New(url).
+				CamelCase("?", "")
+			currentNames = append(currentNames, name)
+			for _, nv := range names {
+				if nv == name {
+					has = true
+				}
 			}
-		}
-		if has == false {
-			permission := model.Permission{
-				MenuId:    0,
-				Name:      v,
-				GuardName: "admin",
+			if has == false {
+				permission := model.Permission{
+					Name:      name,
+					Method:    v.Method,
+					Path:      v.Url,
+					GuardName: "admin",
+				}
+				data = append(data, permission)
 			}
-			data = append(data, permission)
 		}
 	}
 	if len(data) == 0 {
@@ -68,7 +80,7 @@ func (p *SyncPermission) Handle(ctx *builder.Context, query *gorm.DB) error {
 		return ctx.JSONError(err.Error())
 	}
 
-	err = db.Client.Model(&model.Permission{}).Where("name NOT IN ?", permissions).Delete("").Error
+	err = db.Client.Model(&model.Permission{}).Where("name NOT IN ?", currentNames).Delete("").Error
 	if err != nil {
 		return ctx.JSONError(err.Error())
 	}
