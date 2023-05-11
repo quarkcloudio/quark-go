@@ -41,7 +41,15 @@ func (p *IndexRequest) QueryData(ctx *builder.Context) interface{} {
 	perPage := reflect.
 		ValueOf(ctx.Template).
 		Elem().
-		FieldByName("PerPage").Interface()
+		FieldByName("PerPage").
+		Interface()
+
+	if perPage == nil {
+		query.Find(&lists)
+
+		// 返回解析列表
+		return p.performsList(ctx, lists)
+	}
 
 	// 不分页，直接返回lists
 	if reflect.TypeOf(perPage).String() != "int" {

@@ -72,11 +72,16 @@ func (p *Template) IndexComponentRender(ctx *builder.Context, data interface{}) 
 	perPage := reflect.
 		ValueOf(ctx.Template).
 		Elem().
-		FieldByName("PerPage").Interface()
+		FieldByName("PerPage").
+		Interface()
+
+	if perPage == nil {
+		return table.SetDatasource(data)
+	}
 
 	// 不分页，直接返回数据
 	if reflect.TypeOf(perPage).String() != "int" {
-		component = table.SetDatasource(data)
+		return table.SetDatasource(data)
 	} else {
 		current := data.(map[string]interface{})["currentPage"]
 		perPage := data.(map[string]interface{})["perPage"]
