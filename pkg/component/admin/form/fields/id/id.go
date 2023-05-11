@@ -175,8 +175,8 @@ func (p *Component) SetRequired() *Component {
 	return p
 }
 
-// 获取前端验证规则
-func (p *Component) GetFrontendRules(path string) interface{} {
+// 生成前端验证规则
+func (p *Component) BuildFrontendRules(path string) interface{} {
 	var (
 		frontendRules []*rule.Rule
 		rules         []*rule.Rule

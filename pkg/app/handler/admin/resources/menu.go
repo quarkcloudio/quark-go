@@ -89,8 +89,12 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 			SetWhen(1, func() interface{} {
 				return []interface{}{
 					field.Text("path", "路由").
+						SetRules([]*rule.Rule{
+							rule.Required(true, "路由必须填写"),
+						}).
 						SetEditable(true).
-						SetHelp("前端路由"),
+						SetHelp("前端路由").
+						BuildFrontendRules(ctx.Path()),
 				}
 			}).
 			SetWhen(2, func() interface{} {
@@ -106,9 +110,13 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 						SetDefault(false),
 
 					field.Text("path", "路由").
+						SetRules([]*rule.Rule{
+							rule.Required(true, "路由必须填写"),
+						}).
 						SetEditable(true).
 						SetHelp("前端路由或后端api").
-						OnlyOnForms(),
+						OnlyOnForms().
+						BuildFrontendRules(ctx.Path()),
 				}
 			}).
 			SetWhen(3, func() interface{} {

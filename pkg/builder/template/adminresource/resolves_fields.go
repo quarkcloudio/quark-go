@@ -371,8 +371,8 @@ func (p *Template) CreationFieldsWithinComponents(ctx *builder.Context) interfac
 					isShownOnCreation := sv.IsShownOnCreation()
 					if isShownOnCreation {
 						sv.(interface {
-							GetFrontendRules(string) interface{}
-						}).GetFrontendRules(ctx.Path())
+							BuildFrontendRules(string) interface{}
+						}).BuildFrontendRules(ctx.Path())
 						subItems = append(subItems, sv)
 					}
 				}
@@ -389,8 +389,8 @@ func (p *Template) CreationFieldsWithinComponents(ctx *builder.Context) interfac
 				isShownOnCreation := v.IsShownOnCreation()
 				if isShownOnCreation {
 					v.(interface {
-						GetFrontendRules(string) interface{}
-					}).GetFrontendRules(ctx.Path())
+						BuildFrontendRules(string) interface{}
+					}).BuildFrontendRules(ctx.Path())
 					items = append(items, v)
 				}
 			}
@@ -463,8 +463,8 @@ func (p *Template) UpdateFieldsWithinComponents(ctx *builder.Context) interface{
 					isShownOnUpdate := sv.IsShownOnUpdate()
 					if isShownOnUpdate {
 						sv.(interface {
-							GetFrontendRules(string) interface{}
-						}).GetFrontendRules(ctx.Path())
+							BuildFrontendRules(string) interface{}
+						}).BuildFrontendRules(ctx.Path())
 						subItems = append(subItems, sv)
 					}
 				}
@@ -481,8 +481,8 @@ func (p *Template) UpdateFieldsWithinComponents(ctx *builder.Context) interface{
 				isShownOnUpdate := v.IsShownOnUpdate()
 				if isShownOnUpdate {
 					v.(interface {
-						GetFrontendRules(string) interface{}
-					}).GetFrontendRules(ctx.Path())
+						BuildFrontendRules(string) interface{}
+					}).BuildFrontendRules(ctx.Path())
 					items = append(items, v)
 				}
 			}
