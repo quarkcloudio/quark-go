@@ -211,7 +211,7 @@ func (model *Menu) GetListByAdminId(adminId int) (menuList interface{}, Error er
 	return model.MenuParser(menus)
 }
 
-// 是否存在Menu
+// 解析菜单
 func (model *Menu) MenuParser(menus []*Menu) (menuList interface{}, Error error) {
 	newMenus := []*Menu{}
 
@@ -237,7 +237,7 @@ func (model *Menu) MenuParser(menus []*Menu) (menuList interface{}, Error error)
 	return lister.ListToTree(newMenus, "id", "pid", "routes", 0)
 }
 
-// 是否存在Menu
+// 判断菜单是否已经存在
 func (model *Menu) HasMenu(menus []*Menu, id int) (result bool) {
 	for _, v := range menus {
 		if v.Id == id {
