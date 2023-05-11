@@ -309,19 +309,15 @@ func (p *Field) Year(params ...interface{}) *year.Component {
 
 // Select联动组件
 //
-// [
-//
+//	field.Selects([]interface{}{
 //		field.Select("province", "省").
 //			SetOptions([]*selectfield.Option{
 //				{Value: 1, Label: "北京"},
 //				{Value: 2, Label: "天津"},
 //				{Value: 3, Label: "河北省"},
-//			}).
-//			SetLoad("city","/api/admin/area/cities"),
-//
-//	   Field::select("city", "市"),
-//
-// ]
+//			}).SetLoad("city", "/api/admin/test/cities"),
+//		field.Select("city", "市"),
+//	}),
 func (p *Field) Selects(body interface{}) *selects.Component {
 	field := selects.
 		New().
