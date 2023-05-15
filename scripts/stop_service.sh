@@ -1,6 +1,6 @@
 #!/bin/sh
-PROJECT_PATH=./
-PROJECT_NAME=main
+PROJECT_PATH=$(cd $(dirname $0)|cd ..|pwd)
+PROJECT_NAME=/main
 
 # stop process
 tpid=`ps -ef|grep $PROJECT_PATH$PROJECT_NAME|grep -v grep|grep -v kill|awk '{print $2}'`

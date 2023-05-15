@@ -1,12 +1,6 @@
 #!/bin/sh
-PROJECT_PATH=./
-PROJECT_NAME=main
-PROJECT_LOG_NAME=storage/logs/app.log
-
-# 判断logs文件夹下是否有日志文件，没有则创建，用于记录日志
-if [ ! -f $PROJECT_PATH$PROJECT_LOG_NAME ]; then
-  touch $PROJECT_PATH$PROJECT_LOG_NAME
-fi
+PROJECT_PATH=$(cd $(dirname $0)|cd ..|pwd)
+PROJECT_NAME=/main
 
 # stop process
 tpid=`ps -ef|grep $PROJECT_PATH$PROJECT_NAME|grep -v grep|grep -v kill|awk '{print $2}'`
@@ -33,12 +27,7 @@ if [[ ${tpid} ]]; then
 else
     echo 'App is NOT running.'
 
-    nohup $PROJECT_PATH$PROJECT_NAME >$PROJECT_PATH$PROJECT_LOG_NAME 2>&1 &
+    nohup $PROJECT_PATH$PROJECT_NAME >/dev/null 2>&1 &
     
     echo Start Success!
-    
-    if [ $1 ]; then
-        sleep 2
-        tail -f $PROJECT_PATH$PROJECT_LOG_NAME
-    fi
 fi
