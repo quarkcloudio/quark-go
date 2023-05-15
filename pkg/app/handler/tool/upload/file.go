@@ -7,7 +7,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/toolupload"
-	"github.com/quarkcms/quark-go/pkg/msg"
 	"github.com/quarkcms/quark-go/pkg/storage"
 )
 
@@ -77,7 +76,7 @@ func (p *File) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem
 }
 
 // 上传完成后回调
-func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{} {
+func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error {
 	driver := reflect.
 		ValueOf(ctx.Template).
 		Elem().
@@ -99,10 +98,10 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) inter
 		Status: 1,
 	})
 	if err != nil {
-		return ctx.JSON(200, msg.Error(err.Error(), ""))
+		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.JSON(200, msg.Success("上传成功", "", map[string]interface{}{
+	return ctx.JSONOk("上传成功", "", map[string]interface{}{
 		"id":          id,
 		"contentType": result.ContentType,
 		"ext":         result.Ext,
@@ -111,5 +110,5 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) inter
 		"path":        result.Path,
 		"size":        result.Size,
 		"url":         result.Url,
-	}))
+	})
 }
