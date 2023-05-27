@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin"
+	"github.com/quarkcms/quark-go/pkg/app/handler/miniapp"
 	"github.com/quarkcms/quark-go/pkg/app/handler/mix"
 	"github.com/quarkcms/quark-go/pkg/app/handler/tool"
 	"github.com/quarkcms/quark-go/pkg/app/install"
@@ -24,6 +25,9 @@ func main() {
 
 	// 加载Mix服务
 	providers = append(providers, mix.Providers...)
+
+	// 加载MiniApp服务
+	providers = append(providers, miniapp.Providers...)
 
 	// 加载工具服务
 	providers = append(providers, tool.Providers...)
