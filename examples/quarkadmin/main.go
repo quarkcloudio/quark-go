@@ -17,7 +17,7 @@ func main() {
 	var providers []interface{}
 
 	// 数据库配置信息
-	dsn := "root:Bc5HQFJc4bLjZCcC@tcp(127.0.0.1:3306)/quarkgo?charset=utf8&parseTime=True&loc=Local"
+	dsn := "root:fK7xPGJi1gJfIief@tcp(127.0.0.1:3306)/quarkgo?charset=utf8&parseTime=True&loc=Local"
 
 	// 加载后台服务
 	providers = append(providers, admin.Providers...)
