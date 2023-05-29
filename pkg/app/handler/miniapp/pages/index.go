@@ -30,6 +30,10 @@ func (p *Index) Content(ctx *builder.Context) interface{} {
 }
 
 // 底部导航
-func (p *Index) Tabbar(ctx *builder.Context, tabbar *tabbar.Component) interface{} {
-	return tabbar.SetBottom(true)
+func (p *Index) Tabbar(ctx *builder.Context, tabbarComponent *tabbar.Component) interface{} {
+	return tabbarComponent.SetBottom(true).SetItems([]*tabbar.Item{
+		tabbar.NewItem().SetName("首页").SetIcon("home"),
+		tabbar.NewItem().SetName("分类").SetIcon("category"),
+		tabbar.NewItem().SetName("我的").SetIcon("my"),
+	})
 }
