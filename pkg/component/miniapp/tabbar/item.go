@@ -7,6 +7,8 @@ type Item struct {
 	TabTitle string `json:"tabTitle"`
 	Name     string `json:"name"`
 	Icon     string `json:"icon"`
+	Href     string `json:"href"`
+	To       string `json:"to"`
 }
 
 // 初始化
@@ -41,6 +43,20 @@ func (p *Item) SetName(name string) *Item {
 // 标签页显示的图标名称
 func (p *Item) SetIcon(icon string) *Item {
 	p.Icon = icon
+
+	return p
+}
+
+// 标签页的跳转链接；如果同时存在 to，优先级高于 to
+func (p *Item) SetHref(href string) *Item {
+	p.Href = href
+
+	return p
+}
+
+// 标签页的路由对象，等于 vue-router 的 to 属性 属性
+func (p *Item) SetTo(to string) *Item {
+	p.To = to
 
 	return p
 }

@@ -7,7 +7,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder/template"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/navbar"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/page"
-	"github.com/quarkcms/quark-go/pkg/component/miniapp/tabbar"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 )
 
@@ -50,11 +49,6 @@ func (p *Template) Content(ctx *builder.Context) interface{} {
 	return nil
 }
 
-// 底部导航
-func (p *Template) Tabbar(ctx *builder.Context, tabbar *tabbar.Component) interface{} {
-	return nil
-}
-
 // 组件渲染
 func (p *Template) Render(ctx *builder.Context) error {
 	var (
@@ -72,11 +66,6 @@ func (p *Template) Render(ctx *builder.Context) error {
 	navbar := ctx.Template.(interface {
 		Navbar(ctx *builder.Context, navbar *navbar.Component) interface{}
 	}).Navbar(ctx, navbar.New())
-
-	// 底部菜单
-	tabbar := ctx.Template.(interface {
-		Tabbar(ctx *builder.Context, tabbar *tabbar.Component) interface{}
-	}).Tabbar(ctx, tabbar.New())
 
 	// 样式
 	style := reflect.
@@ -96,7 +85,6 @@ func (p *Template) Render(ctx *builder.Context) error {
 		Init().
 		SetTitle(title).
 		SetNavbar(navbar).
-		SetTabbar(tabbar).
 		SetStyle(style).
 		SetContent(components).
 		JsonSerialize()
