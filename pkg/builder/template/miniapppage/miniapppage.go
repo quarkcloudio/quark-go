@@ -10,10 +10,11 @@ import (
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/navbar"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/page"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/row"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/swiper"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 )
 
-// 后台登录模板
+// MiniApp模板
 type Template struct {
 	template.Template
 	Title string
@@ -44,6 +45,11 @@ func (p *Template) TemplateInit() interface{} {
 
 // 头部导航
 func (p *Template) Navbar(ctx *builder.Context, navbar *navbar.Component) interface{} {
+	return nil
+}
+
+// 轮播图
+func (p *Template) Banners(ctx *builder.Context) interface{} {
 	return nil
 }
 
@@ -78,6 +84,20 @@ func (p *Template) Grid(columnNum int, body []*grid.Item) *grid.Component {
 // 宫格项
 func (p *Template) GridItem(body interface{}) *grid.Item {
 	return grid.
+		NewItem().
+		SetBody(body)
+}
+
+// 轮播
+func (p *Template) Swiper(body []*swiper.Item) *swiper.Component {
+	return swiper.
+		New().
+		SetBody(body)
+}
+
+// 轮播项
+func (p *Template) SwiperItem(body interface{}) *swiper.Item {
+	return swiper.
 		NewItem().
 		SetBody(body)
 }
