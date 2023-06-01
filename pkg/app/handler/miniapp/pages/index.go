@@ -3,6 +3,7 @@ package pages
 import (
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/miniapppage"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/col"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/navbar"
 )
 
@@ -25,5 +26,8 @@ func (p *Index) Navbar(ctx *builder.Context, navbar *navbar.Component) interface
 
 // 组件渲染
 func (p *Index) Content(ctx *builder.Context) interface{} {
-	return "Hello World!"
+	return p.Row([]*col.Component{
+		p.Col(12, "Hello World!"),
+		p.Col(12, "你好，世界!"),
+	})
 }

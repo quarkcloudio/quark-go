@@ -5,8 +5,11 @@ import (
 
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/col"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/grid"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/navbar"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/page"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/row"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
 )
 
@@ -47,6 +50,36 @@ func (p *Template) Navbar(ctx *builder.Context, navbar *navbar.Component) interf
 // 内容
 func (p *Template) Content(ctx *builder.Context) interface{} {
 	return nil
+}
+
+// 行
+func (p *Template) Row(body []*col.Component) *row.Component {
+	return row.
+		New().
+		SetBody(body)
+}
+
+// 列
+func (p *Template) Col(span int, body interface{}) *col.Component {
+	return col.
+		New().
+		SetSpan(span).
+		SetBody(body)
+}
+
+// 宫格
+func (p *Template) Grid(columnNum int, body []*grid.Item) *grid.Component {
+	return grid.
+		New().
+		SetColumnNum(columnNum).
+		SetBody(body)
+}
+
+// 宫格项
+func (p *Template) GridItem(body interface{}) *grid.Item {
+	return grid.
+		NewItem().
+		SetBody(body)
 }
 
 // 组件渲染
