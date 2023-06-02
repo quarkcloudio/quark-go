@@ -6,18 +6,18 @@ import (
 
 type Component struct {
 	component.Element
-	Width             int     `json:"width"`
-	Height            int     `json:"height"`
-	Direction         string  `json:"direction"`
-	PaginationVisible bool    `json:"paginationVisible"`
-	PaginationColor   string  `json:"paginationColor"`
-	Loop              bool    `json:"loop"`
-	Duration          int     `json:"duration"`
-	AutoPlay          int     `json:"autoPlay"`
-	InitPage          int     `json:"initPage"`
-	Touchable         bool    `json:"touchable"`
-	IsPreventDefault  bool    `json:"isPreventDefault"`
-	IsStopPropagation bool    `json:"isStopPropagation"`
+	Width             int     `json:"width,omitempty"`
+	Height            int     `json:"height,omitempty"`
+	Direction         string  `json:"direction,omitempty"`
+	PaginationVisible bool    `json:"paginationVisible,omitempty"`
+	PaginationColor   string  `json:"paginationColor,omitempty"`
+	Loop              bool    `json:"loop,omitempty"`
+	Duration          int     `json:"duration,omitempty"`
+	AutoPlay          int     `json:"autoPlay,omitempty"`
+	InitPage          int     `json:"initPage,omitempty"`
+	Touchable         bool    `json:"touchable,omitempty"`
+	IsPreventDefault  bool    `json:"isPreventDefault,omitempty"`
+	IsStopPropagation bool    `json:"isStopPropagation,omitempty"`
 	Body              []*Item `json:"body"`
 }
 

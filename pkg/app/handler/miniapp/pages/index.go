@@ -4,7 +4,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/miniapppage"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/col"
-	"github.com/quarkcms/quark-go/pkg/component/miniapp/navbar"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/image"
 )
 
 type Index struct {
@@ -19,9 +19,12 @@ func (p *Index) Init() interface{} {
 	return p
 }
 
-// 头部导航
-func (p *Index) Navbar(ctx *builder.Context, navbar *navbar.Component) interface{} {
-	return navbar.SetTitle("首页")
+// 轮播图
+func (p *Index) Banners(ctx *builder.Context) []*image.Component {
+	return []*image.Component{
+		p.Image("https://storage.360buyimg.com/jdc-article/NutUItaro34.jpg"),
+		p.Image("https://storage.360buyimg.com/jdc-article/NutUItaro2.jpg"),
+	}
 }
 
 // 组件渲染

@@ -7,6 +7,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder/template"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/col"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/grid"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/image"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/navbar"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/page"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/row"
@@ -49,13 +50,20 @@ func (p *Template) Navbar(ctx *builder.Context, navbar *navbar.Component) interf
 }
 
 // 轮播图
-func (p *Template) Banners(ctx *builder.Context) interface{} {
+func (p *Template) Banners(ctx *builder.Context) []*image.Component {
 	return nil
 }
 
 // 内容
 func (p *Template) Content(ctx *builder.Context) interface{} {
 	return nil
+}
+
+// 图片
+func (p *Template) Image(src string) *image.Component {
+	return image.
+		New().
+		SetSrc(src)
 }
 
 // 行
@@ -126,6 +134,24 @@ func (p *Template) Render(ctx *builder.Context) error {
 		Elem().
 		FieldByName("Style").
 		String()
+
+	// 轮播图
+	banners := ctx.Template.(interface {
+		Banners(ctx *builder.Context) []*image.Component
+	}).Banners(ctx)
+	if len(banners) > 0 {
+		swiperItems := []*swiper.Item{}
+		for _, banner := range banners {
+			swiperItems = append(swiperItems, p.SwiperItem(banner.SetStyle("width:100%;height:200px;")))
+		}
+		components = append(components,
+			p.
+				Swiper(swiperItems).
+				SetPaginationVisible(true).
+				SetPaginationColor("#426543").
+				SetAutoPlay(3000),
+		)
+	}
 
 	// 内容
 	content := ctx.Template.(interface {

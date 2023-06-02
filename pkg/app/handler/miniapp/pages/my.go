@@ -20,7 +20,7 @@ func (p *My) Init() interface{} {
 
 // 头部导航
 func (p *My) Navbar(ctx *builder.Context, navbar *navbar.Component) interface{} {
-	return navbar.SetTitle("我的页")
+	return navbar.SetTitle("我的")
 }
 
 // 组件渲染

@@ -5,16 +5,16 @@ import "github.com/quarkcms/quark-go/pkg/component/miniapp/component"
 type Component struct {
 	component.Element
 	Src                 string `json:"src"`
-	Mode                string `json:"mode"`
-	Webp                bool   `json:"webp"`
-	Svg                 bool   `json:"svg"`
-	LazyLoad            bool   `json:"lazyLoad"`
-	ShowMenuByLongpress bool   `json:"showMenuByLongpress"`
-	DefaultSource       string `json:"defaultSource"`
-	ImageMenuPrevent    string `json:"imageMenuPrevent"`
-	Preview             string `json:"preview"`
-	OriginalSrc         string `json:"originalSrc"`
-	AriaLabel           string `json:"ariaLabel"`
+	Mode                string `json:"mode,omitempty"`
+	Webp                bool   `json:"webp,omitempty"`
+	Svg                 bool   `json:"svg,omitempty"`
+	LazyLoad            bool   `json:"lazyLoad,omitempty"`
+	ShowMenuByLongpress bool   `json:"showMenuByLongpress,omitempty"`
+	DefaultSource       string `json:"defaultSource,omitempty"`
+	ImageMenuPrevent    string `json:"imageMenuPrevent,omitempty"`
+	Preview             string `json:"preview,omitempty"`
+	OriginalSrc         string `json:"originalSrc,omitempty"`
+	AriaLabel           string `json:"ariaLabel,omitempty"`
 }
 
 // 初始化组件
