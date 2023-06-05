@@ -18,8 +18,8 @@ func New() *Component {
 
 // 初始化
 func (p *Component) Init() *Component {
-	p.Component = "cellgroup"
-	p.SetKey("cellgroup", component.DEFAULT_CRYPT)
+	p.Component = "cellGroup"
+	p.SetKey("cellGroup", component.DEFAULT_CRYPT)
 
 	return p
 }
@@ -51,7 +51,7 @@ func (p *Component) SetBody(body interface{}) *Component {
 
 // 组件json序列化
 func (p *Component) JsonSerialize() *Component {
-	p.Component = "cellgroup"
+	p.Component = "cellGroup"
 
 	return p
 }

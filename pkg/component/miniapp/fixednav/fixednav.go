@@ -28,8 +28,8 @@ func New() *Component {
 
 // 初始化
 func (p *Component) Init() *Component {
-	p.Component = "fixednav"
-	p.SetKey("fixednav", component.DEFAULT_CRYPT)
+	p.Component = "fixedNav"
+	p.SetKey("fixedNav", component.DEFAULT_CRYPT)
 
 	return p
 }
@@ -91,7 +91,7 @@ func (p *Component) SetPosition(position *Position) *Component {
 
 // 组件json序列化
 func (p *Component) JsonSerialize() *Component {
-	p.Component = "fixednav"
+	p.Component = "fixedNav"
 
 	return p
 }
