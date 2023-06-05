@@ -1,4 +1,4 @@
-package tabs
+package navbar
 
 import "github.com/quarkcms/quark-go/pkg/component/miniapp/component"
 
