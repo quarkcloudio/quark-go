@@ -3,27 +3,19 @@ package form
 import (
 	"reflect"
 
-	"github.com/quarkcms/quark-go/pkg/component/miniapp/component"
-	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/checkbox"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/input"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/picker"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/radio"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/slider"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/switchfield"
 )
 
-type Field struct {
-	component.Element
-	Api             string      `json:"api"`
-	Model           interface{} `json:"model"`
-	Rules           interface{} `json:"rules"`
-	ValidateTrigger string      `json:"validateTrigger"`
-	LabelPosition   string      `json:"labelPosition"`
-	LabelWidth      int         `json:"labelWidth"`
-	LabelAlign      string      `json:"labelAlign"`
-	ErrShowType     string      `json:"errShowType"`
-	Border          bool        `json:"border"`
-	Body            interface{} `json:"body"`
-}
+type Field struct{}
 
 // 输入框
-func (p *Field) Input(params ...interface{}) *fields.Input {
-	field := (&fields.Input{}).Init()
+func (p *Field) Input(params ...interface{}) *input.Component {
+	field := input.New()
 
 	placeholder := reflect.
 		ValueOf(field).
@@ -40,8 +32,8 @@ func (p *Field) Input(params ...interface{}) *fields.Input {
 }
 
 // 多选框
-func (p *Field) Checkbox(params ...interface{}) *fields.Checkbox {
-	field := (&fields.Checkbox{}).Init()
+func (p *Field) Checkbox(params ...interface{}) *checkbox.Component {
+	field := checkbox.New()
 
 	field.SetName(params[0].(string)).SetLabel(params[1].(string))
 
@@ -49,8 +41,8 @@ func (p *Field) Checkbox(params ...interface{}) *fields.Checkbox {
 }
 
 // 单选框
-func (p *Field) Radio(params ...interface{}) *fields.Radio {
-	field := (&fields.Radio{}).Init()
+func (p *Field) Radio(params ...interface{}) *radio.Component {
+	field := radio.New()
 
 	field.SetName(params[0].(string)).SetLabel(params[1].(string))
 
@@ -58,8 +50,8 @@ func (p *Field) Radio(params ...interface{}) *fields.Radio {
 }
 
 // 开关选择器
-func (p *Field) Switch(params ...interface{}) *fields.Switch {
-	field := (&fields.Switch{}).Init()
+func (p *Field) Switch(params ...interface{}) *switchfield.Component {
+	field := switchfield.New()
 
 	field.SetName(params[0].(string)).SetLabel(params[1].(string))
 
@@ -67,8 +59,8 @@ func (p *Field) Switch(params ...interface{}) *fields.Switch {
 }
 
 // 滑动选择器
-func (p *Field) Slider(params ...interface{}) *fields.Slider {
-	field := (&fields.Slider{}).Init()
+func (p *Field) Slider(params ...interface{}) *slider.Component {
+	field := slider.New()
 
 	field.SetName(params[0].(string)).SetLabel(params[1].(string))
 
@@ -76,8 +68,8 @@ func (p *Field) Slider(params ...interface{}) *fields.Slider {
 }
 
 // 从底部弹起的滚动选择器
-func (p *Field) Picker(name string, label string, pickerRange []interface{}) *fields.Picker {
-	field := (&fields.Picker{}).Init().SetRange(pickerRange)
+func (p *Field) Picker(name string, label string, pickerRange []interface{}) *picker.Component {
+	field := picker.New().SetRange(pickerRange)
 
 	field.SetName(name).SetLabel(label)
 
