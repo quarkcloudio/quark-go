@@ -6,12 +6,12 @@ import (
 
 type Component struct {
 	component.Element
-	Api        string                 `json:"api"`
-	ApiType    string                 `json:"apiType"`
-	ModelValue map[string]interface{} `json:"modelValue"`
-	Rules      interface{}            `json:"rules"`
-	Actions    []interface{}          `json:"actions"`
-	Body       interface{}            `json:"body"`
+	Api        string                 `json:"api,omitempty"`
+	ApiType    string                 `json:"apiType,omitempty"`
+	ModelValue map[string]interface{} `json:"modelValue,omitempty"`
+	Rules      interface{}            `json:"rules,omitempty"`
+	Actions    []interface{}          `json:"actions,omitempty"`
+	Body       interface{}            `json:"body,omitempty"`
 }
 
 // 初始化

@@ -20,6 +20,6 @@ func (p *Index) Init() interface{} {
 // 字段
 func (p *Index) Fields(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		p.Field().Input("abcd", "测试"),
+		p.Field().Input("username", "姓名"),
 	}
 }

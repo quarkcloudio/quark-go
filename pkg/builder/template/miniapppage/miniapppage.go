@@ -5,6 +5,7 @@ import (
 
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/action"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/col"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/grid"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/image"
@@ -57,6 +58,14 @@ func (p *Template) Banners(ctx *builder.Context) []*image.Component {
 // 内容
 func (p *Template) Content(ctx *builder.Context) interface{} {
 	return nil
+}
+
+// 行为
+func (p *Template) Action(label string, buttonType string) *action.Component {
+	return action.
+		New().
+		SetLabel(label).
+		SetType(buttonType)
 }
 
 // 图片

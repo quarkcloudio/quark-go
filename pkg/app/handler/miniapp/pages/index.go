@@ -32,5 +32,10 @@ func (p *Index) Content(ctx *builder.Context) interface{} {
 	return p.Row([]*col.Component{
 		p.Col(12, "Hello World!"),
 		p.Col(12, "你好，世界!"),
+		p.Col(24,
+			p.Action("确定", "primary").
+				SetBlock(true).
+				SetLink("/pages/engine/custom?api=/api/miniapp/form/index/index", "redirectTo"),
+		),
 	})
 }

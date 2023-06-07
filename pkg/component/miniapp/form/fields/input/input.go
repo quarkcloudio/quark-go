@@ -6,14 +6,14 @@ type Component struct {
 	component.Element
 	Required          bool        `json:"required"`
 	Prop              string      `json:"prop"`
-	Rules             interface{} `json:"rules"`
-	Label             string      `json:"label"`
-	LabelWidth        int         `json:"labelWidth"`
-	LabelAlign        string      `json:"labelAlign"`
-	BodyAlign         string      `json:"bodyAlign"`
-	ErrorMessageAlign string      `json:"errorMessageAlign"`
-	ShowErrorLine     bool        `json:"showErrorLine"`
-	ShowErrorMessage  bool        `json:"showErrorMessage"`
+	Rules             interface{} `json:"rules,omitempty"`
+	Label             string      `json:"label,omitempty"`
+	LabelWidth        int         `json:"labelWidth,omitempty"`
+	LabelAlign        string      `json:"labelAlign,omitempty"`
+	BodyAlign         string      `json:"bodyAlign,omitempty"`
+	ErrorMessageAlign string      `json:"errorMessageAlign,omitempty"`
+	ShowErrorLine     bool        `json:"showErrorLine,omitempty"`
+	ShowErrorMessage  bool        `json:"showErrorMessage,omitempty"`
 
 	Value                  interface{} `json:"value"`
 	Type                   string      `json:"type"`
