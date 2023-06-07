@@ -35,7 +35,7 @@ func (p *Index) Content(ctx *builder.Context) interface{} {
 		p.Col(24,
 			p.Action("确定", "primary").
 				SetBlock(true).
-				SetLink("/pages/engine/custom?api=/api/miniapp/form/index/index", "redirectTo"),
+				SetLink("/pages/engine/custom?api=/api/miniapp/form/index/index", "navigateTo"),
 		),
 	})
 }
