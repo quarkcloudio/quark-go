@@ -60,7 +60,7 @@ func (p *Template) Content(ctx *builder.Context) interface{} {
 	return nil
 }
 
-// 行为
+// 行为：label按钮文字；buttonType类型，可选值为 primary info warning danger success default
 func (p *Template) Action(label string, buttonType string) *action.Component {
 	return action.
 		New().

@@ -65,10 +65,9 @@ func (p *Template) Fields(ctx *builder.Context) []interface{} {
 
 // 行为
 func (p *Template) Actions(ctx *builder.Context) []interface{} {
-	// return []interface{}{
-	// 	p.Action("提交", "primary").SetOpenType("submit"),
-	// }
-	return nil
+	return []interface{}{
+		p.Action("提交", "primary").SetActionType("submit").SetBlock(true),
+	}
 }
 
 // 表单数据
