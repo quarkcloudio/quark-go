@@ -4,6 +4,7 @@ import "github.com/quarkcms/quark-go/pkg/component/miniapp/component"
 
 type Component struct {
 	component.Element
+	Name              string      `json:"name"`
 	Required          bool        `json:"required"`
 	Prop              string      `json:"prop"`
 	Rules             interface{} `json:"rules,omitempty"`
@@ -75,6 +76,7 @@ func (p *Component) SetStyle(style interface{}) *Component {
 
 // 表单域 v-model 字段， 在使用表单校验功能的情况下，该属性是必填的
 func (p *Component) SetProp(prop string) *Component {
+	p.Name = prop
 	p.Prop = prop
 
 	return p
@@ -82,6 +84,7 @@ func (p *Component) SetProp(prop string) *Component {
 
 // 表单域 v-model 字段， 在使用表单校验功能的情况下，该属性是必填的
 func (p *Component) SetName(name string) *Component {
+	p.Name = name
 	p.Prop = name
 
 	return p
