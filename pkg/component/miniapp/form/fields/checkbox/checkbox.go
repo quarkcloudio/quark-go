@@ -31,7 +31,7 @@ func New() *Component {
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "checkboxField"
-	p.SetKey("formItem", component.DEFAULT_CRYPT)
+	p.SetKey("checkbox", component.DEFAULT_CRYPT)
 
 	return p
 }

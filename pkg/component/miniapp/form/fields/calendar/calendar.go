@@ -1,4 +1,4 @@
-package switchfield
+package calendar
 
 import "github.com/quarkcms/quark-go/pkg/component/miniapp/component"
 
@@ -17,10 +17,10 @@ type Component struct {
 	ShowErrorMessage  bool        `json:"showErrorMessage,omitempty"`
 
 	Value    interface{} `json:"value"`
-	Checked  bool        `json:"checked"`
 	Disabled bool        `json:"disabled"`
-	Type     string      `json:"type"`
+	Checked  bool        `json:"checked"`
 	Color    string      `json:"color"`
+	Options  interface{} `json:"options"`
 }
 
 // 初始化组件
@@ -30,9 +30,8 @@ func New() *Component {
 
 // 初始化
 func (p *Component) Init() *Component {
-	p.Component = "switchField"
-	p.SetKey("switch", component.DEFAULT_CRYPT)
-	p.Type = "switch"
+	p.Component = "calendarField"
+	p.SetKey("calendar", component.DEFAULT_CRYPT)
 
 	return p
 }
@@ -124,43 +123,59 @@ func (p *Component) SetShowErrorMessage(showErrorMessage bool) *Component {
 }
 
 // 默认值
-func (p *Component) SetValue(value interface{}) *Component {
+func (p *Component) SetValue(value []interface{}) *Component {
 	p.Value = value
 
 	return p
 }
 
-// 是否选中
-func (p *Component) SetChecked(checked bool) *Component {
-	p.Checked = checked
-
-	return p
-}
-
-// 是否禁用
+// 本地渲染数据
 func (p *Component) SetDisabled(disabled bool) *Component {
 	p.Disabled = disabled
 
 	return p
 }
 
-// 样式，有效值：switch, checkbox
-func (p *Component) SetType(switchType string) *Component {
-	p.Type = switchType
+// 本地渲染数据
+func (p *Component) SetChecked(checked bool) *Component {
+	p.Checked = checked
 
 	return p
 }
 
-// switch 的颜色，同 css 的 color
+// list 列表模式下 icon 显示的位置
 func (p *Component) SetColor(color string) *Component {
 	p.Color = color
 
 	return p
 }
 
+// 设置单选属性，[]map[string]interface{}{{"text": "Title1","value": "value1"},{"text": "Title2","value": "value2"}}
+// 或者 map[interface{}]interface{}{"value1":"Title1","value2":"Title2"}
+func (p *Component) SetOptions(options interface{}) *Component {
+	var data []map[string]interface{}
+
+	if mapOptions, ok := options.(map[interface{}]interface{}); ok {
+		for k, v := range mapOptions {
+			option := map[string]interface{}{
+				"text":  v,
+				"value": k,
+			}
+
+			data = append(data, option)
+		}
+	} else if sliceOptions, ok := options.([]map[string]interface{}); ok {
+		data = sliceOptions
+	}
+
+	p.Options = data
+
+	return p
+}
+
 // 组件json序列化
 func (p *Component) JsonSerialize() *Component {
-	p.Component = "switchField"
+	p.Component = "calendarField"
 
 	return p
 }

@@ -55,7 +55,7 @@ func New() *Component {
 func (p *Component) Init() *Component {
 	p.Component = "inputField"
 	p.Type = "text"
-	p.SetKey("formItem", component.DEFAULT_CRYPT)
+	p.SetKey("input", component.DEFAULT_CRYPT)
 	p.PlaceholderClass = "input-placeholder"
 	p.Maxlength = 140
 	p.ConfirmType = "done"

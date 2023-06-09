@@ -31,7 +31,7 @@ type Component struct {
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "sliderField"
-	p.SetKey("formItem", component.DEFAULT_CRYPT)
+	p.SetKey("slider", component.DEFAULT_CRYPT)
 	p.Min = 0
 	p.Max = 100
 	p.Step = 1

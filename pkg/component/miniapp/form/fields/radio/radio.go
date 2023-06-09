@@ -26,7 +26,7 @@ type Component struct {
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "radioField"
-	p.SetKey("formItem", component.DEFAULT_CRYPT)
+	p.SetKey("radio", component.DEFAULT_CRYPT)
 	p.Color = "rgb(0, 122, 255)"
 
 	return p

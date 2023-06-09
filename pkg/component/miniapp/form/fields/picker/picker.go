@@ -36,7 +36,7 @@ func New() *Component {
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "pickerField"
-	p.SetKey("formItem", component.DEFAULT_CRYPT)
+	p.SetKey("picker", component.DEFAULT_CRYPT)
 	p.Mode = "selector"
 	p.Value = 0
 	p.SelectorType = "auto"
