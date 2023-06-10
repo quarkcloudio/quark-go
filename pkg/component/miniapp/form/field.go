@@ -3,6 +3,7 @@ package form
 import (
 	"reflect"
 
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/calendar"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/checkbox"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/input"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/picker"
@@ -12,6 +13,17 @@ import (
 )
 
 type Field struct{}
+
+// 日历
+func (p *Field) Calendar(params ...interface{}) *calendar.Component {
+	field := calendar.New()
+
+	field.
+		SetName(params[0].(string)).
+		SetLabel(params[1].(string))
+
+	return field
+}
 
 // 输入框
 func (p *Field) Input(params ...interface{}) *input.Component {
