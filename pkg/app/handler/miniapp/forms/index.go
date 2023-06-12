@@ -22,5 +22,6 @@ func (p *Index) Fields(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		p.Field().Input("username", "姓名"),
 		p.Field().Calendar("date", "日历"),
+		p.Field().Cascader("areas", "地域"),
 	}
 }

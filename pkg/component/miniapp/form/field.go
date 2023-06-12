@@ -4,6 +4,7 @@ import (
 	"reflect"
 
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/calendar"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/cascader"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/checkbox"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/input"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/picker"
@@ -17,6 +18,17 @@ type Field struct{}
 // 日历
 func (p *Field) Calendar(params ...interface{}) *calendar.Component {
 	field := calendar.New()
+
+	field.
+		SetName(params[0].(string)).
+		SetLabel(params[1].(string))
+
+	return field
+}
+
+// 级联选择器
+func (p *Field) Cascader(params ...interface{}) *cascader.Component {
+	field := cascader.New()
 
 	field.
 		SetName(params[0].(string)).

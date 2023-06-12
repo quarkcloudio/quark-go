@@ -1,4 +1,4 @@
-package calendar
+package cascader
 
 import "github.com/quarkcms/quark-go/pkg/component/miniapp/component"
 
@@ -16,21 +16,24 @@ type Component struct {
 	ShowErrorLine     bool        `json:"showErrorLine,omitempty"`
 	ShowErrorMessage  bool        `json:"showErrorMessage,omitempty"`
 
-	Value           interface{} `json:"value,omitempty"`
-	Type            string      `json:"type,omitempty"`
-	Poppable        bool        `json:"poppable,omitempty"`
-	IsAutoBackFill  bool        `json:"isAutoBackFill,omitempty"`
-	Title           string      `json:"title,omitempty"`
-	StartDate       string      `json:"startDate,omitempty"`
-	EndDate         string      `json:"endDate,omitempty"`
-	ShowToday       bool        `json:"showToday,omitempty"`
-	StartText       string      `json:"startText,omitempty"`
-	EndText         string      `json:"endText,omitempty"`
-	ConfirmText     string      `json:"confirmText,omitempty"`
-	ShowTitle       bool        `json:"showTitle,omitempty"`
-	ShowSubTitle    bool        `json:"showSubTitle,omitempty"`
-	ToDateAnimation bool        `json:"toDateAnimation,omitempty"`
-	FirstDayOfWeek  int         `json:"firstDayOfWeek,omitempty"`
+	Value             interface{} `json:"value,omitempty"`
+	Options           []*Option   `json:"options,omitempty"`
+	Lazy              bool        `json:"lazy,omitempty"`
+	ValueKey          string      `json:"valueKey,omitempty"`
+	TextKey           string      `json:"textKey,omitempty"`
+	ChildrenKey       string      `json:"childrenKey,omitempty"`
+	ConvertConfig     interface{} `json:"convertConfig,omitempty"`
+	Title             string      `json:"title,omitempty"`
+	CloseIconPosition string      `json:"closeIconPosition,omitempty"`
+	Closeable         bool        `json:"closeable,omitempty"`
+	Poppable          bool        `json:"poppable,omitempty"`
+}
+
+type Option struct {
+	Value    string    `json:"value,omitempty"`
+	Text     string    `json:"text,omitempty"`
+	Disabled bool      `json:"disabled,omitempty"`
+	Children []*Option `json:"children,omitempty"`
 }
 
 // 初始化组件
@@ -40,8 +43,8 @@ func New() *Component {
 
 // 初始化
 func (p *Component) Init() *Component {
-	p.Component = "calendarField"
-	p.SetKey("calendar", component.DEFAULT_CRYPT)
+	p.Component = "cascaderField"
+	p.SetKey("cascader", component.DEFAULT_CRYPT)
 
 	return p
 }
@@ -139,107 +142,79 @@ func (p *Component) SetValue(value []interface{}) *Component {
 	return p
 }
 
-// 类型，日期单择one，区间选择range,日期多选multiple,周选择week(v4.0.1)
-func (p *Component) SetCalendarType(calendarType string) *Component {
-	p.Type = calendarType
+// 级联数据
+func (p *Component) SetOptions(options []*Option) *Component {
+	p.Options = options
 
 	return p
 }
 
-// 是否弹窗状态展示
-func (p *Component) SetPoppable(poppable bool) *Component {
-	p.Poppable = poppable
+// 是否开启动态加载
+func (p *Component) SetLazy(lazy bool) *Component {
+	p.Lazy = lazy
 
 	return p
 }
 
-// 自动回填
-func (p *Component) SeIsAutoBackFill(isAutoBackFill bool) *Component {
-	p.IsAutoBackFill = isAutoBackFill
+// 自定义 options 结构中 value 的字段
+func (p *Component) SetValueKey(valueKey string) *Component {
+	p.ValueKey = valueKey
 
 	return p
 }
 
-// 显示标题
+// 自定义 options 结构中 text 的字段
+func (p *Component) SetTextKey(textKey string) *Component {
+	p.TextKey = textKey
+
+	return p
+}
+
+// 自定义 options 结构中 children 的字段
+func (p *Component) SetChildrenKey(childrenKey string) *Component {
+	p.ChildrenKey = childrenKey
+
+	return p
+}
+
+// 当 options 为可转换为树形结构的扁平结构时，配置转换规则
+func (p *Component) SetConvertConfig(convertConfig interface{}) *Component {
+	p.ConvertConfig = convertConfig
+
+	return p
+}
+
+// 标题
 func (p *Component) SetTitle(title string) *Component {
 	p.Title = title
 
 	return p
 }
 
-// 开始日期
-func (p *Component) SetStartDate(startDate string) *Component {
-	p.StartDate = startDate
+// 取消按钮位置，继承 Popup 组件
+func (p *Component) SetCloseIconPosition(closeIconPosition string) *Component {
+	p.CloseIconPosition = closeIconPosition
 
 	return p
 }
 
-// 结束日期
-func (p *Component) SetEndDate(endDate string) *Component {
-	p.EndDate = endDate
+// 是否显示关闭按钮，继承 Popup 组件
+func (p *Component) SetCloseable(closeable bool) *Component {
+	p.Closeable = closeable
 
 	return p
 }
 
-// 是否展示今天标记
-func (p *Component) SetShowToday(showToday bool) *Component {
-	p.ShowToday = showToday
-
-	return p
-}
-
-// 范围选择，开始信息文案
-func (p *Component) SetStartText(startText string) *Component {
-	p.StartText = startText
-
-	return p
-}
-
-// 范围选择，结束信息文案
-func (p *Component) SetEndText(endText string) *Component {
-	p.EndText = endText
-
-	return p
-}
-
-// 底部确认按钮文案
-func (p *Component) SetConfirmText(confirmText string) *Component {
-	p.ConfirmText = confirmText
-
-	return p
-}
-
-// 是否在展示日历标题
-func (p *Component) SetShowTitle(showTitle bool) *Component {
-	p.ShowTitle = showTitle
-
-	return p
-}
-
-// 是否展示日期标题
-func (p *Component) SetShowSubTitle(showSubTitle bool) *Component {
-	p.ShowSubTitle = showSubTitle
-
-	return p
-}
-
-// 是否启动滚动动画
-func (p *Component) SetToDateAnimation(toDateAnimation bool) *Component {
-	p.ToDateAnimation = toDateAnimation
-
-	return p
-}
-
-// 是否启动滚动动画
-func (p *Component) SetFirstDayOfWeek(firstDayOfWeek int) *Component {
-	p.FirstDayOfWeek = firstDayOfWeek
+// 是否需要弹层展示（设置为 false 后，title 失效）
+func (p *Component) SetPoppable(poppable bool) *Component {
+	p.Poppable = poppable
 
 	return p
 }
 
 // 组件json序列化
 func (p *Component) JsonSerialize() *Component {
-	p.Component = "calendarField"
+	p.Component = "cascaderField"
 
 	return p
 }
