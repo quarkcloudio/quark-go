@@ -3,6 +3,7 @@ package forms
 import (
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/miniappform"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/cascader"
 )
 
 type Index struct {
@@ -22,6 +23,11 @@ func (p *Index) Fields(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		p.Field().Input("username", "姓名"),
 		p.Field().Calendar("date", "日历"),
-		p.Field().Cascader("areas", "地域"),
+		p.Field().Cascader("areas", "地域").SetOptions([]*cascader.Option{
+			{
+				Value: "abcd",
+				Text:  "测试",
+			},
+		}),
 	}
 }
