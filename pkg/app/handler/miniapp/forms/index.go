@@ -4,6 +4,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/miniappform"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/cascader"
+	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/checkbox"
 )
 
 type Index struct {
@@ -32,6 +33,17 @@ func (p *Index) Fields(ctx *builder.Context) []interface{} {
 				{
 					Value: "2",
 					Text:  "测试2",
+				},
+			}),
+		p.Field().Checkbox("checkbox", "多选").
+			SetOptions([]*checkbox.Option{
+				{
+					Value: "1",
+					Label: "测试1",
+				},
+				{
+					Value: "2",
+					Label: "测试2",
 				},
 			}),
 	}

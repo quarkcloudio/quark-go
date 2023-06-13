@@ -2,6 +2,16 @@ package checkbox
 
 import "github.com/quarkcms/quark-go/pkg/component/miniapp/component"
 
+type Option struct {
+	Label         string      `json:"label"`
+	Value         interface{} `json:"value,omitempty"`
+	Disabled      bool        `json:"disabled,omitempty"`
+	TextPosition  string      `json:"textPosition,omitempty"`
+	IconSize      int         `json:"iconSize,omitempty"`
+	Indeterminate bool        `json:"indeterminate,omitempty"`
+	Shape         string      `json:"shape,omitempty"`
+}
+
 type Component struct {
 	component.Element
 	Name              string      `json:"name"`
@@ -16,11 +26,10 @@ type Component struct {
 	ShowErrorLine     bool        `json:"showErrorLine,omitempty"`
 	ShowErrorMessage  bool        `json:"showErrorMessage,omitempty"`
 
-	Value    interface{} `json:"value"`
-	Disabled bool        `json:"disabled"`
-	Checked  bool        `json:"checked"`
-	Color    string      `json:"color"`
-	Options  interface{} `json:"options"`
+	Options  []*Option   `json:"options,omitempty"` // 可选项数据源
+	Value    interface{} `json:"value,omitempty"`
+	Max      int         `json:"max,omitempty"`
+	Disabled bool        `json:"disabled,omitempty"`
 }
 
 // 初始化组件
@@ -129,46 +138,44 @@ func (p *Component) SetValue(value []interface{}) *Component {
 	return p
 }
 
-// 本地渲染数据
+// 是否禁用选择
 func (p *Component) SetDisabled(disabled bool) *Component {
 	p.Disabled = disabled
 
 	return p
 }
 
-// 本地渲染数据
-func (p *Component) SetChecked(checked bool) *Component {
-	p.Checked = checked
+// 设置可选项
+func (p *Component) SetOptions(options []*Option) *Component {
+	p.Options = options
 
 	return p
 }
 
-// list 列表模式下 icon 显示的位置
-func (p *Component) SetColor(color string) *Component {
-	p.Color = color
+// 文本所在的位置，可选值：left,right
+func (p *Option) SetTextPosition(textPosition string) *Option {
+	p.TextPosition = textPosition
 
 	return p
 }
 
-// 设置单选属性，[]map[string]interface{}{{"text": "Title1","value": "value1"},{"text": "Title2","value": "value2"}}
-// 或者 map[interface{}]interface{}{"value1":"Title1","value2":"Title2"}
-func (p *Component) SetOptions(options interface{}) *Component {
-	var data []map[string]interface{}
+// 图标尺寸
+func (p *Option) SetIconSize(iconSize int) *Option {
+	p.IconSize = iconSize
 
-	if mapOptions, ok := options.(map[interface{}]interface{}); ok {
-		for k, v := range mapOptions {
-			option := map[string]interface{}{
-				"text":  v,
-				"value": k,
-			}
+	return p
+}
 
-			data = append(data, option)
-		}
-	} else if sliceOptions, ok := options.([]map[string]interface{}); ok {
-		data = sliceOptions
-	}
+// 当前是否支持半选状态，一般用在全选操作中
+func (p *Option) SetIndeterminate(indeterminate bool) *Option {
+	p.Indeterminate = indeterminate
 
-	p.Options = data
+	return p
+}
+
+// 形状，可选值：button、round
+func (p *Option) SetShape(shape string) *Option {
+	p.Shape = shape
 
 	return p
 }
