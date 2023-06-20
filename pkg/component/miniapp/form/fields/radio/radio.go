@@ -2,6 +2,14 @@ package radio
 
 import "github.com/quarkcms/quark-go/pkg/component/miniapp/component"
 
+type Option struct {
+	Label    string      `json:"label"`
+	Value    interface{} `json:"value,omitempty"`
+	Disabled bool        `json:"disabled,omitempty"`
+	IconSize int         `json:"iconSize,omitempty"`
+	Shape    string      `json:"shape,omitempty"`
+}
+
 type Component struct {
 	component.Element
 	Name              string      `json:"name"`
@@ -16,25 +24,23 @@ type Component struct {
 	ShowErrorLine     bool        `json:"showErrorLine,omitempty"`
 	ShowErrorMessage  bool        `json:"showErrorMessage,omitempty"`
 
-	Value    interface{} `json:"value"`
-	Disabled bool        `json:"disabled"`
-	Checked  bool        `json:"checked"`
-	Color    string      `json:"color"`
-	Options  interface{} `json:"options"`
+	Options      []*Option   `json:"options,omitempty"` // 可选项数据源
+	Value        interface{} `json:"value,omitempty"`
+	TextPosition string      `json:"textPosition,omitempty"`
+	Direction    string      `json:"direction,omitempty"`
+}
+
+// 初始化组件
+func New() *Component {
+	return (&Component{}).Init()
 }
 
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "radioField"
 	p.SetKey("radio", component.DEFAULT_CRYPT)
-	p.Color = "rgb(0, 122, 255)"
 
 	return p
-}
-
-// 初始化组件
-func New() *Component {
-	return (&Component{}).Init()
 }
 
 // Set style.
@@ -124,52 +130,29 @@ func (p *Component) SetShowErrorMessage(showErrorMessage bool) *Component {
 }
 
 // 默认值
-func (p *Component) SetValue(value interface{}) *Component {
+func (p *Component) SetValue(value []interface{}) *Component {
 	p.Value = value
 
 	return p
 }
 
-// 本地渲染数据
-func (p *Component) SetDisabled(disabled bool) *Component {
-	p.Disabled = disabled
+// 设置可选项
+func (p *Component) SetOptions(options []*Option) *Component {
+	p.Options = options
 
 	return p
 }
 
-// 本地渲染数据
-func (p *Component) SetChecked(checked bool) *Component {
-	p.Checked = checked
+// 图标尺寸
+func (p *Option) SetIconSize(iconSize int) *Option {
+	p.IconSize = iconSize
 
 	return p
 }
 
-// list 列表模式下 icon 显示的位置
-func (p *Component) SetColor(color string) *Component {
-	p.Color = color
-
-	return p
-}
-
-// 设置单选属性，[]map[string]interface{}{{"text": "Title1","value": "value1"},{"text": "Title2","value": "value2"}}
-// 或者 map[interface{}]interface{}{"value1":"Title1","value2":"Title2"}
-func (p *Component) SetOptions(options interface{}) *Component {
-	var data []map[string]interface{}
-
-	if mapOptions, ok := options.(map[interface{}]interface{}); ok {
-		for k, v := range mapOptions {
-			option := map[string]interface{}{
-				"text":  v,
-				"value": k,
-			}
-
-			data = append(data, option)
-		}
-	} else if sliceOptions, ok := options.([]map[string]interface{}); ok {
-		data = sliceOptions
-	}
-
-	p.Options = data
+// 形状，可选值：button、round
+func (p *Option) SetShape(shape string) *Option {
+	p.Shape = shape
 
 	return p
 }
