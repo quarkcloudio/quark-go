@@ -55,11 +55,29 @@ func (p *Field) Input(params ...interface{}) *input.Component {
 	return field
 }
 
+// 数字输入框
+func (p *Field) InputNumber(params ...interface{}) *input.Component {
+	field := input.New()
+
+	field.SetName(params[0].(string)).SetLabel(params[1].(string))
+
+	return field
+}
+
 // 多选框
 func (p *Field) Checkbox(params ...interface{}) *checkbox.Component {
 	field := checkbox.New()
 
 	field.SetName(params[0].(string)).SetLabel(params[1].(string))
+
+	return field
+}
+
+// 从底部弹起的滚动选择器
+func (p *Field) Picker(name string, label string, pickerRange []interface{}) *picker.Component {
+	field := picker.New()
+
+	field.SetName(name).SetLabel(label)
 
 	return field
 }
@@ -87,15 +105,6 @@ func (p *Field) Slider(params ...interface{}) *slider.Component {
 	field := slider.New()
 
 	field.SetName(params[0].(string)).SetLabel(params[1].(string))
-
-	return field
-}
-
-// 从底部弹起的滚动选择器
-func (p *Field) Picker(name string, label string, pickerRange []interface{}) *picker.Component {
-	field := picker.New().SetRange(pickerRange)
-
-	field.SetName(name).SetLabel(label)
 
 	return field
 }

@@ -1,12 +1,12 @@
-package picker
+package input
 
 import "github.com/quarkcms/quark-go/pkg/component/miniapp/component"
 
 type Component struct {
 	component.Element
 	Name              string      `json:"name"`
-	Required          bool        `json:"required,omitempty"`
-	Prop              string      `json:"prop,omitempty"`
+	Required          bool        `json:"required"`
+	Prop              string      `json:"prop"`
 	Rules             interface{} `json:"rules,omitempty"`
 	Label             string      `json:"label,omitempty"`
 	LabelWidth        int         `json:"labelWidth,omitempty"`
@@ -16,22 +16,15 @@ type Component struct {
 	ShowErrorLine     bool        `json:"showErrorLine,omitempty"`
 	ShowErrorMessage  bool        `json:"showErrorMessage,omitempty"`
 
-	Value            interface{} `json:"value"`
-	Columns          []*Column   `json:"columns"`
-	Title            string      `json:"title"`
-	CancelText       string      `json:"cancelText"`
-	OkText           string      `json:"okText"`
-	ThreeDimensional bool        `json:"threeDimensional"`
-	SwipeDuration    int         `json:"swipeDuration"`
-	VisibleOptionNum int         `json:"visibleOptionNum"`
-	OptionHeight     int         `json:"optionHeight"`
-	ShowToolbar      bool        `json:"showToolbar"`
-}
-
-type Column struct {
-	Text     string    `json:"text,omitempty"`
-	Value    string    `json:"value,omitempty"`
-	Children []*Column `json:"children,omitempty"`
+	Value       interface{} `json:"value"`
+	Title       string      `json:"title"`
+	Type        string      `json:"type"`
+	RandomKeys  bool        `json:"randomKeys"`
+	CustomKey   []string    `json:"customKey"`
+	Overlay     bool        `json:"overlay"`
+	Maxlength   int         `json:"maxlength"`
+	ConfirmText string      `json:"confirmText"`
+	PopClass    string      `json:"popClass"`
 }
 
 // 初始化组件
@@ -41,9 +34,8 @@ func New() *Component {
 
 // 初始化
 func (p *Component) Init() *Component {
-	p.Component = "pickerField"
-	p.SetKey("picker", component.DEFAULT_CRYPT)
-	p.Value = 0
+	p.Component = "numberKeyboardField"
+	p.SetKey("numberKeyboard", component.DEFAULT_CRYPT)
 
 	return p
 }
@@ -134,79 +126,72 @@ func (p *Component) SetShowErrorMessage(showErrorMessage bool) *Component {
 	return p
 }
 
-// value 的值表示选择了 range 中的第几个（下标从 0 开始）
-func (p *Component) SetValue(value int) *Component {
+// 输入框的初始内容
+func (p *Component) SetValue(value interface{}) *Component {
 	p.Value = value
 
 	return p
 }
 
-// 对象数组，配置每一列显示的数据
-func (p *Component) SetColumns(columns []*Column) *Component {
-	p.Columns = columns
-
-	return p
-}
-
-// 设置标题
+// 键盘标题
 func (p *Component) SetTitle(title string) *Component {
 	p.Title = title
 
 	return p
 }
 
-// 取消按钮文案
-func (p *Component) SetCancelText(cancelText string) *Component {
-	p.CancelText = cancelText
+// 键盘模式
+func (p *Component) SetType(numberkeyboardType string) *Component {
+	p.Type = numberkeyboardType
 
 	return p
 }
 
-// 确定按钮文案
-func (p *Component) SetOkText(okText string) *Component {
-	p.OkText = okText
+// 随机数
+func (p *Component) SetRandomKeys(randomKeys bool) *Component {
+	p.RandomKeys = randomKeys
 
 	return p
 }
 
-// 是否开启3D效果
-func (p *Component) SetThreeDimensional(threeDimensional bool) *Component {
-	p.ThreeDimensional = threeDimensional
+// 自定义键盘额外的键
+func (p *Component) SetCustomKey(customKey []string) *Component {
+	p.CustomKey = customKey
 
 	return p
 }
 
-// 惯性滚动时长
-func (p *Component) SetSwipeDuration(swipeDuration int) *Component {
-	p.SwipeDuration = swipeDuration
+// 是否显示遮罩
+func (p *Component) SetOverlay(overlay bool) *Component {
+	p.Overlay = overlay
 
 	return p
 }
 
-// 可见的选项个数
-func (p *Component) SetVisibleOptionNum(visibleOptionNum int) *Component {
-	p.VisibleOptionNum = visibleOptionNum
+// 输入值最大长度，结合 v-model 使用
+func (p *Component) SetMaxlength(maxlength int) *Component {
+	p.Maxlength = maxlength
 
 	return p
 }
 
-// 选项高度
-func (p *Component) SetOptionHeight(optionHeight int) *Component {
-	p.OptionHeight = optionHeight
+// 自定义完成按钮文字，如"支付"，"下一步"，"提交"等
+func (p *Component) SetConfirmText(confirmText string) *Component {
+	p.ConfirmText = confirmText
 
 	return p
 }
 
-// 是否显示顶部导航
-func (p *Component) SetShowToolbar(showToolbar bool) *Component {
-	p.ShowToolbar = showToolbar
+// 自定义弹框类名
+func (p *Component) SetPopClass(popClass string) *Component {
+	p.PopClass = popClass
 
 	return p
 }
 
 // 组件json序列化
 func (p *Component) JsonSerialize() *Component {
-	p.Component = "pickerField"
+	p.Component = "numberKeyboardField"
 
 	return p
 }
