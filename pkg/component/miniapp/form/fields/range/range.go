@@ -1,6 +1,14 @@
-package slider
+package radio
 
 import "github.com/quarkcms/quark-go/pkg/component/miniapp/component"
+
+type Option struct {
+	Label    string      `json:"label"`
+	Value    interface{} `json:"value,omitempty"`
+	Disabled bool        `json:"disabled,omitempty"`
+	IconSize int         `json:"iconSize,omitempty"`
+	Shape    string      `json:"shape,omitempty"`
+}
 
 type Component struct {
 	component.Element
@@ -16,36 +24,32 @@ type Component struct {
 	ShowErrorLine     bool        `json:"showErrorLine,omitempty"`
 	ShowErrorMessage  bool        `json:"showErrorMessage,omitempty"`
 
-	Value           int    `json:"value"`
-	Min             int    `json:"min"`
-	Max             int    `json:"max"`
-	Step            int    `json:"step"`
-	Disabled        bool   `json:"disabled"`
-	ActiveColor     string `json:"activeColor"`
-	BackgroundColor string `json:"backgroundColor"`
-	BlockSize       int    `json:"blockSize"`
-	BlockColor      string `json:"blockColor"`
-	ShowValue       bool   `json:"showValue"`
-}
-
-// 初始化
-func (p *Component) Init() *Component {
-	p.Component = "sliderField"
-	p.SetKey("slider", component.DEFAULT_CRYPT)
-	p.Min = 0
-	p.Max = 100
-	p.Step = 1
-	p.Value = 0
-	p.BackgroundColor = "#e9e9e9"
-	p.BlockSize = 28
-	p.BlockColor = "#ffffff"
-
-	return p
+	Value         interface{} `json:"value,omitempty"`
+	Range         bool        `json:"range,omitempty"`
+	Max           int         `json:"max,omitempty"`
+	Min           int         `json:"min,omitempty"`
+	Step          int         `json:"step,omitempty"`
+	Disabled      bool        `json:"disabled,omitempty"`
+	Vertical      bool        `json:"vertical,omitempty"`
+	HiddenRange   bool        `json:"hiddenRange,omitempty"`
+	HiddenTag     bool        `json:"hiddenTag,omitempty"`
+	ActiveColor   string      `json:"activeColor,omitempty"`
+	InactiveColor string      `json:"inactiveColor,omitempty"`
+	ButtonColor   string      `json:"buttonColor,omitempty"`
+	Marks         map[int]int `json:"marks,omitempty"`
 }
 
 // 初始化组件
 func New() *Component {
 	return (&Component{}).Init()
+}
+
+// 初始化
+func (p *Component) Init() *Component {
+	p.Component = "radioField"
+	p.SetKey("radio", component.DEFAULT_CRYPT)
+
+	return p
 }
 
 // Set style.
@@ -135,15 +139,15 @@ func (p *Component) SetShowErrorMessage(showErrorMessage bool) *Component {
 }
 
 // 默认值
-func (p *Component) SetValue(value int) *Component {
+func (p *Component) SetValue(value []interface{}) *Component {
 	p.Value = value
 
 	return p
 }
 
-// 最小值
-func (p *Component) SetMin(min int) *Component {
-	p.Min = min
+// 是否开启双滑块模式
+func (p *Component) SetRange(componentRange bool) *Component {
+	p.Range = componentRange
 
 	return p
 }
@@ -155,58 +159,79 @@ func (p *Component) SetMax(max int) *Component {
 	return p
 }
 
-// 步长，取值必须大于 0，并且可被(max - min)整除
+// 最小值
+func (p *Component) SetMin(min int) *Component {
+	p.Min = min
+
+	return p
+}
+
+// 步长
 func (p *Component) SetStep(step int) *Component {
 	p.Step = step
 
 	return p
 }
 
-// 是否禁用
+// 是否禁用滑块
 func (p *Component) SetDisabled(disabled bool) *Component {
 	p.Disabled = disabled
 
 	return p
 }
 
-// 滑块左侧已选择部分的线条颜色
+// 是否竖向展示
+func (p *Component) SetVertical(vertical bool) *Component {
+	p.Vertical = vertical
+
+	return p
+}
+
+// 是否隐藏范围值
+func (p *Component) SetHiddenRange(hiddenRange bool) *Component {
+	p.HiddenRange = hiddenRange
+
+	return p
+}
+
+// 是否隐藏标签
+func (p *Component) SetHiddenTag(hiddenTag bool) *Component {
+	p.HiddenTag = hiddenTag
+
+	return p
+}
+
+// 进度条激活态颜色
 func (p *Component) SetActiveColor(activeColor string) *Component {
 	p.ActiveColor = activeColor
 
 	return p
 }
 
-// 滑块右侧背景条的颜色
-func (p *Component) SetBackgroundColor(backgroundColor string) *Component {
-	p.BackgroundColor = backgroundColor
+// 进度条非激活态颜色
+func (p *Component) SetInactiveColor(inactiveColor string) *Component {
+	p.InactiveColor = inactiveColor
 
 	return p
 }
 
-// 滑块的大小，取值范围为 12 - 28
-func (p *Component) SetBlockSize(blockSize int) *Component {
-	p.BlockSize = blockSize
+// 按钮颜色
+func (p *Component) SetButtonColor(buttonColor string) *Component {
+	p.ButtonColor = buttonColor
 
 	return p
 }
 
-// 滑块的颜色
-func (p *Component) SetBlockColor(blockColor string) *Component {
-	p.BlockColor = blockColor
-
-	return p
-}
-
-// 是否显示当前 value
-func (p *Component) SetShowValue(showValue bool) *Component {
-	p.ShowValue = showValue
+// 刻度标示
+func (p *Component) SetMarks(marks map[int]int) *Component {
+	p.Marks = marks
 
 	return p
 }
 
 // 组件json序列化
 func (p *Component) JsonSerialize() *Component {
-	p.Component = "sliderField"
+	p.Component = "radioField"
 
 	return p
 }

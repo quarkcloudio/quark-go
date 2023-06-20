@@ -9,7 +9,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/input"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/picker"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/radio"
-	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/slider"
 	"github.com/quarkcms/quark-go/pkg/component/miniapp/form/fields/switchfield"
 )
 
@@ -94,15 +93,6 @@ func (p *Field) Radio(params ...interface{}) *radio.Component {
 // 开关选择器
 func (p *Field) Switch(params ...interface{}) *switchfield.Component {
 	field := switchfield.New()
-
-	field.SetName(params[0].(string)).SetLabel(params[1].(string))
-
-	return field
-}
-
-// 滑动选择器
-func (p *Field) Slider(params ...interface{}) *slider.Component {
-	field := slider.New()
 
 	field.SetName(params[0].(string)).SetLabel(params[1].(string))
 
