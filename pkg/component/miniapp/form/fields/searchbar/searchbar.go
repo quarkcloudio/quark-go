@@ -40,8 +40,8 @@ func New() *Component {
 
 // 初始化
 func (p *Component) Init() *Component {
-	p.Component = "radioField"
-	p.SetKey("radio", component.DEFAULT_CRYPT)
+	p.Component = "searchbarField"
+	p.SetKey("searchbar", component.DEFAULT_CRYPT)
 
 	return p
 }
@@ -239,7 +239,7 @@ func (p *Component) SetInputAlign(inputAlign string) *Component {
 
 // 组件json序列化
 func (p *Component) JsonSerialize() *Component {
-	p.Component = "radioField"
+	p.Component = "searchbarField"
 
 	return p
 }
