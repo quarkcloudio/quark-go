@@ -148,8 +148,7 @@ func (model *Menu) FindParentTreeNode(chrildPid int) (list []*Menu) {
 	menus := []*Menu{}
 	db.Client.
 		Where("id = ?", chrildPid).
-		Where("type IN ?", []int{1, 2}).
-		Order("sort asc").
+		Where("type IN ?", []int{1, 2, 3}).
 		Find(&menus)
 
 	if len(menus) == 0 {
@@ -169,15 +168,14 @@ func (model *Menu) FindParentTreeNode(chrildPid int) (list []*Menu) {
 }
 
 // 通过管理员ID权限菜单
-func (model *Menu) GetListByAdminId(adminId int) (menuList interface{}, Error error) {
+func (model *Menu) GetListByAdminId(adminId int) (menuList interface{}, err error) {
 	menus := []*Menu{}
 
 	if adminId == 1 {
 		db.Client.
 			Where("status = ?", 1).
 			Where("guard_name", "admin").
-			Where("type IN ?", []int{1, 2}).
-			Order("sort asc").
+			Where("type IN ?", []int{1, 2, 3}).
 			Find(&menus)
 
 		return model.MenuParser(menus)
@@ -188,25 +186,34 @@ func (model *Menu) GetListByAdminId(adminId int) (menuList interface{}, Error er
 	if err != nil {
 		return menuList, err
 	}
-	if roleHasMenus != nil {
-		for _, v := range roleHasMenus {
-			menuIds = append(menuIds, v.Id)
-		}
+	if len(roleHasMenus) == 0 {
+		return
+	}
+
+	for _, v := range roleHasMenus {
+		menuIds = append(menuIds, v.Id)
 	}
 
 	// 最底层列表
 	db.Client.
 		Where("status = ?", 1).
 		Where("id in ?", menuIds).
-		Where("type IN ?", []int{1, 2}).
+		Where("type IN ?", []int{1, 2, 3}).
 		Where("pid <> ?", 0).
-		Order("sort asc").
 		Find(&menus)
 
 	for _, v := range menus {
 		list := model.FindParentTreeNode(v.Pid)
-		menus = append(menus, list...)
+		for _, v := range list {
+			menuIds = append(menuIds, v.Id)
+		}
 	}
+
+	// 所有列表
+	db.Client.
+		Where("id in ?", menuIds).
+		Order("sort asc, id asc").
+		Find(&menus)
 
 	return model.MenuParser(menus)
 }
@@ -229,7 +236,7 @@ func (model *Menu) MenuParser(menus []*Menu) (menuList interface{}, Error error)
 			v.Path = "/layout/index?api=" + v.Path
 		}
 
-		if !model.HasMenu(newMenus, v.Id) {
+		if !model.HasMenu(newMenus, v.Id) && v.Type != 3 {
 			newMenus = append(newMenus, v)
 		}
 	}
