@@ -299,6 +299,10 @@ func (p *CasbinRule) GetUserMenus(modelId int) (menus []*Menu, err error) {
 
 	getMenus := []*Menu{}
 	roles, err := p.GetUserRoles(modelId)
+	if err != nil {
+		return
+	}
+
 	for _, v := range roles {
 		roleMenus, err := p.GetRoleMenus(v.Id)
 		if err == nil {
