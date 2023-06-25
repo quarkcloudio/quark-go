@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"github.com/quarkcms/quark-go/pkg/dal"
@@ -52,9 +53,17 @@ type DBConfig struct {
 	Opts      gorm.Option
 }
 
+type RedisConfig struct {
+	Host     string // 地址
+	Password string // 密码
+	Port     string // 端口
+	Database int    // 数据库
+}
+
 type Config struct {
 	AppKey      string        // 应用加密Key，用于JWT认证
 	DBConfig    *DBConfig     // 数据库配置
+	RedisConfig *RedisConfig  // Redis配置
 	StaticPath  string        // 静态文件目录
 	Providers   []interface{} // 服务列表
 	AdminLayout *AdminLayout  // 后台布局
@@ -98,6 +107,15 @@ func New(config *Config) *Engine {
 	// 初始化数据库
 	if config.DBConfig != nil {
 		dal.InitDB(config.DBConfig.Dialector, config.DBConfig.Opts)
+	}
+
+	// 初始化Redis
+	if config.RedisConfig != nil {
+		dal.InitRedis(&redis.Options{
+			Addr:     config.RedisConfig.Host + ":" + config.RedisConfig.Port,
+			Password: config.RedisConfig.Password,
+			DB:       config.RedisConfig.Database,
+		})
 	}
 
 	// 初始化后台布局
