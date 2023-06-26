@@ -2,13 +2,17 @@ package adminlogin
 
 import (
 	"bytes"
+	"context"
 	"reflect"
+	"time"
 
 	"github.com/dchest/captcha"
+	"github.com/go-redis/redis/v8"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template"
 	"github.com/quarkcms/quark-go/pkg/component/admin/login"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
+	redisclient "github.com/quarkcms/quark-go/pkg/dal/redis"
 )
 
 // 后台登录模板
@@ -19,6 +23,20 @@ type Template struct {
 	Logo     interface{} // 登录页面Logo
 	Title    string      // 标题
 	SubTitle string      // 子标题
+}
+
+type Store struct {
+	RedisClient *redis.Client
+	Expiration  time.Duration
+}
+
+func (store *Store) Set(id string, digits []byte) {
+	store.RedisClient.Set(context.Background(), id, string(digits), store.Expiration)
+}
+
+func (store *Store) Get(id string, clear bool) (digits []byte) {
+	bytes, _ := store.RedisClient.Get(context.Background(), id).Bytes()
+	return bytes
 }
 
 // 初始化
@@ -51,6 +69,17 @@ func (p *Template) TemplateInit() interface{} {
 	p.SubTitle = "信息丰富的世界里，唯一稀缺的就是人类的注意力"
 
 	return p
+}
+
+// 验证码存储驱动，redis | memory
+func (p *Template) CaptchaStore(store string) {
+
+	if store == "redis" {
+		captcha.SetCustomStore(&Store{
+			RedisClient: redisclient.Client,
+			Expiration:  time.Second * 1000,
+		})
+	}
 }
 
 // 验证码ID
