@@ -80,7 +80,8 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 	driver := reflect.
 		ValueOf(ctx.Template).
 		Elem().
-		FieldByName("Driver").String()
+		FieldByName("Driver").
+		String()
 
 	// 重写url
 	if driver == storage.LocalDriver {

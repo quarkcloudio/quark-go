@@ -2,6 +2,7 @@ package storage
 
 import (
 	"bytes"
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
@@ -17,12 +18,15 @@ import (
 	"strings"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/quarkcms/quark-go/pkg/rand"
 )
 
 var (
 	OssDriver   = "oss"
 	LocalDriver = "local"
+	MinioDriver = "minio"
 )
 
 // OSS配置
@@ -34,18 +38,30 @@ type OSSConfig struct {
 	Domain          string // OSS自定义域名
 }
 
+// Minio配置
+type MinioConfig struct {
+	Endpoint        string // Endpoint
+	AccessKeyID     string // AccessKeyID
+	AccessKeySecret string // AccessKey
+	SecretAccessKey string // SecretAccessKey
+	UseSSL          bool   // UseSSL
+	BucketName      string // BucketName
+	Domain          string // OSS自定义域名
+}
+
 // 配置
 type Config struct {
-	LimitSize        int64      // 限制文件大小
-	LimitType        []string   // 限制文件类型
-	LimitImageWidth  int        // 限制图片宽度
-	LimitImageHeight int        // 限制图片高度
-	Driver           string     // 存储驱动
-	SavePath         string     // 保存路径
-	SaveName         string     // 保存文件名称
-	SaveRandName     bool       // 随机保存文件名称
-	CheckFileExist   bool       // 检测文件是否已存在
-	OSSConfig        *OSSConfig // OSS配置
+	LimitSize        int64        // 限制文件大小
+	LimitType        []string     // 限制文件类型
+	LimitImageWidth  int          // 限制图片宽度
+	LimitImageHeight int          // 限制图片高度
+	Driver           string       // 存储驱动
+	SavePath         string       // 保存路径
+	SaveName         string       // 保存文件名称
+	SaveRandName     bool         // 随机保存文件名称
+	CheckFileExist   bool         // 检测文件是否已存在
+	OSSConfig        *OSSConfig   // OSS配置
+	MinioConfig      *MinioConfig // Minio配置
 }
 
 // 文件结构体
@@ -214,10 +230,7 @@ func (p *FileSystem) Name(name string) *FileSystem {
 func (p *FileSystem) isExist(path string) bool {
 	_, err := os.Stat(path) //os.Stat获取文件信息
 	if err != nil {
-		if os.IsExist(err) {
-			return true
-		}
-		return false
+		return os.IsExist(err)
 	}
 	return true
 }
@@ -454,6 +467,71 @@ func (p *FileSystem) SaveToOSS() error {
 	return nil
 }
 
+// 保存文件到Minio
+func (p *FileSystem) SaveToMinio() error {
+	if p.Config.MinioConfig == nil {
+		return errors.New("请配置Minio信息")
+	}
+
+	savePath := p.Config.SavePath
+	if savePath == "" {
+		return errors.New("请设置保存路径")
+	}
+
+	if p.Config.SaveName == "" {
+		p.Config.SaveName = p.File.Name
+	}
+
+	// 获取文件扩展名
+	fileExt := ContentTypeList[p.File.ContentType]
+	if fileExt == "" {
+		return errors.New("无法获取文件扩展名！")
+	}
+	p.File.Ext = fileExt
+
+	// 检查文件合法性
+	err := p.CheckFile()
+	if err != nil {
+		return err
+	}
+
+	if p.Config.SaveRandName {
+		p.Config.SaveName = rand.MakeAlphanumeric(40) + "." + p.File.Ext
+	}
+
+	saveName := p.Config.SaveName
+
+	// 计算文件哈希值
+	fileHash, err := p.GetFileHash()
+	if err != nil {
+		return err
+	}
+	p.File.Hash = fileHash
+
+	ctx := context.Background()
+
+	// Initialize minio client object.
+	minioClient, err := minio.New(p.Config.MinioConfig.Endpoint, &minio.Options{
+		Creds:  credentials.NewStaticV4(p.Config.MinioConfig.AccessKeyID, p.Config.MinioConfig.SecretAccessKey, ""),
+		Secure: p.Config.MinioConfig.UseSSL,
+	})
+	if err != nil {
+		return err
+	}
+
+	byteReader := bytes.NewReader(p.File.Content)
+
+	// Upload the zip file with FPutObject
+	info, err := minioClient.PutObject(ctx, p.Config.MinioConfig.BucketName, saveName, byteReader, -1, minio.PutObjectOptions{ContentType: p.File.ContentType})
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Successfully uploaded %s of size %d\n", saveName, info.Size)
+
+	return nil
+}
+
 // 保存文件
 func (p *FileSystem) Save() (fileInfo *FileInfo, err error) {
 	var fileUrl = ""
@@ -477,6 +555,13 @@ func (p *FileSystem) Save() (fileInfo *FileInfo, err error) {
 		} else {
 			fileUrl = "//" + p.Config.OSSConfig.BucketName + "." + p.Config.OSSConfig.Endpoint + "/" + p.Config.SavePath + p.Config.SaveName
 		}
+	case MinioDriver:
+		err = p.SaveToMinio()
+		if err != nil {
+			return fileInfo, err
+		}
+
+		fileUrl = "//" + p.Config.MinioConfig.Domain + "/" + p.Config.SavePath + p.Config.SaveName
 	default:
 		return fileInfo, errors.New("上传驱动未知")
 	}

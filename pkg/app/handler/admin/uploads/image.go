@@ -191,6 +191,11 @@ func (p *Image) Crop(ctx *builder.Context) error {
 		Elem().
 		FieldByName("OSSConfig").Interface()
 
+	minioConfig := reflect.
+		ValueOf(ctx.Template).
+		Elem().
+		FieldByName("MinioConfig").Interface()
+
 	fileSystem := storage.
 		New(&storage.Config{
 			LimitSize:        limitSize,
@@ -199,6 +204,7 @@ func (p *Image) Crop(ctx *builder.Context) error {
 			LimitImageHeight: limitImageHeight,
 			Driver:           driver,
 			OSSConfig:        ossConfig.(*storage.OSSConfig),
+			MinioConfig:      minioConfig.(*storage.MinioConfig),
 		}).
 		Reader(&storage.File{
 			Content: fileData,
