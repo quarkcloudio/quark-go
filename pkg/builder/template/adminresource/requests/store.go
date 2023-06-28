@@ -30,18 +30,18 @@ func (p *StoreRequest) Handle(ctx *builder.Context) error {
 	data := map[string]interface{}{}
 	ctx.Bind(&data)
 
-	data, err := ctx.Template.(interface {
-		BeforeSaving(ctx *builder.Context, data map[string]interface{}) (map[string]interface{}, error)
-	}).BeforeSaving(ctx, data)
-	if err != nil {
-		return ctx.JSONError(err.Error())
-	}
-
 	validator := ctx.Template.(interface {
 		ValidatorForCreation(ctx *builder.Context, data map[string]interface{}) error
 	}).ValidatorForCreation(ctx, data)
 	if validator != nil {
 		return ctx.JSONError(validator.Error())
+	}
+
+	data, err := ctx.Template.(interface {
+		BeforeSaving(ctx *builder.Context, data map[string]interface{}) (map[string]interface{}, error)
+	}).BeforeSaving(ctx, data)
+	if err != nil {
+		return ctx.JSONError(err.Error())
 	}
 
 	newData := map[string]interface{}{}

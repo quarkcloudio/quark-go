@@ -26,18 +26,18 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) error {
 		return ctx.JSONError("参数错误！")
 	}
 
-	data, err := ctx.Template.(interface {
-		BeforeSaving(ctx *builder.Context, data map[string]interface{}) (map[string]interface{}, error)
-	}).BeforeSaving(ctx, data)
-	if err != nil {
-		return ctx.JSONError(err.Error())
-	}
-
 	validator := ctx.Template.(interface {
 		ValidatorForUpdate(ctx *builder.Context, data map[string]interface{}) error
 	}).ValidatorForUpdate(ctx, data)
 	if validator != nil {
 		return ctx.JSONError(validator.Error())
+	}
+
+	data, err := ctx.Template.(interface {
+		BeforeSaving(ctx *builder.Context, data map[string]interface{}) (map[string]interface{}, error)
+	}).BeforeSaving(ctx, data)
+	if err != nil {
+		return ctx.JSONError(err.Error())
 	}
 
 	newData := map[string]interface{}{}
