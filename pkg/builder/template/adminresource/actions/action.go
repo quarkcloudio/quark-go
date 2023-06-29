@@ -40,15 +40,11 @@ func (p *Action) ParentInit() interface{} {
 	return p
 }
 
-/**
- * 行为key
- *
- * @return string
- */
+// 行为key
 func (p *Action) GetUriKey(action interface{}) string {
 	uriKey := reflect.TypeOf(action).String()
-	uriKey = strings.Replace(uriKey, "*actions.", "", -1)
-	uriKey = stringy.New(uriKey).KebabCase("?", "").ToLower()
+	uriKeys := strings.Split(uriKey, ".")
+	uriKey = stringy.New(uriKeys[1]).KebabCase("?", "").ToLower()
 
 	return uriKey
 }
