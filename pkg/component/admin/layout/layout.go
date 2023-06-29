@@ -5,24 +5,24 @@ import "github.com/quarkcms/quark-go/pkg/component/admin/component"
 type Component struct {
 	component.Element
 	ComponentKey string            `json:"componentKey"`
-	Cache        bool              `json:"cache,omitempty"`
-	Title        string            `json:"title,omitempty"`
-	Logo         interface{}       `json:"logo,omitempty"`
-	Loading      bool              `json:"loading,omitempty"`
-	ContentStyle map[string]string `json:"contentStyle,omitempty"`
-	Actions      interface{}       `json:"actions,omitempty"`
-	Layout       string            `json:"layout,omitempty"`
-	SplitMenus   bool              `json:"splitMenus,omitempty"`
-	ContentWidth string            `json:"contentWidth,omitempty"`
-	PrimaryColor string            `json:"primaryColor,omitempty"`
-	FixedHeader  bool              `json:"fixedHeader,omitempty"`
-	FixSiderbar  bool              `json:"fixSiderbar,omitempty"`
-	IconfontUrl  string            `json:"iconfontUrl,omitempty"`
-	Locale       string            `json:"locale,omitempty"`
-	SiderWidth   int               `json:"siderWidth,omitempty"`
-	Menu         interface{}       `json:"menu,omitempty"`
-	Footer       interface{}       `json:"footer,omitempty"`
-	Body         interface{}       `json:"body,omitempty"`
+	Cache        bool              `json:"cache"`
+	Title        string            `json:"title"`
+	Logo         interface{}       `json:"logo"`
+	Loading      bool              `json:"loading"`
+	ContentStyle map[string]string `json:"contentStyle"`
+	Actions      interface{}       `json:"actions"`
+	Layout       string            `json:"layout"`
+	SplitMenus   bool              `json:"splitMenus"`
+	ContentWidth string            `json:"contentWidth"`
+	PrimaryColor string            `json:"primaryColor"`
+	FixedHeader  bool              `json:"fixedHeader"`
+	FixSiderbar  bool              `json:"fixSiderbar"`
+	IconfontUrl  string            `json:"iconfontUrl"`
+	Locale       string            `json:"locale"`
+	SiderWidth   int               `json:"siderWidth"`
+	Menu         interface{}       `json:"menu"`
+	Footer       interface{}       `json:"footer"`
+	Body         interface{}       `json:"body"`
 }
 
 // 初始化组件

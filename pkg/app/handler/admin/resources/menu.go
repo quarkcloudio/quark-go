@@ -1,7 +1,6 @@
 package resources
 
 import (
-	"strconv"
 	"strings"
 
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/actions"
@@ -11,7 +10,9 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/radio"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
+	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"github.com/quarkcms/quark-go/pkg/lister"
+	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
@@ -71,67 +72,30 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 			SetDefault(0).
 			OnlyOnForms(),
 
-		field.Radio("type", "类型").
+		field.Radio("type", "渲染组件").
 			SetOptions([]*radio.Option{
 				{
-					Value: 1,
-					Label: "目录",
+					Value: "default",
+					Label: "无组件",
 				},
 				{
-					Value: 2,
-					Label: "菜单",
+					Value: "engine",
+					Label: "引擎组件",
 				},
-				{
-					Value: 3,
-					Label: "按钮",
-				},
-			}).
-			SetWhen(1, func() interface{} {
-				return []interface{}{
-					field.Text("path", "路由").
-						SetRules([]*rule.Rule{
-							rule.Required(true, "路由必须填写"),
-						}).
-						SetEditable(true).
-						SetHelp("前端路由").
-						BuildFrontendRules(ctx.Path()),
-				}
-			}).
-			SetWhen(2, func() interface{} {
-				return []interface{}{
-					field.Switch("is_engine", "引擎组件").
-						SetTrueValue("是").
-						SetFalseValue("否").
-						SetDefault(true),
+			}).SetDefault("engine"),
 
-					field.Switch("is_link", "外部链接").
-						SetTrueValue("是").
-						SetFalseValue("否").
-						SetDefault(false),
-
-					field.Text("path", "路由").
-						SetRules([]*rule.Rule{
-							rule.Required(true, "路由必须填写"),
-						}).
-						SetEditable(true).
-						SetHelp("前端路由或后端api").
-						OnlyOnForms().
-						BuildFrontendRules(ctx.Path()),
-				}
-			}).
-			SetWhen(3, func() interface{} {
-				return []interface{}{
-					field.Select("permission_ids", "绑定权限").
-						SetMode("tags").
-						SetOptions(permissions).
-						OnlyOnForms(),
-				}
-			}).
-			SetDefault(1),
+		field.Text("path", "路由").
+			SetEditable(true).
+			SetHelp("前端路由或后端api"),
 
 		field.Number("sort", "排序").
 			SetEditable(true).
 			SetDefault(0),
+
+		field.Select("permission_ids", "绑定权限").
+			SetMode("tags").
+			SetOptions(permissions).
+			OnlyOnForms(),
 
 		field.Switch("status", "状态").
 			SetTrueValue("正常").
@@ -188,34 +152,38 @@ func (p *Menu) BeforeIndexShowing(ctx *builder.Context, list []map[string]interf
 // 编辑页面显示前回调
 func (p *Menu) BeforeEditing(ctx *builder.Context, data map[string]interface{}) map[string]interface{} {
 	id := ctx.Query("id", "")
-	idInt, err := strconv.Atoi(id.(string))
 
-	if id != "" && err == nil {
-		permissionIds := []int{}
-		permissions, err := (&models.CasbinRule{}).GetMenuPermissions(idInt)
-		if err == nil {
-			for _, v := range permissions {
-				permissionIds = append(permissionIds, v.Id)
-			}
-		}
-		data["permission_ids"] = permissionIds
+	if id != "" {
+		menus := []int{}
+
+		db.Client.
+			Model(&models.Permission{}).
+			Where("menu_id = ?", id).
+			Pluck("id", &menus)
+
+		data["permission_ids"] = menus
 	}
 
 	return data
 }
 
 // 保存后回调
-func (p *Menu) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
+func (p *Menu) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{} {
+	result = db.Client.
+		Model(&models.Permission{}).
+		Where("menu_id = ?", id).
+		Update("menu_id", 0)
+
 	if data["permission_ids"] != nil {
-		err := (&models.CasbinRule{}).AddMenuPermission(id, data["permission_ids"])
-		if err != nil {
-			return ctx.JSONError(err.Error())
-		}
+		result = db.Client.
+			Model(&models.Permission{}).
+			Where("id In ?", data["permission_ids"]).
+			Update("menu_id", id)
 	}
 
 	if result.Error != nil {
-		return ctx.JSONError(result.Error.Error())
+		return ctx.JSON(200, msg.Error(result.Error.Error(), ""))
 	}
 
-	return ctx.JSONOk("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexPath, ":resource", ctx.Param("resource"), -1))
+	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
 }

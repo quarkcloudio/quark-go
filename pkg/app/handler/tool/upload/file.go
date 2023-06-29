@@ -7,6 +7,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/toolupload"
+	"github.com/quarkcms/quark-go/pkg/msg"
 	"github.com/quarkcms/quark-go/pkg/storage"
 )
 
@@ -43,7 +44,7 @@ func (p *File) Init() interface{} {
 	}
 
 	// 设置文件上传路径
-	p.SavePath = "./web/app/storage/files/" + time.Now().Format("20060102") + "/"
+	p.SavePath = "./website/storage/files/" + time.Now().Format("20060102") + "/"
 
 	return p
 }
@@ -76,7 +77,7 @@ func (p *File) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem
 }
 
 // 上传完成后回调
-func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error {
+func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{} {
 	driver := reflect.
 		ValueOf(ctx.Template).
 		Elem().
@@ -98,10 +99,10 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 		Status: 1,
 	})
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, msg.Error(err.Error(), ""))
 	}
 
-	return ctx.JSONOk("上传成功", "", map[string]interface{}{
+	return ctx.JSON(200, msg.Success("上传成功", "", map[string]interface{}{
 		"id":          id,
 		"contentType": result.ContentType,
 		"ext":         result.Ext,
@@ -110,5 +111,5 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 		"path":        result.Path,
 		"size":        result.Size,
 		"url":         result.Url,
-	})
+	}))
 }

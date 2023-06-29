@@ -8,6 +8,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder/template/mixpage"
 	"github.com/quarkcms/quark-go/pkg/component/mix/form"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
+	"github.com/quarkcms/quark-go/pkg/msg"
 )
 
 // 后台登录模板
@@ -31,8 +32,8 @@ func (p *Template) TemplateInit() interface{} {
 	p.DB = db.Client
 
 	// 注册路由映射
-	p.GET("/api/mix/form/:resource/index", p.Render)  // 渲染页面路由
-	p.Any("/api/mix/form/:resource/submit", p.Handle) // 表单提交路由
+	p.GET("/api/mix/form/:resource/index", "Render")  // 渲染页面路由
+	p.Any("/api/mix/form/:resource/submit", "Handle") // 表单提交路由
 
 	// 标题
 	p.Title = "QuarkGo"
@@ -113,6 +114,6 @@ func (p *Template) Content(ctx *builder.Context) interface{} {
 }
 
 // 执行表单
-func (p *Template) Handle(ctx *builder.Context) error {
-	return ctx.JSONError("请自行处理表单逻辑")
+func (p *Template) Handle(ctx *builder.Context) interface{} {
+	return ctx.JSON(200, msg.Error("请自行处理表单逻辑", ""))
 }

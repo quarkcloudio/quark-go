@@ -6,14 +6,14 @@ type Component struct {
 	component.Element
 	Title      string      `json:"title"`
 	Tooltip    string      `json:"tooltip"`
-	Extra      interface{} `json:"extra"`
 	Bordered   bool        `json:"bordered"`
-	Column     interface{} `json:"column"`
-	Size       string      `json:"size"`
 	Layout     string      `json:"layout"`
-	Colon      bool        `json:"colon"`
+	Column     interface{} `json:"column"`
 	Columns    interface{} `json:"columns"`
 	DataSource interface{} `json:"dataSource"`
+	Size       string      `json:"size"`
+	Colon      bool        `json:"colon"`
+	Data       interface{} `json:"data"`
 	Items      interface{} `json:"items"`
 	Actions    interface{} `json:"actions"`
 }
@@ -60,12 +60,6 @@ func (p *Component) SetTooltip(tooltip string) *Component {
 	return p
 }
 
-// 描述列表的操作区域，显示在右上方
-func (p *Component) SetExtra(extra string) *Component {
-	p.Extra = extra
-	return p
-}
-
 // 是否展示边框
 func (p *Component) SetBordered(bordered bool) *Component {
 	p.Bordered = bordered
@@ -105,6 +99,12 @@ func (p *Component) SetSize(size string) *Component {
 // 配置 ProDescriptions.Item 的 colon 的默认值
 func (p *Component) SetColon(colon bool) *Component {
 	p.Colon = colon
+	return p
+}
+
+// 数据
+func (p *Component) SetData(data interface{}) *Component {
+	p.Data = data
 	return p
 }
 

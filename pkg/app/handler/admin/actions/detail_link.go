@@ -33,5 +33,5 @@ func (p *DetailLink) Init(name string) *DetailLink {
 
 // 跳转链接
 func (p *DetailLink) GetHref(ctx *builder.Context) string {
-	return "#/layout/index?api=" + strings.Replace(ctx.Path(), "/index", "/detail&id=${id}", -1)
+	return "#/index?api=" + strings.Replace(ctx.Path(), "/index", "/detail&id=${id}", -1)
 }

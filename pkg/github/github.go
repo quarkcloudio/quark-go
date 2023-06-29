@@ -19,10 +19,8 @@ const CONTENT = "https://raw.githubusercontent.com"
 
 var urlPattern = regexp.MustCompile(`<a class="js-navigation-open.*?".*?title="(.*?)".*?href="(.*?)".*?>`)
 var repositoryPattern = regexp.MustCompile(`(/.*?/.*?/)blob/(.*$)`)
-var respositoryDownloadURL = ""
 
 func Download(respositoryURL string, path string) {
-	respositoryDownloadURL = respositoryURL
 	if respositoryURL == "" {
 		fmt.Println("please specify the github url!")
 		return
@@ -52,7 +50,7 @@ func Download(respositoryURL string, path string) {
 // failedPrint
 func failedPrint(err error) {
 	if err != nil {
-		fmt.Println("The static file download failed. Please go to the url:" + respositoryDownloadURL + " to download and copy it to the project root directory, and create an install.lock lock file in the web directory.\n\n")
+		fmt.Println("Download static files failed! \n Please goto https://github.com/quarkcms/quark-go/tree/main/website url to download it  \n After downloading, you must make 'install.lock' file in the website dir")
 		panic(err)
 	}
 }

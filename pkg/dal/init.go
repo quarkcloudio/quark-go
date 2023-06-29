@@ -1,9 +1,8 @@
 package dal
 
 import (
-	"github.com/go-redis/redis/v8"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
-	redisclient "github.com/quarkcms/quark-go/pkg/dal/redis"
+	"github.com/quarkcms/quark-go/pkg/dal/redis"
 	"gorm.io/gorm"
 )
 
@@ -13,6 +12,6 @@ func InitDB(dialector gorm.Dialector, opts gorm.Option) {
 }
 
 // Init init redis
-func InitRedis(options *redis.Options) {
-	redisclient.Init(options)
+func InitRedis(addr string, password string) {
+	redis.Init(addr, password)
 }

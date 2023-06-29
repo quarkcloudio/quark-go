@@ -12,17 +12,12 @@ import (
 type ActionRequest struct{}
 
 // 执行行为
-func (p *ActionRequest) Handle(ctx *builder.Context) error {
-	var result error
-
-	// 获取模型结构体
+func (p *ActionRequest) Handle(ctx *builder.Context) interface{} {
+	var result interface{}
 	modelInstance := reflect.
 		ValueOf(ctx.Template).
 		Elem().
-		FieldByName("Model").
-		Interface()
-
-	// 创建Gorm对象
+		FieldByName("Model").Interface()
 	model := db.Client.Model(&modelInstance)
 
 	id := ctx.Query("id", "")
@@ -55,16 +50,8 @@ func (p *ActionRequest) Handle(ctx *builder.Context) error {
 
 				if ctx.Param("uriKey") == uriKey {
 					result = dropdownAction.(interface {
-						Handle(*builder.Context, *gorm.DB) error
+						Handle(*builder.Context, *gorm.DB) interface{}
 					}).Handle(ctx, model)
-
-					// 执行完后回调
-					err := ctx.Template.(interface {
-						AfterAction(ctx *builder.Context, uriKey string, query *gorm.DB) error
-					}).AfterAction(ctx, uriKey, model)
-					if err != nil {
-						return err
-					}
 
 					return result
 				}
@@ -72,16 +59,8 @@ func (p *ActionRequest) Handle(ctx *builder.Context) error {
 		} else {
 			if ctx.Param("uriKey") == uriKey {
 				result = v.(interface {
-					Handle(*builder.Context, *gorm.DB) error
+					Handle(*builder.Context, *gorm.DB) interface{}
 				}).Handle(ctx, model)
-
-				// 执行完后回调
-				err := ctx.Template.(interface {
-					AfterAction(ctx *builder.Context, uriKey string, query *gorm.DB) error
-				}).AfterAction(ctx, uriKey, model)
-				if err != nil {
-					return err
-				}
 
 				return result
 			}

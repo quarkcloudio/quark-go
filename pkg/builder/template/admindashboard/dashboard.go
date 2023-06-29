@@ -3,14 +3,19 @@ package admindashboard
 import (
 	"reflect"
 
+	"github.com/quarkcms/quark-go/pkg/app/model"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template"
 	"github.com/quarkcms/quark-go/pkg/component/admin/card"
 	"github.com/quarkcms/quark-go/pkg/component/admin/descriptions"
+	"github.com/quarkcms/quark-go/pkg/component/admin/footer"
 	"github.com/quarkcms/quark-go/pkg/component/admin/grid"
+	"github.com/quarkcms/quark-go/pkg/component/admin/layout"
+	"github.com/quarkcms/quark-go/pkg/component/admin/page"
 	"github.com/quarkcms/quark-go/pkg/component/admin/pagecontainer"
 	"github.com/quarkcms/quark-go/pkg/component/admin/statistic"
 	"github.com/quarkcms/quark-go/pkg/dal/db"
+	"github.com/quarkcms/quark-go/pkg/msg"
 )
 
 // 后台登录模板
@@ -34,7 +39,7 @@ func (p *Template) TemplateInit() interface{} {
 	p.DB = db.Client
 
 	// 注册路由映射
-	p.GET("/api/admin/dashboard/:resource/index", p.Render) // 后台仪表盘路由
+	p.GET("/api/admin/dashboard/:resource/index", "Render") // 后台仪表盘路由
 
 	// 标题
 	p.Title = "仪表盘"
@@ -48,12 +53,12 @@ func (p *Template) Cards(ctx *builder.Context) interface{} {
 }
 
 // 组件渲染
-func (p *Template) Render(ctx *builder.Context) error {
+func (p *Template) Render(ctx *builder.Context) interface{} {
 	cards := ctx.Template.(interface {
 		Cards(*builder.Context) interface{}
 	}).Cards(ctx)
 	if cards == nil {
-		return ctx.JSONError("请实现Cards内容")
+		return ctx.JSON(200, msg.Error("请实现Cards内容", ""))
 	}
 
 	var cols []interface{}
@@ -111,10 +116,67 @@ func (p *Template) Render(ctx *builder.Context) error {
 // 页面组件渲染
 func (p *Template) PageComponentRender(ctx *builder.Context, body interface{}) interface{} {
 
+	// Layout组件
+	layoutComponent := ctx.Template.(interface {
+		LayoutComponentRender(ctx *builder.Context, body interface{}) interface{}
+	}).LayoutComponentRender(ctx, body)
+
+	return (&page.Component{}).
+		Init().
+		SetStyle(map[string]interface{}{
+			"height": "100vh",
+		}).
+		SetBody(layoutComponent).
+		JsonSerialize()
+}
+
+// 页面布局组件渲染
+func (p *Template) LayoutComponentRender(ctx *builder.Context, body interface{}) interface{} {
+	admin := &model.Admin{}
+	config := ctx.Engine.GetConfig()
+
+	// 获取登录管理员信息
+	adminInfo, err := admin.GetAuthUser(config.AppKey, ctx.Token())
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+
+	// 获取管理员菜单
+	getMenus, err := admin.GetMenuListById(adminInfo.Id)
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+
+	adminLayout := ctx.Engine.GetAdminLayout()
+
+	// 页脚
+	footer := (&footer.Component{}).
+		Init().
+		SetCopyright(adminLayout.Copyright).
+		SetLinks(adminLayout.Links)
+
 	// 页面容器组件渲染
-	return ctx.Template.(interface {
+	pageContainerComponent := ctx.Template.(interface {
 		PageContainerComponentRender(ctx *builder.Context, body interface{}) interface{}
 	}).PageContainerComponentRender(ctx, body)
+
+	return (&layout.Component{}).
+		Init().
+		SetTitle(adminLayout.Title).
+		SetLogo(adminLayout.Logo).
+		SetActions(adminLayout.Actions).
+		SetLayout(adminLayout.Layout).
+		SetSplitMenus(adminLayout.SplitMenus).
+		SetContentWidth(adminLayout.ContentWidth).
+		SetPrimaryColor(adminLayout.PrimaryColor).
+		SetFixSiderbar(adminLayout.FixSiderbar).
+		SetFixedHeader(adminLayout.FixedHeader).
+		SetIconfontUrl(adminLayout.IconfontUrl).
+		SetLocale(adminLayout.Locale).
+		SetSiderWidth(adminLayout.SiderWidth).
+		SetMenu(getMenus).
+		SetBody(pageContainerComponent).
+		SetFooter(footer)
 }
 
 // 页面容器组件渲染

@@ -41,15 +41,7 @@ func (p *IndexRequest) QueryData(ctx *builder.Context) interface{} {
 	perPage := reflect.
 		ValueOf(ctx.Template).
 		Elem().
-		FieldByName("PerPage").
-		Interface()
-
-	if perPage == nil {
-		query.Find(&lists)
-
-		// 返回解析列表
-		return p.performsList(ctx, lists)
-	}
+		FieldByName("PerPage").Interface()
 
 	// 不分页，直接返回lists
 	if reflect.TypeOf(perPage).String() != "int" {
@@ -92,7 +84,11 @@ func (p *IndexRequest) QueryData(ctx *builder.Context) interface{} {
 	}
 }
 
-// Get the column filters for the request.
+/**
+ * Get the column filters for the request.
+ *
+ * @return array
+ */
 func (p *IndexRequest) columnFilters(ctx *builder.Context) map[string]interface{} {
 	querys := ctx.AllQuerys()
 	var data map[string]interface{}
@@ -107,7 +103,11 @@ func (p *IndexRequest) columnFilters(ctx *builder.Context) map[string]interface{
 	return data
 }
 
-// Get the orderings for the request.
+/**
+ * Get the orderings for the request.
+ *
+ * @return array
+ */
 func (p *IndexRequest) orderings(ctx *builder.Context) map[string]interface{} {
 	querys := ctx.AllQuerys()
 	var data map[string]interface{}

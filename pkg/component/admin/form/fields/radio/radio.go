@@ -37,18 +37,6 @@ type Component struct {
 	ValuePropName string      `json:"valuePropName,omitempty"` // 子节点的值的属性，如 Switch 的是 'checked'。该属性为 getValueProps 的封装，自定义 getValueProps 后会失效
 	WrapperCol    interface{} `json:"wrapperCol,omitempty"`    // 需要为输入控件设置布局样式时，使用该属性，用法同 labelCol。你可以通过 Form 的 wrapperCol 进行统一设置，不会作用于嵌套 Item。当和 Form 同时设置时，以 Item 为准
 
-	Column      *table.Column `json:"-"` // 列表页、详情页中列属性
-	Align       string        `json:"-"` // 设置列的对齐方式,left | right | center，只在列表页、详情页中有效
-	Fixed       interface{}   `json:"-"` // （IE 下无效）列是否固定，可选 true (等效于 left) left rightr，只在列表页中有效
-	Editable    bool          `json:"-"` // 表格列是否可编辑，只在列表页中有效
-	Ellipsis    bool          `json:"-"` // 是否自动缩略，只在列表页、详情页中有效
-	Copyable    bool          `json:"-"` // 是否支持复制，只在列表页、详情页中有效
-	Filters     interface{}   `json:"-"` // 表头的筛选菜单项，当值为 true 时，自动使用 valueEnum 生成，只在列表页中有效
-	Order       int           `json:"-"` // 查询表单中的权重，权重大排序靠前，只在列表页中有效
-	Sorter      interface{}   `json:"-"` // 可排序列，只在列表页中有效
-	Span        int           `json:"-"` // 包含列的数量，只在详情页中有效
-	ColumnWidth int           `json:"-"` // 设置列宽，只在列表页中有效
-
 	Api            string          `json:"api,omitempty"` // 获取数据接口
 	Ignore         bool            `json:"ignore"`        // 是否忽略保存到数据库，默认为 false
 	Rules          []*rule.Rule    `json:"-"`             // 全局校验规则
@@ -63,6 +51,8 @@ type Component struct {
 	ShowOnUpdate   bool            `json:"-"`             // 在编辑页面展示
 	ShowOnExport   bool            `json:"-"`             // 在导出的Excel上展示
 	ShowOnImport   bool            `json:"-"`             // 在导入Excel上展示
+	Editable       bool            `json:"-"`             // 表格上是否可编辑
+	Column         *table.Column   `json:"-"`             // 表格列
 	Callback       interface{}     `json:"-"`             // 回调函数
 
 	ButtonStyle  interface{} `json:"buttonStyle,omitempty"`  // RadioButton 的风格样式，目前有描边和填色两种风格 outline | solid
@@ -167,20 +157,14 @@ func (p *Component) SetName(name string) *Component {
 	return p
 }
 
-// 字段名转标签，只支持英文
-func (p *Component) SetNameAsLabel() *Component {
-	p.Label = strings.Title(p.Name)
-	return p
-}
-
 // 是否必填，如不设置，则会根据校验规则自动生成
 func (p *Component) SetRequired() *Component {
 	p.Required = true
 	return p
 }
 
-// 生成前端验证规则
-func (p *Component) BuildFrontendRules(path string) interface{} {
+// 获取前端验证规则
+func (p *Component) GetFrontendRules(path string) interface{} {
 	var (
 		frontendRules []*rule.Rule
 		rules         []*rule.Rule
@@ -217,12 +201,6 @@ func (p *Component) BuildFrontendRules(path string) interface{} {
 }
 
 // 校验规则，设置字段的校验逻辑
-//
-//	[]*rule.Rule{
-//		rule.Required(true, "用户名必须填写"),
-//		rule.Min(6, "用户名不能少于6个字符"),
-//		rule.Max(20, "用户名不能超过20个字符"),
-//	}
 func (p *Component) SetRules(rules []*rule.Rule) *Component {
 	for k, v := range rules {
 		rules[k] = v.SetName(p.Name)
@@ -233,10 +211,6 @@ func (p *Component) SetRules(rules []*rule.Rule) *Component {
 }
 
 // 校验规则，只在创建表单提交时生效
-//
-//	[]*rule.Rule{
-//		rule.Unique("admins", "username", "用户名已存在"),
-//	}
 func (p *Component) SetCreationRules(rules []*rule.Rule) *Component {
 	for k, v := range rules {
 		rules[k] = v.SetName(p.Name)
@@ -247,10 +221,6 @@ func (p *Component) SetCreationRules(rules []*rule.Rule) *Component {
 }
 
 // 校验规则，只在更新表单提交时生效
-//
-//	[]*rule.Rule{
-//		rule.Unique("admins", "username", "{id}", "用户名已存在"),
-//	}
 func (p *Component) SetUpdateRules(rules []*rule.Rule) *Component {
 	for k, v := range rules {
 		rules[k] = v.SetName(p.Name)
@@ -291,88 +261,6 @@ func (p *Component) SetWrapperCol(col interface{}) *Component {
 	return p
 }
 
-// 列表页、详情页中列属性
-func (p *Component) SetColumn(f func(column *table.Column) *table.Column) *Component {
-	p.Column = f(p.Column)
-
-	return p
-}
-
-// 设置列的对齐方式,left | right | center，只在列表页、详情页中有效
-func (p *Component) SetAlign(align string) *Component {
-	p.Align = align
-	return p
-}
-
-// （IE 下无效）列是否固定，可选 true (等效于 left) left rightr，只在列表页中有效
-func (p *Component) SetFixed(fixed interface{}) *Component {
-	p.Fixed = fixed
-	return p
-}
-
-// 表格列是否可编辑，只在列表页中有效
-func (p *Component) SetEditable(editable bool) *Component {
-	p.Editable = editable
-
-	return p
-}
-
-// 是否自动缩略，只在列表页、详情页中有效
-func (p *Component) SetEllipsis(ellipsis bool) *Component {
-	p.Ellipsis = ellipsis
-	return p
-}
-
-// 是否支持复制，只在列表页、详情页中有效
-func (p *Component) SetCopyable(copyable bool) *Component {
-	p.Copyable = copyable
-	return p
-}
-
-// 表头的筛选菜单项，当值为 true 时，自动使用 valueEnum 生成，只在列表页中有效
-func (p *Component) SetFilters(filters interface{}) *Component {
-	getFilters, ok := filters.(map[string]string)
-
-	if ok {
-		tmpFilters := []map[string]string{}
-		for k, v := range getFilters {
-			tmpFilters = append(tmpFilters, map[string]string{
-				"text":  v,
-				"value": k,
-			})
-		}
-		p.Filters = tmpFilters
-	} else {
-		p.Filters = filters
-	}
-
-	return p
-}
-
-// 查询表单中的权重，权重大排序靠前，只在列表页中有效
-func (p *Component) SetOrder(order int) *Component {
-	p.Order = order
-	return p
-}
-
-// 可排序列，只在列表页中有效
-func (p *Component) SetSorter(sorter bool) *Component {
-	p.Sorter = sorter
-	return p
-}
-
-// 包含列的数量，只在详情页中有效
-func (p *Component) SetSpan(span int) *Component {
-	p.Span = span
-	return p
-}
-
-// 设置列宽，只在列表页中有效
-func (p *Component) SetColumnWidth(width int) *Component {
-	p.ColumnWidth = width
-	return p
-}
-
 // 设置保存值。
 func (p *Component) SetValue(value interface{}) *Component {
 	p.Value = value
@@ -398,18 +286,6 @@ func (p *Component) SetIgnore(ignore bool) *Component {
 }
 
 // 设置When组件数据
-//
-//	SetWhen(1, func () interface{} {
-//		return []interface{}{
-//	       field.Text("name", "姓名"),
-//	   }
-//	})
-//
-//	SetWhen(">", 1, func () interface{} {
-//		return []interface{}{
-//	       field.Text("name", "姓名"),
-//	   }
-//	})
 func (p *Component) SetWhen(value ...any) *Component {
 	w := when.New()
 	i := when.NewItem()
@@ -662,6 +538,20 @@ func (p *Component) IsShownOnImport() bool {
 	return p.ShowOnImport
 }
 
+// 设置为可编辑列
+func (p *Component) SetEditable(editable bool) *Component {
+	p.Editable = editable
+
+	return p
+}
+
+// 闭包，透传表格列的属性
+func (p *Component) SetColumn(f func(column *table.Column) *table.Column) *Component {
+	p.Column = f(p.Column)
+
+	return p
+}
+
 // 当前可选项
 func (p *Component) GetOptions() []*Option {
 
@@ -784,14 +674,14 @@ func (p *Component) GetOptionValue(label string) interface{} {
 		for _, v := range p.Options {
 			for _, getLabel := range labels {
 				if v.Label == getLabel {
-					values = append(values, v.Value)
+					values = append(values, v.Label)
 				}
 			}
 		}
 	} else {
 		for _, v := range p.Options {
 			if v.Label == label {
-				value = v.Value
+				value = v.Label
 			}
 		}
 	}

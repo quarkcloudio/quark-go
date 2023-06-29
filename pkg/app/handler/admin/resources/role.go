@@ -1,7 +1,7 @@
 package resources
 
 import (
-	"strconv"
+	"errors"
 	"strings"
 	"time"
 
@@ -11,6 +11,8 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
+	"github.com/quarkcms/quark-go/pkg/dal/db"
+	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
@@ -79,9 +81,9 @@ func (p *Role) Searches(ctx *builder.Context) []interface{} {
 func (p *Role) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&actions.CreateLink{}).Init(p.Title),
-		(&actions.DeleteRole{}).Init("批量删除"),
+		(&actions.Delete{}).Init("批量删除"),
 		(&actions.EditLink{}).Init("编辑"),
-		(&actions.DeleteRole{}).Init("删除"),
+		(&actions.Delete{}).Init("删除"),
 		(&actions.FormSubmit{}).Init(),
 		(&actions.FormReset{}).Init(),
 		(&actions.FormBack{}).Init(),
@@ -91,36 +93,112 @@ func (p *Role) Actions(ctx *builder.Context) []interface{} {
 
 // 编辑页面显示前回调
 func (p *Role) BeforeEditing(ctx *builder.Context, data map[string]interface{}) map[string]interface{} {
-	id := ctx.Query("id")
-	idInt, err := strconv.Atoi(id.(string))
-	if err == nil {
-		menus, _ := (&model.CasbinRule{}).GetRoleMenus(idInt)
-		ids := []int{}
-		for _, v := range menus {
-			ids = append(ids, v.Id)
+	id := ctx.Query("id", "")
+	menus := []map[string]interface{}{}
+
+	db.Client.Model(&model.Menu{}).Find(&menus)
+
+	checkedMenus := []int{}
+	for _, v := range menus {
+		var permissionIds []int
+		db.Client.
+			Model(&model.Permission{}).
+			Where("menu_id", v["id"]).
+			Pluck("id", &permissionIds)
+
+		if len(permissionIds) > 0 {
+			roleHasPermission := map[string]interface{}{}
+			db.Client.
+				Model(&model.RoleHasPermission{}).
+				Where("permission_id IN ?", permissionIds).
+				Where("role_id", id).
+				First(&roleHasPermission)
+
+			if len(roleHasPermission) > 0 {
+				checkedMenus = append(checkedMenus, v["id"].(int))
+			}
 		}
-		data["menu_ids"] = ids
 	}
+
+	data["menu_ids"] = checkedMenus
 
 	return data
 }
 
-// 保存后回调
-func (p *Role) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
-	if data["menu_ids"] != nil {
-		if menuIds, ok := data["menu_ids"].([]interface{}); ok {
-			ids := []int{}
-			for _, v := range menuIds {
-				menuId := int(v.(float64))
-				ids = append(ids, menuId)
-			}
+// 保存数据前回调
+func (p *Role) BeforeSaving(ctx *builder.Context, submitData map[string]interface{}) (map[string]interface{}, error) {
+	var permissionIds []int
+	db.Client.
+		Model(&model.Permission{}).
+		Where("menu_id IN ?", submitData["menu_ids"]).
+		Pluck("id", &permissionIds)
 
-			err := (&model.CasbinRule{}).AddMenuAndPermissionToRole(id, ids)
-			if err != nil {
-				return ctx.JSONError(err.Error())
+	if len(permissionIds) == 0 {
+		return submitData, errors.New("获取的权限为空，请在菜单管理中绑定权限")
+	}
+
+	return submitData, nil
+}
+
+// 保存后回调
+func (p *Role) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{} {
+	// 根据菜单id获取所有权限
+	var permissionIds []int
+	db.Client.
+		Model(&model.Permission{}).
+		Where("menu_id IN ?", data["menu_ids"]).
+		Pluck("id", &permissionIds)
+
+	if len(permissionIds) == 0 {
+		return ctx.JSON(200, msg.Error("获取的权限为空，请先在菜单管理中绑定权限", ""))
+	}
+
+	// 同步权限
+	result = p.syncPermissions(id, permissionIds)
+
+	if result.Error != nil {
+		return ctx.JSON(200, msg.Error(result.Error.Error(), ""))
+	}
+
+	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
+}
+
+// 保存后回调
+func (p *Role) syncPermissions(roleId int, permissionIds []int) *gorm.DB {
+	permissionIds = p.arrayFilter(permissionIds)
+
+	// 先清空此角色的权限
+	db.Client.Model(&model.RoleHasPermission{}).Where("role_id", roleId).Delete("")
+
+	data := []map[string]interface{}{}
+	for _, v := range permissionIds {
+		permission := map[string]interface{}{
+			"role_id":       roleId,
+			"permission_id": v,
+		}
+		data = append(data, permission)
+	}
+
+	return db.Client.Model(&model.RoleHasPermission{}).Create(data)
+}
+
+// 数组去重
+func (p *Role) arrayFilter(list []int) []int {
+	var x []int = []int{}
+	for _, i := range list {
+		if len(x) == 0 {
+			x = append(x, i)
+		} else {
+			for k, v := range x {
+				if i == v {
+					break
+				}
+				if k == len(x)-1 {
+					x = append(x, i)
+				}
 			}
 		}
 	}
 
-	return ctx.JSONOk("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexPath, ":resource", ctx.Param("resource"), -1))
+	return x
 }

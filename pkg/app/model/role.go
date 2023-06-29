@@ -16,6 +16,26 @@ type Role struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+// 模型角色关联表
+type ModelHasRole struct {
+	RoleId    int    `json:"role_id" gorm:"index:model_has_roles_model_id_model_type_index"`
+	ModelType string `json:"model_type" gorm:"size:255;not null"`
+	ModelId   int    `json:"model_id" gorm:"index:model_has_roles_model_id_model_type_index"`
+}
+
+// 角色权限关联表
+type RoleHasPermission struct {
+	PermissionId int `json:"permission_id" gorm:"size:11;not null"`
+	RoleId       int `json:"role_id" gorm:"index:role_has_permissions_role_id_foreign"`
+}
+
+// 模型权限关联表
+type ModelHasPermission struct {
+	PermissionId int    `json:"permission_id" gorm:"index:model_has_permissions_model_id_model_type_index"`
+	ModelType    string `json:"model_type" gorm:"size:255;not null"`
+	ModelId      int    `json:"model_id" gorm:"index:model_has_permissions_model_id_model_type_index"`
+}
+
 // 获取角色列表
 func (model *Role) List() (list []*checkbox.Option, Error error) {
 	roles := []Role{}
@@ -34,9 +54,24 @@ func (model *Role) List() (list []*checkbox.Option, Error error) {
 	return list, nil
 }
 
-// 通过id集合获取列表
-func (model *Role) GetListByIds(ids interface{}) (roles []*Role, Error error) {
-	err := db.Client.Where("id in ?", ids).Find(&roles).Error
+// 通过管理员ID获取角色相关
+func (model *ModelHasRole) GetListByAdminId(id int) (modelHasRole *ModelHasRole, Error error) {
+	err := db.Client.Where("model_id", id).Where("model_type", "admin").First(&modelHasRole).Error
 
-	return roles, err
+	return modelHasRole, err
+}
+
+// 通过管理员ID获取角色id集合
+func (model *ModelHasRole) GetRoleIdsByAdminId(id int) (roleIds []int, Error error) {
+	err := db.Client.Model(model).Where("model_id", id).Where("model_type", "admin").Pluck("role_id", &roleIds).Error
+
+	return roleIds, err
+}
+
+// 通过角色id集合获取权限id集合
+func (model *RoleHasPermission) GetPermissionIdsByRoleIds(roleIds []int) (permissionIds []int, Error error) {
+	// 角色权限id
+	err := db.Client.Model(model).Where("role_id in ?", roleIds).Pluck("permission_id", &permissionIds).Error
+
+	return permissionIds, err
 }

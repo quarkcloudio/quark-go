@@ -3,6 +3,7 @@ package actions
 import (
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
+	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
@@ -48,11 +49,11 @@ func (p *Enable) GetApiParams() []string {
 }
 
 // 执行行为句柄
-func (p *Enable) Handle(ctx *builder.Context, model *gorm.DB) error {
+func (p *Enable) Handle(ctx *builder.Context, model *gorm.DB) interface{} {
 	err := model.Update("status", 1).Error
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, msg.Error(err.Error(), ""))
 	}
 
-	return ctx.JSONOk("操作成功")
+	return ctx.JSON(200, msg.Success("操作成功", "", ""))
 }

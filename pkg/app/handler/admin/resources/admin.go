@@ -12,7 +12,10 @@ import (
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/fields/radio"
 	"github.com/quarkcms/quark-go/pkg/component/admin/form/rule"
+	"github.com/quarkcms/quark-go/pkg/component/admin/table"
+	"github.com/quarkcms/quark-go/pkg/dal/db"
 	"github.com/quarkcms/quark-go/pkg/hash"
+	"github.com/quarkcms/quark-go/pkg/msg"
 	"gorm.io/gorm"
 )
 
@@ -55,7 +58,7 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 
 		field.Text("username", "用户名", func() interface{} {
 
-			return "<a href='#/layout/index?api=/api/admin/admin/edit&id=" + strconv.Itoa(p.Field["id"].(int)) + "'>" + p.Field["username"].(string) + "</a>"
+			return "<a href='#/index?api=/api/admin/admin/edit&id=" + strconv.Itoa(p.Field["id"].(int)) + "'>" + p.Field["username"].(string) + "</a>"
 		}).
 			SetRules([]*rule.Rule{
 				rule.Required(true, "用户名必须填写"),
@@ -111,16 +114,16 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 					Value: 2,
 					Label: "女",
 				},
-			}).
-			SetFilters(true).
-			SetDefault(1),
+			}).SetDefault(1).
+			SetColumn(func(column *table.Column) *table.Column {
+				return column.SetFilters(true)
+			}),
 
 		field.Password("password", "密码").
 			SetCreationRules([]*rule.Rule{
 				rule.Required(true, "密码必须填写"),
 			}).
-			OnlyOnForms().
-			ShowOnImporting(true),
+			OnlyOnForms(),
 
 		field.Datetime("last_login_time", "最后登录时间", func() interface{} {
 			if p.Field["last_login_time"] == nil {
@@ -176,18 +179,17 @@ func (p *Admin) Actions(ctx *builder.Context) []interface{} {
 
 // 编辑页面显示前回调
 func (p *Admin) BeforeEditing(ctx *builder.Context, data map[string]interface{}) map[string]interface{} {
-
-	// 编辑页面清理password
 	delete(data, "password")
 
-	roles, err := (&model.CasbinRule{}).GetUserRoles(data["id"].(int))
-	if err == nil {
-		roleIds := []int{}
-		for _, role := range roles {
-			roleIds = append(roleIds, role.Id)
-		}
-		data["role_ids"] = roleIds
-	}
+	roleIds := []int{}
+	db.Client.
+		Model(&model.ModelHasRole{}).
+		Where("model_id = ?", data["id"]).
+		Where("model_type = ?", "admin").
+		Distinct().
+		Pluck("role_id", &roleIds)
+
+	data["role_ids"] = roleIds
 
 	return data
 }
@@ -204,32 +206,41 @@ func (p *Admin) BeforeSaving(ctx *builder.Context, submitData map[string]interfa
 }
 
 // 保存后回调
-func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
+func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) interface{} {
+	if result.Error != nil {
+		return ctx.JSON(200, msg.Error(result.Error.Error(), ""))
+	}
 
 	// 导入操作，直接返回
 	if ctx.IsImport() {
-		return result.Error
+		return true
 	}
 
-	// 返回错误信息
-	if result.Error != nil {
-		return ctx.JSONError(result.Error.Error())
+	// 编辑操作，先清空用户对应的角色
+	if ctx.IsEditing() {
+		db.Client.Model(&model.ModelHasRole{}).Where("model_id = ?", id).Where("model_type = ?", "admin").Delete("")
 	}
 
-	if data["role_ids"] != nil {
-		if roleIds, ok := data["role_ids"].([]interface{}); ok {
-			ids := []int{}
-			for _, v := range roleIds {
-				roleId := int(v.(float64))
-				ids = append(ids, roleId)
-			}
+	if data["role_ids"] == nil {
+		return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
+	}
 
-			err := (&model.CasbinRule{}).AddUserRole(id, ids)
-			if err != nil {
-				return ctx.JSONError(err.Error())
-			}
+	roleData := []map[string]interface{}{}
+	for _, v := range data["role_ids"].([]interface{}) {
+		item := map[string]interface{}{
+			"role_id":    v,
+			"model_type": "admin",
+			"model_id":   id,
+		}
+		roleData = append(roleData, item)
+	}
+	if len(roleData) > 0 {
+		// 同步角色
+		err := db.Client.Model(&model.ModelHasRole{}).Create(roleData).Error
+		if err != nil {
+			return msg.Error(err.Error(), "")
 		}
 	}
 
-	return ctx.JSONOk("操作成功！", strings.Replace("/layout/index?api="+adminresource.IndexPath, ":resource", ctx.Param("resource"), -1))
+	return ctx.JSON(200, msg.Success("操作成功！", strings.Replace("/index?api="+adminresource.IndexRoute, ":resource", ctx.Param("resource"), -1), ""))
 }

@@ -47,7 +47,7 @@ func (p *Template) TemplateInit() interface{} {
 	p.DB = db.Client
 
 	// 注册路由映射
-	p.GET("/api/mix/page/:resource/index", p.Render) // 渲染页面路由
+	p.GET("/api/mix/page/:resource/index", "Render") // 渲染页面路由
 
 	// 标题
 	p.Title = "QuarkGo"
@@ -76,7 +76,7 @@ func (p *Template) TabBar(ctx *builder.Context) interface{} {
 }
 
 // 组件渲染
-func (p *Template) Render(ctx *builder.Context) error {
+func (p *Template) Render(ctx *builder.Context) interface{} {
 	var (
 		components  []interface{}
 		swiperItems []interface{}

@@ -78,11 +78,6 @@ func (p *Template) fieldToColumn(ctx *builder.Context, field interface{}) interf
 		ValueOf(field).
 		Elem()
 
-	// 是否可编辑
-	columnField := reflectElem.
-		FieldByName("Column").
-		Interface()
-
 	// 字段
 	name := reflectElem.
 		FieldByName("Name").
@@ -98,68 +93,19 @@ func (p *Template) fieldToColumn(ctx *builder.Context, field interface{}) interf
 		FieldByName("Component").
 		String()
 
-	// 列的对齐方式,left | right | center，只在列表页、详情页中有效
-	align := reflectElem.
-		FieldByName("Align").
-		String()
-
-	// （IE 下无效）列是否固定，可选 true (等效于 left) left rightr
-	fixed := reflectElem.
-		FieldByName("Fixed").
-		Interface()
-
 	// 是否可编辑
 	editable := reflectElem.
 		FieldByName("Editable").
 		Bool()
 
-	// 是否自动缩略
-	ellipsis := reflectElem.
-		FieldByName("Ellipsis").
-		Bool()
-
-	// 是否支持复制
-	copyable := reflectElem.
-		FieldByName("Copyable").
-		Bool()
-
-	// 表头的筛选菜单项，当值为 true 时，自动使用 valueEnum 生成
-	filters := reflectElem.
-		FieldByName("Filters").
+	// 是否可编辑
+	getColumn := reflectElem.
+		FieldByName("Column").
 		Interface()
 
-	// 查询表单中的权重，权重大排序靠前
-	order := reflectElem.
-		FieldByName("Order").
-		Int()
-
-	// 可排序列
-	sorter := reflectElem.
-		FieldByName("Sorter").
-		Interface()
-
-	// 包含列的数量
-	span := reflectElem.
-		FieldByName("Span").
-		Int()
-
-	// 设置列宽
-	columnWidth := reflectElem.
-		FieldByName("ColumnWidth").
-		Int()
-
-	column := columnField.(*table.Column).
+	column := getColumn.(*table.Column).
 		SetTitle(label).
-		SetAttribute(name).
-		SetAlign(align).
-		SetFixed(fixed).
-		SetEllipsis(ellipsis).
-		SetCopyable(copyable).
-		SetFilters(filters).
-		SetOrder(int(order)).
-		SetSorter(sorter).
-		SetSpan(int(span)).
-		SetWidth(int(columnWidth))
+		SetAttribute(name)
 
 	switch component {
 	case "idField":
@@ -216,6 +162,7 @@ func (p *Template) fieldToColumn(ctx *builder.Context, field interface{}) interf
 			})
 
 		// 是否设置了过滤项
+		filters := column.Filters
 		if getfilters, ok := filters.(bool); ok {
 			if getfilters {
 				// 获取值的枚举，会自动转化把值当成 key 来取出要显示的内容
@@ -239,6 +186,7 @@ func (p *Template) fieldToColumn(ctx *builder.Context, field interface{}) interf
 			})
 
 		// 是否设置了过滤项
+		filters := column.Filters
 		if getfilters, ok := filters.(bool); ok {
 			if getfilters {
 				// 获取值的枚举，会自动转化把值当成 key 来取出要显示的内容
@@ -262,6 +210,7 @@ func (p *Template) fieldToColumn(ctx *builder.Context, field interface{}) interf
 			})
 
 		// 是否设置了过滤项
+		filters := column.Filters
 		if getfilters, ok := filters.(bool); ok {
 			if getfilters {
 				// 获取值的枚举，会自动转化把值当成 key 来取出要显示的内容
@@ -283,6 +232,7 @@ func (p *Template) fieldToColumn(ctx *builder.Context, field interface{}) interf
 			SetValueEnum(options)
 
 		// 是否设置了过滤项
+		filters := column.Filters
 		if getfilters, ok := filters.(bool); ok {
 			if getfilters {
 				// 获取值的枚举，会自动转化把值当成 key 来取出要显示的内容
@@ -371,8 +321,8 @@ func (p *Template) CreationFieldsWithinComponents(ctx *builder.Context) interfac
 					isShownOnCreation := sv.IsShownOnCreation()
 					if isShownOnCreation {
 						sv.(interface {
-							BuildFrontendRules(string) interface{}
-						}).BuildFrontendRules(ctx.Path())
+							GetFrontendRules(string) interface{}
+						}).GetFrontendRules(ctx.Path())
 						subItems = append(subItems, sv)
 					}
 				}
@@ -389,8 +339,8 @@ func (p *Template) CreationFieldsWithinComponents(ctx *builder.Context) interfac
 				isShownOnCreation := v.IsShownOnCreation()
 				if isShownOnCreation {
 					v.(interface {
-						BuildFrontendRules(string) interface{}
-					}).BuildFrontendRules(ctx.Path())
+						GetFrontendRules(string) interface{}
+					}).GetFrontendRules(ctx.Path())
 					items = append(items, v)
 				}
 			}
@@ -463,8 +413,8 @@ func (p *Template) UpdateFieldsWithinComponents(ctx *builder.Context) interface{
 					isShownOnUpdate := sv.IsShownOnUpdate()
 					if isShownOnUpdate {
 						sv.(interface {
-							BuildFrontendRules(string) interface{}
-						}).BuildFrontendRules(ctx.Path())
+							GetFrontendRules(string) interface{}
+						}).GetFrontendRules(ctx.Path())
 						subItems = append(subItems, sv)
 					}
 				}
@@ -481,8 +431,8 @@ func (p *Template) UpdateFieldsWithinComponents(ctx *builder.Context) interface{
 				isShownOnUpdate := v.IsShownOnUpdate()
 				if isShownOnUpdate {
 					v.(interface {
-						BuildFrontendRules(string) interface{}
-					}).BuildFrontendRules(ctx.Path())
+						GetFrontendRules(string) interface{}
+					}).GetFrontendRules(ctx.Path())
 					items = append(items, v)
 				}
 			}

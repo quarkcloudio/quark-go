@@ -11,14 +11,8 @@ QuarkGO 是一个基于golang的低代码工具；它提供的丰富组件，能
 - 附件管理
 - 组件丰富
 
-## 快速开始
+## 示例
 
-1. 创建 demo 文件夹，进入该目录中执行如下命令，初始化项目：
-``` bash
-go mod init demo/hello
-```
-2. 创建 main.go 文件
-3. 在 main.go 文件中添加如下代码：
 ```go
 package main
 
@@ -27,27 +21,20 @@ import (
 	"github.com/quarkcms/quark-go/pkg/app/install"
 	"github.com/quarkcms/quark-go/pkg/app/middleware"
 	"github.com/quarkcms/quark-go/pkg/builder"
-	"gorm.io/driver/sqlite"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func main() {
-
-	// 定义服务
-	var providers []interface{}
-
 	// 数据库配置信息
-	dsn := "./data.db"
-
-	// 加载后台服务
-	providers = append(providers, admin.Providers...)
+	dsn := "root:Bc5HQFJc4bLjZCcC@tcp(127.0.0.1:3306)/quarkgo?charset=utf8&parseTime=True&loc=Local"
 
 	// 配置资源
 	config := &builder.Config{
 		AppKey:    "123456",
-		Providers: providers,
+		Providers: admin.Providers,
 		DBConfig: &builder.DBConfig{
-			Dialector: sqlite.Open(dsn),
+			Dialector: mysql.Open(dsn),
 			Opts:      &gorm.Config{},
 		},
 	}
@@ -55,8 +42,8 @@ func main() {
 	// 实例化对象
 	b := builder.New(config)
 
-	// WEB根目录
-	b.Static("/", "./web/app")
+	// 静态文件
+	b.Static("/", "./website")
 
 	// 自动构建数据库、拉取静态文件
 	install.Handle()
@@ -73,22 +60,11 @@ func main() {
 	b.Run(":3000")
 }
 ```
-4. 拉取依赖
-``` bash
-go mod tidy
-```
-5. 启动服务
-``` bash
-go run main.go
-```
 
 后台地址： ```http://127.0.0.1:3000/admin/```
 
 账号：```administrator```
 密码：```123456```
-
-## 特别注意
-1. **后台用户认证使用了AppKey作为JWT的加密密串，生成环境请务必更改**
 
 ## 相关项目
 - [QuarkSmart](https://github.com/quarkcms/quark-smart) 单体应用

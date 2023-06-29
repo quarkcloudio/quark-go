@@ -8,8 +8,11 @@ import (
 
 var Client *redis.Client
 
-func Init(options *redis.Options) {
-	Client = redis.NewClient(options)
+func Init(addr string, password string) {
+	Client = redis.NewClient(&redis.Options{
+		Addr:     addr,
+		Password: password,
+	})
 	if err := Client.Ping(context.Background()).Err(); err != nil {
 		panic(err)
 	}

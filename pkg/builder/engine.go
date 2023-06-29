@@ -3,29 +3,26 @@ package builder
 import (
 	"io"
 	"net/http"
-	"os"
 	"reflect"
-	"runtime"
 	"strings"
 	"time"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"github.com/quarkcms/quark-go/pkg/dal"
-	"github.com/quarkcms/quark-go/pkg/gopkg"
+	"github.com/quarkcms/quark-go/pkg/github"
 	"gorm.io/gorm"
 )
 
 const (
-	// 应用名称
+	// Name of current package
 	AppName = "QuarkGo"
 
-	// 版本号
-	Version = "1.2.30"
+	// Version of current package
+	Version = "1.2.8"
 
-	// 包名
-	PkgName = "github.com/quarkcms/quark-go"
+	// 静态文件URL
+	RespositoryURL = "https://github.com/quarkcms/quark-go/tree/main/website/"
 )
 
 type Engine struct {
@@ -33,19 +30,14 @@ type Engine struct {
 	useHandlers []func(ctx *Context) error // 中间件方法
 	config      *Config                    // 配置
 	providers   []interface{}              // 服务列表
-	urlPaths    []*UrlPath                 // 请求路径列表
+	urlPaths    []string                   // 请求路径列表
 	routePaths  []*RouteMapping            // 路由路径列表
 }
 
 type RouteMapping struct {
-	Method  string
-	Path    string
-	Handler func(ctx *Context) error
-}
-
-type UrlPath struct {
-	Method string
-	Url    string
+	Method      string
+	Path        string
+	HandlerName string
 }
 
 type DBConfig struct {
@@ -53,23 +45,15 @@ type DBConfig struct {
 	Opts      gorm.Option
 }
 
-type RedisConfig struct {
-	Host     string // 地址
-	Password string // 密码
-	Port     string // 端口
-	Database int    // 数据库
-}
-
 type Config struct {
 	AppKey      string        // 应用加密Key，用于JWT认证
 	DBConfig    *DBConfig     // 数据库配置
-	RedisConfig *RedisConfig  // Redis配置
 	StaticPath  string        // 静态文件目录
 	Providers   []interface{} // 服务列表
 	AdminLayout *AdminLayout  // 后台布局
 }
 
-// 定义路由组
+// 定义Group
 type Group struct {
 	engine    *Engine
 	echoGroup *echo.Group
@@ -92,7 +76,9 @@ type AdminLayout struct {
 	Links        []map[string]interface{} // 友情链接
 }
 
-// 定义路由方法类型
+// Handle is a function that can be registered to a route to handle HTTP
+// requests. Like http.HandlerFunc, but has a third parameter for the values of
+// wildcards (path variables).
 type Handle func(ctx *Context) error
 
 // 初始化对象
@@ -109,15 +95,6 @@ func New(config *Config) *Engine {
 		dal.InitDB(config.DBConfig.Dialector, config.DBConfig.Opts)
 	}
 
-	// 初始化Redis
-	if config.RedisConfig != nil {
-		dal.InitRedis(&redis.Options{
-			Addr:     config.RedisConfig.Host + ":" + config.RedisConfig.Port,
-			Password: config.RedisConfig.Password,
-			DB:       config.RedisConfig.Database,
-		})
-	}
-
 	// 初始化后台布局
 	config.AdminLayout = initAdminLayout(config.AdminLayout)
 
@@ -128,16 +105,8 @@ func New(config *Config) *Engine {
 		config:    config,
 	}
 
-	// 默认WEB资源目录
-	if config.StaticPath == "" {
-		config.StaticPath = "./web"
-	}
-
 	// 下载静态文件
-	_, err := os.Stat(config.StaticPath)
-	if os.IsNotExist(err) {
-		gopkg.New(PkgName, Version).Save("web", config.StaticPath)
-	}
+	github.Download(RespositoryURL, config.StaticPath)
 
 	// 初始化请求列表
 	engine.initPaths()
@@ -216,7 +185,6 @@ func (p *Engine) NewContext(writer http.ResponseWriter, request *http.Request) *
 
 // 转换Request、Response对象
 func (p *Engine) TransformContext(fullPath string, header map[string][]string, method string, url string, body io.Reader, writer io.Writer) *Context {
-
 	// 转换为http.ResponseWriter
 	w := NewResponse(writer)
 
@@ -239,12 +207,14 @@ func (p *Engine) TransformContext(fullPath string, header map[string][]string, m
 // 初始化请求列表
 func (p *Engine) initPaths() {
 	var (
-		urlPaths   []*UrlPath
+		urlPaths   []string
 		routePaths []*RouteMapping
 	)
+
 	if p.urlPaths != nil && p.routePaths != nil {
 		return
 	}
+
 	for _, provider := range p.providers {
 
 		// 初始化
@@ -263,17 +233,20 @@ func (p *Engine) initPaths() {
 			structName := getNames[len(getNames)-1]
 
 			if strings.Contains(v.Path, ":resource") {
-				url := strings.Replace(v.Path, ":resource", strings.ToLower(structName), -1)
+				path := strings.Replace(v.Path, ":resource", strings.ToLower(structName), -1)
 				//处理行为
-				if strings.Contains(url, ":uriKey") {
+				if strings.Contains(path, ":uriKey") {
 					actions := getTemplateInstance.(interface {
 						Actions(ctx *Context) []interface{}
 					}).Actions(&Context{})
+
 					for _, av := range actions {
+
 						// uri唯一标识
 						uriKey := av.(interface {
 							GetUriKey(interface{}) string
 						}).GetUriKey(av)
+
 						actionType := av.(interface{ GetActionType() string }).GetActionType()
 						if actionType == "dropdown" {
 							dropdownActions := av.(interface{ GetActions() []interface{} }).GetActions()
@@ -281,21 +254,19 @@ func (p *Engine) initPaths() {
 								uriKey := dropdownAction.(interface {
 									GetUriKey(interface{}) string
 								}).GetUriKey(dropdownAction) // uri唯一标识
-								url = strings.Replace(url, ":uriKey", uriKey, -1)
+
+								path = strings.Replace(path, ":uriKey", uriKey, -1)
 							}
 						} else {
-							url = strings.Replace(url, ":uriKey", uriKey, -1)
+							path = strings.Replace(path, ":uriKey", uriKey, -1)
 						}
 					}
 				}
-				urlPaths = append(urlPaths, &UrlPath{
-					Method: v.Method,
-					Url:    url,
-				})
+				urlPaths = append(urlPaths, path)
 			}
 
 			if !hasRoutePath(routePaths, v.Method, v.Path) {
-				routePaths = append(routePaths, &RouteMapping{v.Method, v.Path, v.Handler})
+				routePaths = append(routePaths, &RouteMapping{v.Method, v.Path, v.HandlerName})
 			}
 		}
 	}
@@ -317,7 +288,7 @@ func hasRoutePath(routePaths []*RouteMapping, method string, path string) bool {
 }
 
 // 获取请求列表
-func (p *Engine) GetUrlPaths() []*UrlPath {
+func (p *Engine) GetUrlPaths() []string {
 	return p.urlPaths
 }
 
@@ -348,7 +319,7 @@ func (p *Engine) UseHandlers() []func(ctx *Context) error {
 // 解析模版方法
 func (p *Engine) handleParser(ctx *Context) error {
 	var (
-		result           []reflect.Value
+		result           interface{}
 		err              error
 		templateInstance interface{}
 	)
@@ -362,45 +333,20 @@ func (p *Engine) handleParser(ctx *Context) error {
 	// 执行挂载的方法
 	for _, v := range p.routePaths {
 		if v.Path == ctx.FullPath() {
-
-			// 反射实例值
 			value := reflect.ValueOf(templateInstance)
-			if !value.IsValid() {
-				continue
-			}
-
-			// 获取指针
-			pc := reflect.ValueOf(v.Handler).Pointer()
-
-			// 获取func全路径
-			fn := runtime.FuncForPC(pc)
-			fullPaths := strings.Split(fn.Name(), ".")
-			lastPathName := fullPaths[len(fullPaths)-1]
-
-			// 获取方法名称
-			funcNames := strings.Split(lastPathName, "-")
-			if len(funcNames) <= 0 {
-				continue
-			}
-			funcName := funcNames[0]
-
-			// 获取实例上方法
-			method := value.MethodByName(funcName)
-			if !method.IsValid() {
-				continue
-			}
-
-			// 反射执行结果
-			result = method.Call([]reflect.Value{
-				reflect.ValueOf(ctx),
-			})
-			if len(result) != 1 {
-				continue
-			}
-
-			// 执行结果
-			if v, ok := result[0].Interface().(error); ok {
-				err = v
+			if value.IsValid() {
+				method := value.MethodByName(v.HandlerName)
+				if method.IsValid() {
+					getResult := method.Call([]reflect.Value{
+						reflect.ValueOf(ctx),
+					})
+					if len(getResult) == 1 {
+						result = getResult[0].Interface()
+						if v, ok := result.(error); ok {
+							err = v
+						}
+					}
+				}
 			}
 		}
 	}
@@ -435,6 +381,7 @@ func (p *Engine) Render(ctx *Context) error {
 // 处理模版上的路由映射关系
 func (p *Engine) routeMappingParser() {
 	for _, routePath := range p.routePaths {
+
 		switch routePath.Method {
 		case "GET":
 			p.GET(routePath.Path, func(ctx *Context) error {
@@ -479,7 +426,6 @@ func (p *Engine) Echo() *echo.Echo {
 
 // 适配Echo框架方法
 func (p *Engine) echoHandle(path string, handle Handle, c echo.Context) error {
-	// 创建上下文
 	ctx := p.NewContext(c.Response().Writer, c.Request())
 
 	// 设置路由路径
@@ -500,12 +446,12 @@ func (p *Engine) echoHandle(path string, handle Handle, c echo.Context) error {
 	return err
 }
 
-// 加载静态文件
+// tatic registers a new route with path prefix to serve static files from the provided root directory.
 func (p *Engine) Static(pathPrefix string, fsRoot string) {
 	p.echo.Static(pathPrefix, fsRoot)
 }
 
-// GET请求
+// GET is a shortcut for router.Handle(http.MethodGet, path, handle)
 func (p *Engine) GET(path string, handle Handle) error {
 	p.echo.GET(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -514,7 +460,7 @@ func (p *Engine) GET(path string, handle Handle) error {
 	return nil
 }
 
-// HEAD请求
+// HEAD is a shortcut for router.Handle(http.MethodHead, path, handle)
 func (p *Engine) HEAD(path string, handle Handle) error {
 	p.echo.HEAD(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -523,7 +469,7 @@ func (p *Engine) HEAD(path string, handle Handle) error {
 	return nil
 }
 
-// OPTIONS请求
+// OPTIONS is a shortcut for router.Handle(http.MethodOptions, path, handle)
 func (p *Engine) OPTIONS(path string, handle Handle) error {
 	p.echo.OPTIONS(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -532,7 +478,7 @@ func (p *Engine) OPTIONS(path string, handle Handle) error {
 	return nil
 }
 
-// POST请求
+// POST is a shortcut for router.Handle(http.MethodPost, path, handle)
 func (p *Engine) POST(path string, handle Handle) error {
 	p.echo.POST(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -541,7 +487,7 @@ func (p *Engine) POST(path string, handle Handle) error {
 	return nil
 }
 
-// PUT请求
+// PUT is a shortcut for router.Handle(http.MethodPut, path, handle)
 func (p *Engine) PUT(path string, handle Handle) error {
 	p.echo.PUT(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -550,7 +496,7 @@ func (p *Engine) PUT(path string, handle Handle) error {
 	return nil
 }
 
-// PATCH请求
+// PATCH is a shortcut for router.Handle(http.MethodPatch, path, handle)
 func (p *Engine) PATCH(path string, handle Handle) error {
 	p.echo.PATCH(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -559,7 +505,7 @@ func (p *Engine) PATCH(path string, handle Handle) error {
 	return nil
 }
 
-// DELETE请求
+// DELETE is a shortcut for router.Handle(http.MethodDelete, path, handle)
 func (p *Engine) DELETE(path string, handle Handle) error {
 	p.echo.DELETE(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -568,7 +514,7 @@ func (p *Engine) DELETE(path string, handle Handle) error {
 	return nil
 }
 
-// Any请求
+// Any is a shortcut for router.Handle(http.MethodGet, path, handle)
 func (p *Engine) Any(path string, handle Handle) error {
 	p.echo.Any(path, func(c echo.Context) error {
 		return p.echoHandle(path, handle, c)
@@ -577,7 +523,7 @@ func (p *Engine) Any(path string, handle Handle) error {
 	return nil
 }
 
-// 路由组
+// Group creates a new router group with prefix and optional group-level middleware.
 func (p *Engine) Group(path string, handlers ...Handle) *Group {
 	echoGroup := p.echo.Group(path, func(next echo.HandlerFunc) echo.HandlerFunc {
 		if len(handlers) > 0 {
@@ -602,7 +548,7 @@ func (p *Engine) Group(path string, handlers ...Handle) *Group {
 	return &Group{engine: p, echoGroup: echoGroup}
 }
 
-// GET请求
+// GET is a shortcut for router.Handle(http.MethodGet, path, handle)
 func (p *Group) GET(path string, handle Handle) error {
 	p.echoGroup.GET(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -611,7 +557,7 @@ func (p *Group) GET(path string, handle Handle) error {
 	return nil
 }
 
-// HEAD请求
+// HEAD is a shortcut for router.Handle(http.MethodHead, path, handle)
 func (p *Group) HEAD(path string, handle Handle) error {
 	p.echoGroup.HEAD(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -620,7 +566,7 @@ func (p *Group) HEAD(path string, handle Handle) error {
 	return nil
 }
 
-// OPTIONS请求
+// OPTIONS is a shortcut for router.Handle(http.MethodOptions, path, handle)
 func (p *Group) OPTIONS(path string, handle Handle) error {
 	p.echoGroup.OPTIONS(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -629,7 +575,7 @@ func (p *Group) OPTIONS(path string, handle Handle) error {
 	return nil
 }
 
-// POST请求
+// POST is a shortcut for router.Handle(http.MethodPost, path, handle)
 func (p *Group) POST(path string, handle Handle) error {
 	p.echoGroup.POST(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -638,7 +584,7 @@ func (p *Group) POST(path string, handle Handle) error {
 	return nil
 }
 
-// PUT请求
+// PUT is a shortcut for router.Handle(http.MethodPut, path, handle)
 func (p *Group) PUT(path string, handle Handle) error {
 	p.echoGroup.PUT(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -647,7 +593,7 @@ func (p *Group) PUT(path string, handle Handle) error {
 	return nil
 }
 
-// PATCH请求
+// PATCH is a shortcut for router.Handle(http.MethodPatch, path, handle)
 func (p *Group) PATCH(path string, handle Handle) error {
 	p.echoGroup.PATCH(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -656,7 +602,7 @@ func (p *Group) PATCH(path string, handle Handle) error {
 	return nil
 }
 
-// DELETE请求
+// DELETE is a shortcut for router.Handle(http.MethodDelete, path, handle)
 func (p *Group) DELETE(path string, handle Handle) error {
 	p.echoGroup.DELETE(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -665,7 +611,7 @@ func (p *Group) DELETE(path string, handle Handle) error {
 	return nil
 }
 
-// Any请求
+// Any is a shortcut for router.Handle(http.MethodGet, path, handle)
 func (p *Group) Any(path string, handle Handle) error {
 	p.echoGroup.Any(path, func(c echo.Context) error {
 		return p.engine.echoHandle(path, handle, c)
@@ -674,7 +620,7 @@ func (p *Group) Any(path string, handle Handle) error {
 	return nil
 }
 
-// 路由组
+// Group creates a new router group with prefix and optional group-level middleware.
 func (p *Group) Group(path string, handlers ...Handle) *Group {
 	echoGroup := p.engine.echo.Group(path, func(next echo.HandlerFunc) echo.HandlerFunc {
 		if len(handlers) > 0 {

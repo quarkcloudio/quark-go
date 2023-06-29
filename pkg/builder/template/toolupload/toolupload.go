@@ -20,14 +20,13 @@ import (
 // 文件上传
 type Template struct {
 	template.Template
-	LimitSize        int64                // 限制文件大小
-	LimitType        interface{}          // 限制文件类型
-	LimitImageWidth  int64                // 限制图片宽度
-	LimitImageHeight int64                // 限制图片高度
-	Driver           string               // 存储驱动
-	SavePath         string               // 保存路径
-	OSSConfig        *storage.OSSConfig   // OSS配置
-	MinioConfig      *storage.MinioConfig // Minio配置
+	LimitSize        int64              // 限制文件大小
+	LimitType        interface{}        // 限制文件类型
+	LimitImageWidth  int64              // 限制图片宽度
+	LimitImageHeight int64              // 限制图片高度
+	Driver           string             // 存储驱动
+	SavePath         string             // 保存路径
+	OSSConfig        *storage.OSSConfig // OSS配置
 }
 
 // 初始化
@@ -47,16 +46,16 @@ func (p *Template) TemplateInit() interface{} {
 	p.Driver = storage.LocalDriver
 
 	// 注册路由映射
-	p.POST("/api/tool/upload/:resource/handle", p.Handle)
-	p.POST("/api/tool/upload/:resource/base64Handle", p.HandleFromBase64)
-	p.POST("/api/upload/:resource/handle", p.Handle)
-	p.POST("/api/upload/:resource/base64Handle", p.HandleFromBase64)
+	p.POST("/api/tool/upload/:resource/handle", "Handle")
+	p.POST("/api/tool/upload/:resource/base64Handle", "HandleFromBase64")
+	p.POST("/api/upload/:resource/handle", "Handle")
+	p.POST("/api/upload/:resource/base64Handle", "HandleFromBase64")
 
 	return p
 }
 
 // 执行上传
-func (p *Template) Handle(ctx *builder.Context) error {
+func (p *Template) Handle(ctx *builder.Context) interface{} {
 	var (
 		result *storage.FileInfo
 		err    error
@@ -117,11 +116,6 @@ func (p *Template) Handle(ctx *builder.Context) error {
 		Elem().
 		FieldByName("OSSConfig").Interface()
 
-	minioConfig := reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("MinioConfig").Interface()
-
 	savePath := reflect.
 		ValueOf(ctx.Template).
 		Elem().
@@ -141,7 +135,6 @@ func (p *Template) Handle(ctx *builder.Context) error {
 					Driver:           driver,
 					CheckFileExist:   true,
 					OSSConfig:        ossConfig.(*storage.OSSConfig),
-					MinioConfig:      minioConfig.(*storage.MinioConfig),
 				}).
 				Reader(&storage.File{
 					Header:  p.Header,
@@ -158,7 +151,7 @@ func (p *Template) Handle(ctx *builder.Context) error {
 			}
 			if fileInfo != nil {
 				return ctx.Template.(interface {
-					AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
+					AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
 				}).AfterHandle(ctx, fileInfo)
 			}
 
@@ -178,12 +171,12 @@ func (p *Template) Handle(ctx *builder.Context) error {
 	}
 
 	return ctx.Template.(interface {
-		AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
+		AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
 	}).AfterHandle(ctx, result)
 }
 
 // 通过Base64执行上传
-func (p *Template) HandleFromBase64(ctx *builder.Context) error {
+func (p *Template) HandleFromBase64(ctx *builder.Context) interface{} {
 	var (
 		result *storage.FileInfo
 		err    error
@@ -259,11 +252,6 @@ func (p *Template) HandleFromBase64(ctx *builder.Context) error {
 		Elem().
 		FieldByName("OSSConfig").Interface()
 
-	minioConfig := reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("MinioConfig").Interface()
-
 	fileSystem := storage.
 		New(&storage.Config{
 			LimitSize:        limitSize,
@@ -273,7 +261,6 @@ func (p *Template) HandleFromBase64(ctx *builder.Context) error {
 			Driver:           driver,
 			CheckFileExist:   true,
 			OSSConfig:        ossConfig.(*storage.OSSConfig),
-			MinioConfig:      minioConfig.(*storage.MinioConfig),
 		}).
 		Reader(&storage.File{
 			Content: fileData,
@@ -288,7 +275,7 @@ func (p *Template) HandleFromBase64(ctx *builder.Context) error {
 	}
 	if fileInfo != nil {
 		return ctx.Template.(interface {
-			AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
+			AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
 		}).AfterHandle(ctx, fileInfo)
 	}
 
@@ -303,7 +290,7 @@ func (p *Template) HandleFromBase64(ctx *builder.Context) error {
 	}
 
 	return ctx.Template.(interface {
-		AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
+		AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{}
 	}).AfterHandle(ctx, result)
 }
 
@@ -314,7 +301,7 @@ func (p *Template) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSy
 }
 
 // 执行上传
-func (p *Template) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error {
+func (p *Template) AfterHandle(ctx *builder.Context, result *storage.FileInfo) interface{} {
 
 	return ctx.JSON(200, msg.Success("上传成功", "", result))
 }
