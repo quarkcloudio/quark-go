@@ -53,7 +53,7 @@ func (p *EditRequest) FillData(ctx *builder.Context) map[string]interface{} {
 				Elem().
 				FieldByName("Component").String()
 
-			if component == "datetimeField" || component == "dateField" {
+			if component == "datetimeField" {
 				format := reflect.
 					ValueOf(field).
 					Elem().
@@ -65,6 +65,18 @@ func (p *EditRequest) FillData(ctx *builder.Context) map[string]interface{} {
 				format = strings.Replace(format, "HH", "15", -1)
 				format = strings.Replace(format, "mm", "04", -1)
 				format = strings.Replace(format, "ss", "05", -1)
+
+				fieldValue = result[name].(time.Time).Format(format)
+			} else if component == "dateField" {
+				format := reflect.
+					ValueOf(field).
+					Elem().
+					FieldByName("Format").
+					String()
+
+				format = strings.Replace(format, "YYYY", "2006", -1)
+				format = strings.Replace(format, "MM", "01", -1)
+				format = strings.Replace(format, "DD", "02", -1)
 
 				fieldValue = result[name].(time.Time).Format(format)
 			} else {
