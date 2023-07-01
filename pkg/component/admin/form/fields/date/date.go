@@ -109,6 +109,7 @@ func (p *Component) Init() *Component {
 	p.ShowOnImport = true
 	p.Column = (&table.Column{}).Init()
 	p.Placeholder = "请选择"
+	p.Format = "YYYY-MM-DD"
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
