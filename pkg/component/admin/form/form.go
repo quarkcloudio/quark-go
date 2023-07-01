@@ -147,10 +147,6 @@ func (p *Component) parseInitialValue(item interface{}, initialValues map[string
 		}
 	}
 
-	if initialValues[name] != nil {
-		value = initialValues[name]
-	}
-
 	issetValue := reflectElem.
 		FieldByName("Value").
 		IsValid()
@@ -163,6 +159,10 @@ func (p *Component) parseInitialValue(item interface{}, initialValues map[string
 		if getValue != nil {
 			value = getValue
 		}
+	}
+
+	if initialValues[name] != nil {
+		value = initialValues[name]
 	}
 
 	return value

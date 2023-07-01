@@ -84,7 +84,7 @@ func (p *Component) Init() *Component {
 	p.ShowOnExport = true
 	p.ShowOnImport = true
 	p.Column = (&table.Column{}).Init()
-	p.Value = map[string]string{
+	p.DefaultValue = map[string]string{
 		"longitude": "116.397724",
 		"latitude":  "39.903755",
 	}
