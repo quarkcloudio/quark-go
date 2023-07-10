@@ -39,7 +39,7 @@ func (p *Image) Init() interface{} {
 
 	// 添加路由映射关系
 	p.GET("/api/admin/upload/:resource/getList", p.GetList)
-	p.GET("/api/admin/upload/:resource/delete", p.Delete)
+	p.Any("/api/admin/upload/:resource/delete", p.Delete)
 	p.POST("/api/admin/upload/:resource/crop", p.Crop)
 
 	return p
