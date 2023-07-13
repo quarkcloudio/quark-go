@@ -6,8 +6,8 @@ import (
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
-	"github.com/quarkcms/quark-go/pkg/builder"
-	"github.com/quarkcms/quark-go/pkg/msg"
+	"github.com/quarkcms/quark-go/v2/pkg/builder"
+	"github.com/quarkcms/quark-go/v2/pkg/msg"
 )
 
 // 适配hertz框架路由

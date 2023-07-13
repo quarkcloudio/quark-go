@@ -1,12 +1,12 @@
 package resources
 
 import (
-	"github.com/quarkcms/quark-go/pkg/builder"
-	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource"
+	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
 type Demo struct {
-	adminresource.Template
+	resource.Template
 }
 
 // 初始化

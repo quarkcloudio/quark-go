@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/quarkcms/quark-go/pkg/adapter/fiberadapter"
-	"github.com/quarkcms/quark-go/pkg/app/handler/admin"
-	"github.com/quarkcms/quark-go/pkg/app/install"
-	"github.com/quarkcms/quark-go/pkg/app/middleware"
-	"github.com/quarkcms/quark-go/pkg/builder"
+	"github.com/quarkcms/quark-go/v2/pkg/adapter/fiberadapter"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/install"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/middleware"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/service"
+	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -44,7 +44,7 @@ func main() {
 	// 配置资源
 	config := &builder.Config{
 		AppKey:    "123456",
-		Providers: admin.Providers,
+		Providers: service.Providers,
 		DBConfig: &builder.DBConfig{
 			Dialector: mysql.Open(dsn),
 			Opts:      &gorm.Config{},

@@ -14,7 +14,7 @@ import (
 	"github.com/derekstavis/go-qs"
 	"github.com/gobeam/stringy"
 	"github.com/labstack/echo/v4"
-	"github.com/quarkcms/quark-go/pkg/msg"
+	"github.com/quarkcms/quark-go/v2/pkg/msg"
 )
 
 // Context is the most important part of gin. It allows us to pass variables between middleware,

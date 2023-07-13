@@ -23,10 +23,10 @@ go mod init demo/hello
 package main
 
 import (
-	"github.com/quarkcms/quark-go/pkg/app/handler/admin"
-	"github.com/quarkcms/quark-go/pkg/app/install"
-	"github.com/quarkcms/quark-go/pkg/app/middleware"
-	"github.com/quarkcms/quark-go/pkg/builder"
+	"github.com/quarkcms/quark-go/v2/pkg/app/handler/admin"
+	"github.com/quarkcms/quark-go/v2/pkg/app/install"
+	"github.com/quarkcms/quark-go/v2/pkg/app/middleware"
+	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )

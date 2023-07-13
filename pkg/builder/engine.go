@@ -12,8 +12,8 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
-	"github.com/quarkcms/quark-go/pkg/dal"
-	"github.com/quarkcms/quark-go/pkg/gopkg"
+	"github.com/quarkcms/quark-go/v2/pkg/dal"
+	"github.com/quarkcms/quark-go/v2/pkg/gopkg"
 	"gorm.io/gorm"
 )
 
@@ -22,7 +22,7 @@ const (
 	AppName = "QuarkGo"
 
 	// 版本号
-	Version = "1.2.34"
+	Version = "2.0.0"
 
 	// 包名
 	PkgName = "github.com/quarkcms/quark-go"

@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
-	"github.com/quarkcms/quark-go/examples/zeroadmin/internal/logic"
-	"github.com/quarkcms/quark-go/examples/zeroadmin/internal/svc"
-	"github.com/quarkcms/quark-go/examples/zeroadmin/internal/types"
+	"github.com/quarkcms/quark-go/v2/examples/zeroadmin/internal/logic"
+	"github.com/quarkcms/quark-go/v2/examples/zeroadmin/internal/svc"
+	"github.com/quarkcms/quark-go/v2/examples/zeroadmin/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 

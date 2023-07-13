@@ -2,8 +2,8 @@ package dal
 
 import (
 	"github.com/go-redis/redis/v8"
-	"github.com/quarkcms/quark-go/pkg/dal/db"
-	redisclient "github.com/quarkcms/quark-go/pkg/dal/redis"
+	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
+	redisclient "github.com/quarkcms/quark-go/v2/pkg/dal/redis"
 	"gorm.io/gorm"
 )
 

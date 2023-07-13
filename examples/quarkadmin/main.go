@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/quarkcms/quark-go/pkg/app/handler/admin"
-	"github.com/quarkcms/quark-go/pkg/app/handler/miniapp"
-	"github.com/quarkcms/quark-go/pkg/app/handler/mix"
-	"github.com/quarkcms/quark-go/pkg/app/handler/tool"
-	"github.com/quarkcms/quark-go/pkg/app/install"
-	"github.com/quarkcms/quark-go/pkg/app/middleware"
-	"github.com/quarkcms/quark-go/pkg/builder"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/install"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/middleware"
+	adminservice "github.com/quarkcms/quark-go/v2/pkg/app/admin/service"
+	miniappservice "github.com/quarkcms/quark-go/v2/pkg/app/miniapp/service"
+	mixservice "github.com/quarkcms/quark-go/v2/pkg/app/mix/service"
+	toolservice "github.com/quarkcms/quark-go/v2/pkg/app/tool/service"
+	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -21,16 +21,16 @@ func main() {
 	dsn := "root:fK7xPGJi1gJfIief@tcp(127.0.0.1:3306)/quarkgo?charset=utf8&parseTime=True&loc=Local"
 
 	// 加载后台服务
-	providers = append(providers, admin.Providers...)
+	providers = append(providers, adminservice.Providers...)
 
 	// 加载Mix服务
-	providers = append(providers, mix.Providers...)
+	providers = append(providers, mixservice.Providers...)
 
 	// 加载MiniApp服务
-	providers = append(providers, miniapp.Providers...)
+	providers = append(providers, miniappservice.Providers...)
 
 	// 加载工具服务
-	providers = append(providers, tool.Providers...)
+	providers = append(providers, toolservice.Providers...)
 
 	// 配置资源
 	config := &builder.Config{

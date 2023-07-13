@@ -3,8 +3,8 @@ package logic
 import (
 	"context"
 
-	"github.com/quarkcms/quark-go/examples/zeroadmin/internal/svc"
-	"github.com/quarkcms/quark-go/examples/zeroadmin/internal/types"
+	"github.com/quarkcms/quark-go/v2/examples/zeroadmin/internal/svc"
+	"github.com/quarkcms/quark-go/v2/examples/zeroadmin/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

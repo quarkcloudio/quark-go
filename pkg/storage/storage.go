@@ -20,7 +20,7 @@ import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-	"github.com/quarkcms/quark-go/pkg/rand"
+	"github.com/quarkcms/quark-go/v2/pkg/rand"
 )
 
 var (

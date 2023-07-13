@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 
 	"github.com/gin-gonic/gin"
-	"github.com/quarkcms/quark-go/pkg/builder"
-	"github.com/quarkcms/quark-go/pkg/msg"
+	"github.com/quarkcms/quark-go/v2/pkg/builder"
+	"github.com/quarkcms/quark-go/v2/pkg/msg"
 )
 
 // 适配gin框架路由

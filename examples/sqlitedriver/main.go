@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/quarkcms/quark-go/pkg/app/handler/admin"
-	"github.com/quarkcms/quark-go/pkg/app/handler/mix"
-	"github.com/quarkcms/quark-go/pkg/app/handler/tool"
-	"github.com/quarkcms/quark-go/pkg/app/install"
-	"github.com/quarkcms/quark-go/pkg/app/middleware"
-	"github.com/quarkcms/quark-go/pkg/builder"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/install"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/middleware"
+	adminservice "github.com/quarkcms/quark-go/v2/pkg/app/admin/service"
+	mixservice "github.com/quarkcms/quark-go/v2/pkg/app/mix/service"
+	toolservice "github.com/quarkcms/quark-go/v2/pkg/app/tool/service"
+	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -20,13 +20,13 @@ func main() {
 	dsn := "./data.db"
 
 	// 加载后台服务
-	providers = append(providers, admin.Providers...)
+	providers = append(providers, adminservice.Providers...)
 
 	// 加载Mix服务
-	providers = append(providers, mix.Providers...)
+	providers = append(providers, mixservice.Providers...)
 
 	// 加载工具服务
-	providers = append(providers, tool.Providers...)
+	providers = append(providers, toolservice.Providers...)
 
 	// 配置资源
 	config := &builder.Config{
