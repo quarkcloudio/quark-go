@@ -6,6 +6,7 @@ import (
 
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/card"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/tabs"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"gorm.io/gorm"
@@ -126,8 +127,8 @@ func (p *Template) AfterSaved(ctx *builder.Context, id int, data map[string]inte
 
 	// 返回错误信息
 	if result.Error != nil {
-		return ctx.JSONError(result.Error.Error())
+		return ctx.JSON(200, message.Error(result.Error.Error()))
 	}
 
-	return ctx.JSONOk("操作成功！", strings.Replace("/layout/index?api="+IndexPath, ":resource", ctx.Param("resource"), -1))
+	return ctx.JSON(200, message.Success("操作成功！", strings.Replace("/layout/index?api="+IndexPath, ":resource", ctx.Param("resource"), -1)))
 }

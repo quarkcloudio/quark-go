@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/rule"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/service/actions"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/service/searches"
@@ -117,10 +118,13 @@ func (p *Role) AfterSaved(ctx *builder.Context, id int, data map[string]interfac
 
 			err := (&model.CasbinRule{}).AddMenuAndPermissionToRole(id, ids)
 			if err != nil {
-				return ctx.JSONError(err.Error())
+				return ctx.JSON(200, message.Error(err.Error()))
 			}
 		}
 	}
 
-	return ctx.JSONOk("操作成功！", strings.Replace("/layout/index?api="+resource.IndexPath, ":resource", ctx.Param("resource"), -1))
+	return ctx.JSON(200, message.Success(
+		"操作成功",
+		strings.Replace("/layout/index?api="+resource.IndexPath, ":resource", ctx.Param("resource"), -1),
+	))
 }

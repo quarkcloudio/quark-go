@@ -7,7 +7,6 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/service/logins"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
-	"github.com/quarkcms/quark-go/v2/pkg/msg"
 )
 
 // 中间件
@@ -39,12 +38,12 @@ func Handle(ctx *builder.Context) error {
 	// 获取登录管理员信息
 	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
-		return ctx.JSON(401, msg.Error(err.Error(), ""))
+		return ctx.JSON(401, builder.Error(err.Error()))
 	}
 
 	guardName := adminInfo.GuardName
 	if guardName != "admin" {
-		return ctx.JSON(401, msg.Error("401 Unauthozied", ""))
+		return ctx.JSON(401, builder.Error("401 Unauthozied"))
 	}
 
 	// 管理员id
@@ -54,10 +53,10 @@ func Handle(ctx *builder.Context) error {
 		result3, err := (&model.CasbinRule{}).Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.Path(), "Any")
 		result4, err := (&model.CasbinRule{}).Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.Path(), ctx.Method())
 		if err != nil {
-			return ctx.JSON(500, msg.Error(err.Error(), ""))
+			return ctx.JSON(500, builder.Error(err.Error()))
 		}
 		if !(result1 || result2 || result3 || result4) {
-			return ctx.JSON(403, msg.Error("403 Forbidden", ""))
+			return ctx.JSON(403, builder.Error("403 Forbidden"))
 		}
 	}
 

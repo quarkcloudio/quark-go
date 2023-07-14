@@ -3,6 +3,7 @@ package layout
 import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/footer"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/layout"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
@@ -42,13 +43,13 @@ func (p *Template) Render(ctx *builder.Context) error {
 	// 获取登录管理员信息
 	adminInfo, err := admin.GetAuthUser(config.AppKey, ctx.Token())
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	// 获取管理员菜单
 	getMenus, err := admin.GetMenuListById(adminInfo.Id)
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	// 页脚

@@ -3,6 +3,7 @@ package actions
 import (
 	"encoding/json"
 
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/actions"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -39,12 +40,12 @@ func (p *ChangeWebConfig) Handle(ctx *builder.Context, query *gorm.DB) error {
 	}
 
 	if !result {
-		return ctx.JSONError("操作失败，请重试！")
+		return ctx.JSON(200, message.Error("操作失败，请重试！"))
 	}
 
 	// 刷新网站配置
 	(&model.Config{}).Refresh()
 
 	// 返回成功
-	return ctx.JSONOk("操作成功")
+	return ctx.JSON(200, message.Success("操作成功"))
 }

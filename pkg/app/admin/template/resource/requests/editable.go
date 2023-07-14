@@ -3,6 +3,7 @@ package requests
 import (
 	"reflect"
 
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
 )
@@ -30,12 +31,12 @@ func (p *EditableRequest) Handle(ctx *builder.Context) error {
 	// 获取所有Query数据
 	data := ctx.AllQuerys()
 	if data == nil {
-		return ctx.JSONError("参数错误！")
+		return ctx.JSON(200, message.Error("参数错误！"))
 	}
 
 	id = data["id"]
 	if id == nil {
-		return ctx.JSONError("id不能为空！")
+		return ctx.JSON(200, message.Error("id不能为空！"))
 	}
 
 	// 解析数据
@@ -53,17 +54,17 @@ func (p *EditableRequest) Handle(ctx *builder.Context) error {
 	}
 
 	if field == "" {
-		return ctx.JSONError("参数错误！")
+		return ctx.JSON(200, message.Error("参数错误！"))
 	}
 
 	if value == nil {
-		return ctx.JSONError("参数错误！")
+		return ctx.JSON(200, message.Error("参数错误！"))
 	}
 
 	// 更新数据
 	err := model.Where("id = ?", id).Update(field, value).Error
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	result := ctx.Template.(interface {
@@ -73,5 +74,5 @@ func (p *EditableRequest) Handle(ctx *builder.Context) error {
 		return result
 	}
 
-	return ctx.JSONOk("操作成功！")
+	return ctx.JSON(200, message.Success("操作成功"))
 }

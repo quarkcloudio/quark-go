@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/gobeam/stringy"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/actions"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -72,18 +73,18 @@ func (p *SyncPermission) Handle(ctx *builder.Context, query *gorm.DB) error {
 		}
 	}
 	if len(data) == 0 {
-		return ctx.JSONError("暂无新增权限！")
+		return ctx.JSON(200, message.Error("暂无新增权限！"))
 	}
 
 	err := query.Create(data).Error
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	err = db.Client.Model(&model.Permission{}).Where("name NOT IN ?", currentNames).Delete("").Error
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
-	return ctx.JSONOk("操作成功")
+	return ctx.JSON(200, message.Success("操作成功"))
 }

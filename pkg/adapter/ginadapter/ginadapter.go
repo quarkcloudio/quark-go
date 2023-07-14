@@ -6,19 +6,18 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
-	"github.com/quarkcms/quark-go/v2/pkg/msg"
 )
 
 // 适配gin框架路由
 func RouteAdapter(b *builder.Engine, ctx *gin.Context) {
 	body, err := ioutil.ReadAll(ctx.Request.Body)
 	if err != nil {
-		ctx.JSON(200, msg.Error(err.Error(), ""))
+		ctx.JSON(200, builder.Error(err.Error()))
 		return
 	}
 	data, err := ctx.GetRawData()
 	if err != nil {
-		ctx.JSON(200, msg.Error(err.Error(), ""))
+		ctx.JSON(200, builder.Error(err.Error()))
 		return
 	}
 

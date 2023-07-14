@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"time"
 
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/upload"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -90,7 +91,7 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 
 	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	// 插入数据库
@@ -106,17 +107,21 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 		Status:  1,
 	})
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
-	return ctx.JSONOk("上传成功", "", map[string]interface{}{
-		"id":          id,
-		"contentType": result.ContentType,
-		"ext":         result.Ext,
-		"hash":        result.Hash,
-		"name":        result.Name,
-		"path":        result.Path,
-		"size":        result.Size,
-		"url":         result.Url,
-	})
+	return ctx.JSON(200, message.Success(
+		"上传成功",
+		"",
+		map[string]interface{}{
+			"id":          id,
+			"contentType": result.ContentType,
+			"ext":         result.Ext,
+			"hash":        result.Hash,
+			"name":        result.Name,
+			"path":        result.Path,
+			"size":        result.Size,
+			"url":         result.Url,
+		},
+	))
 }

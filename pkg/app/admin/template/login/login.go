@@ -9,6 +9,7 @@ import (
 	"github.com/dchest/captcha"
 	"github.com/go-redis/redis/v8"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/login"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
 	redisclient "github.com/quarkcms/quark-go/v2/pkg/dal/redis"
@@ -84,9 +85,9 @@ func (p *Template) CaptchaStore(store string) {
 // 验证码ID
 func (p *Template) CaptchaId(ctx *builder.Context) error {
 
-	return ctx.JSONOk("获取成功", "", map[string]string{
+	return ctx.JSON(200, message.Success("操作成功", "", map[string]string{
 		"captchaId": captcha.NewLen(4),
-	})
+	}))
 }
 
 // 生成验证码
@@ -101,12 +102,12 @@ func (p *Template) Captcha(ctx *builder.Context) error {
 
 // 登录方法
 func (p *Template) Handle(ctx *builder.Context) error {
-	return ctx.JSONError("请实现登录方法")
+	return ctx.JSON(200, message.Error("请实现登录方法"))
 }
 
 // 退出方法
 func (p *Template) Logout(ctx *builder.Context) error {
-	return ctx.JSONOk("退出成功")
+	return ctx.JSON(200, message.Error("退出成功"))
 }
 
 // 组件渲染
@@ -115,7 +116,7 @@ func (p *Template) Render(ctx *builder.Context) error {
 	// 模板实例
 	templateInstance := ctx.Template
 	if templateInstance == nil {
-		return ctx.JSONError("模板实例获取失败")
+		return ctx.JSON(200, message.Error("模板实例获取失败"))
 	}
 
 	// 默认登录接口

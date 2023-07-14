@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/upload"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -63,7 +64,7 @@ func (p *Image) GetList(ctx *builder.Context) error {
 		currentPage,
 	)
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	pagination := map[string]interface{}{
@@ -75,14 +76,18 @@ func (p *Image) GetList(ctx *builder.Context) error {
 
 	categorys, err := (&model.PictureCategory{}).GetAuthList(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
-	return ctx.JSONOk("上传成功", "", map[string]interface{}{
-		"pagination": pagination,
-		"lists":      pictures,
-		"categorys":  categorys,
-	})
+	return ctx.JSON(200, message.Success(
+		"上传成功",
+		"",
+		map[string]interface{}{
+			"pagination": pagination,
+			"lists":      pictures,
+			"categorys":  categorys,
+		},
+	))
 }
 
 // 图片删除
@@ -90,15 +95,15 @@ func (p *Image) Delete(ctx *builder.Context) error {
 	data := map[string]interface{}{}
 	json.Unmarshal(ctx.Body(), &data)
 	if data["id"] == "" {
-		return ctx.JSONError("参数错误！")
+		return ctx.JSON(200, message.Error("参数错误！"))
 	}
 
 	err := (&model.Picture{}).DeleteById(data["id"])
 	if err != nil {
-		return ctx.JSONError("参数错误！")
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
-	return ctx.JSONOk("操作成功！")
+	return ctx.JSON(200, message.Success("操作成功"))
 }
 
 // 图片裁剪
@@ -110,23 +115,23 @@ func (p *Image) Crop(ctx *builder.Context) error {
 
 	data := map[string]interface{}{}
 	if err := ctx.BodyParser(&data); err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 	if data["id"] == "" || data["file"] == "" {
-		return ctx.JSONError("参数错误！")
+		return ctx.JSON(200, message.Error("参数错误！"))
 	}
 
 	pictureInfo, err := (&model.Picture{}).GetInfoById(data["id"])
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 	if pictureInfo.Id == 0 {
-		return ctx.JSONError("文件不存在")
+		return ctx.JSON(200, message.Error("文件不存在"))
 	}
 
 	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	limitW := ctx.Query("limitW", "")
@@ -134,12 +139,12 @@ func (p *Image) Crop(ctx *builder.Context) error {
 
 	files := strings.Split(data["file"].(string), ",")
 	if len(files) != 2 {
-		return ctx.JSONError("格式错误")
+		return ctx.JSON(200, message.Error("格式错误"))
 	}
 
 	fileData, err := base64.StdEncoding.DecodeString(files[1]) //成图片文件并把文件写入到buffer
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	limitSize := reflect.
@@ -215,7 +220,7 @@ func (p *Image) Crop(ctx *builder.Context) error {
 		BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem) (*storage.FileSystem, *storage.FileInfo, error)
 	}).BeforeHandle(ctx, fileSystem)
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 	if fileInfo != nil {
 		// 更新数据库
@@ -240,7 +245,7 @@ func (p *Image) Crop(ctx *builder.Context) error {
 		Path(savePath).
 		Save()
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	// 重写url
@@ -263,7 +268,7 @@ func (p *Image) Crop(ctx *builder.Context) error {
 		Status:  1,
 	})
 
-	return ctx.JSONOk("裁剪成功", "", result)
+	return ctx.JSON(200, message.Success("操作成功", "", result))
 }
 
 // 上传前回调
@@ -309,7 +314,7 @@ func (p *Image) AfterHandle(ctx *builder.Context, result *storage.FileInfo) erro
 
 	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	// 插入数据库
@@ -328,10 +333,10 @@ func (p *Image) AfterHandle(ctx *builder.Context, result *storage.FileInfo) erro
 	})
 
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
-	return ctx.JSONOk("上传成功", "", map[string]interface{}{
+	return ctx.JSON(200, message.Success("上传成功", "", map[string]interface{}{
 		"id":          id,
 		"contentType": result.ContentType,
 		"ext":         result.Ext,
@@ -342,5 +347,5 @@ func (p *Image) AfterHandle(ctx *builder.Context, result *storage.FileInfo) erro
 		"path":        result.Path,
 		"size":        result.Size,
 		"url":         result.Url,
-	})
+	}))
 }

@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/actions"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -60,12 +61,12 @@ func (p *DeleteRole) GetApiParams() []string {
 func (p *DeleteRole) Handle(ctx *builder.Context, query *gorm.DB) error {
 	id := ctx.Query("id")
 	if id == "" {
-		return ctx.JSONError("参数错误")
+		return ctx.JSON(200, message.Error("参数错误！"))
 	}
 
 	err := query.Delete("").Error
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	ids := strings.Split(id.(string), ",")
@@ -73,7 +74,7 @@ func (p *DeleteRole) Handle(ctx *builder.Context, query *gorm.DB) error {
 		for _, v := range ids {
 			idInt, err := strconv.Atoi(v)
 			if err != nil {
-				return ctx.JSONError(err.Error())
+				return ctx.JSON(200, message.Error(err.Error()))
 			}
 
 			// 清理casbin里的角色
@@ -82,12 +83,12 @@ func (p *DeleteRole) Handle(ctx *builder.Context, query *gorm.DB) error {
 	} else {
 		idInt, err := strconv.Atoi(id.(string))
 		if err != nil {
-			return ctx.JSONError(err.Error())
+			return ctx.JSON(200, message.Error(err.Error()))
 		}
 
 		// 清理casbin里的角色
 		(&model.CasbinRule{}).RemoveRoleMenuAndPermissions(idInt)
 	}
 
-	return ctx.JSONOk("操作成功")
+	return ctx.JSON(200, message.Success("操作成功"))
 }

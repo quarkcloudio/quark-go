@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/actions"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"gorm.io/gorm"
@@ -30,5 +31,5 @@ func (p *SelectOptions) Handle(ctx *builder.Context, query *gorm.DB) error {
 		}
 	}
 
-	return ctx.JSONOk("操作成功")
+	return ctx.JSON(200, message.Success("操作成功"))
 }

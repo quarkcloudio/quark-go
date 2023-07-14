@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/actions"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"gorm.io/gorm"
@@ -52,7 +53,7 @@ func (p *ChangeStatus) GetApiParams() []string {
 func (p *ChangeStatus) Handle(ctx *builder.Context, query *gorm.DB) error {
 	status := ctx.Query("status")
 	if status == "" {
-		return ctx.JSONError("参数错误！")
+		return ctx.JSON(200, message.Error("参数错误！"))
 	}
 
 	var fieldStatus int
@@ -64,8 +65,8 @@ func (p *ChangeStatus) Handle(ctx *builder.Context, query *gorm.DB) error {
 
 	err := query.Update("status", fieldStatus).Error
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
-	return ctx.JSONOk("操作成功")
+	return ctx.JSON(200, message.Success("操作成功"))
 }

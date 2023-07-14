@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/space"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/tpl"
 	models "github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
@@ -35,7 +36,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 	}
 
 	if getFileId == 0 {
-		return ctx.JSONError("参数错误！")
+		return ctx.JSON(200, message.Error("参数错误！"))
 	}
 
 	modelInstance := reflect.
@@ -47,7 +48,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 
 	importData, err := (&models.File{}).GetExcelData(getFileId)
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	// 表格头部
@@ -148,7 +149,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 		if isExist(filePath) == false {
 			err := os.MkdirAll(filePath, 0666)
 			if err != nil {
-				return ctx.JSONError(err.Error())
+				return ctx.JSON(200, message.Error(err.Error()))
 			}
 		}
 
@@ -176,7 +177,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 
 		f.SetActiveSheet(index)
 		if err := f.SaveAs(filePath + fileName); err != nil {
-			return ctx.JSONError(err.Error())
+			return ctx.JSON(200, message.Error(err.Error()))
 		}
 
 		tpl1 := (&tpl.Component{}).
@@ -208,7 +209,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 		return ctx.JSON(200, component)
 	}
 
-	return ctx.JSONOk("操作成功！", strings.Replace("/layout/index?api="+indexRoute, ":resource", ctx.Param("resource"), -1))
+	return ctx.JSON(200, message.Success("操作成功！", strings.Replace("/layout/index?api="+indexRoute, ":resource", ctx.Param("resource"), -1)))
 }
 
 // 将表格数据转换成表单数据

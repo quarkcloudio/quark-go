@@ -5,6 +5,7 @@ import (
 
 	"github.com/dchest/captcha"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/login"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -47,33 +48,33 @@ func (p *Index) Init() interface{} {
 func (p *Index) Handle(ctx *builder.Context) error {
 	loginRequest := &LoginRequest{}
 	if err := ctx.BodyParser(loginRequest); err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 	if loginRequest.CaptchaId == "" || loginRequest.Captcha == "" {
-		return ctx.JSONError("验证码不能为空")
+		return ctx.JSON(200, message.Error("验证码不能为空"))
 	}
 
 	verifyResult := captcha.VerifyString(loginRequest.CaptchaId, loginRequest.Captcha)
 	if !verifyResult {
-		return ctx.JSONError("验证码错误")
+		return ctx.JSON(200, message.Error("验证码错误"))
 	}
 	captcha.Reload(loginRequest.CaptchaId)
 
 	if loginRequest.Username == "" || loginRequest.Password == "" {
-		return ctx.JSONError("用户名或密码不能为空")
+		return ctx.JSON(200, message.Error("用户名或密码不能为空"))
 	}
 
 	adminInfo, err := (&model.Admin{}).GetInfoByUsername(loginRequest.Username)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return ctx.JSONError("用户不存在")
+			return ctx.JSON(200, message.Error("用户不存在"))
 		}
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	// 检验账号和密码
 	if !hash.Check(adminInfo.Password, loginRequest.Password) {
-		return ctx.JSONError("用户名或密码错误")
+		return ctx.JSON(200, message.Error("用户名或密码错误"))
 	}
 
 	config := ctx.Engine.GetConfig()
@@ -85,10 +86,10 @@ func (p *Index) Handle(ctx *builder.Context) error {
 	// 获取token字符串
 	tokenString, err := token.SignedString([]byte(config.AppKey))
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
-	return ctx.JSONOk("登录成功", "", map[string]string{
+	return ctx.JSON(200, message.Success("登录成功", "", map[string]string{
 		"token": tokenString,
-	})
+	}))
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/gobeam/stringy"
 	"github.com/gookit/goutil/structs"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
 	"gorm.io/gorm"
@@ -34,14 +35,14 @@ func (p *StoreRequest) Handle(ctx *builder.Context) error {
 		ValidatorForCreation(ctx *builder.Context, data map[string]interface{}) error
 	}).ValidatorForCreation(ctx, data)
 	if validator != nil {
-		return ctx.JSONError(validator.Error())
+		return ctx.JSON(200, message.Error(validator.Error()))
 	}
 
 	data, err := ctx.Template.(interface {
 		BeforeSaving(ctx *builder.Context, data map[string]interface{}) (map[string]interface{}, error)
 	}).BeforeSaving(ctx, data)
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	newData := map[string]interface{}{}
@@ -84,7 +85,7 @@ func (p *StoreRequest) Handle(ctx *builder.Context) error {
 		Elem().
 		FieldByName("Id")
 	if !reflectId.IsValid() {
-		return ctx.JSONError("参数错误!")
+		return ctx.JSON(200, message.Error("参数错误"))
 	}
 
 	id := int(reflectId.Int())

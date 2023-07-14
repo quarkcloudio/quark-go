@@ -14,7 +14,6 @@ import (
 	"github.com/derekstavis/go-qs"
 	"github.com/gobeam/stringy"
 	"github.com/labstack/echo/v4"
-	"github.com/quarkcms/quark-go/v2/pkg/msg"
 )
 
 // Context is the most important part of gin. It allows us to pass variables between middleware,
@@ -566,49 +565,29 @@ func (p *Context) IsImport() bool {
 	return (uri[len(uri)-1] == "import")
 }
 
-// 输出成功状态的JSON数据，JSONOk("成功") | JSONOk("成功", "/home/index", map[string]interface{}{"title":"标题"})
-func (p *Context) JSONOk(data ...interface{}) error {
+// 输出成功状态的JSON数据，JSONOk("成功") | JSONOk("成功", map[string]interface{}{"title":"标题"})
+func (p *Context) JSONOk(message ...interface{}) error {
 	var (
-		message = ""
-		url     = ""
-		getData interface{}
+		content = ""
+		data    interface{}
 	)
 
-	if len(data) == 1 {
-		message = data[0].(string)
+	if len(message) == 1 {
+		content = message[0].(string)
 	}
 
-	if len(data) == 2 {
-		message = data[0].(string)
-		url = data[1].(string)
+	if len(message) == 2 {
+		content = message[0].(string)
+		data = message[1]
 	}
 
-	if len(data) >= 3 {
-		message = data[0].(string)
-		url = data[1].(string)
-		getData = data[2]
-	}
-
-	return p.JSON(200, msg.Success(message, url, getData))
+	return p.JSON(200, Success(content, data))
 }
 
-// 输出失败状态的JSON数据，JSONError("错误") | JSONError("操作失败", "/home/index")
-func (p *Context) JSONError(data ...interface{}) error {
-	var (
-		message = ""
-		url     = ""
-	)
+// 输出失败状态的JSON数据，JSONError("错误")
+func (p *Context) JSONError(message string) error {
 
-	if len(data) == 1 {
-		message = data[0].(string)
-	}
-
-	if len(data) == 2 {
-		message = data[0].(string)
-		url = data[1].(string)
-	}
-
-	return p.JSON(200, msg.Error(message, url))
+	return p.JSON(200, Error(message))
 }
 
 // 执行下一个Use方法，TODO

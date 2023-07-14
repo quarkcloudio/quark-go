@@ -7,14 +7,13 @@ import (
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
-	"github.com/quarkcms/quark-go/v2/pkg/msg"
 )
 
 // 适配hertz框架路由
 func RouteAdapter(b *builder.Engine, ctx *app.RequestContext) {
 	body, err := ctx.Body()
 	if err != nil {
-		ctx.JSON(200, msg.Error(err.Error(), ""))
+		ctx.JSON(200, builder.Error(err.Error()))
 		return
 	}
 

@@ -19,8 +19,26 @@ func New() *Component {
 	return (&Component{}).Init()
 }
 
-// 返回成功
-func Success(content string, url string, data interface{}) *Component {
+// 返回成功，Success("成功") | Success("成功", "/home/index", map[string]interface{}{"title":"标题"})
+func Success(message ...interface{}) *Component {
+	var (
+		content = ""
+		url     = ""
+		data    interface{}
+	)
+
+	if len(message) == 1 {
+		content = message[0].(string)
+	}
+	if len(message) == 2 {
+		content = message[0].(string)
+		url = message[1].(string)
+	}
+	if len(message) >= 3 {
+		content = message[0].(string)
+		url = message[1].(string)
+		data = message[2]
+	}
 
 	return (&Component{}).
 		Init().
@@ -30,8 +48,20 @@ func Success(content string, url string, data interface{}) *Component {
 		SetData(data)
 }
 
-// 返回失败
-func Error(content string, url string) *Component {
+// 返回失败，Error("错误") | Error("操作失败", "/home/index")
+func Error(message ...interface{}) *Component {
+	var (
+		content = ""
+		url     = ""
+	)
+
+	if len(message) == 1 {
+		content = message[0].(string)
+	}
+	if len(message) == 2 {
+		content = message[0].(string)
+		url = message[1].(string)
+	}
 
 	return (&Component{}).
 		Init().

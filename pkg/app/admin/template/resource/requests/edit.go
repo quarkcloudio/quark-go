@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
 )
@@ -99,5 +100,5 @@ func (p *EditRequest) Values(ctx *builder.Context) error {
 		BeforeEditing(*builder.Context, map[string]interface{}) map[string]interface{}
 	}).BeforeEditing(ctx, data)
 
-	return ctx.JSONOk("获取成功", "", data)
+	return ctx.JSON(200, message.Success("获取成功", "", data))
 }

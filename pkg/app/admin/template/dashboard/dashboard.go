@@ -6,6 +6,7 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/card"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/descriptions"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/grid"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/pagecontainer"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/statistic"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -52,7 +53,7 @@ func (p *Template) Render(ctx *builder.Context) error {
 		Cards(*builder.Context) interface{}
 	}).Cards(ctx)
 	if cards == nil {
-		return ctx.JSONError("请实现Cards内容")
+		return ctx.JSON(200, message.Error("请实现Cards内容"))
 	}
 
 	var cols []interface{}

@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/actions"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"gorm.io/gorm"
@@ -51,8 +52,8 @@ func (p *Disable) GetApiParams() []string {
 func (p *Disable) Handle(ctx *builder.Context, query *gorm.DB) error {
 	err := query.Update("status", 0).Error
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
-	return ctx.JSONOk("操作成功")
+	return ctx.JSON(200, message.Success("操作成功"))
 }
