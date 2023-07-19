@@ -31,7 +31,7 @@ func Handle(ctx *builder.Context) error {
 	}
 
 	// 排除非后台路由
-	if !strings.Contains(ctx.FullPath(), "api/admin") {
+	if !strings.Contains(ctx.Path(), "api/admin") {
 		return ctx.Next()
 	}
 
@@ -49,12 +49,25 @@ func Handle(ctx *builder.Context) error {
 	// 管理员id
 	if adminInfo.Id != 1 {
 		result1, err := (&model.CasbinRule{}).Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.FullPath(), "Any")
+		if err != nil {
+			return ctx.JSON(500, builder.Error(err.Error()))
+		}
+
 		result2, err := (&model.CasbinRule{}).Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.FullPath(), ctx.Method())
+		if err != nil {
+			return ctx.JSON(500, builder.Error(err.Error()))
+		}
+
 		result3, err := (&model.CasbinRule{}).Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.Path(), "Any")
+		if err != nil {
+			return ctx.JSON(500, builder.Error(err.Error()))
+		}
+
 		result4, err := (&model.CasbinRule{}).Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.Path(), ctx.Method())
 		if err != nil {
 			return ctx.JSON(500, builder.Error(err.Error()))
 		}
+
 		if !(result1 || result2 || result3 || result4) {
 			return ctx.JSON(403, builder.Error("403 Forbidden"))
 		}
