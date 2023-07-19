@@ -23,9 +23,9 @@ go mod init demo/hello
 package main
 
 import (
-	"github.com/quarkcms/quark-go/v2/pkg/app/handler/admin"
-	"github.com/quarkcms/quark-go/v2/pkg/app/install"
-	"github.com/quarkcms/quark-go/v2/pkg/app/middleware"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/service"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/install"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/middleware"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -40,7 +40,7 @@ func main() {
 	dsn := "./data.db"
 
 	// 加载后台服务
-	providers = append(providers, admin.Providers...)
+	providers = append(providers, service.Providers...)
 
 	// 配置资源
 	config := &builder.Config{
