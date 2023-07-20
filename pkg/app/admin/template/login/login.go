@@ -2,12 +2,9 @@ package login
 
 import (
 	"bytes"
-	"context"
-	"reflect"
 	"time"
 
 	"github.com/dchest/captcha"
-	"github.com/go-redis/redis/v8"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/login"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -23,20 +20,6 @@ type Template struct {
 	Logo     interface{} // 登录页面Logo
 	Title    string      // 标题
 	SubTitle string      // 子标题
-}
-
-type Store struct {
-	RedisClient *redis.Client
-	Expiration  time.Duration
-}
-
-func (store *Store) Set(id string, digits []byte) {
-	store.RedisClient.Set(context.Background(), id, string(digits), store.Expiration)
-}
-
-func (store *Store) Get(id string, clear bool) (digits []byte) {
-	bytes, _ := store.RedisClient.Get(context.Background(), id).Bytes()
-	return bytes
 }
 
 // 初始化
@@ -71,11 +54,35 @@ func (p *Template) TemplateInit() interface{} {
 	return p
 }
 
+// 获取Api
+func (p *Template) GetApi() string {
+	return p.Api
+}
+
+// 获取登录成功后跳转地址
+func (p *Template) GetRedirect() string {
+	return p.Redirect
+}
+
+// 获取登录页面Logo
+func (p *Template) GetLogo() interface{} {
+	return p.Logo
+}
+
+// 获取登录页面标题
+func (p *Template) GetTitle() string {
+	return p.Title
+}
+
+// 获取登录页面子标题
+func (p *Template) GetSubTitle() string {
+	return p.SubTitle
+}
+
 // 验证码存储驱动，redis | memory
 func (p *Template) CaptchaStore(store string) {
-
 	if store == "redis" {
-		captcha.SetCustomStore(&Store{
+		captcha.SetCustomStore(&CaptchaStore{
 			RedisClient: redisclient.Client,
 			Expiration:  time.Second * 1000,
 		})
@@ -112,48 +119,28 @@ func (p *Template) Logout(ctx *builder.Context) error {
 
 // 组件渲染
 func (p *Template) Render(ctx *builder.Context) error {
-
-	// 模板实例
-	templateInstance := ctx.Template
-	if templateInstance == nil {
-		return ctx.JSON(200, message.Error("模板实例获取失败"))
-	}
+	template := ctx.Template.(Loginer)
 
 	// 默认登录接口
 	defaultLoginApi := ctx.RouterPathToUrl("/api/admin/login/:resource/handle")
 
 	// 登录接口
-	loginApi := reflect.
-		ValueOf(templateInstance).
-		Elem().
-		FieldByName("Api").String()
+	loginApi := template.GetApi()
 	if loginApi != "" {
 		defaultLoginApi = loginApi
 	}
 
 	// 登录后跳转地址
-	redirect := reflect.
-		ValueOf(templateInstance).
-		Elem().
-		FieldByName("Redirect").String()
+	redirect := template.GetRedirect()
 
 	// Logo
-	logo := reflect.
-		ValueOf(templateInstance).
-		Elem().
-		FieldByName("Logo").Interface()
+	logo := template.GetLogo()
 
 	// 标题
-	title := reflect.
-		ValueOf(templateInstance).
-		Elem().
-		FieldByName("Title").String()
+	title := template.GetTitle()
 
 	// 子标题
-	subTitle := reflect.
-		ValueOf(templateInstance).
-		Elem().
-		FieldByName("SubTitle").String()
+	subTitle := template.GetSubTitle()
 
 	// 获取验证码ID链接
 	captchaIdUrl := ctx.RouterPathToUrl("/api/admin/login/:resource/captchaId")

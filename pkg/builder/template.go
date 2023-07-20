@@ -6,6 +6,49 @@ import (
 	"gorm.io/gorm"
 )
 
+// 模版接口
+type Templater interface {
+
+	// 初始化
+	Init() interface{}
+
+	// 初始化模板
+	TemplateInit() interface{}
+
+	// 获取路由
+	GetRouteMapping() []*RouteMapping
+
+	// 注册路由
+	AddRouteMapping(method string, path string, handler func(ctx *Context) error) *Template
+
+	// 获取Model结构体
+	GetModel() interface{}
+
+	// ANY请求
+	Any(path string, handler func(ctx *Context) error)
+
+	// GET请求
+	GET(path string, handler func(ctx *Context) error)
+
+	// HEAD请求
+	HEAD(path string, handler func(ctx *Context) error)
+
+	// OPTIONS请求
+	OPTIONS(path string, handler func(ctx *Context) error)
+
+	// POST请求
+	POST(path string, handler func(ctx *Context) error)
+
+	// PUT请求
+	PUT(path string, handler func(ctx *Context) error)
+
+	// PATCH请求
+	PATCH(path string, handler func(ctx *Context) error)
+
+	// DELETE请求
+	DELETE(path string, handler func(ctx *Context) error)
+}
+
 // 模板
 type Template struct {
 	DB           *gorm.DB        // DB对象
@@ -41,6 +84,11 @@ func (p *Template) AddRouteMapping(method string, path string, handler func(ctx 
 		p.RouteMapping = append(p.RouteMapping, getRoute)
 	}
 	return p
+}
+
+// 获取Model结构体
+func (p *Template) GetModel() interface{} {
+	return p.Model
 }
 
 // ANY请求
@@ -81,10 +129,4 @@ func (p *Template) PATCH(path string, handler func(ctx *Context) error) {
 // DELETE请求
 func (p *Template) DELETE(path string, handler func(ctx *Context) error) {
 	p.AddRouteMapping(http.MethodDelete, path, handler)
-}
-
-// 默认组件渲染
-func (p *Template) Render(ctx *Context) interface{} {
-
-	return ctx.JSONError("请实现组件渲染方法")
 }
