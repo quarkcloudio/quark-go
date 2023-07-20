@@ -46,16 +46,53 @@ func (p *Template) RouteInit() interface{} {
 	return p
 }
 
+// 获取页面标题
+func (p *Template) GetTitle() string {
+	return p.Title
+}
+
+// 获取页面子标题
+func (p *Template) GetSubTitle() string {
+	return p.SubTitle
+}
+
 // 内容
-func (p *Template) Cards(ctx *builder.Context) interface{} {
+func (p *Template) Cards(ctx *builder.Context) []interface{} {
 	return nil
+}
+
+// 页面组件渲染
+func (p *Template) PageComponentRender(ctx *builder.Context, body interface{}) interface{} {
+	template := ctx.Template.(Dashboarder)
+
+	// 页面容器组件渲染
+	return template.PageContainerComponentRender(ctx, body)
+}
+
+// 页面容器组件渲染
+func (p *Template) PageContainerComponentRender(ctx *builder.Context, body interface{}) interface{} {
+	template := ctx.Template.(Dashboarder)
+
+	title := template.GetTitle()
+	subTitle := template.GetSubTitle()
+
+	// 设置头部
+	header := (&pagecontainer.PageHeader{}).
+		Init().
+		SetTitle(title).
+		SetSubTitle(subTitle)
+
+	return (&pagecontainer.Component{}).
+		Init().
+		SetHeader(header).
+		SetBody(body)
 }
 
 // 组件渲染
 func (p *Template) Render(ctx *builder.Context) error {
-	cards := ctx.Template.(interface {
-		Cards(*builder.Context) interface{}
-	}).Cards(ctx)
+	template := ctx.Template.(Dashboarder)
+
+	cards := template.Cards(ctx)
 	if cards == nil {
 		return ctx.JSON(200, message.Error("请实现Cards内容"))
 	}
@@ -63,7 +100,7 @@ func (p *Template) Render(ctx *builder.Context) error {
 	var cols []interface{}
 	var body []interface{}
 	var colNum int = 0
-	for key, v := range cards.([]interface{}) {
+	for key, v := range cards {
 
 		// 断言statistic组件类型
 		statistic, ok := v.(interface{ Calculate() *statistic.Component })
@@ -83,7 +120,8 @@ func (p *Template) Render(ctx *builder.Context) error {
 		col := reflect.
 			ValueOf(v).
 			Elem().
-			FieldByName("Col").Int()
+			FieldByName("Col").
+			Int()
 		colInfo := (&grid.Col{}).Init().SetSpan(int(col)).SetBody(item)
 		cols = append(cols, colInfo)
 		colNum = colNum + int(col)
@@ -105,33 +143,7 @@ func (p *Template) Render(ctx *builder.Context) error {
 		body = append(body, row)
 	}
 
-	component := ctx.Template.(interface {
-		PageComponentRender(ctx *builder.Context, body interface{}) interface{}
-	}).PageComponentRender(ctx, body)
+	component := template.PageComponentRender(ctx, body)
 
 	return ctx.JSON(200, component)
-}
-
-// 页面组件渲染
-func (p *Template) PageComponentRender(ctx *builder.Context, body interface{}) interface{} {
-
-	// 页面容器组件渲染
-	return ctx.Template.(interface {
-		PageContainerComponentRender(ctx *builder.Context, body interface{}) interface{}
-	}).PageContainerComponentRender(ctx, body)
-}
-
-// 页面容器组件渲染
-func (p *Template) PageContainerComponentRender(ctx *builder.Context, body interface{}) interface{} {
-	value := reflect.ValueOf(ctx.Template).Elem()
-	title := value.FieldByName("Title").String()
-	subTitle := value.FieldByName("SubTitle").String()
-
-	// 设置头部
-	header := (&pagecontainer.PageHeader{}).
-		Init().
-		SetTitle(title).
-		SetSubTitle(subTitle)
-
-	return (&pagecontainer.Component{}).Init().SetHeader(header).SetBody(body)
 }

@@ -18,9 +18,8 @@ func (p *Index) Init(ctx *builder.Context) interface{} {
 }
 
 // 内容
-func (p *Index) Cards(ctx *builder.Context) interface{} {
-
-	return []any{
+func (p *Index) Cards(ctx *builder.Context) []interface{} {
+	return []interface{}{
 		&metrics.TotalAdmin{},
 		&metrics.TotalLog{},
 		&metrics.TotalPicture{},
