@@ -11,10 +11,7 @@ type My struct {
 }
 
 // 初始化
-func (p *My) Init() interface{} {
-	// 初始化模板
-	p.TemplateInit()
-
+func (p *My) Init(ctx *builder.Context) interface{} {
 	return p
 }
 

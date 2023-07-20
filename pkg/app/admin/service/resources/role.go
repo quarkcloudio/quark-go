@@ -20,10 +20,7 @@ type Role struct {
 }
 
 // 初始化
-func (p *Role) Init() interface{} {
-
-	// 初始化模板
-	p.TemplateInit()
+func (p *Role) Init(ctx *builder.Context) interface{} {
 
 	// 标题
 	p.Title = "角色"

@@ -10,10 +10,7 @@ type Index struct {
 }
 
 // 初始化
-func (p *Index) Init() interface{} {
-	// 初始化模板
-	p.TemplateInit()
-
+func (p *Index) Init(ctx *builder.Context) interface{} {
 	return p
 }
 

@@ -17,10 +17,7 @@ type ActionLog struct {
 }
 
 // 初始化
-func (p *ActionLog) Init() interface{} {
-
-	// 初始化模板
-	p.TemplateInit()
+func (p *ActionLog) Init(ctx *builder.Context) interface{} {
 
 	// 标题
 	p.Title = "操作日志"

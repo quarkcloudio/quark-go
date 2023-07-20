@@ -23,24 +23,18 @@ type Template struct {
 }
 
 // 初始化
-func (p *Template) Init() interface{} {
-	p.TemplateInit()
-
+func (p *Template) Init(ctx *builder.Context) interface{} {
 	return p
 }
 
 // 初始化模板
-func (p *Template) TemplateInit() interface{} {
+func (p *Template) TemplateInit(ctx *builder.Context) interface{} {
 
 	// 初始化数据对象
 	p.DB = db.Client
 
-	// 注册路由映射
-	p.GET("/api/admin/login/:resource/index", p.Render)        // 渲染登录页面路由
-	p.POST("/api/admin/login/:resource/handle", p.Handle)      // 后台登录执行路由
-	p.GET("/api/admin/login/:resource/captchaId", p.CaptchaId) // 后台登录获取验证码ID路由
-	p.GET("/api/admin/login/:resource/captcha/:id", p.Captcha) // 后台登录验证码路由
-	p.GET("/api/admin/logout/:resource/handle", p.Logout)      // 后台退出执行路由
+	// 登录接口
+	p.Api = ctx.RouterPathToUrl("/api/admin/login/:resource/handle")
 
 	// 标题
 	p.Title = "QuarkGo"
@@ -50,6 +44,17 @@ func (p *Template) TemplateInit() interface{} {
 
 	// 子标题
 	p.SubTitle = "信息丰富的世界里，唯一稀缺的就是人类的注意力"
+
+	return p
+}
+
+// 初始化路由映射
+func (p *Template) RouteInit() interface{} {
+	p.GET("/api/admin/login/:resource/index", p.Render)        // 渲染登录页面路由
+	p.POST("/api/admin/login/:resource/handle", p.Handle)      // 后台登录执行路由
+	p.GET("/api/admin/login/:resource/captchaId", p.CaptchaId) // 后台登录获取验证码ID路由
+	p.GET("/api/admin/login/:resource/captcha/:id", p.Captcha) // 后台登录验证码路由
+	p.GET("/api/admin/logout/:resource/handle", p.Logout)      // 后台退出执行路由
 
 	return p
 }
@@ -121,14 +126,8 @@ func (p *Template) Logout(ctx *builder.Context) error {
 func (p *Template) Render(ctx *builder.Context) error {
 	template := ctx.Template.(Loginer)
 
-	// 默认登录接口
-	defaultLoginApi := ctx.RouterPathToUrl("/api/admin/login/:resource/handle")
-
 	// 登录接口
 	loginApi := template.GetApi()
-	if loginApi != "" {
-		defaultLoginApi = loginApi
-	}
 
 	// 登录后跳转地址
 	redirect := template.GetRedirect()
@@ -151,7 +150,7 @@ func (p *Template) Render(ctx *builder.Context) error {
 	// 组件
 	component := (&login.Component{}).
 		Init().
-		SetApi(defaultLoginApi).
+		SetApi(loginApi).
 		SetRedirect(redirect).
 		SetLogo(logo).
 		SetTitle(title).

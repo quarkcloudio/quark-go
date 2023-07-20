@@ -10,10 +10,10 @@ type Demo struct {
 }
 
 // 初始化
-func (p *Demo) Init() interface{} {
+func (p *Demo) Init(ctx *builder.Context) interface{} {
 
 	// 初始化模板
-	p.TemplateInit()
+	p.TemplateInit(ctx)
 
 	return p
 }

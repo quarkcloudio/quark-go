@@ -22,10 +22,7 @@ type Admin struct {
 }
 
 // 初始化
-func (p *Admin) Init() interface{} {
-
-	// 初始化模板
-	p.TemplateInit()
+func (p *Admin) Init(ctx *builder.Context) interface{} {
 
 	// 标题
 	p.Title = "管理员"

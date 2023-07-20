@@ -17,10 +17,7 @@ type WebConfig struct {
 }
 
 // 初始化
-func (p *WebConfig) Init() interface{} {
-
-	// 初始化模板
-	p.TemplateInit()
+func (p *WebConfig) Init(ctx *builder.Context) interface{} {
 
 	// 标题
 	p.Title = "网站配置"

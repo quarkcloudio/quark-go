@@ -10,15 +10,21 @@ import (
 type Templater interface {
 
 	// 初始化
-	Init() interface{}
+	Init(ctx *Context) interface{}
 
 	// 初始化模板
-	TemplateInit() interface{}
+	TemplateInit(ctx *Context) interface{}
+
+	// 初始化路由
+	RouteInit() interface{}
+
+	// 自定义路由
+	Route() interface{}
 
 	// 获取路由
 	GetRouteMapping() []*RouteMapping
 
-	// 注册路由
+	// 添加路由
 	AddRouteMapping(method string, path string, handler func(ctx *Context) error) *Template
 
 	// 获取Model结构体
@@ -59,6 +65,11 @@ type Template struct {
 // 获取路由
 func (p *Template) GetRouteMapping() []*RouteMapping {
 	return p.RouteMapping
+}
+
+// 自定义路由
+func (p *Template) Route() interface{} {
+	return p
 }
 
 // 是否存在路由

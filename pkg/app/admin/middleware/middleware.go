@@ -11,12 +11,18 @@ import (
 
 // 中间件
 func Handle(ctx *builder.Context) error {
-	loginIndex := (&logins.Index{}).Init()
+
+	// 获取登录实例
+	loginInstance := &logins.Index{}
+
+	// 初始化路由
+	loginInstance.RouteInit()
+
+	// 加载自定义路由
+	loginInstance.Route()
 
 	// 获取登录模板定义的路由
-	loginIndexRoutes := loginIndex.(interface {
-		GetRouteMapping() []*builder.RouteMapping
-	}).GetRouteMapping()
+	loginIndexRoutes := loginInstance.GetRouteMapping()
 
 	inLoginRoute := false
 	for _, v := range loginIndexRoutes {

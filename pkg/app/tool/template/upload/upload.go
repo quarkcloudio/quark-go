@@ -29,14 +29,12 @@ type Template struct {
 }
 
 // 初始化
-func (p *Template) Init() interface{} {
-	p.TemplateInit()
-
+func (p *Template) Init(ctx *builder.Context) interface{} {
 	return p
 }
 
 // 初始化模板
-func (p *Template) TemplateInit() interface{} {
+func (p *Template) TemplateInit(ctx *builder.Context) interface{} {
 
 	// 初始化数据对象
 	p.DB = db.Client
@@ -44,7 +42,11 @@ func (p *Template) TemplateInit() interface{} {
 	// 默认本地上传
 	p.Driver = storage.LocalDriver
 
-	// 注册路由映射
+	return p
+}
+
+// 初始化路由映射
+func (p *Template) RouteInit() interface{} {
 	p.POST("/api/tool/upload/:resource/handle", p.Handle)
 	p.POST("/api/tool/upload/:resource/base64Handle", p.HandleFromBase64)
 	p.POST("/api/upload/:resource/handle", p.Handle)

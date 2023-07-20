@@ -15,10 +15,7 @@ type Config struct {
 }
 
 // 初始化
-func (p *Config) Init() interface{} {
-
-	// 初始化模板
-	p.TemplateInit()
+func (p *Config) Init(ctx *builder.Context) interface{} {
 
 	// 标题
 	p.Title = "配置"

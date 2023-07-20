@@ -247,17 +247,22 @@ func (p *Engine) initPaths() {
 	}
 	for _, provider := range p.providers {
 
-		// 初始化
-		getTemplateInstance := provider.(interface {
-			Init() interface{}
-		}).Init()
+		// 初始化路由
+		provider.(interface {
+			RouteInit() interface{}
+		}).RouteInit()
+
+		// 加载自定义路由
+		provider.(interface {
+			Route() interface{}
+		}).Route()
 
 		// 获取模板定义的路由
-		templateInstanceRoutes := getTemplateInstance.(interface {
+		templateRoutes := provider.(interface {
 			GetRouteMapping() []*RouteMapping
 		}).GetRouteMapping()
 
-		for _, v := range templateInstanceRoutes {
+		for _, v := range templateRoutes {
 			providerName := reflect.TypeOf(provider).String()
 			getNames := strings.Split(providerName, ".")
 			structName := getNames[len(getNames)-1]
@@ -266,7 +271,7 @@ func (p *Engine) initPaths() {
 				url := strings.Replace(v.Path, ":resource", strings.ToLower(structName), -1)
 				//处理行为
 				if strings.Contains(url, ":uriKey") {
-					actions := getTemplateInstance.(interface {
+					actions := provider.(interface {
 						Actions(ctx *Context) []interface{}
 					}).Actions(&Context{})
 					for _, av := range actions {
@@ -411,7 +416,7 @@ func (p *Engine) handleParser(ctx *Context) error {
 // 渲染
 func (p *Engine) Render(ctx *Context) error {
 	// 初始化模板
-	err := ctx.InitTemplate()
+	err := ctx.InitTemplate(ctx)
 	if err != nil {
 		return err
 	}
@@ -486,7 +491,7 @@ func (p *Engine) echoHandle(path string, handle Handle, c echo.Context) error {
 	ctx.SetFullPath(path)
 
 	// 初始化模板
-	ctx.InitTemplate()
+	ctx.InitTemplate(ctx)
 
 	// 解析UseHandler方法
 	err := ctx.useHandlerParser()

@@ -25,9 +25,7 @@ type LoginRequest struct {
 }
 
 // 初始化
-func (p *Index) Init() interface{} {
-	// 初始化模板
-	p.TemplateInit()
+func (p *Index) Init(ctx *builder.Context) interface{} {
 
 	// 登录页面Logo
 	p.Logo = false

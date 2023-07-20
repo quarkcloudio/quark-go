@@ -23,23 +23,25 @@ type Template struct {
 }
 
 // 初始化
-func (p *Template) Init() interface{} {
-	p.TemplateInit()
-
+func (p *Template) Init(ctx *builder.Context) interface{} {
 	return p
 }
 
 // 初始化模板
-func (p *Template) TemplateInit() interface{} {
+func (p *Template) TemplateInit(ctx *builder.Context) interface{} {
 
 	// 初始化数据对象
 	p.DB = db.Client
 
-	// 注册路由映射
-	p.GET("/api/miniapp/page/:resource/index", p.Render) // 渲染页面路由
-
 	// 标题
 	p.Title = "QuarkGo"
+
+	return p
+}
+
+// 初始化路由映射
+func (p *Template) RouteInit() interface{} {
+	p.GET("/api/miniapp/page/:resource/index", p.Render) // 渲染页面路由
 
 	return p
 }

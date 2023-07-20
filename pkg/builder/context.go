@@ -467,14 +467,14 @@ func (p *Context) useHandlerParser() error {
 }
 
 // 初始化模板实例
-func (p *Context) InitTemplate() error {
+func (p *Context) InitTemplate(ctx *Context) error {
 	var (
 		err              error
 		templateInstance interface{}
 	)
 
 	// 获取模板实例
-	templateInstance, err = p.getTemplate()
+	templateInstance, err = p.getTemplate(ctx)
 	if err != nil {
 		return err
 	}
@@ -486,17 +486,32 @@ func (p *Context) InitTemplate() error {
 }
 
 // 获取当前模板实例
-func (p *Context) getTemplate() (interface{}, error) {
+func (p *Context) getTemplate(ctx *Context) (interface{}, error) {
 	var templateInstance interface{}
 	for _, provider := range p.Engine.providers {
 
-		// 初始化
-		template := provider.(interface {
-			Init() interface{}
-		}).Init()
+		// 模版参数初始化
+		provider.(interface {
+			TemplateInit(ctx *Context) interface{}
+		}).TemplateInit(ctx)
+
+		// 实例初始化
+		provider.(interface {
+			Init(ctx *Context) interface{}
+		}).Init(ctx)
+
+		// 初始化路由
+		provider.(interface {
+			RouteInit() interface{}
+		}).RouteInit()
+
+		// 加载自定义路由
+		provider.(interface {
+			Route() interface{}
+		}).Route()
 
 		// 获取模板定义的路由
-		templateInstanceRoutes := template.(interface {
+		templateInstanceRoutes := provider.(interface {
 			GetRouteMapping() []*RouteMapping
 		}).GetRouteMapping()
 
@@ -504,7 +519,7 @@ func (p *Context) getTemplate() (interface{}, error) {
 			if v.Path == p.FullPath() {
 				if p.isCurrentTemplate(provider) {
 					// 设置实例
-					templateInstance = template
+					templateInstance = provider
 				}
 			}
 		}

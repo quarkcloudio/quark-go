@@ -15,11 +15,7 @@ type Image struct {
 }
 
 // 初始化
-func (p *Image) Init() interface{} {
-
-	// 初始化模板
-	p.TemplateInit()
-
+func (p *Image) Init(ctx *builder.Context) interface{} {
 	// 限制文件大小
 	p.LimitSize = 1024 * 1024 * 1024 * 2
 

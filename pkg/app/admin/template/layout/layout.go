@@ -12,22 +12,40 @@ import (
 // 后台登录模板
 type Template struct {
 	builder.Template
+	Title        string            `json:"title,omitempty"`
+	Logo         interface{}       `json:"logo,omitempty"`
+	Loading      bool              `json:"loading,omitempty"`
+	ContentStyle map[string]string `json:"contentStyle,omitempty"`
+	Actions      interface{}       `json:"actions,omitempty"`
+	Layout       string            `json:"layout,omitempty"`
+	SplitMenus   bool              `json:"splitMenus,omitempty"`
+	ContentWidth string            `json:"contentWidth,omitempty"`
+	PrimaryColor string            `json:"primaryColor,omitempty"`
+	FixedHeader  bool              `json:"fixedHeader,omitempty"`
+	FixSiderbar  bool              `json:"fixSiderbar,omitempty"`
+	IconfontUrl  string            `json:"iconfontUrl,omitempty"`
+	Locale       string            `json:"locale,omitempty"`
+	SiderWidth   int               `json:"siderWidth,omitempty"`
+	Menu         interface{}       `json:"menu,omitempty"`
+	Footer       interface{}       `json:"footer,omitempty"`
 }
 
 // 初始化
-func (p *Template) Init() interface{} {
-	p.TemplateInit()
-
+func (p *Template) Init(ctx *builder.Context) interface{} {
 	return p
 }
 
 // 初始化模板
-func (p *Template) TemplateInit() interface{} {
+func (p *Template) TemplateInit(ctx *builder.Context) interface{} {
 
 	// 初始化数据对象
 	p.DB = db.Client
 
-	// 注册路由映射
+	return p
+}
+
+// 初始化路由映射
+func (p *Template) RouteInit() interface{} {
 	p.GET("/api/admin/layout/:resource/index", p.Render) // 获取布局配置
 
 	return p
