@@ -7,10 +7,8 @@ import (
 	"reflect"
 	"runtime"
 	"strings"
-	"time"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"github.com/quarkcms/quark-go/v2/pkg/dal"
 	"github.com/quarkcms/quark-go/v2/pkg/gopkg"
@@ -66,30 +64,12 @@ type Config struct {
 	RedisConfig *RedisConfig  // Redis配置
 	StaticPath  string        // 静态文件目录
 	Providers   []interface{} // 服务列表
-	AdminLayout *AdminLayout  // 后台布局
 }
 
 // 定义路由组
 type Group struct {
 	engine    *Engine
 	echoGroup *echo.Group
-}
-
-type AdminLayout struct {
-	Title        string                   // layout 的左上角 的 title
-	Logo         interface{}              // layout 的左上角 的 logo
-	Actions      interface{}              // layout 的头部行为
-	Layout       string                   // layout 的菜单模式,side：右侧导航，top：顶部导航，mix：混合模式
-	SplitMenus   bool                     // layout 的菜单模式为mix时，是否自动分割菜单
-	ContentWidth string                   // layout 的内容模式,Fluid：定宽 1200px，Fixed：自适应
-	PrimaryColor string                   // 主题色,"#1890ff"
-	FixedHeader  bool                     // 是否固定 header 到顶部
-	FixSiderbar  bool                     // 是否固定导航
-	IconfontUrl  string                   // 使用 IconFont 的图标配置
-	Locale       string                   // 当前 layout 的语言设置，'zh-CN' | 'zh-TW' | 'en-US'
-	SiderWidth   int                      // 侧边菜单宽度
-	Copyright    string                   // 网站版权 time.Now().Format("2006") + " QuarkGo"
-	Links        []map[string]interface{} // 友情链接
 }
 
 // 定义路由方法类型
@@ -118,9 +98,6 @@ func New(config *Config) *Engine {
 		})
 	}
 
-	// 初始化后台布局
-	config.AdminLayout = initAdminLayout(config.AdminLayout)
-
 	// 定义结构体
 	engine := &Engine{
 		echo:      e,
@@ -146,55 +123,9 @@ func New(config *Config) *Engine {
 	return engine
 }
 
-// 初始化后台布局
-func initAdminLayout(adminLayout *AdminLayout) *AdminLayout {
-	defalutAdminLayout := &AdminLayout{
-		"QuarkGo",
-		false,
-		nil,
-		"mix",
-		false,
-		"Fluid",
-		"#1890ff",
-		true,
-		true,
-		"//at.alicdn.com/t/font_1615691_3pgkh5uyob.js",
-		"zh-CN",
-		208,
-		time.Now().Format("2006") + " QuarkGo",
-		[]map[string]interface{}{
-			{
-				"key":   "1",
-				"title": "Quark",
-				"href":  "http://www.quarkcms.com/",
-			},
-			{
-				"key":   "2",
-				"title": "爱小圈",
-				"href":  "http://www.ixiaoquan.com",
-			},
-			{
-				"key":   "3",
-				"title": "Github",
-				"href":  "https://github.com/quarkcms",
-			},
-		},
-	}
-
-	// 设置布局
-	copier.CopyWithOption(defalutAdminLayout, adminLayout, copier.Option{IgnoreEmpty: true})
-
-	return defalutAdminLayout
-}
-
 // 获取当前配置
 func (p *Engine) GetConfig() *Config {
 	return p.config
-}
-
-// 获取当前AdminLayout配置
-func (p *Engine) GetAdminLayout() *AdminLayout {
-	return p.config.AdminLayout
 }
 
 // 获取所有服务
@@ -336,8 +267,6 @@ func (p *Engine) Use(args interface{}) {
 	argsName := reflect.TypeOf(args).String()
 
 	switch argsName {
-	case "*builder.AdminLayout":
-		p.config.AdminLayout = initAdminLayout(args.(*AdminLayout))
 	case "func(*builder.Context) error":
 		p.useHandlers = append(p.useHandlers, args.(func(ctx *Context) error))
 	default:
