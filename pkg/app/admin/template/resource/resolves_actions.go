@@ -13,9 +13,8 @@ import (
 
 // 列表行为
 func (p *Template) IndexActions(ctx *builder.Context) interface{} {
-	actions := ctx.Template.(interface {
-		Actions(ctx *builder.Context) []interface{}
-	}).Actions(ctx)
+	template := ctx.Template.(Resourcer)
+	actions := template.Actions(ctx)
 
 	var items []interface{}
 	for _, v := range actions {
@@ -34,9 +33,8 @@ func (p *Template) IndexActions(ctx *builder.Context) interface{} {
 
 // 表格行内行为
 func (p *Template) IndexTableRowActions(ctx *builder.Context) interface{} {
-	actions := ctx.Template.(interface {
-		Actions(ctx *builder.Context) []interface{}
-	}).Actions(ctx)
+	template := ctx.Template.(Resourcer)
+	actions := template.Actions(ctx)
 
 	var items []interface{}
 	for _, v := range actions {
@@ -55,9 +53,8 @@ func (p *Template) IndexTableRowActions(ctx *builder.Context) interface{} {
 
 // 表格多选弹出层行为
 func (p *Template) IndexTableAlertActions(ctx *builder.Context) interface{} {
-	actions := ctx.Template.(interface {
-		Actions(ctx *builder.Context) []interface{}
-	}).Actions(ctx)
+	template := ctx.Template.(Resourcer)
+	actions := template.Actions(ctx)
 
 	var items []interface{}
 	for _, v := range actions {
@@ -76,9 +73,8 @@ func (p *Template) IndexTableAlertActions(ctx *builder.Context) interface{} {
 
 // 表单页行为
 func (p *Template) FormActions(ctx *builder.Context) []interface{} {
-	actions := ctx.Template.(interface {
-		Actions(ctx *builder.Context) []interface{}
-	}).Actions(ctx)
+	template := ctx.Template.(Resourcer)
+	actions := template.Actions(ctx)
 
 	var items []interface{}
 	for _, v := range actions {
@@ -97,9 +93,8 @@ func (p *Template) FormActions(ctx *builder.Context) []interface{} {
 
 // 表单页右上角自定义区域行为
 func (p *Template) FormExtraActions(ctx *builder.Context) interface{} {
-	actions := ctx.Template.(interface {
-		Actions(ctx *builder.Context) []interface{}
-	}).Actions(ctx)
+	template := ctx.Template.(Resourcer)
+	actions := template.Actions(ctx)
 
 	var items []interface{}
 	for _, v := range actions {
@@ -118,9 +113,8 @@ func (p *Template) FormExtraActions(ctx *builder.Context) interface{} {
 
 // 详情页行为
 func (p *Template) DetailActions(ctx *builder.Context) []interface{} {
-	actions := ctx.Template.(interface {
-		Actions(ctx *builder.Context) []interface{}
-	}).Actions(ctx)
+	template := ctx.Template.(Resourcer)
+	actions := template.Actions(ctx)
 
 	var items []interface{}
 	for _, v := range actions {
@@ -139,9 +133,8 @@ func (p *Template) DetailActions(ctx *builder.Context) []interface{} {
 
 // 详情页右上角自定义区域行为
 func (p *Template) DetailExtraActions(ctx *builder.Context) interface{} {
-	actions := ctx.Template.(interface {
-		Actions(ctx *builder.Context) []interface{}
-	}).Actions(ctx)
+	template := ctx.Template.(Resourcer)
+	actions := template.Actions(ctx)
 
 	var items []interface{}
 	for _, v := range actions {

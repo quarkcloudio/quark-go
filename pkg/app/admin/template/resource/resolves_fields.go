@@ -25,7 +25,6 @@ func (p *Template) IndexFields(ctx *builder.Context) interface{} {
 			IsShownOnIndex() bool
 		}); ok {
 			isShownOnIndex := v.IsShownOnIndex()
-
 			if isShownOnIndex {
 				items = append(items, v)
 			}
@@ -45,17 +44,15 @@ func (p *Template) IndexColumns(ctx *builder.Context) interface{} {
 		}).IsShownOnIndex()
 		if isShownOnIndex {
 			getColumn := p.fieldToColumn(ctx, v)
-
 			if getColumn != nil {
 				columns = append(columns, getColumn)
 			}
 		}
 	}
 
+	template := ctx.Template.(Resourcer)
 	// 行内行为
-	indexTableRowActions := ctx.Template.(interface {
-		IndexTableRowActions(ctx *builder.Context) interface{}
-	}).IndexTableRowActions(ctx)
+	indexTableRowActions := template.IndexTableRowActions(ctx)
 	if len(indexTableRowActions.([]interface{})) > 0 {
 		column := (&table.Column{}).
 			Init().
@@ -349,9 +346,8 @@ func (p *Template) CreationFieldsWithoutWhen(ctx *builder.Context) interface{} {
 
 // 包裹在组件内的创建页字段
 func (p *Template) CreationFieldsWithinComponents(ctx *builder.Context) interface{} {
-	fields := ctx.Template.(interface {
-		Fields(ctx *builder.Context) []interface{}
-	}).Fields(ctx)
+	template := ctx.Template.(Resourcer)
+	fields := template.Fields(ctx)
 	var items []interface{}
 	for _, v := range fields {
 		component := reflect.
@@ -440,11 +436,10 @@ func (p *Template) UpdateFieldsWithoutWhen(ctx *builder.Context) interface{} {
 
 // 包裹在组件内的编辑页字段
 func (p *Template) UpdateFieldsWithinComponents(ctx *builder.Context) interface{} {
-	fields := ctx.Template.(interface {
-		Fields(ctx *builder.Context) []interface{}
-	}).Fields(ctx)
-	var items []interface{}
+	template := ctx.Template.(Resourcer)
+	fields := template.Fields(ctx)
 
+	var items []interface{}
 	for _, v := range fields {
 		component := reflect.
 			ValueOf(v).
@@ -513,25 +508,24 @@ func (p *Template) DetailFields(ctx *builder.Context) interface{} {
 // 包裹在组件内的详情页字段
 func (p *Template) DetailFieldsWithinComponents(ctx *builder.Context, data map[string]interface{}) interface{} {
 	componentType := "description"
+	template := ctx.Template.(Resourcer)
+	fields := template.Fields(ctx)
 
-	fields := ctx.Template.(interface {
-		Fields(ctx *builder.Context) []interface{}
-	}).Fields(ctx)
 	var items []interface{}
-
 	for _, v := range fields {
-
 		component := reflect.
 			ValueOf(v).
 			Elem().
-			FieldByName("Component").String()
+			FieldByName("Component").
+			String()
 
 		if component == "tabPane" {
 
 			body := reflect.
 				ValueOf(v).
 				Elem().
-				FieldByName("Body").Interface()
+				FieldByName("Body").
+				Interface()
 
 			var subItems []interface{}
 			for _, sv := range body.([]interface{}) {
@@ -642,19 +636,16 @@ func (p *Template) ImportFieldsWithoutWhen(ctx *builder.Context) interface{} {
 
 // 获取字段
 func (p *Template) getFields(ctx *builder.Context) interface{} {
-	fields := ctx.Template.(interface {
-		Fields(ctx *builder.Context) []interface{}
-	}).Fields(ctx)
+	template := ctx.Template.(Resourcer)
+	fields := template.Fields(ctx)
 
 	return p.findFields(fields, true)
 }
 
 // 获取不包含When组件的字段
 func (p *Template) getFieldsWithoutWhen(ctx *builder.Context) interface{} {
-
-	fields := ctx.Template.(interface {
-		Fields(ctx *builder.Context) []interface{}
-	}).Fields(ctx)
+	template := ctx.Template.(Resourcer)
+	fields := template.Fields(ctx)
 
 	return p.findFields(fields, false)
 }

@@ -9,7 +9,8 @@ import (
 
 // 更新表单的接口
 func (p *Template) UpdateApi(ctx *builder.Context) string {
-	formApi := ctx.Template.(interface{ FormApi(*builder.Context) string }).FormApi(ctx)
+	template := ctx.Template.(Resourcer)
+	formApi := template.FormApi(ctx)
 	if formApi != "" {
 		return formApi
 	}

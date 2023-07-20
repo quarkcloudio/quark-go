@@ -19,8 +19,8 @@ func (p *Template) FormApi(ctx *builder.Context) string {
 
 // 表单标题
 func (p *Template) FormTitle(ctx *builder.Context) string {
-	value := reflect.ValueOf(ctx.Template).Elem()
-	title := value.FieldByName("Title").String()
+	template := ctx.Template.(Resourcer)
+	title := template.GetTitle()
 	if ctx.IsCreating() {
 		return "创建" + title
 	} else {

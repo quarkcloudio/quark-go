@@ -9,9 +9,8 @@ import (
 
 // 创建表单的接口
 func (p *Template) CreationApi(ctx *builder.Context) string {
-	formApi := ctx.Template.(interface {
-		FormApi(ctx *builder.Context) string
-	}).FormApi(ctx)
+	template := ctx.Template.(Resourcer)
+	formApi := template.FormApi(ctx)
 	if formApi != "" {
 		return formApi
 	}

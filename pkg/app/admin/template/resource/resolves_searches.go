@@ -1,7 +1,6 @@
 package resource
 
 import (
-	"reflect"
 	"strings"
 
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/cascader"
@@ -13,16 +12,11 @@ import (
 
 // 列表页搜索表单
 func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
-	searches := ctx.Template.(interface {
-		Searches(*builder.Context) []interface{}
-	}).Searches(ctx)
+	template := ctx.Template.(Resourcer)
+	searches := template.Searches(ctx)
+
 	search := (&table.Search{}).Init()
-
-	withExport := reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("WithExport").Bool()
-
+	withExport := template.GetWithExport(ctx)
 	if withExport {
 		search = search.SetExportText("导出").SetExportApi(strings.Replace(ExportPath, ":resource", ctx.Param("resource"), -1))
 	}

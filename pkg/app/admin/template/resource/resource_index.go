@@ -22,26 +22,22 @@ func (p *Template) IndexToolBar(ctx *builder.Context) interface{} {
 
 // 列表标题
 func (p *Template) IndexTitle(ctx *builder.Context) string {
-	return reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("Title").
-		String() + "列表"
+	template := ctx.Template.(Resourcer)
+	title := template.GetTitle()
+
+	return title + "列表"
 }
 
 // 列表页组件渲染
 func (p *Template) IndexComponentRender(ctx *builder.Context, data interface{}) interface{} {
 	var component interface{}
+	template := ctx.Template.(Resourcer)
 
 	// 列表标题
 	title := p.IndexTitle(ctx)
 
 	// 列表页轮询数据
-	indexPolling := reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("IndexPolling").
-		Int()
+	indexPolling := template.GetIndexPolling()
 
 	// 列表页表格主体
 	indexExtraRender := p.IndexExtraRender(ctx)

@@ -1,8 +1,6 @@
 package resource
 
 import (
-	"reflect"
-
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/card"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/tabs"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -10,8 +8,8 @@ import (
 
 // 详情页标题
 func (p *Template) DetailTitle(ctx *builder.Context) string {
-	value := reflect.ValueOf(ctx.Template).Elem()
-	title := value.FieldByName("Title").String()
+	template := ctx.Template.(Resourcer)
+	title := template.GetTitle()
 
 	return title + "详情"
 }

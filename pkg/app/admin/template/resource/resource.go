@@ -1,8 +1,6 @@
 package resource
 
 import (
-	"reflect"
-
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/pagecontainer"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/requests"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -73,6 +71,41 @@ func (p *Template) RouteInit() interface{} {
 	return p
 }
 
+// 获取标题
+func (p *Template) GetTitle() string {
+	return p.Title
+}
+
+// 获取子标题
+func (p *Template) GetSubTitle() string {
+	return p.SubTitle
+}
+
+// 获取分页配置
+func (p *Template) GetPerPage() interface{} {
+	return p.PerPage
+}
+
+// 获取轮询数据
+func (p *Template) GetIndexPolling() int {
+	return p.IndexPolling
+}
+
+// 获取排序规则
+func (p *Template) GetIndexOrder() string {
+	return p.IndexOrder
+}
+
+// 获取注入的字段数据
+func (p *Template) GetField() map[string]interface{} {
+	return p.Field
+}
+
+// 获取是否具有导出功能
+func (p *Template) GetWithExport() bool {
+	return p.WithExport
+}
+
 // 设置单列字段
 func (p *Template) SetField(fieldData map[string]interface{}) interface{} {
 	p.Field = fieldData
@@ -107,17 +140,15 @@ func (p *Template) AfterAction(ctx *builder.Context, uriKey string, query *gorm.
 
 // 列表页渲染
 func (p *Template) IndexRender(ctx *builder.Context) error {
+	template := ctx.Template.(Resourcer)
+
 	// 获取数据
 	data := (&requests.IndexRequest{}).QueryData(ctx)
 
 	// 获取列表页组件
-	body := ctx.Template.(interface {
-		IndexComponentRender(ctx *builder.Context, data interface{}) interface{}
-	}).IndexComponentRender(ctx, data)
+	body := template.IndexComponentRender(ctx, data)
 
-	result := ctx.Template.(interface {
-		PageComponentRender(ctx *builder.Context, body interface{}) interface{}
-	}).PageComponentRender(ctx, body)
+	result := template.PageComponentRender(ctx, body)
 
 	return ctx.JSON(200, result)
 }
@@ -134,20 +165,15 @@ func (p *Template) ActionRender(ctx *builder.Context) error {
 
 // 创建页面渲染
 func (p *Template) CreationRender(ctx *builder.Context) error {
+	template := ctx.Template.(Resourcer)
 
 	// 断言BeforeCreating方法，获取初始数据
-	data := ctx.Template.(interface {
-		BeforeCreating(ctx *builder.Context) map[string]interface{}
-	}).BeforeCreating(ctx)
+	data := template.BeforeCreating(ctx)
 
 	// 断言CreationComponentRender方法
-	body := ctx.Template.(interface {
-		CreationComponentRender(*builder.Context, map[string]interface{}) interface{}
-	}).CreationComponentRender(ctx, data)
+	body := template.CreationComponentRender(ctx, data)
 
-	result := ctx.Template.(interface {
-		PageComponentRender(ctx *builder.Context, body interface{}) interface{}
-	}).PageComponentRender(ctx, body)
+	result := template.PageComponentRender(ctx, body)
 
 	return ctx.JSON(200, result)
 }
@@ -159,22 +185,18 @@ func (p *Template) StoreRender(ctx *builder.Context) error {
 
 // 编辑页面渲染
 func (p *Template) EditRender(ctx *builder.Context) error {
+	template := ctx.Template.(Resourcer)
+
 	// 获取数据
 	data := (&requests.EditRequest{}).FillData(ctx)
 
 	// 断言BeforeEditing方法，获取初始数据
-	data = ctx.Template.(interface {
-		BeforeEditing(*builder.Context, map[string]interface{}) map[string]interface{}
-	}).BeforeEditing(ctx, data)
+	data = template.BeforeEditing(ctx, data)
 
 	// 断言UpdateComponentRender方法
-	body := ctx.Template.(interface {
-		UpdateComponentRender(*builder.Context, map[string]interface{}) interface{}
-	}).UpdateComponentRender(ctx, data)
+	body := template.UpdateComponentRender(ctx, data)
 
-	result := ctx.Template.(interface {
-		PageComponentRender(ctx *builder.Context, body interface{}) interface{}
-	}).PageComponentRender(ctx, body)
+	result := template.PageComponentRender(ctx, body)
 
 	return ctx.JSON(200, result)
 }
@@ -191,21 +213,17 @@ func (p *Template) SaveRender(ctx *builder.Context) error {
 
 // 详情页渲染
 func (p *Template) DetailRender(ctx *builder.Context) error {
+	template := ctx.Template.(Resourcer)
+
 	data := (&requests.DetailRequest{}).FillData(ctx)
 
 	// 断言方法，获取初始数据
-	data = ctx.Template.(interface {
-		BeforeDetailShowing(*builder.Context, map[string]interface{}) map[string]interface{}
-	}).BeforeDetailShowing(ctx, data)
+	data = template.BeforeDetailShowing(ctx, data)
 
 	// 断言方法
-	body := ctx.Template.(interface {
-		DetailComponentRender(*builder.Context, map[string]interface{}) interface{}
-	}).DetailComponentRender(ctx, data)
+	body := template.DetailComponentRender(ctx, data)
 
-	result := ctx.Template.(interface {
-		PageComponentRender(ctx *builder.Context, body interface{}) interface{}
-	}).PageComponentRender(ctx, body)
+	result := template.PageComponentRender(ctx, body)
 
 	return ctx.JSON(200, result)
 }
@@ -227,42 +245,36 @@ func (p *Template) ImportTemplateRender(ctx *builder.Context) error {
 
 // 通用表单资源
 func (p *Template) FormRender(ctx *builder.Context) error {
+	template := ctx.Template.(Resourcer)
 
 	// 断言BeforeCreating方法，获取初始数据
-	data := ctx.Template.(interface {
-		BeforeCreating(ctx *builder.Context) map[string]interface{}
-	}).BeforeCreating(ctx)
+	data := template.BeforeCreating(ctx)
 
 	// 断言CreationComponentRender方法
-	body := ctx.Template.(interface {
-		CreationComponentRender(*builder.Context, map[string]interface{}) interface{}
-	}).CreationComponentRender(ctx, data)
+	body := template.CreationComponentRender(ctx, data)
 
-	result := ctx.Template.(interface {
-		PageComponentRender(ctx *builder.Context, body interface{}) interface{}
-	}).PageComponentRender(ctx, body)
+	result := template.PageComponentRender(ctx, body)
 
 	return ctx.JSON(200, result)
 }
 
 // 页面组件渲染
 func (p *Template) PageComponentRender(ctx *builder.Context, body interface{}) interface{} {
+	template := ctx.Template.(Resourcer)
 
 	// 页面容器组件渲染
-	return ctx.Template.(interface {
-		PageContainerComponentRender(ctx *builder.Context, body interface{}) interface{}
-	}).PageContainerComponentRender(ctx, body)
+	return template.PageContainerComponentRender(ctx, body)
 }
 
 // 页面容器组件渲染
 func (p *Template) PageContainerComponentRender(ctx *builder.Context, body interface{}) interface{} {
-	value := reflect.ValueOf(ctx.Template).Elem()
+	template := ctx.Template.(Resourcer)
 
 	// 页面标题
-	title := value.FieldByName("Title").String()
+	title := template.GetTitle()
 
 	// 页面子标题
-	subTitle := value.FieldByName("SubTitle").String()
+	subTitle := template.GetSubTitle()
 
 	// 设置头部
 	header := (&pagecontainer.PageHeader{}).

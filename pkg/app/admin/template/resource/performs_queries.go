@@ -2,7 +2,6 @@ package resource
 
 import (
 	"encoding/json"
-	"reflect"
 
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"gorm.io/gorm"
@@ -11,14 +10,13 @@ import (
 
 // 创建列表查询
 func (p *Template) BuildIndexQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB {
+	template := ctx.Template.(Resourcer)
 
 	// 初始化查询
 	query = p.initializeQuery(ctx, query)
 
 	// 执行列表查询，这里使用的是透传的实例
-	query = ctx.Template.(interface {
-		IndexQuery(*builder.Context, *gorm.DB) *gorm.DB
-	}).IndexQuery(ctx, query)
+	query = template.IndexQuery(ctx, query)
 
 	// 执行搜索查询
 	query = p.applySearch(ctx, query, search)
@@ -30,11 +28,7 @@ func (p *Template) BuildIndexQuery(ctx *builder.Context, query *gorm.DB, search 
 	query = p.applyColumnFilters(query, columnFilters)
 
 	// 获取默认排序
-	defaultOrder := reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("IndexOrder").String()
-
+	defaultOrder := template.GetIndexOrder()
 	if defaultOrder == "" {
 		defaultOrder = "id desc"
 	}
@@ -47,27 +41,26 @@ func (p *Template) BuildIndexQuery(ctx *builder.Context, query *gorm.DB, search 
 
 // 创建详情页查询
 func (p *Template) BuildDetailQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+	template := ctx.Template.(Resourcer)
+
 	// 初始化查询
 	query = p.initializeQuery(ctx, query)
 
 	// 执行列表查询，这里使用的是透传的实例
-	query = ctx.Template.(interface {
-		DetailQuery(*builder.Context, *gorm.DB) *gorm.DB
-	}).DetailQuery(ctx, query)
+	query = template.DetailQuery(ctx, query)
 
 	return query
 }
 
 // 创建导出查询
 func (p *Template) BuildExportQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB {
+	template := ctx.Template.(Resourcer)
 
 	// 初始化查询
 	query = p.initializeQuery(ctx, query)
 
 	// 执行列表查询，这里使用的是透传的实例
-	query = ctx.Template.(interface {
-		ExportQuery(*builder.Context, *gorm.DB) *gorm.DB
-	}).ExportQuery(ctx, query)
+	query = template.ExportQuery(ctx, query)
 
 	// 执行搜索查询
 	query = p.applySearch(ctx, query, search)
@@ -79,11 +72,7 @@ func (p *Template) BuildExportQuery(ctx *builder.Context, query *gorm.DB, search
 	query = p.applyColumnFilters(query, columnFilters)
 
 	// 获取默认排序
-	defaultOrder := reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("IndexOrder").String()
-
+	defaultOrder := template.GetIndexOrder()
 	if defaultOrder == "" {
 		defaultOrder = "id desc"
 	}
@@ -96,10 +85,9 @@ func (p *Template) BuildExportQuery(ctx *builder.Context, query *gorm.DB, search
 
 // 初始化查询
 func (p *Template) initializeQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+	template := ctx.Template.(Resourcer)
 
-	return ctx.Template.(interface {
-		Query(*builder.Context, *gorm.DB) *gorm.DB
-	}).Query(ctx, query)
+	return template.Query(ctx, query)
 }
 
 // 执行搜索表单查询
