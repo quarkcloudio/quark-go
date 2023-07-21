@@ -114,7 +114,7 @@ func (p *Template) RulesForCreation(ctx *builder.Context) (rules []*rule.Rule) {
 			if getWhen != nil {
 				// 获取When组件中的验证规则
 				whenItems := getWhen.Items
-				if whenItems != nil {
+				if len(whenItems) > 0 {
 					for _, vi := range whenItems {
 						if p.needValidateWhenRules(ctx, vi) {
 							body := vi.Body
@@ -252,7 +252,7 @@ func (p *Template) RulesForUpdate(ctx *builder.Context) (rules []*rule.Rule) {
 
 				// 获取When组件中的验证规则
 				whenItems := getWhen.Items
-				if whenItems != nil {
+				if len(whenItems) > 0 {
 					for _, vi := range whenItems {
 						if p.needValidateWhenRules(ctx, vi) {
 							body := vi.Body
@@ -329,7 +329,7 @@ func (p *Template) RulesForImport(ctx *builder.Context) (rules []*rule.Rule) {
 			if getWhen != nil {
 				// 获取When组件中的验证规则
 				whenItems := getWhen.Items
-				if whenItems != nil {
+				if len(whenItems) > 0 {
 					for _, vi := range whenItems {
 						if p.needValidateWhenRules(ctx, vi) {
 							body := vi.Body
