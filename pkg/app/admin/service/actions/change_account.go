@@ -18,11 +18,10 @@ type ChangeAccount struct {
 // 执行行为句柄
 func (p *ChangeAccount) Handle(ctx *builder.Context, query *gorm.DB) error {
 	data := map[string]interface{}{}
-	json.Unmarshal(ctx.Body(), &data)
-	if data["avatar"] != "" {
+	ctx.Bind(&data)
+
+	if data["avatar"] != "" && data["avatar"] != nil {
 		data["avatar"], _ = json.Marshal(data["avatar"])
-	} else {
-		data["avatar"] = nil
 	}
 
 	// 加密密码

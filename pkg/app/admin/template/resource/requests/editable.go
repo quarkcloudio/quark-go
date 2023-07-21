@@ -1,9 +1,8 @@
 package requests
 
 import (
-	"reflect"
-
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
 )
@@ -18,16 +17,6 @@ func (p *EditableRequest) Handle(ctx *builder.Context) error {
 		value interface{}
 	)
 
-	// 获取模型结构体
-	modelInstance := reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("Model").
-		Interface()
-
-	// 创建Gorm对象
-	model := db.Client.Model(&modelInstance)
-
 	// 获取所有Query数据
 	data := ctx.AllQuerys()
 	if data == nil {
@@ -38,6 +27,15 @@ func (p *EditableRequest) Handle(ctx *builder.Context) error {
 	if id == nil {
 		return ctx.JSON(200, message.Error("id不能为空！"))
 	}
+
+	// 模版实例
+	template := ctx.Template.(types.Resourcer)
+
+	// 获取模型结构体
+	modelInstance := template.GetModel()
+
+	// 创建Gorm对象
+	model := db.Client.Model(&modelInstance)
 
 	// 解析数据
 	for k, v := range data {
@@ -67,9 +65,8 @@ func (p *EditableRequest) Handle(ctx *builder.Context) error {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
-	result := ctx.Template.(interface {
-		AfterEditable(ctx *builder.Context, id interface{}, field string, value interface{}) error
-	}).AfterEditable(ctx, id, field, value)
+	// 行为执行后回调
+	result := template.AfterEditable(ctx, id, field, value)
 	if result != nil {
 		return result
 	}

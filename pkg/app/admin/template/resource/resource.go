@@ -3,6 +3,7 @@ package resource
 import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/pagecontainer"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/requests"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
 	"gorm.io/gorm"
@@ -71,6 +72,11 @@ func (p *Template) RouteInit() interface{} {
 	return p
 }
 
+// 获取Model结构体
+func (p *Template) GetModel() interface{} {
+	return p.Model
+}
+
 // 获取标题
 func (p *Template) GetTitle() string {
 	return p.Title
@@ -113,6 +119,21 @@ func (p *Template) SetField(fieldData map[string]interface{}) interface{} {
 	return p
 }
 
+// 字段
+func (p *Template) Fields(ctx *builder.Context) []interface{} {
+	return []interface{}{}
+}
+
+// 搜索
+func (p *Template) Searches(ctx *builder.Context) []interface{} {
+	return []interface{}{}
+}
+
+// 行为
+func (p *Template) Actions(ctx *builder.Context) []interface{} {
+	return []interface{}{}
+}
+
 // 数据导出前回调
 func (p *Template) BeforeExporting(ctx *builder.Context, list []map[string]interface{}) []interface{} {
 	result := []interface{}{}
@@ -140,7 +161,7 @@ func (p *Template) AfterAction(ctx *builder.Context, uriKey string, query *gorm.
 
 // 列表页渲染
 func (p *Template) IndexRender(ctx *builder.Context) error {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 
 	// 获取数据
 	data := (&requests.IndexRequest{}).QueryData(ctx)
@@ -165,7 +186,7 @@ func (p *Template) ActionRender(ctx *builder.Context) error {
 
 // 创建页面渲染
 func (p *Template) CreationRender(ctx *builder.Context) error {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 
 	// 断言BeforeCreating方法，获取初始数据
 	data := template.BeforeCreating(ctx)
@@ -185,7 +206,7 @@ func (p *Template) StoreRender(ctx *builder.Context) error {
 
 // 编辑页面渲染
 func (p *Template) EditRender(ctx *builder.Context) error {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 
 	// 获取数据
 	data := (&requests.EditRequest{}).FillData(ctx)
@@ -213,7 +234,7 @@ func (p *Template) SaveRender(ctx *builder.Context) error {
 
 // 详情页渲染
 func (p *Template) DetailRender(ctx *builder.Context) error {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 
 	data := (&requests.DetailRequest{}).FillData(ctx)
 
@@ -245,7 +266,7 @@ func (p *Template) ImportTemplateRender(ctx *builder.Context) error {
 
 // 通用表单资源
 func (p *Template) FormRender(ctx *builder.Context) error {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 
 	// 断言BeforeCreating方法，获取初始数据
 	data := template.BeforeCreating(ctx)
@@ -260,7 +281,7 @@ func (p *Template) FormRender(ctx *builder.Context) error {
 
 // 页面组件渲染
 func (p *Template) PageComponentRender(ctx *builder.Context, body interface{}) interface{} {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 
 	// 页面容器组件渲染
 	return template.PageContainerComponentRender(ctx, body)
@@ -268,7 +289,7 @@ func (p *Template) PageComponentRender(ctx *builder.Context, body interface{}) i
 
 // 页面容器组件渲染
 func (p *Template) PageContainerComponentRender(ctx *builder.Context, body interface{}) interface{} {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 
 	// 页面标题
 	title := template.GetTitle()

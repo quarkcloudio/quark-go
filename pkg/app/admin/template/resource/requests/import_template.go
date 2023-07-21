@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/rule"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"github.com/xuri/excelize/v2"
 )
@@ -16,16 +17,20 @@ type ImportTemplateRequest struct{}
 
 // 导入数据模板
 func (p *ImportTemplateRequest) Handle(ctx *builder.Context) error {
-	fields := ctx.Template.(interface {
-		ImportFields(ctx *builder.Context) interface{}
-	}).ImportFields(ctx)
+
+	// 模版实例
+	template := ctx.Template.(types.Resourcer)
+
+	// 获取字段
+	fields := template.ImportFields(ctx)
 
 	exportTitles := []string{}
 	for _, v := range fields.([]interface{}) {
 		label := reflect.
 			ValueOf(v).
 			Elem().
-			FieldByName("Label").String()
+			FieldByName("Label").
+			String()
 
 		exportTitles = append(exportTitles, label+p.getFieldRemark(v))
 	}
@@ -62,7 +67,8 @@ func (p *ImportTemplateRequest) getFieldRemark(field interface{}) string {
 	component := reflect.
 		ValueOf(field).
 		Elem().
-		FieldByName("Component").String()
+		FieldByName("Component").
+		String()
 
 	switch component {
 	case "inputNumberField":
@@ -73,7 +79,8 @@ func (p *ImportTemplateRequest) getFieldRemark(field interface{}) string {
 		mode := reflect.
 			ValueOf(field).
 			Elem().
-			FieldByName("Mode").String()
+			FieldByName("Mode").
+			String()
 
 		optionLabels := field.(interface {
 			GetOptionLabels() string
@@ -139,6 +146,7 @@ func (p *ImportTemplateRequest) getFieldRemark(field interface{}) string {
 // 导入字段的规则
 func (p *ImportTemplateRequest) getFieldRuleMessage(rules []*rule.Rule) string {
 	var message []string
+
 	for _, v := range rules {
 		switch v.RuleType {
 		case "required":

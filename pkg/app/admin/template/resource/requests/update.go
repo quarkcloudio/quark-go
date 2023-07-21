@@ -6,41 +6,40 @@ import (
 
 	"github.com/gobeam/stringy"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
-	"gorm.io/gorm"
 )
 
 type UpdateRequest struct{}
 
 // 执行行为
 func (p *UpdateRequest) Handle(ctx *builder.Context) error {
-	modelInstance := reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("Model").
-		Interface()
-
 	data := map[string]interface{}{}
 	ctx.Bind(&data)
 	if data["id"] == "" {
 		return ctx.JSON(200, message.Error("参数错误"))
 	}
 
-	validator := ctx.Template.(interface {
-		ValidatorForUpdate(ctx *builder.Context, data map[string]interface{}) error
-	}).ValidatorForUpdate(ctx, data)
+	// 模版实例
+	template := ctx.Template.(types.Resourcer)
+
+	// 模型结构体
+	modelInstance := template.GetModel()
+
+	// 验证数据合法性
+	validator := template.ValidatorForUpdate(ctx, data)
 	if validator != nil {
 		return ctx.JSON(200, message.Error(validator.Error()))
 	}
 
-	data, err := ctx.Template.(interface {
-		BeforeSaving(ctx *builder.Context, data map[string]interface{}) (map[string]interface{}, error)
-	}).BeforeSaving(ctx, data)
+	// 保存前回调
+	data, err := template.BeforeSaving(ctx, data)
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
+	// 重组数据
 	newData := map[string]interface{}{}
 	for k, v := range data {
 		nv := v
@@ -73,11 +72,9 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) error {
 	// 获取对象
 	model := db.
 		Client.
-		Model(&modelInstance).
+		Model(modelInstance).
 		Where("id = ?", data["id"]).
 		Updates(newData)
 
-	return ctx.Template.(interface {
-		AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error
-	}).AfterSaved(ctx, int(data["id"].(float64)), data, model)
+	return template.AfterSaved(ctx, int(data["id"].(float64)), data, model)
 }

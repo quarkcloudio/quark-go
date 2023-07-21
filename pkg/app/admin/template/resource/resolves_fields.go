@@ -13,6 +13,7 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/when"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/table"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/tabs"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
@@ -50,7 +51,7 @@ func (p *Template) IndexColumns(ctx *builder.Context) interface{} {
 		}
 	}
 
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	// 行内行为
 	indexTableRowActions := template.IndexTableRowActions(ctx)
 	if len(indexTableRowActions.([]interface{})) > 0 {
@@ -346,7 +347,7 @@ func (p *Template) CreationFieldsWithoutWhen(ctx *builder.Context) interface{} {
 
 // 包裹在组件内的创建页字段
 func (p *Template) CreationFieldsWithinComponents(ctx *builder.Context) interface{} {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	fields := template.Fields(ctx)
 	var items []interface{}
 	for _, v := range fields {
@@ -436,7 +437,7 @@ func (p *Template) UpdateFieldsWithoutWhen(ctx *builder.Context) interface{} {
 
 // 包裹在组件内的编辑页字段
 func (p *Template) UpdateFieldsWithinComponents(ctx *builder.Context) interface{} {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	fields := template.Fields(ctx)
 
 	var items []interface{}
@@ -508,7 +509,7 @@ func (p *Template) DetailFields(ctx *builder.Context) interface{} {
 // 包裹在组件内的详情页字段
 func (p *Template) DetailFieldsWithinComponents(ctx *builder.Context, data map[string]interface{}) interface{} {
 	componentType := "description"
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	fields := template.Fields(ctx)
 
 	var items []interface{}
@@ -636,7 +637,7 @@ func (p *Template) ImportFieldsWithoutWhen(ctx *builder.Context) interface{} {
 
 // 获取字段
 func (p *Template) getFields(ctx *builder.Context) interface{} {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	fields := template.Fields(ctx)
 
 	return p.findFields(fields, true)
@@ -644,7 +645,7 @@ func (p *Template) getFields(ctx *builder.Context) interface{} {
 
 // 获取不包含When组件的字段
 func (p *Template) getFieldsWithoutWhen(ctx *builder.Context) interface{} {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	fields := template.Fields(ctx)
 
 	return p.findFields(fields, false)

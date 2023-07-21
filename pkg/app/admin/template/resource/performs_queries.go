@@ -3,6 +3,7 @@ package resource
 import (
 	"encoding/json"
 
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -10,7 +11,7 @@ import (
 
 // 创建列表查询
 func (p *Template) BuildIndexQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 
 	// 初始化查询
 	query = p.initializeQuery(ctx, query)
@@ -41,7 +42,7 @@ func (p *Template) BuildIndexQuery(ctx *builder.Context, query *gorm.DB, search 
 
 // 创建详情页查询
 func (p *Template) BuildDetailQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 
 	// 初始化查询
 	query = p.initializeQuery(ctx, query)
@@ -54,7 +55,7 @@ func (p *Template) BuildDetailQuery(ctx *builder.Context, query *gorm.DB) *gorm.
 
 // 创建导出查询
 func (p *Template) BuildExportQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 
 	// 初始化查询
 	query = p.initializeQuery(ctx, query)
@@ -85,7 +86,7 @@ func (p *Template) BuildExportQuery(ctx *builder.Context, query *gorm.DB, search
 
 // 初始化查询
 func (p *Template) initializeQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 
 	return template.Query(ctx, query)
 }

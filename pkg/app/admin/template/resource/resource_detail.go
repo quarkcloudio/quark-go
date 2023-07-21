@@ -3,12 +3,13 @@ package resource
 import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/card"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/tabs"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
 // 详情页标题
 func (p *Template) DetailTitle(ctx *builder.Context) string {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	title := template.GetTitle()
 
 	return title + "详情"

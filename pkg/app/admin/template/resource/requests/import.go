@@ -11,11 +11,11 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/space"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/tpl"
 	models "github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
 	"github.com/quarkcms/quark-go/v2/pkg/rand"
 	"github.com/xuri/excelize/v2"
-	"gorm.io/gorm"
 )
 
 type ImportRequest struct{}
@@ -39,13 +39,16 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 		return ctx.JSON(200, message.Error("参数错误！"))
 	}
 
-	modelInstance := reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("Model").
-		Interface()
-	model := db.Client.Model(&modelInstance)
+	// 模版实例
+	template := ctx.Template.(types.Resourcer)
 
+	// 获取模型结构体
+	modelInstance := template.GetModel()
+
+	// 创建Gorm对象
+	model := db.Client.Model(modelInstance)
+
+	// 获取导入数据
 	importData, err := (&models.File{}).GetExcelData(getFileId)
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
@@ -58,9 +61,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 	importData = importData[1:]
 
 	// 导入前回调
-	lists := ctx.Template.(interface {
-		BeforeImporting(ctx *builder.Context, list [][]interface{}) [][]interface{}
-	}).BeforeImporting(ctx, importData)
+	lists := template.BeforeImporting(ctx, importData)
 
 	importResult := true
 	importTotalNum := len(lists)
@@ -69,19 +70,16 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 	importFailedData := [][]interface{}{}
 
 	// 获取字段
-	fields := ctx.Template.(interface {
-		ImportFields(ctx *builder.Context) interface{}
-	}).ImportFields(ctx)
+	fields := template.ImportFields(ctx)
 
+	// 解析字段
 	for _, item := range lists {
 
 		// 获取表单数据
 		formValues := p.transformFormValues(fields, item)
 
 		// 验证表单条件
-		validator := ctx.Template.(interface {
-			ValidatorForImport(ctx *builder.Context, data map[string]interface{}) error
-		}).ValidatorForImport(ctx, formValues)
+		validator := template.ValidatorForImport(ctx, formValues)
 		if validator != nil {
 			importResult = false
 			importFailedNum = importFailedNum + 1
@@ -93,9 +91,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 		}
 
 		// 验证保存前回调条件
-		submitData, err := ctx.Template.(interface {
-			BeforeSaving(ctx *builder.Context, data map[string]interface{}) (map[string]interface{}, error)
-		}).BeforeSaving(ctx, formValues)
+		submitData, err := template.BeforeSaving(ctx, formValues)
 		if err != nil {
 			importResult = false
 			importFailedNum = importFailedNum + 1
@@ -123,9 +119,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 		model.Order("id desc").First(&getLastData)
 
 		// 保存后回调
-		err = ctx.Template.(interface {
-			AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error
-		}).AfterSaved(ctx, getLastData["id"].(int), data, result)
+		err = template.AfterSaved(ctx, getLastData["id"].(int), data, result)
 		if err != nil {
 			importResult = false
 			importFailedNum = importFailedNum + 1
@@ -146,7 +140,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 		fileUrl := "//" + ctx.Host() + "/storage/failImports/" + fileName
 
 		// 不存在路径，则创建
-		if isExist(filePath) == false {
+		if !isExist(filePath) {
 			err := os.MkdirAll(filePath, 0666)
 			if err != nil {
 				return ctx.JSON(200, message.Error(err.Error()))
@@ -220,7 +214,9 @@ func (p *ImportRequest) transformFormValues(fields interface{}, data []interface
 			name := reflect.
 				ValueOf(v).
 				Elem().
-				FieldByName("Name").String()
+				FieldByName("Name").
+				String()
+
 			result[name] = data[k]
 		}
 	}
@@ -231,6 +227,7 @@ func (p *ImportRequest) transformFormValues(fields interface{}, data []interface
 // 获取提交表单的数据
 func (p *ImportRequest) getSubmitData(fields interface{}, submitData interface{}) map[string]interface{} {
 	result := make(map[string]interface{})
+
 	for _, field := range fields.([]interface{}) {
 		component := reflect.
 			ValueOf(field).
@@ -293,8 +290,5 @@ func (p *ImportRequest) getSubmitData(fields interface{}, submitData interface{}
 // 判断文件是否存在
 func isExist(path string) bool {
 	_, err := os.Stat(path)
-	if os.IsNotExist(err) {
-		return false
-	}
-	return true
+	return !os.IsNotExist(err)
 }

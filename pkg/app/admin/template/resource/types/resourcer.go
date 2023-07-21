@@ -1,4 +1,4 @@
-package resource
+package types
 
 import (
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -9,6 +9,9 @@ type Resourcer interface {
 
 	// 模版接口
 	builder.Templater
+
+	// 获取Model结构体
+	GetModel() interface{}
 
 	// 获取标题
 	GetTitle() string
@@ -26,10 +29,10 @@ type Resourcer interface {
 	GetIndexOrder() string
 
 	// 获取注入的字段数据
-	GetField(store string) map[string]interface{}
+	GetField() map[string]interface{}
 
 	// 获取是否具有导出功能
-	GetWithExport(ctx *builder.Context) bool
+	GetWithExport() bool
 
 	// 设置单列字段
 	SetField(fieldData map[string]interface{}) interface{}
@@ -189,4 +192,43 @@ type Resourcer interface {
 
 	// 列表页面显示前回调
 	BeforeIndexShowing(ctx *builder.Context, list []map[string]interface{}) []interface{}
+
+	// 列表页字段
+	IndexFields(ctx *builder.Context) interface{}
+
+	// 创建页字段
+	CreationFields(ctx *builder.Context) interface{}
+
+	// 编辑页字段
+	UpdateFields(ctx *builder.Context) interface{}
+
+	// 详情页字段
+	DetailFields(ctx *builder.Context) interface{}
+
+	// 导出字段
+	ExportFields(ctx *builder.Context) interface{}
+
+	// 导入字段
+	ImportFields(ctx *builder.Context) interface{}
+
+	// 筛选表单
+	Filters(ctx *builder.Context) []interface{}
+
+	// 创建列表查询
+	BuildIndexQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB
+
+	// 创建详情页查询
+	BuildDetailQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB
+
+	// 创建导出查询
+	BuildExportQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB
+
+	// 创建请求的验证器
+	ValidatorForCreation(ctx *builder.Context, data map[string]interface{}) error
+
+	// 更新请求的验证器
+	ValidatorForUpdate(ctx *builder.Context, data map[string]interface{}) error
+
+	// 导入请求的验证器
+	ValidatorForImport(ctx *builder.Context, data map[string]interface{}) error
 }

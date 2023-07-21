@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
 )
@@ -22,23 +23,25 @@ func (p *DetailRequest) FillData(ctx *builder.Context) map[string]interface{} {
 		return result
 	}
 
-	modelInstance := reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("Model").Interface()
+	// 模版实例
+	template := ctx.Template.(types.Resourcer)
+
+	// 模型结构体
+	modelInstance := template.GetModel()
+
+	// Gorm对象
 	model := db.Client.Model(&modelInstance)
+
+	// 查询数据
 	model.Where("id = ?", id).First(&result)
 
-	// 获取列表字段
-	detailFields := ctx.Template.(interface {
-		DetailFields(ctx *builder.Context) interface{}
-	}).DetailFields(ctx)
+	// 获取字段
+	detailFields := template.DetailFields(ctx)
 
 	// 给实例的Field属性赋值
-	ctx.Template.(interface {
-		SetField(fieldData map[string]interface{}) interface{}
-	}).SetField(result)
+	template.SetField(result)
 
+	// 解析字段值
 	fields := make(map[string]interface{})
 	for _, field := range detailFields.([]interface{}) {
 
@@ -110,12 +113,15 @@ func (p *DetailRequest) FillData(ctx *builder.Context) map[string]interface{} {
 
 // 获取表单初始化数据
 func (p *DetailRequest) Values(ctx *builder.Context) error {
+
+	// 模版实例
+	template := ctx.Template.(types.Resourcer)
+
+	// 获取赋值数据
 	data := p.FillData(ctx)
 
-	// 获取初始数据
-	data = ctx.Template.(interface {
-		BeforeDetailShowing(*builder.Context, map[string]interface{}) map[string]interface{}
-	}).BeforeDetailShowing(ctx, data)
+	// 显示前回调
+	data = template.BeforeDetailShowing(ctx, data)
 
 	return ctx.JSON(200, message.Success("获取成功", "", data))
 }

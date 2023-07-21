@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
-	"gorm.io/gorm"
 )
 
 type IndexRequest struct{}
@@ -17,33 +17,23 @@ type IndexRequest struct{}
 // 列表查询
 func (p *IndexRequest) QueryData(ctx *builder.Context) interface{} {
 	var lists []map[string]interface{}
-	modelInstance := reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("Model").Interface()
-	model := db.Client.Model(&modelInstance)
+
+	template := ctx.Template.(types.Resourcer)
+
+	modelInstance := template.GetModel()
+
+	model := db.Client.Model(modelInstance)
 
 	// 搜索项
-	searches := ctx.Template.(interface {
-		Searches(ctx *builder.Context) []interface{}
-	}).Searches(ctx)
+	searches := template.Searches(ctx)
 
 	// 过滤项，预留
-	filters := ctx.Template.(interface {
-		Filters(ctx *builder.Context) []interface{}
-	}).Filters(ctx)
+	filters := template.Filters(ctx)
 
-	query := ctx.Template.(interface {
-		BuildIndexQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB
-	}).BuildIndexQuery(ctx, model, searches, filters, p.columnFilters(ctx), p.orderings(ctx))
+	query := template.BuildIndexQuery(ctx, model, searches, filters, p.columnFilters(ctx), p.orderings(ctx))
 
 	// 获取分页
-	perPage := reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("PerPage").
-		Interface()
-
+	perPage := template.GetPerPage()
 	if perPage == nil {
 		query.Find(&lists)
 
@@ -126,18 +116,17 @@ func (p *IndexRequest) orderings(ctx *builder.Context) map[string]interface{} {
 func (p *IndexRequest) performsList(ctx *builder.Context, lists []map[string]interface{}) []interface{} {
 	result := []map[string]interface{}{}
 
+	// 模版实例
+	template := ctx.Template.(types.Resourcer)
+
 	// 获取列表字段
-	indexFields := ctx.Template.(interface {
-		IndexFields(ctx *builder.Context) interface{}
-	}).IndexFields(ctx)
+	indexFields := template.IndexFields(ctx)
 
 	// 解析字段回调函数
 	for _, v := range lists {
 
 		// 给实例的Field属性赋值
-		ctx.Template.(interface {
-			SetField(fieldData map[string]interface{}) interface{}
-		}).SetField(v)
+		template.SetField(v)
 
 		fields := make(map[string]interface{})
 		for _, field := range indexFields.([]interface{}) {
@@ -208,8 +197,6 @@ func (p *IndexRequest) performsList(ctx *builder.Context, lists []map[string]int
 		result = append(result, fields)
 	}
 
-	// 回调处理列表字段值
-	return ctx.Template.(interface {
-		BeforeIndexShowing(ctx *builder.Context, result []map[string]interface{}) []interface{}
-	}).BeforeIndexShowing(ctx, result)
+	// 列表显示前回调
+	return template.BeforeIndexShowing(ctx, result)
 }

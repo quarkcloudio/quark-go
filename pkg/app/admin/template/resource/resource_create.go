@@ -4,12 +4,13 @@ import (
 	"strings"
 
 	"github.com/gobeam/stringy"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
 // 创建表单的接口
 func (p *Template) CreationApi(ctx *builder.Context) string {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	formApi := template.FormApi(ctx)
 	if formApi != "" {
 		return formApi

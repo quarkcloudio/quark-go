@@ -4,6 +4,7 @@ import (
 	"reflect"
 
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/table"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
@@ -22,7 +23,7 @@ func (p *Template) IndexToolBar(ctx *builder.Context) interface{} {
 
 // 列表标题
 func (p *Template) IndexTitle(ctx *builder.Context) string {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	title := template.GetTitle()
 
 	return title + "列表"
@@ -31,7 +32,7 @@ func (p *Template) IndexTitle(ctx *builder.Context) string {
 // 列表页组件渲染
 func (p *Template) IndexComponentRender(ctx *builder.Context, data interface{}) interface{} {
 	var component interface{}
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 
 	// 列表标题
 	title := p.IndexTitle(ctx)

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
 )
@@ -20,23 +21,25 @@ func (p *EditRequest) FillData(ctx *builder.Context) map[string]interface{} {
 		return result
 	}
 
-	modelInstance := reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("Model").Interface()
+	// 模版实例
+	template := ctx.Template.(types.Resourcer)
+
+	// 模型结构体
+	modelInstance := template.GetModel()
+
+	// Gorm对象
 	model := db.Client.Model(&modelInstance)
+
+	// 查询数据
 	model.Where("id = ?", id).First(&result)
 
-	// 获取列表字段
-	updateFields := ctx.Template.(interface {
-		UpdateFields(ctx *builder.Context) interface{}
-	}).UpdateFields(ctx)
+	// 获取字段
+	updateFields := template.UpdateFields(ctx)
 
 	// 给实例的Field属性赋值
-	ctx.Template.(interface {
-		SetField(fieldData map[string]interface{}) interface{}
-	}).SetField(result)
+	template.SetField(result)
 
+	// 解析字段值
 	fields := make(map[string]interface{})
 	for _, field := range updateFields.([]interface{}) {
 
@@ -44,7 +47,8 @@ func (p *EditRequest) FillData(ctx *builder.Context) map[string]interface{} {
 		name := reflect.
 			ValueOf(field).
 			Elem().
-			FieldByName("Name").String()
+			FieldByName("Name").
+			String()
 
 		if result[name] != nil {
 			var fieldValue interface{}
@@ -52,13 +56,15 @@ func (p *EditRequest) FillData(ctx *builder.Context) map[string]interface{} {
 			component := reflect.
 				ValueOf(field).
 				Elem().
-				FieldByName("Component").String()
+				FieldByName("Component").
+				String()
 
 			if component == "datetimeField" {
 				format := reflect.
 					ValueOf(field).
 					Elem().
-					FieldByName("Format").String()
+					FieldByName("Format").
+					String()
 
 				format = strings.Replace(format, "YYYY", "2006", -1)
 				format = strings.Replace(format, "MM", "01", -1)
@@ -93,12 +99,15 @@ func (p *EditRequest) FillData(ctx *builder.Context) map[string]interface{} {
 
 // 获取表单初始化数据
 func (p *EditRequest) Values(ctx *builder.Context) error {
+
+	// 模版实例
+	template := ctx.Template.(types.Resourcer)
+
+	// 获取赋值数据
 	data := p.FillData(ctx)
 
-	// 断言BeforeEditing方法，获取初始数据
-	data = ctx.Template.(interface {
-		BeforeEditing(*builder.Context, map[string]interface{}) map[string]interface{}
-	}).BeforeEditing(ctx, data)
+	// 获取初始数据
+	data = template.BeforeEditing(ctx, data)
 
 	return ctx.JSON(200, message.Success("获取成功", "", data))
 }

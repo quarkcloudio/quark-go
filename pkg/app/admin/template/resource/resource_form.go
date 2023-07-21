@@ -8,6 +8,7 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/tabs"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"gorm.io/gorm"
 )
@@ -19,7 +20,7 @@ func (p *Template) FormApi(ctx *builder.Context) string {
 
 // 表单标题
 func (p *Template) FormTitle(ctx *builder.Context) string {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	title := template.GetTitle()
 	if ctx.IsCreating() {
 		return "创建" + title

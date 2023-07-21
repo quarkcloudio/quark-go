@@ -7,16 +7,17 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/selectfield"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/treeselect"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/table"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
 // 列表页搜索表单
 func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	searches := template.Searches(ctx)
 
 	search := (&table.Search{}).Init()
-	withExport := template.GetWithExport(ctx)
+	withExport := template.GetWithExport()
 	if withExport {
 		search = search.SetExportText("导出").SetExportApi(strings.Replace(ExportPath, ":resource", ctx.Param("resource"), -1))
 	}

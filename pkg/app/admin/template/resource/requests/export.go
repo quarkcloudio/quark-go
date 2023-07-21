@@ -7,22 +7,22 @@ import (
 	"strings"
 	"time"
 
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
 	"github.com/xuri/excelize/v2"
-	"gorm.io/gorm"
 )
 
 type ExportRequest struct{}
 
 // 执行行为
 func (p *ExportRequest) Handle(ctx *builder.Context) error {
+	template := ctx.Template.(types.Resourcer)
+
 	data := p.QueryData(ctx)
 
 	// 获取列表字段
-	fields := ctx.Template.(interface {
-		ExportFields(ctx *builder.Context) interface{}
-	}).ExportFields(ctx)
+	fields := template.ExportFields(ctx)
 
 	f := excelize.NewFile()
 	index, _ := f.NewSheet("Sheet1")
@@ -46,12 +46,14 @@ func (p *ExportRequest) Handle(ctx *builder.Context) error {
 			name := reflect.
 				ValueOf(field).
 				Elem().
-				FieldByName("Name").String()
+				FieldByName("Name").
+				String()
 
 			component := reflect.
 				ValueOf(field).
 				Elem().
-				FieldByName("Component").String()
+				FieldByName("Component").
+				String()
 
 			switch component {
 			case "inputNumberField":
@@ -104,29 +106,29 @@ func (p *ExportRequest) Handle(ctx *builder.Context) error {
 // 列表查询
 func (p *ExportRequest) QueryData(ctx *builder.Context) interface{} {
 	var lists []map[string]interface{}
-	modelInstance := reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("Model").Interface()
-	model := db.Client.Model(&modelInstance)
+
+	// 模版实例
+	template := ctx.Template.(types.Resourcer)
+
+	// 获取模型结构体
+	modelInstance := template.GetModel()
+
+	// 创建Gorm对象
+	model := db.Client.Model(modelInstance)
 
 	// 搜索项
-	searches := ctx.Template.(interface {
-		Searches(ctx *builder.Context) []interface{}
-	}).Searches(ctx)
+	searches := template.Searches(ctx)
 
-	// 过滤项，预留
-	filters := ctx.Template.(interface {
-		Filters(ctx *builder.Context) []interface{}
-	}).Filters(ctx)
+	// 过滤项
+	filters := template.Filters(ctx)
 
-	query := ctx.Template.(interface {
-		BuildExportQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB
-	}).BuildExportQuery(ctx, model, searches, filters, p.columnFilters(ctx), p.orderings(ctx))
+	// 创建查询对象
+	query := template.BuildExportQuery(ctx, model, searches, filters, p.columnFilters(ctx), p.orderings(ctx))
 
+	// 查询数据
 	query.Find(&lists)
 
-	// 返回解析列表
+	// 返回解析数据
 	return p.performsList(ctx, lists)
 }
 
@@ -155,11 +157,13 @@ func (p *ExportRequest) columnFilters(ctx *builder.Context) map[string]interface
  * @return array
  */
 func (p *ExportRequest) orderings(ctx *builder.Context) map[string]interface{} {
-	querys := ctx.AllQuerys()
 	var data map[string]interface{}
+
+	querys := ctx.AllQuerys()
 	if querys["sorter"] == nil {
 		return data
 	}
+
 	err := json.Unmarshal([]byte(querys["sorter"].(string)), &data)
 	if err != nil {
 		return data
@@ -172,18 +176,17 @@ func (p *ExportRequest) orderings(ctx *builder.Context) map[string]interface{} {
 func (p *ExportRequest) performsList(ctx *builder.Context, lists []map[string]interface{}) []interface{} {
 	result := []map[string]interface{}{}
 
-	// 获取列表字段
-	exportFields := ctx.Template.(interface {
-		ExportFields(ctx *builder.Context) interface{}
-	}).ExportFields(ctx)
+	// 模版实例
+	template := ctx.Template.(types.Resourcer)
 
-	// 解析字段回调函数
+	// 获取字段
+	exportFields := template.ExportFields(ctx)
+
+	// 解析字段
 	for _, v := range lists {
 
 		// 给实例的Field属性赋值
-		ctx.Template.(interface {
-			SetField(fieldData map[string]interface{}) interface{}
-		}).SetField(v)
+		template.SetField(v)
 
 		fields := make(map[string]interface{})
 		for _, field := range exportFields.([]interface{}) {
@@ -192,7 +195,8 @@ func (p *ExportRequest) performsList(ctx *builder.Context, lists []map[string]in
 			name := reflect.
 				ValueOf(field).
 				Elem().
-				FieldByName("Name").String()
+				FieldByName("Name").
+				String()
 
 			// 获取实例的回调函数
 			callback := field.(interface{ GetCallback() interface{} }).GetCallback()
@@ -207,13 +211,15 @@ func (p *ExportRequest) performsList(ctx *builder.Context, lists []map[string]in
 					component := reflect.
 						ValueOf(field).
 						Elem().
-						FieldByName("Component").String()
+						FieldByName("Component").
+						String()
 
 					if component == "datetimeField" || component == "dateField" {
 						format := reflect.
 							ValueOf(field).
 							Elem().
-							FieldByName("Format").String()
+							FieldByName("Format").
+							String()
 
 						format = strings.Replace(format, "YYYY", "2006", -1)
 						format = strings.Replace(format, "MM", "01", -1)
@@ -235,8 +241,6 @@ func (p *ExportRequest) performsList(ctx *builder.Context, lists []map[string]in
 		result = append(result, fields)
 	}
 
-	// 回调处理列表字段值
-	return ctx.Template.(interface {
-		BeforeExporting(ctx *builder.Context, result []map[string]interface{}) []interface{}
-	}).BeforeExporting(ctx, result)
+	// 导出前回调
+	return template.BeforeExporting(ctx, result)
 }

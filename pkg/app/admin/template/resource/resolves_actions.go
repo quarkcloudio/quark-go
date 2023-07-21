@@ -8,12 +8,13 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/dropdown"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/modal"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/space"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
 // 列表行为
 func (p *Template) IndexActions(ctx *builder.Context) interface{} {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	actions := template.Actions(ctx)
 
 	var items []interface{}
@@ -33,7 +34,7 @@ func (p *Template) IndexActions(ctx *builder.Context) interface{} {
 
 // 表格行内行为
 func (p *Template) IndexTableRowActions(ctx *builder.Context) interface{} {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	actions := template.Actions(ctx)
 
 	var items []interface{}
@@ -53,7 +54,7 @@ func (p *Template) IndexTableRowActions(ctx *builder.Context) interface{} {
 
 // 表格多选弹出层行为
 func (p *Template) IndexTableAlertActions(ctx *builder.Context) interface{} {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	actions := template.Actions(ctx)
 
 	var items []interface{}
@@ -73,7 +74,7 @@ func (p *Template) IndexTableAlertActions(ctx *builder.Context) interface{} {
 
 // 表单页行为
 func (p *Template) FormActions(ctx *builder.Context) []interface{} {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	actions := template.Actions(ctx)
 
 	var items []interface{}
@@ -93,7 +94,7 @@ func (p *Template) FormActions(ctx *builder.Context) []interface{} {
 
 // 表单页右上角自定义区域行为
 func (p *Template) FormExtraActions(ctx *builder.Context) interface{} {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	actions := template.Actions(ctx)
 
 	var items []interface{}
@@ -113,7 +114,7 @@ func (p *Template) FormExtraActions(ctx *builder.Context) interface{} {
 
 // 详情页行为
 func (p *Template) DetailActions(ctx *builder.Context) []interface{} {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	actions := template.Actions(ctx)
 
 	var items []interface{}
@@ -133,7 +134,7 @@ func (p *Template) DetailActions(ctx *builder.Context) []interface{} {
 
 // 详情页右上角自定义区域行为
 func (p *Template) DetailExtraActions(ctx *builder.Context) interface{} {
-	template := ctx.Template.(Resourcer)
+	template := ctx.Template.(types.Resourcer)
 	actions := template.Actions(ctx)
 
 	var items []interface{}

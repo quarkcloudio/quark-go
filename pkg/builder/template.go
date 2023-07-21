@@ -27,9 +27,6 @@ type Templater interface {
 	// 添加路由
 	AddRouteMapping(method string, path string, handler func(ctx *Context) error) *Template
 
-	// 获取Model结构体
-	GetModel() interface{}
-
 	// ANY请求
 	Any(path string, handler func(ctx *Context) error)
 
@@ -58,7 +55,6 @@ type Templater interface {
 // 模板
 type Template struct {
 	DB           *gorm.DB        // DB对象
-	Model        interface{}     // DB模型结构体
 	RouteMapping []*RouteMapping // 路由映射
 }
 
@@ -95,11 +91,6 @@ func (p *Template) AddRouteMapping(method string, path string, handler func(ctx 
 		p.RouteMapping = append(p.RouteMapping, getRoute)
 	}
 	return p
-}
-
-// 获取Model结构体
-func (p *Template) GetModel() interface{} {
-	return p.Model
 }
 
 // ANY请求
