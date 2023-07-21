@@ -17,6 +17,8 @@ type UpdateRequest struct{}
 func (p *UpdateRequest) Handle(ctx *builder.Context) error {
 	data := map[string]interface{}{}
 	ctx.Bind(&data)
+
+	// 验证参数合法性
 	if data["id"] == "" {
 		return ctx.JSON(200, message.Error("参数错误"))
 	}
