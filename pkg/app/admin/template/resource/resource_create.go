@@ -10,7 +10,11 @@ import (
 
 // 创建表单的接口
 func (p *Template) CreationApi(ctx *builder.Context) string {
+
+	// 模版实例
 	template := ctx.Template.(types.Resourcer)
+
+	// 表单接口
 	formApi := template.FormApi(ctx)
 	if formApi != "" {
 		return formApi
@@ -26,10 +30,20 @@ func (p *Template) CreationApi(ctx *builder.Context) string {
 
 // 渲染创建页组件
 func (p *Template) CreationComponentRender(ctx *builder.Context, data map[string]interface{}) interface{} {
+
+	// 表单标题
 	title := p.FormTitle(ctx)
+
+	// 表单页右上角自定义区域行为
 	formExtraActions := p.FormExtraActions(ctx)
+
+	// 创建表单的接口
 	api := p.CreationApi(ctx)
+
+	// 包裹在组件内的创建页字段
 	fields := p.CreationFieldsWithinComponents(ctx)
+
+	// 表单页行为
 	formActions := p.FormActions(ctx)
 
 	return p.FormComponentRender(

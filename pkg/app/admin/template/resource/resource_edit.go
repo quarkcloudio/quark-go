@@ -10,7 +10,11 @@ import (
 
 // 更新表单的接口
 func (p *Template) UpdateApi(ctx *builder.Context) string {
+
+	// 模版实例
 	template := ctx.Template.(types.Resourcer)
+
+	// 表单接口
 	formApi := template.FormApi(ctx)
 	if formApi != "" {
 		return formApi
@@ -36,10 +40,20 @@ func (p *Template) EditValueApi(request *builder.Context) string {
 
 // 渲染编辑页组件
 func (p *Template) UpdateComponentRender(ctx *builder.Context, data map[string]interface{}) interface{} {
+
+	// 表单标题
 	title := p.FormTitle(ctx)
+
+	// 表单页右上角自定义区域行为
 	formExtraActions := p.FormExtraActions(ctx)
+
+	// 更新表单的接口
 	api := p.UpdateApi(ctx)
+
+	// 包裹在组件内的编辑页字段
 	fields := p.UpdateFieldsWithinComponents(ctx)
+
+	// 表单页行为
 	formActions := p.FormActions(ctx)
 
 	return p.FormComponentRender(

@@ -13,15 +13,23 @@ import (
 
 // 列表页搜索表单
 func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
+
+	// 模版实例
 	template := ctx.Template.(types.Resourcer)
+
+	// 搜索项
 	searches := template.Searches(ctx)
 
+	// 搜索组件
 	search := (&table.Search{}).Init()
+
+	// 是否携带导出功能
 	withExport := template.GetWithExport()
 	if withExport {
 		search = search.SetExportText("导出").SetExportApi(strings.Replace(ExportPath, ":resource", ctx.Param("resource"), -1))
 	}
 
+	// 解析搜索项
 	for _, v := range searches {
 
 		// 获取组件名称

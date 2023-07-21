@@ -23,15 +23,18 @@ func (p *Template) IndexToolBar(ctx *builder.Context) interface{} {
 
 // 列表标题
 func (p *Template) IndexTitle(ctx *builder.Context) string {
-	template := ctx.Template.(types.Resourcer)
-	title := template.GetTitle()
 
-	return title + "列表"
+	// 模版实例
+	template := ctx.Template.(types.Resourcer)
+
+	return template.GetTitle() + "列表"
 }
 
 // 列表页组件渲染
 func (p *Template) IndexComponentRender(ctx *builder.Context, data interface{}) interface{} {
 	var component interface{}
+
+	// 模版实例
 	template := ctx.Template.(types.Resourcer)
 
 	// 列表标题
@@ -55,6 +58,7 @@ func (p *Template) IndexComponentRender(ctx *builder.Context, data interface{}) 
 	// 列表页搜索栏
 	indexSearches := p.IndexSearches(ctx)
 
+	// 表格组件
 	table := (&table.Component{}).
 		Init().
 		SetPolling(int(indexPolling)).
@@ -66,12 +70,7 @@ func (p *Template) IndexComponentRender(ctx *builder.Context, data interface{}) 
 		SetSearches(indexSearches)
 
 	// 获取分页
-	perPage := reflect.
-		ValueOf(ctx.Template).
-		Elem().
-		FieldByName("PerPage").
-		Interface()
-
+	perPage := template.GetPerPage()
 	if perPage == nil {
 		return table.SetDatasource(data)
 	}

@@ -20,8 +20,14 @@ func (p *Template) FormApi(ctx *builder.Context) string {
 
 // 表单标题
 func (p *Template) FormTitle(ctx *builder.Context) string {
+
+	// 模版实例
 	template := ctx.Template.(types.Resourcer)
+
+	// 获取标题
 	title := template.GetTitle()
+
+	// 解析标题
 	if ctx.IsCreating() {
 		return "创建" + title
 	} else {

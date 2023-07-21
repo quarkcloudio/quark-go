@@ -14,10 +14,15 @@ import (
 
 // 列表行为
 func (p *Template) IndexActions(ctx *builder.Context) interface{} {
+	var items []interface{}
+
+	// 模版实例
 	template := ctx.Template.(types.Resourcer)
+
+	// 获取行为
 	actions := template.Actions(ctx)
 
-	var items []interface{}
+	// 解析行为
 	for _, v := range actions {
 		shownOnIndex := v.(interface {
 			ShownOnIndex() bool
@@ -34,10 +39,15 @@ func (p *Template) IndexActions(ctx *builder.Context) interface{} {
 
 // 表格行内行为
 func (p *Template) IndexTableRowActions(ctx *builder.Context) interface{} {
+	var items []interface{}
+
+	// 模版实例
 	template := ctx.Template.(types.Resourcer)
+
+	// 获取行为
 	actions := template.Actions(ctx)
 
-	var items []interface{}
+	// 解析行为
 	for _, v := range actions {
 		shownOnIndexTableRow := v.(interface {
 			ShownOnIndexTableRow() bool
@@ -54,10 +64,15 @@ func (p *Template) IndexTableRowActions(ctx *builder.Context) interface{} {
 
 // 表格多选弹出层行为
 func (p *Template) IndexTableAlertActions(ctx *builder.Context) interface{} {
+	var items []interface{}
+
+	// 模版实例
 	template := ctx.Template.(types.Resourcer)
+
+	// 获取行为
 	actions := template.Actions(ctx)
 
-	var items []interface{}
+	// 解析行为
 	for _, v := range actions {
 		shownOnIndexTableAlert := v.(interface {
 			ShownOnIndexTableAlert() bool
@@ -74,10 +89,15 @@ func (p *Template) IndexTableAlertActions(ctx *builder.Context) interface{} {
 
 // 表单页行为
 func (p *Template) FormActions(ctx *builder.Context) []interface{} {
+	var items []interface{}
+
+	// 模版实例
 	template := ctx.Template.(types.Resourcer)
+
+	// 获取行为
 	actions := template.Actions(ctx)
 
-	var items []interface{}
+	// 解析行为
 	for _, v := range actions {
 		shownOnForm := v.(interface {
 			ShownOnForm() bool
@@ -94,10 +114,15 @@ func (p *Template) FormActions(ctx *builder.Context) []interface{} {
 
 // 表单页右上角自定义区域行为
 func (p *Template) FormExtraActions(ctx *builder.Context) interface{} {
+	var items []interface{}
+
+	// 模版实例
 	template := ctx.Template.(types.Resourcer)
+
+	// 获取行为
 	actions := template.Actions(ctx)
 
-	var items []interface{}
+	// 解析行为
 	for _, v := range actions {
 		shownOnFormExtra := v.(interface {
 			ShownOnFormExtra() bool
@@ -114,10 +139,15 @@ func (p *Template) FormExtraActions(ctx *builder.Context) interface{} {
 
 // 详情页行为
 func (p *Template) DetailActions(ctx *builder.Context) []interface{} {
+	var items []interface{}
+
+	// 模版实例
 	template := ctx.Template.(types.Resourcer)
+
+	// 获取行为
 	actions := template.Actions(ctx)
 
-	var items []interface{}
+	// 解析行为
 	for _, v := range actions {
 		shownOnDetail := v.(interface {
 			ShownOnDetail() bool
@@ -134,10 +164,15 @@ func (p *Template) DetailActions(ctx *builder.Context) []interface{} {
 
 // 详情页右上角自定义区域行为
 func (p *Template) DetailExtraActions(ctx *builder.Context) interface{} {
+	var items []interface{}
+
+	// 模版实例
 	template := ctx.Template.(types.Resourcer)
+
+	// 获取行为
 	actions := template.Actions(ctx)
 
-	var items []interface{}
+	// 解析行为
 	for _, v := range actions {
 		shownOnDetailExtra := v.(interface {
 			ShownOnDetailExtra() bool
@@ -154,8 +189,14 @@ func (p *Template) DetailExtraActions(ctx *builder.Context) interface{} {
 
 // 创建行为组件
 func (p *Template) buildAction(ctx *builder.Context, item interface{}) interface{} {
+
+	// 行为名称
 	name := item.(interface{ GetName() string }).GetName()
+
+	// 是否携带Loading
 	withLoading := item.(interface{ GetWithLoading() bool }).GetWithLoading()
+
+	// 行为执行完成后刷新的组件
 	reload := item.(interface{ GetReload() string }).GetReload()
 
 	// uri唯一标识
@@ -177,14 +218,28 @@ func (p *Template) buildAction(ctx *builder.Context, item interface{}) interface
 		api = p.buildActionApi(ctx, params, uriKey)
 	}
 
+	// 行为类型
 	actionType := item.(interface{ GetActionType() string }).GetActionType()
+
+	// 按钮类型
 	buttonType := item.(interface{ GetType() string }).GetType()
+
+	// 按钮大小
 	size := item.(interface{ GetSize() string }).GetSize()
+
+	// 按钮图标
 	icon := item.(interface{ GetIcon() string }).GetIcon()
+
+	// 确认操作标题
 	confirmTitle := item.(interface{ GetConfirmTitle() string }).GetConfirmTitle()
+
+	// 确认操作提示信息
 	confirmText := item.(interface{ GetConfirmText() string }).GetConfirmText()
+
+	// 确认操作类型
 	confirmType := item.(interface{ GetConfirmType() string }).GetConfirmType()
 
+	// 处理下拉菜单类型行为
 	if actionType == "dropdown" {
 		overlay := item.(interface {
 			GetMenu(ctx *builder.Context) interface{}

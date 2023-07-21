@@ -17,9 +17,17 @@ func (p *Template) DetailTitle(ctx *builder.Context) string {
 
 // 渲染详情页组件
 func (p *Template) DetailComponentRender(ctx *builder.Context, data map[string]interface{}) interface{} {
+
+	// 详情页标题
 	title := p.DetailTitle(ctx)
+
+	// 详情页右上角自定义区域行为
 	formExtraActions := p.DetailExtraActions(ctx)
+
+	// 包裹在组件内的详情页字段
 	fields := p.DetailFieldsWithinComponents(ctx, data)
+
+	// 包裹在组件内的详情页字段
 	formActions := p.DetailActions(ctx)
 
 	return p.DetailWithinCard(

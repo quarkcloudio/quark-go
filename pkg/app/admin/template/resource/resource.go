@@ -166,9 +166,10 @@ func (p *Template) IndexRender(ctx *builder.Context) error {
 	// 获取数据
 	data := (&requests.IndexRequest{}).QueryData(ctx)
 
-	// 获取列表页组件
+	// 组件渲染
 	body := template.IndexComponentRender(ctx, data)
 
+	// 页面渲染
 	result := template.PageComponentRender(ctx, body)
 
 	return ctx.JSON(200, result)
@@ -188,12 +189,13 @@ func (p *Template) ActionRender(ctx *builder.Context) error {
 func (p *Template) CreationRender(ctx *builder.Context) error {
 	template := ctx.Template.(types.Resourcer)
 
-	// 断言BeforeCreating方法，获取初始数据
+	// 展示前回调
 	data := template.BeforeCreating(ctx)
 
-	// 断言CreationComponentRender方法
+	// 组件渲染
 	body := template.CreationComponentRender(ctx, data)
 
+	// 页面渲染
 	result := template.PageComponentRender(ctx, body)
 
 	return ctx.JSON(200, result)
@@ -211,12 +213,13 @@ func (p *Template) EditRender(ctx *builder.Context) error {
 	// 获取数据
 	data := (&requests.EditRequest{}).FillData(ctx)
 
-	// 断言BeforeEditing方法，获取初始数据
+	// 展示前回调
 	data = template.BeforeEditing(ctx, data)
 
-	// 断言UpdateComponentRender方法
+	// 组件渲染
 	body := template.UpdateComponentRender(ctx, data)
 
+	// 页面渲染
 	result := template.PageComponentRender(ctx, body)
 
 	return ctx.JSON(200, result)
@@ -236,14 +239,16 @@ func (p *Template) SaveRender(ctx *builder.Context) error {
 func (p *Template) DetailRender(ctx *builder.Context) error {
 	template := ctx.Template.(types.Resourcer)
 
+	// 获取数据
 	data := (&requests.DetailRequest{}).FillData(ctx)
 
-	// 断言方法，获取初始数据
+	// 显示前回调
 	data = template.BeforeDetailShowing(ctx, data)
 
-	// 断言方法
+	// 组件渲染
 	body := template.DetailComponentRender(ctx, data)
 
+	// 页面渲染
 	result := template.PageComponentRender(ctx, body)
 
 	return ctx.JSON(200, result)
@@ -268,12 +273,13 @@ func (p *Template) ImportTemplateRender(ctx *builder.Context) error {
 func (p *Template) FormRender(ctx *builder.Context) error {
 	template := ctx.Template.(types.Resourcer)
 
-	// 断言BeforeCreating方法，获取初始数据
+	// 获取数据
 	data := template.BeforeCreating(ctx)
 
-	// 断言CreationComponentRender方法
+	// 组件渲染
 	body := template.CreationComponentRender(ctx, data)
 
+	// 页面渲染
 	result := template.PageComponentRender(ctx, body)
 
 	return ctx.JSON(200, result)
