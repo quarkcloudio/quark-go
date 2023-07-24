@@ -50,18 +50,29 @@ func (p *SyncPermission) Handle(ctx *builder.Context, query *gorm.DB) error {
 	for _, v := range permissions {
 		if strings.Contains(v.Url, "/api/admin") {
 			has := false
+			hasPermission := false
 			url := strings.ReplaceAll(v.Url, "/api/admin/", "")
 			url = strings.ReplaceAll(url, "/", "_") + "_" + strings.ToLower(v.Method)
 			name := stringy.
 				New(url).
 				CamelCase("?", "")
 			currentNames = append(currentNames, name)
+
+			// 判断数据库中是否已存在
 			for _, nv := range names {
 				if nv == name {
 					has = true
 				}
 			}
-			if has == false {
+
+			// 判断当前同步中是否已存在
+			for _, pv := range data {
+				if pv.Name == name {
+					hasPermission = true
+				}
+			}
+
+			if !has && !hasPermission {
 				permission := model.Permission{
 					Name:      name,
 					Method:    v.Method,
