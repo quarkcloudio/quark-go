@@ -233,7 +233,7 @@ func (model *Menu) MenuParser(menus []*Menu) (menuList interface{}, Error error)
 			v.HideInMenu = true
 		}
 
-		if v.Type == 2 {
+		if v.Type == 2 && v.IsEngine == 1 {
 			v.Path = "/layout/index?api=" + v.Path
 		}
 
