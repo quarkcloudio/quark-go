@@ -27,7 +27,7 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/install"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/middleware"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
-	"gorm.io/driver/sqlite"
+	"github.com/glebarez/sqlite""
 	"gorm.io/gorm"
 )
 
