@@ -33,21 +33,18 @@ import (
 
 func main() {
 
-	// 定义服务
-	var providers []interface{}
-
-	// 数据库配置信息
-	dsn := "./data.db"
-
-	// 加载后台服务
-	providers = append(providers, service.Providers...)
-
 	// 配置资源
 	config := &builder.Config{
+
+		// JWT加密密串
 		AppKey:    "123456",
-		Providers: providers,
+
+		// 加载服务
+		Providers: service.Providers,
+
+		// 数据库配置
 		DBConfig: &builder.DBConfig{
-			Dialector: sqlite.Open(dsn),
+			Dialector: sqlite.Open("./data.db"),
 			Opts:      &gorm.Config{},
 		},
 	}
