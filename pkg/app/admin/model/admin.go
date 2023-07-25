@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
-	"github.com/quarkcms/quark-go/v2/pkg/hash"
+	"github.com/quarkcms/quark-go/v2/pkg/utils/hash"
 	"gorm.io/gorm"
 )
 

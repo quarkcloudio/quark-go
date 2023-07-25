@@ -8,7 +8,8 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/when"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/rule"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/table"
-	"github.com/quarkcms/quark-go/v2/pkg/utils"
+	"github.com/quarkcms/quark-go/v2/pkg/utils/convert"
+	"github.com/quarkcms/quark-go/v2/pkg/utils/hex"
 )
 
 type Component struct {
@@ -95,7 +96,7 @@ func (p *Component) Init() *Component {
 
 // 设置Key
 func (p *Component) SetKey(key string, crypt bool) *Component {
-	p.ComponentKey = utils.MakeKey(key, crypt)
+	p.ComponentKey = hex.Make(key, crypt)
 
 	return p
 }
@@ -428,7 +429,7 @@ func (p *Component) SetWhen(value ...any) *Component {
 		i.Body = callback()
 	}
 
-	getOption := utils.InterfaceToString(option)
+	getOption := convert.AnyToString(option)
 	switch operator {
 	case "=":
 		i.Condition = "<%=String(" + p.Name + ") === '" + getOption + "' %>"

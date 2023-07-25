@@ -7,7 +7,7 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/actions"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
-	"github.com/quarkcms/quark-go/v2/pkg/hash"
+	"github.com/quarkcms/quark-go/v2/pkg/utils/hash"
 	"gorm.io/gorm"
 )
 

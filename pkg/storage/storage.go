@@ -20,7 +20,8 @@ import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-	"github.com/quarkcms/quark-go/v2/pkg/rand"
+	"github.com/quarkcms/quark-go/v2/pkg/utils/file"
+	"github.com/quarkcms/quark-go/v2/pkg/utils/rand"
 )
 
 var (
@@ -226,15 +227,6 @@ func (p *FileSystem) Name(name string) *FileSystem {
 	return p
 }
 
-// 检查路径是否存在
-func (p *FileSystem) isExist(path string) bool {
-	_, err := os.Stat(path) //os.Stat获取文件信息
-	if err != nil {
-		return os.IsExist(err)
-	}
-	return true
-}
-
 // 计算文件哈希值
 func (p *FileSystem) GetFileHash() (string, error) {
 	var (
@@ -372,7 +364,7 @@ func (p *FileSystem) SaveToLocal() error {
 		p.Config.SaveName = rand.MakeAlphanumeric(40) + "." + p.File.Ext
 	}
 
-	if !p.isExist(savePath) {
+	if !file.IsExist(savePath) {
 		err := os.MkdirAll(savePath, os.ModeDir)
 		if err != nil {
 			return err
@@ -381,7 +373,7 @@ func (p *FileSystem) SaveToLocal() error {
 
 	saveName := p.Config.SaveName
 	if p.Config.CheckFileExist {
-		if p.isExist(savePath + saveName) {
+		if file.IsExist(savePath + saveName) {
 			return errors.New("文件已存在：" + savePath + saveName)
 		}
 	}

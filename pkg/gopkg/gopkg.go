@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/quarkcms/quark-go/v2/pkg/utils/file"
 	"github.com/xbmlz/gct"
 )
 
@@ -40,8 +41,7 @@ func (p *PkgGo) Download() error {
 	}
 	defer resp.Body.Close()
 
-	_, err = os.Stat("./tmp")
-	if os.IsNotExist(err) {
+	if !file.IsExist("./tmp") {
 		os.MkdirAll("./tmp", 0775)
 	}
 

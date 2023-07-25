@@ -2,7 +2,7 @@ package when
 
 import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/component"
-	"github.com/quarkcms/quark-go/v2/pkg/utils"
+	"github.com/quarkcms/quark-go/v2/pkg/utils/hex"
 )
 
 type Item struct {
@@ -40,7 +40,7 @@ func (p *Component) Init() *Component {
 
 // 设置Key
 func (p *Component) SetKey(key string, crypt bool) *Component {
-	p.ComponentKey = utils.MakeKey(key, crypt)
+	p.ComponentKey = hex.Make(key, crypt)
 
 	return p
 }

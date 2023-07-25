@@ -14,7 +14,8 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
-	"github.com/quarkcms/quark-go/v2/pkg/rand"
+	"github.com/quarkcms/quark-go/v2/pkg/utils/file"
+	"github.com/quarkcms/quark-go/v2/pkg/utils/rand"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -140,7 +141,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 		fileUrl := "//" + ctx.Host() + "/storage/failImports/" + fileName
 
 		// 不存在路径，则创建
-		if !isExist(filePath) {
+		if !file.IsExist(filePath) {
 			err := os.MkdirAll(filePath, 0666)
 			if err != nil {
 				return ctx.JSON(200, message.Error(err.Error()))
@@ -285,10 +286,4 @@ func (p *ImportRequest) getSubmitData(fields interface{}, submitData interface{}
 	}
 
 	return result
-}
-
-// 判断文件是否存在
-func isExist(path string) bool {
-	_, err := os.Stat(path)
-	return !os.IsNotExist(err)
 }

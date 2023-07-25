@@ -5,27 +5,15 @@ import (
 
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcms/quark-go/v2/pkg/utils/file"
 	"gorm.io/gorm"
 )
-
-// 判断路径是否存在
-func PathExist(path string) bool {
-	_, err := os.Stat(path) //os.Stat获取文件信息
-	if err != nil {
-		if os.IsExist(err) {
-			return true
-		}
-		return false
-	}
-
-	return true
-}
 
 // 执行安装操作
 func Handle() {
 
 	// 如果锁定文件存在则不执行安装步骤
-	if PathExist("install.lock") {
+	if file.IsExist("install.lock") {
 		return
 	}
 

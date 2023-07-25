@@ -3,7 +3,6 @@ package builder
 import (
 	"io"
 	"net/http"
-	"os"
 	"reflect"
 	"runtime"
 	"strings"
@@ -12,6 +11,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/quarkcms/quark-go/v2/pkg/dal"
 	"github.com/quarkcms/quark-go/v2/pkg/gopkg"
+	"github.com/quarkcms/quark-go/v2/pkg/utils/file"
 	"gorm.io/gorm"
 )
 
@@ -111,9 +111,8 @@ func New(config *Config) *Engine {
 	}
 
 	// 下载静态文件
-	_, err := os.Stat(config.StaticPath)
-	if os.IsNotExist(err) {
-		err = gopkg.New(PkgName, Version).Save("web", config.StaticPath)
+	if !file.IsExist(config.StaticPath) {
+		err := gopkg.New(PkgName, Version).Save("web", config.StaticPath)
 		if err != nil {
 			panic(err)
 		}

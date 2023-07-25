@@ -8,7 +8,7 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/tree"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/treeselect"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
-	"github.com/quarkcms/quark-go/v2/pkg/lister"
+	"github.com/quarkcms/quark-go/v2/pkg/utils/lister"
 	"gorm.io/gorm"
 )
 

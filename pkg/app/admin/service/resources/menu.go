@@ -12,7 +12,7 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/service/searches"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
-	"github.com/quarkcms/quark-go/v2/pkg/lister"
+	"github.com/quarkcms/quark-go/v2/pkg/utils/lister"
 	"gorm.io/gorm"
 )
 
