@@ -20,10 +20,10 @@ const (
 	AppName = "QuarkGo"
 
 	// 版本号
-	Version = "2.0.5"
+	Version = "2.0.6"
 
 	// 包名
-	PkgName = "github.com/quarkcms/quark-go"
+	PkgName = "github.com/quarkcms/quark-go/v2"
 )
 
 type Engine struct {
@@ -113,7 +113,10 @@ func New(config *Config) *Engine {
 	// 下载静态文件
 	_, err := os.Stat(config.StaticPath)
 	if os.IsNotExist(err) {
-		gopkg.New(PkgName, Version).Save("web", config.StaticPath)
+		err = gopkg.New(PkgName, Version).Save("web", config.StaticPath)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	// 初始化请求列表
