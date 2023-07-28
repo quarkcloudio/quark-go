@@ -7,6 +7,7 @@ import (
 
 type Cascader struct {
 	Search
+	CascaderOptions []*cascader.Option
 }
 
 // 初始化模板

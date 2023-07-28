@@ -7,6 +7,7 @@ import (
 
 type TreeSelect struct {
 	Search
+	TreeSelectOptions []*treeselect.TreeData
 }
 
 // 初始化模板

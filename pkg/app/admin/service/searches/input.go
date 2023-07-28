@@ -10,9 +10,10 @@ type InputField struct {
 	searches.Search
 }
 
-// Input框
+// 输入框
 func Input(column string, name string) *InputField {
 	field := &InputField{}
+
 	field.Column = column
 	field.Name = name
 

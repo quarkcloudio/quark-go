@@ -7,6 +7,7 @@ import (
 
 type Select struct {
 	Search
+	SelectOptions []*selectfield.Option
 }
 
 // 初始化模板
