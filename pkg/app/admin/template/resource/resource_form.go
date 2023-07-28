@@ -55,7 +55,8 @@ func (p *Template) FormComponentRender(
 		component := reflect.
 			ValueOf(fields.([]interface{})[0]).
 			Elem().
-			FieldByName("Component").String()
+			FieldByName("Component").
+			String()
 
 		if component == "tabPane" {
 			return p.FormWithinTabs(ctx, title, extra, api, getFields, actions, data)

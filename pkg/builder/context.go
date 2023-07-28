@@ -526,7 +526,7 @@ func (p *Context) getTemplate(ctx *Context) (interface{}, error) {
 	}
 
 	if templateInstance == nil {
-		return nil, errors.New("未获取到实例")
+		return nil, errors.New("Unable to find resource instance")
 	}
 
 	return templateInstance, nil

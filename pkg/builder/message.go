@@ -23,7 +23,7 @@ var CodeMaps = []*CodeMap{
 	},
 	{
 		Code: StatusError,
-		Msg:  "自定义错误类型",
+		Msg:  "Internal Server Error",
 	},
 }
 
