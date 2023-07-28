@@ -3,7 +3,6 @@ package resources
 import (
 	"time"
 
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/table"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/service/actions"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/service/searches"
@@ -49,10 +48,7 @@ func (p *ActionLog) Fields(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		field.ID("id", "ID"),
 		field.Text("username", "用户"),
-		field.Text("url", "行为").
-			SetColumn(func(column *table.Column) *table.Column {
-				return column.SetEllipsis(true)
-			}),
+		field.Text("url", "行为").SetEllipsis(true),
 		field.Text("ip", "IP"),
 		field.Datetime("created_at", "发生时间", func() interface{} {
 			if p.Field["created_at"] == nil {
