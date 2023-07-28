@@ -9,7 +9,7 @@ type Link struct {
 }
 
 // 初始化
-func (p *Link) ParentInit() interface{} {
+func (p *Link) TemplateInit(ctx *builder.Context) interface{} {
 	p.ActionType = "link"
 	p.Target = "_self"
 

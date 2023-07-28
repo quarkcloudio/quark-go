@@ -7,17 +7,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type Disable struct {
+type BatchDelete struct {
 	actions.Action
 }
 
 // 初始化
-func (p *Disable) Init(name string) *Disable {
-	// 初始化父结构
-	p.ParentInit()
+func (p *BatchDelete) Init(ctx *builder.Context) interface{} {
 
-	// 行为名称，当行为在表格行展示时，支持js表达式
-	p.Name = name
+	// 文字
+	p.Name = "批量删除"
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"
@@ -28,25 +26,25 @@ func (p *Disable) Init(name string) *Disable {
 	//  执行成功后刷新的组件
 	p.Reload = "table"
 
-	// 设置展示位置
-	p.SetOnlyOnIndexTableAlert(true)
-
 	// 当行为在表格行展示时，支持js表达式
-	p.WithConfirm("确定要禁用吗？", "禁用后数据将无法使用，请谨慎操作！", "modal")
+	p.WithConfirm("确定要删除吗？", "删除后数据将无法恢复，请谨慎操作！", "modal")
+
+	// 在表格多选弹出层展示
+	p.SetOnlyOnIndexTableAlert(true)
 
 	return p
 }
 
 // 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
-func (p *Disable) GetApiParams() []string {
+func (p *BatchDelete) GetApiParams() []string {
 	return []string{
 		"id",
 	}
 }
 
 // 执行行为句柄
-func (p *Disable) Handle(ctx *builder.Context, query *gorm.DB) error {
-	err := query.Update("status", 0).Error
+func (p *BatchDelete) Handle(ctx *builder.Context, query *gorm.DB) error {
+	err := query.Delete("").Error
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}

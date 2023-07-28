@@ -19,7 +19,7 @@ type Dropdown struct {
 }
 
 // 初始化
-func (p *Dropdown) ParentInit() interface{} {
+func (p *Dropdown) TemplateInit(ctx *builder.Context) interface{} {
 	p.ActionType = "dropdown"
 	p.Placement = "bottomLeft"
 	p.Trigger = append(p.Trigger, "hover")

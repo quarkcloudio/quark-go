@@ -59,7 +59,7 @@ func (p *File) Searches(ctx *builder.Context) []interface{} {
 // 行为
 func (p *File) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		(&actions.Delete{}).Init("批量删除"),
-		(&actions.Delete{}).Init("删除"),
+		(&actions.BatchDelete{}),
+		(&actions.Delete{}),
 	}
 }

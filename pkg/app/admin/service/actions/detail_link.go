@@ -12,18 +12,16 @@ type DetailLink struct {
 }
 
 // 初始化
-func (p *DetailLink) Init(name string) *DetailLink {
-	// 初始化父结构
-	p.ParentInit()
+func (p *DetailLink) Init(ctx *builder.Context) interface{} {
+
+	// 文字
+	p.Name = "详情"
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"
 
 	// 设置按钮大小,large | middle | small | default
 	p.Size = "small"
-
-	// 文字
-	p.Name = name
 
 	// 设置展示位置
 	p.SetOnlyOnIndexTableRow(true)

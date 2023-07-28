@@ -9,7 +9,7 @@ type Drawer struct {
 }
 
 // 初始化
-func (p *Drawer) ParentInit() interface{} {
+func (p *Drawer) TemplateInit(ctx *builder.Context) interface{} {
 	p.ActionType = "drawer"
 	p.Width = 520
 

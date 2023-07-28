@@ -12,18 +12,16 @@ type EditModal struct {
 }
 
 // 初始化
-func (p *EditModal) Init(name string) *EditModal {
-	// 初始化父结构
-	p.ParentInit()
+func (p *EditModal) Init(ctx *builder.Context) interface{} {
+
+	// 文字
+	p.Name = "编辑"
 
 	// 类型
 	p.Type = "link"
 
 	// 设置按钮大小,large | middle | small | default
 	p.Size = "small"
-
-	// 文字
-	p.Name = name
 
 	// 关闭时销毁 Modal 里的子元素
 	p.DestroyOnClose = true

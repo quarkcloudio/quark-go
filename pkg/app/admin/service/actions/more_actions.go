@@ -2,6 +2,7 @@ package actions
 
 import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/actions"
+	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
 type MoreActions struct {
@@ -9,10 +10,10 @@ type MoreActions struct {
 }
 
 // 初始化
-func (p *MoreActions) Init(name string) *MoreActions {
+func (p *MoreActions) Init(ctx *builder.Context) interface{} {
 
-	// 初始化父结构
-	p.ParentInit()
+	// 文字
+	p.Name = "更多"
 
 	// 下拉框箭头是否显示
 	p.Arrow = true
@@ -34,11 +35,15 @@ func (p *MoreActions) Init(name string) *MoreActions {
 	// 设置按钮大小,large | middle | small | default
 	p.Size = "small"
 
-	// 文字
-	p.Name = name
-
 	// 设置展示位置
 	p.SetOnlyOnIndexTableRow(true)
+
+	return p
+}
+
+// 下拉菜单行为
+func (p *MoreActions) SetActions(actions []interface{}) *MoreActions {
+	p.Actions = actions
 
 	return p
 }

@@ -7,17 +7,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type Enable struct {
+type BatchDisable struct {
 	actions.Action
 }
 
 // 初始化
-func (p *Enable) Init(name string) *Enable {
-	// 初始化父结构
-	p.ParentInit()
+func (p *BatchDisable) Init(ctx *builder.Context) interface{} {
 
-	// 行为名称，当行为在表格行展示时，支持js表达式
-	p.Name = name
+	// 文字
+	p.Name = "批量禁用"
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"
@@ -32,21 +30,21 @@ func (p *Enable) Init(name string) *Enable {
 	p.SetOnlyOnIndexTableAlert(true)
 
 	// 当行为在表格行展示时，支持js表达式
-	p.WithConfirm("确定要启用吗？", "启用后数据将正常使用！", "modal")
+	p.WithConfirm("确定要禁用吗？", "禁用后数据将无法使用，请谨慎操作！", "modal")
 
 	return p
 }
 
 // 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
-func (p *Enable) GetApiParams() []string {
+func (p *BatchDisable) GetApiParams() []string {
 	return []string{
 		"id",
 	}
 }
 
 // 执行行为句柄
-func (p *Enable) Handle(ctx *builder.Context, model *gorm.DB) error {
-	err := model.Update("status", 1).Error
+func (p *BatchDisable) Handle(ctx *builder.Context, query *gorm.DB) error {
+	err := query.Update("status", 0).Error
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}

@@ -151,24 +151,24 @@ func (p *Menu) Searches(ctx *builder.Context) []interface{} {
 // 行为
 func (p *Menu) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		(&actions.CreateDrawer{}).Init(p.Title),
-		(&actions.Delete{}).Init("批量删除"),
-		(&actions.Disable{}).Init("批量禁用"),
-		(&actions.Enable{}).Init("批量启用"),
-		(&actions.ChangeStatus{}).Init(),
-		(&actions.EditDrawer{}).Init("编辑"),
-		(&actions.Delete{}).Init("删除"),
-		(&actions.FormSubmit{}).Init(),
-		(&actions.FormReset{}).Init(),
-		(&actions.FormBack{}).Init(),
-		(&actions.FormExtraBack{}).Init(),
+		(&actions.CreateDrawer{}),
+		(&actions.BatchDelete{}),
+		(&actions.BatchDisable{}),
+		(&actions.BatchEnable{}),
+		(&actions.ChangeStatus{}),
+		(&actions.EditDrawer{}),
+		(&actions.Delete{}),
+		(&actions.FormSubmit{}),
+		(&actions.FormReset{}),
+		(&actions.FormBack{}),
+		(&actions.FormExtraBack{}),
 	}
 }
 
 // 列表页面显示前回调
 func (p *Menu) BeforeIndexShowing(ctx *builder.Context, list []map[string]interface{}) []interface{} {
 	data := ctx.AllQuerys()
-	if search, ok := data["search"].(map[string]interface{}); ok == true && search != nil {
+	if search, ok := data["search"].(map[string]interface{}); ok && search != nil {
 		result := []interface{}{}
 		for _, v := range list {
 			result = append(result, v)

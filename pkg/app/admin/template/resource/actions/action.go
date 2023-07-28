@@ -11,6 +11,8 @@ import (
 type Action struct {
 	Name                  string      `json:"name"`
 	Reload                string      `json:"reload"`
+	ApiParams             []string    `json:"apiParams"`
+	Api                   string      `json:"api"`
 	ActionType            string      `json:"actionType"`
 	SubmitForm            string      `json:"submitForm"`
 	Icon                  string      `json:"icon"`
@@ -34,7 +36,12 @@ type Action struct {
 }
 
 // 初始化
-func (p *Action) ParentInit() interface{} {
+func (p *Action) Init(ctx *builder.Context) interface{} {
+	return p
+}
+
+// 初始化模板
+func (p *Action) TemplateInit(ctx *builder.Context) interface{} {
 	p.ActionType = "ajax"
 
 	return p
@@ -61,13 +68,12 @@ func (p *Action) GetReload() string {
 
 // 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
 func (p *Action) GetApiParams() []string {
-	return []string{}
+	return p.ApiParams
 }
 
 // 执行行为的接口
-func (p *Action) GetApi(ctx *builder.Context) string {
-
-	return ""
+func (p *Action) GetApi() string {
+	return p.Api
 }
 
 // 【必填】这是 action 最核心的配置，来指定该 action 的作用类型，支持：ajax、link、url、drawer、dialog、confirm、cancel、prev、next、copy、close。
@@ -118,6 +124,104 @@ func (p *Action) GetConfirmText() string {
 // 确认类型
 func (p *Action) GetConfirmType() string {
 	return p.ConfirmType
+}
+
+// 设置名称
+func (p *Action) SetName(name string) *Action {
+	p.Name = name
+
+	return p
+}
+
+// 设置执行成功后刷新的组件
+func (p *Action) SetReload(componentKey string) *Action {
+	p.Reload = componentKey
+
+	return p
+}
+
+// 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
+func (p *Action) SetApiParams(apiParams []string) *Action {
+	p.ApiParams = apiParams
+
+	return p
+}
+
+// 执行行为的接口
+func (p *Action) SetApi(api string) *Action {
+	p.Api = api
+
+	return p
+}
+
+// 【必填】这是 action 最核心的配置，来指定该 action 的作用类型，支持：ajax、link、url、drawer、dialog、confirm、cancel、prev、next、copy、close。
+func (p *Action) SetActionType(actionType string) *Action {
+	p.ActionType = actionType
+
+	return p
+}
+
+// 当 action 的作用类型为submit的时候，可以指定提交哪个表格，submitForm为提交表单的key值，为空时提交当前表单
+func (p *Action) SetSubmitForm(submitForm string) *Action {
+	p.SubmitForm = submitForm
+
+	return p
+}
+
+// 设置按钮类型，primary | ghost | dashed | link | text | default
+func (p *Action) SetType(buttonType string) *Action {
+	p.Type = buttonType
+
+	return p
+}
+
+// 设置按钮大小,large | middle | small | default
+func (p *Action) SetSize(size string) *Action {
+	p.Size = size
+
+	return p
+}
+
+// 是否具有loading，当action 的作用类型为ajax,submit时有效
+func (p *Action) SetWithLoading(loading bool) *Action {
+	p.WithLoading = loading
+
+	return p
+}
+
+// 设置按钮的图标组件
+func (p *Action) SetIcon(icon string) *Action {
+	p.Icon = icon
+
+	return p
+}
+
+// 行为表单字段
+func (p *Action) SetFields(fields interface{}) *Action {
+	p.Fields = fields
+
+	return p
+}
+
+// 确认标题
+func (p *Action) SetConfirmTitle(confirmTitle string) *Action {
+	p.ConfirmTitle = confirmTitle
+
+	return p
+}
+
+// 确认文字
+func (p *Action) SetConfirmText(confirmText string) *Action {
+	p.ConfirmText = confirmText
+
+	return p
+}
+
+// 确认类型
+func (p *Action) SetConfirmType(confirmType string) *Action {
+	p.ConfirmType = confirmType
+
+	return p
 }
 
 // 设置行为前的确认操作

@@ -4,6 +4,7 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/action"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/actions"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
@@ -12,18 +13,17 @@ type CreateDrawer struct {
 }
 
 // 初始化
-func (p *CreateDrawer) Init(name string) *CreateDrawer {
-	// 初始化父结构
-	p.ParentInit()
+func (p *CreateDrawer) Init(ctx *builder.Context) interface{} {
+	template := ctx.Template.(types.Resourcer)
+
+	// 文字
+	p.Name = "创建" + template.GetTitle()
 
 	// 类型
 	p.Type = "primary"
 
 	// 图标
 	p.Icon = "plus-circle"
-
-	// 文字
-	p.Name = "创建" + name
 
 	// 执行成功后刷新的组件
 	p.Reload = "table"

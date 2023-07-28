@@ -2,6 +2,7 @@ package actions
 
 import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/actions"
+	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
 type FormSubmit struct {
@@ -9,15 +10,13 @@ type FormSubmit struct {
 }
 
 // 初始化
-func (p *FormSubmit) Init() *FormSubmit {
-	// 初始化父结构
-	p.ParentInit()
-
-	// 类型
-	p.Type = "primary"
+func (p *FormSubmit) Init(ctx *builder.Context) interface{} {
 
 	// 文字
 	p.Name = "提交"
+
+	// 类型
+	p.Type = "primary"
 
 	// 行为类型
 	p.ActionType = "submit"

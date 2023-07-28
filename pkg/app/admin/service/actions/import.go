@@ -15,9 +15,7 @@ type Import struct {
 }
 
 // 初始化
-func (p *Import) Init() *Import {
-	// 初始化父结构
-	p.ParentInit()
+func (p *Import) Init(ctx *builder.Context) interface{} {
 
 	// 文字
 	p.Name = "导入数据"

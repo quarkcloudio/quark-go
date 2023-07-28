@@ -17,9 +17,7 @@ type SyncPermission struct {
 }
 
 // 初始化
-func (p *SyncPermission) Init() *SyncPermission {
-	// 初始化父结构
-	p.ParentInit()
+func (p *SyncPermission) Init(ctx *builder.Context) interface{} {
 
 	// 行为名称
 	p.Name = "同步权限"

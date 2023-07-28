@@ -76,14 +76,14 @@ func (p *Role) Searches(ctx *builder.Context) []interface{} {
 // 行为
 func (p *Role) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		(&actions.CreateLink{}).Init(p.Title),
-		(&actions.DeleteRole{}).Init("批量删除"),
-		(&actions.EditLink{}).Init("编辑"),
-		(&actions.DeleteRole{}).Init("删除"),
-		(&actions.FormSubmit{}).Init(),
-		(&actions.FormReset{}).Init(),
-		(&actions.FormBack{}).Init(),
-		(&actions.FormExtraBack{}).Init(),
+		(&actions.CreateLink{}),
+		(&actions.BatchDeleteRole{}),
+		(&actions.EditLink{}),
+		(&actions.DeleteRole{}),
+		(&actions.FormSubmit{}),
+		(&actions.FormReset{}),
+		(&actions.FormBack{}),
+		(&actions.FormExtraBack{}),
 	}
 }
 

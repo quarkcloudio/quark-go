@@ -12,18 +12,16 @@ type EditLink struct {
 }
 
 // 初始化
-func (p *EditLink) Init(name string) *EditLink {
-	// 初始化父结构
-	p.ParentInit()
+func (p *EditLink) Init(ctx *builder.Context) interface{} {
+
+	// 文字
+	p.Name = "编辑"
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"
 
 	// 设置按钮大小,large | middle | small | default
 	p.Size = "small"
-
-	// 文字
-	p.Name = name
 
 	// 设置展示位置
 	p.SetOnlyOnIndexTableRow(true)

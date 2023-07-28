@@ -92,10 +92,10 @@ func (p *Account) Fields(ctx *builder.Context) []interface{} {
 func (p *Account) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&actions.ChangeAccount{}),
-		(&actions.FormSubmit{}).Init(),
-		(&actions.FormReset{}).Init(),
-		(&actions.FormBack{}).Init(),
-		(&actions.FormExtraBack{}).Init(),
+		(&actions.FormSubmit{}),
+		(&actions.FormReset{}),
+		(&actions.FormBack{}),
+		(&actions.FormExtraBack{}),
 	}
 }
 

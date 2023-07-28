@@ -7,15 +7,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type ChangeStatus struct {
+type BatchEnable struct {
 	actions.Action
 }
 
 // 初始化
-func (p *ChangeStatus) Init(ctx *builder.Context) interface{} {
+func (p *BatchEnable) Init(ctx *builder.Context) interface{} {
 
-	// 行为名称，当行为在表格行展示时，支持js表达式
-	p.Name = "<%= (status==1 ? '禁用' : '启用') %>"
+	// 文字
+	p.Name = "批量启用"
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"
@@ -27,37 +27,24 @@ func (p *ChangeStatus) Init(ctx *builder.Context) interface{} {
 	p.Reload = "table"
 
 	// 设置展示位置
-	p.SetOnlyOnIndexTableRow(true)
+	p.SetOnlyOnIndexTableAlert(true)
 
 	// 当行为在表格行展示时，支持js表达式
-	p.WithConfirm("确定要<%= (status==1 ? '禁用' : '启用') %>数据吗？", "", "pop")
+	p.WithConfirm("确定要启用吗？", "启用后数据将正常使用！", "modal")
 
 	return p
 }
 
 // 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
-func (p *ChangeStatus) GetApiParams() []string {
+func (p *BatchEnable) GetApiParams() []string {
 	return []string{
 		"id",
-		"status",
 	}
 }
 
 // 执行行为句柄
-func (p *ChangeStatus) Handle(ctx *builder.Context, query *gorm.DB) error {
-	status := ctx.Query("status")
-	if status == "" {
-		return ctx.JSON(200, message.Error("参数错误！"))
-	}
-
-	var fieldStatus int
-	if status == "1" {
-		fieldStatus = 0
-	} else {
-		fieldStatus = 1
-	}
-
-	err := query.Update("status", fieldStatus).Error
+func (p *BatchEnable) Handle(ctx *builder.Context, model *gorm.DB) error {
+	err := model.Update("status", 1).Error
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}

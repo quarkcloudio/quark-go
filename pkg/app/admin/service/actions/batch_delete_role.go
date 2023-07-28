@@ -11,12 +11,12 @@ import (
 	"gorm.io/gorm"
 )
 
-type DeleteRole struct {
+type BatchDeleteRole struct {
 	actions.Action
 }
 
 // 初始化
-func (p *DeleteRole) Init(ctx *builder.Context) interface{} {
+func (p *BatchDeleteRole) Init(ctx *builder.Context) interface{} {
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"
@@ -30,21 +30,21 @@ func (p *DeleteRole) Init(ctx *builder.Context) interface{} {
 	// 当行为在表格行展示时，支持js表达式
 	p.WithConfirm("确定要删除吗？", "删除后数据将无法恢复，请谨慎操作！", "modal")
 
-	// 在表格行内展示
-	p.SetOnlyOnIndexTableRow(true)
+	// 在表格多选弹出层展示
+	p.SetOnlyOnIndexTableAlert(true)
 
 	return p
 }
 
 // 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
-func (p *DeleteRole) GetApiParams() []string {
+func (p *BatchDeleteRole) GetApiParams() []string {
 	return []string{
 		"id",
 	}
 }
 
 // 执行行为句柄
-func (p *DeleteRole) Handle(ctx *builder.Context, query *gorm.DB) error {
+func (p *BatchDeleteRole) Handle(ctx *builder.Context, query *gorm.DB) error {
 	id := ctx.Query("id")
 	if id == "" {
 		return ctx.JSON(200, message.Error("参数错误！"))

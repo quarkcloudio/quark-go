@@ -155,20 +155,20 @@ func (p *Admin) Searches(ctx *builder.Context) []interface{} {
 func (p *Admin) Actions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
-		(&actions.Import{}).Init(),
-		(&actions.CreateLink{}).Init(p.Title),
-		(&actions.Delete{}).Init("批量删除"),
-		(&actions.Disable{}).Init("批量禁用"),
-		(&actions.Enable{}).Init("批量启用"),
-		(&actions.DetailLink{}).Init("详情"),
-		(&actions.MoreActions{}).Init("更多").SetActions([]interface{}{
-			(&actions.EditLink{}).Init("编辑"),
-			(&actions.Delete{}).Init("删除"),
+		(&actions.Import{}),
+		(&actions.CreateLink{}),
+		(&actions.BatchDelete{}),
+		(&actions.BatchDisable{}),
+		(&actions.BatchEnable{}),
+		(&actions.DetailLink{}),
+		(&actions.MoreActions{}).SetActions([]interface{}{
+			(&actions.EditLink{}),
+			(&actions.Delete{}),
 		}),
-		(&actions.FormSubmit{}).Init(),
-		(&actions.FormReset{}).Init(),
-		(&actions.FormBack{}).Init(),
-		(&actions.FormExtraBack{}).Init(),
+		(&actions.FormSubmit{}),
+		(&actions.FormReset{}),
+		(&actions.FormBack{}),
+		(&actions.FormExtraBack{}),
 	}
 }
 

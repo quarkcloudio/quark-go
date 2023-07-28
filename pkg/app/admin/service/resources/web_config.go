@@ -116,10 +116,10 @@ func (p *WebConfig) Fields(ctx *builder.Context) []interface{} {
 func (p *WebConfig) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		(&actions.ChangeWebConfig{}),
-		(&actions.FormSubmit{}).Init(),
-		(&actions.FormReset{}).Init(),
-		(&actions.FormBack{}).Init(),
-		(&actions.FormExtraBack{}).Init(),
+		(&actions.FormSubmit{}),
+		(&actions.FormReset{}),
+		(&actions.FormBack{}),
+		(&actions.FormExtraBack{}),
 	}
 }
 

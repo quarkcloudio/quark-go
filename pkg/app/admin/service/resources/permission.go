@@ -97,14 +97,14 @@ func (p *Permission) Searches(ctx *builder.Context) []interface{} {
 // 行为
 func (p *Permission) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		(&actions.SyncPermission{}).Init(),
-		(&actions.CreateModal{}).Init(p.Title),
-		(&actions.Delete{}).Init("批量删除"),
-		(&actions.EditModal{}).Init("编辑"),
-		(&actions.Delete{}).Init("删除"),
-		(&actions.FormSubmit{}).Init(),
-		(&actions.FormReset{}).Init(),
-		(&actions.FormBack{}).Init(),
-		(&actions.FormExtraBack{}).Init(),
+		(&actions.SyncPermission{}),
+		(&actions.CreateModal{}),
+		(&actions.BatchDelete{}),
+		(&actions.EditModal{}),
+		(&actions.Delete{}),
+		(&actions.FormSubmit{}),
+		(&actions.FormReset{}),
+		(&actions.FormBack{}),
+		(&actions.FormExtraBack{}),
 	}
 }

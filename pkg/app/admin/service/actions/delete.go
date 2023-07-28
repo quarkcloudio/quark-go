@@ -12,12 +12,10 @@ type Delete struct {
 }
 
 // 初始化
-func (p *Delete) Init(name string) *Delete {
-	// 初始化父结构
-	p.ParentInit()
+func (p *Delete) Init(ctx *builder.Context) interface{} {
 
-	// 行为名称，当行为在表格行展示时，支持js表达式
-	p.Name = name
+	// 文字
+	p.Name = "删除"
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"
@@ -31,22 +29,15 @@ func (p *Delete) Init(name string) *Delete {
 	// 当行为在表格行展示时，支持js表达式
 	p.WithConfirm("确定要删除吗？", "删除后数据将无法恢复，请谨慎操作！", "modal")
 
-	if name == "删除" {
-		p.SetOnlyOnIndexTableRow(true)
-	}
+	// 在表格行内展示
+	p.SetOnlyOnIndexTableRow(true)
 
-	if name == "批量删除" {
-		p.SetOnlyOnIndexTableAlert(true)
-	}
+	// 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
+	p.SetApiParams([]string{
+		"id",
+	})
 
 	return p
-}
-
-// 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
-func (p *Delete) GetApiParams() []string {
-	return []string{
-		"id",
-	}
 }
 
 // 执行行为句柄

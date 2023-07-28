@@ -9,7 +9,7 @@ type Modal struct {
 }
 
 // 初始化
-func (p *Modal) ParentInit() interface{} {
+func (p *Modal) TemplateInit(ctx *builder.Context) interface{} {
 	p.ActionType = "modal"
 	p.Width = 520
 
