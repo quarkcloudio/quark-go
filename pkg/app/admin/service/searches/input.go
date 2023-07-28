@@ -6,20 +6,20 @@ import (
 	"gorm.io/gorm"
 )
 
-type Input struct {
+type InputField struct {
 	searches.Search
 }
 
-// 初始化
-func (p *Input) Init(column string, name string) *Input {
-	p.ParentInit()
-	p.Column = column
-	p.Name = name
+// Input框
+func Input(column string, name string) *InputField {
+	field := &InputField{}
+	field.Column = column
+	field.Name = name
 
-	return p
+	return field
 }
 
 // 执行查询
-func (p *Input) Apply(ctx *builder.Context, query *gorm.DB, value interface{}) *gorm.DB {
+func (p *InputField) Apply(ctx *builder.Context, query *gorm.DB, value interface{}) *gorm.DB {
 	return query.Where(p.Column+" LIKE ?", "%"+value.(string)+"%")
 }

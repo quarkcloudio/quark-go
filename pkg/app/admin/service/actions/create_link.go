@@ -8,12 +8,17 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
-type CreateLink struct {
+type CreateLinkAction struct {
 	actions.Link
 }
 
+// 创建-跳转类型
+func CreateLink() *CreateLinkAction {
+	return &CreateLinkAction{}
+}
+
 // 初始化
-func (p *CreateLink) Init(ctx *builder.Context) interface{} {
+func (p *CreateLinkAction) Init(ctx *builder.Context) interface{} {
 	template := ctx.Template.(types.Resourcer)
 
 	// 文字
@@ -32,6 +37,6 @@ func (p *CreateLink) Init(ctx *builder.Context) interface{} {
 }
 
 // 跳转链接
-func (p *CreateLink) GetHref(ctx *builder.Context) string {
+func (p *CreateLinkAction) GetHref(ctx *builder.Context) string {
 	return "#/layout/index?api=" + strings.Replace(ctx.Path(), "/index", "/create", -1)
 }

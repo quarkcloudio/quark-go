@@ -67,15 +67,15 @@ func (p *ActionLog) Fields(ctx *builder.Context) []interface{} {
 // 搜索
 func (p *ActionLog) Searches(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		(&searches.Input{}).Init("url", "行为"),
-		(&searches.Input{}).Init("ip", "IP"),
+		searches.Input("url", "行为"),
+		searches.Input("ip", "IP"),
 	}
 }
 
 // 行为
 func (p *ActionLog) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		(&actions.BatchDelete{}),
-		(&actions.Delete{}),
+		actions.BatchDelete(),
+		actions.Delete(),
 	}
 }

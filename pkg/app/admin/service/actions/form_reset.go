@@ -5,12 +5,17 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
-type FormReset struct {
+type FormResetAction struct {
 	actions.Action
 }
 
+// 表单重置
+func FormReset() *FormResetAction {
+	return &FormResetAction{}
+}
+
 // 初始化
-func (p *FormReset) Init(ctx *builder.Context) interface{} {
+func (p *FormResetAction) Init(ctx *builder.Context) interface{} {
 
 	// 文字
 	p.Name = "重置"

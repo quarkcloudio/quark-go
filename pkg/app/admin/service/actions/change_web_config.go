@@ -11,12 +11,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type ChangeWebConfig struct {
+type ChangeWebConfigAction struct {
 	actions.Action
 }
 
+// 更改网站配置
+func ChangeWebConfig() *ChangeWebConfigAction {
+	return &ChangeWebConfigAction{}
+}
+
 // 执行行为句柄
-func (p *ChangeWebConfig) Handle(ctx *builder.Context, query *gorm.DB) error {
+func (p *ChangeWebConfigAction) Handle(ctx *builder.Context, query *gorm.DB) error {
 	data := map[string]interface{}{}
 	json.Unmarshal(ctx.Body(), &data)
 	result := true

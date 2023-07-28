@@ -7,12 +7,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type Delete struct {
+type DeleteAction struct {
 	actions.Action
 }
 
+// 删除
+func Delete() *DeleteAction {
+	return &DeleteAction{}
+}
+
 // 初始化
-func (p *Delete) Init(ctx *builder.Context) interface{} {
+func (p *DeleteAction) Init(ctx *builder.Context) interface{} {
 
 	// 文字
 	p.Name = "删除"
@@ -41,7 +46,7 @@ func (p *Delete) Init(ctx *builder.Context) interface{} {
 }
 
 // 执行行为句柄
-func (p *Delete) Handle(ctx *builder.Context, query *gorm.DB) error {
+func (p *DeleteAction) Handle(ctx *builder.Context, query *gorm.DB) error {
 	err := query.Delete("").Error
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))

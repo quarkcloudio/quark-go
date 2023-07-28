@@ -91,11 +91,11 @@ func (p *Account) Fields(ctx *builder.Context) []interface{} {
 // 行为
 func (p *Account) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		(&actions.ChangeAccount{}),
-		(&actions.FormSubmit{}),
-		(&actions.FormReset{}),
-		(&actions.FormBack{}),
-		(&actions.FormExtraBack{}),
+		actions.ChangeAccount(),
+		actions.FormSubmit(),
+		actions.FormReset(),
+		actions.FormBack(),
+		actions.FormExtraBack(),
 	}
 }
 

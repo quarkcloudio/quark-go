@@ -11,12 +11,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type DeleteRole struct {
+type DeleteRoleAction struct {
 	actions.Action
 }
 
+// 删除角色
+func DeleteRole() *DeleteRoleAction {
+	return &DeleteRoleAction{}
+}
+
 // 初始化
-func (p *DeleteRole) Init(ctx *builder.Context) interface{} {
+func (p *DeleteRoleAction) Init(ctx *builder.Context) interface{} {
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"
@@ -37,14 +42,14 @@ func (p *DeleteRole) Init(ctx *builder.Context) interface{} {
 }
 
 // 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
-func (p *DeleteRole) GetApiParams() []string {
+func (p *DeleteRoleAction) GetApiParams() []string {
 	return []string{
 		"id",
 	}
 }
 
 // 执行行为句柄
-func (p *DeleteRole) Handle(ctx *builder.Context, query *gorm.DB) error {
+func (p *DeleteRoleAction) Handle(ctx *builder.Context, query *gorm.DB) error {
 	id := ctx.Query("id")
 	if id == "" {
 		return ctx.JSON(200, message.Error("参数错误！"))

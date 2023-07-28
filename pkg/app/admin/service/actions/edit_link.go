@@ -7,12 +7,17 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
-type EditLink struct {
+type EditLinkAction struct {
 	actions.Link
 }
 
+// 编辑-跳转样式
+func EditLink() *EditLinkAction {
+	return &EditLinkAction{}
+}
+
 // 初始化
-func (p *EditLink) Init(ctx *builder.Context) interface{} {
+func (p *EditLinkAction) Init(ctx *builder.Context) interface{} {
 
 	// 文字
 	p.Name = "编辑"
@@ -30,6 +35,6 @@ func (p *EditLink) Init(ctx *builder.Context) interface{} {
 }
 
 // 跳转链接
-func (p *EditLink) GetHref(ctx *builder.Context) string {
+func (p *EditLinkAction) GetHref(ctx *builder.Context) string {
 	return "#/layout/index?api=" + strings.Replace(ctx.Path(), "/index", "/edit&id=${id}", -1)
 }

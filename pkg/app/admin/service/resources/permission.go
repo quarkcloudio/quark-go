@@ -90,21 +90,21 @@ func (p *Permission) Fields(ctx *builder.Context) []interface{} {
 // 搜索
 func (p *Permission) Searches(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		(&searches.Input{}).Init("name", "名称"),
+		searches.Input("name", "名称"),
 	}
 }
 
 // 行为
 func (p *Permission) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		(&actions.SyncPermission{}),
-		(&actions.CreateModal{}),
-		(&actions.BatchDelete{}),
-		(&actions.EditModal{}),
-		(&actions.Delete{}),
-		(&actions.FormSubmit{}),
-		(&actions.FormReset{}),
-		(&actions.FormBack{}),
-		(&actions.FormExtraBack{}),
+		actions.SyncPermission(),
+		actions.CreateModal(),
+		actions.BatchDelete(),
+		actions.EditModal(),
+		actions.Delete(),
+		actions.FormSubmit(),
+		actions.FormReset(),
+		actions.FormBack(),
+		actions.FormExtraBack(),
 	}
 }

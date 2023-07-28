@@ -7,12 +7,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type ChangeStatus struct {
+type ChangeStatusAction struct {
 	actions.Action
 }
 
+// 更改状态
+func ChangeStatus() *ChangeStatusAction {
+	return &ChangeStatusAction{}
+}
+
 // 初始化
-func (p *ChangeStatus) Init(ctx *builder.Context) interface{} {
+func (p *ChangeStatusAction) Init(ctx *builder.Context) interface{} {
 
 	// 行为名称，当行为在表格行展示时，支持js表达式
 	p.Name = "<%= (status==1 ? '禁用' : '启用') %>"
@@ -36,7 +41,7 @@ func (p *ChangeStatus) Init(ctx *builder.Context) interface{} {
 }
 
 // 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
-func (p *ChangeStatus) GetApiParams() []string {
+func (p *ChangeStatusAction) GetApiParams() []string {
 	return []string{
 		"id",
 		"status",
@@ -44,7 +49,7 @@ func (p *ChangeStatus) GetApiParams() []string {
 }
 
 // 执行行为句柄
-func (p *ChangeStatus) Handle(ctx *builder.Context, query *gorm.DB) error {
+func (p *ChangeStatusAction) Handle(ctx *builder.Context, query *gorm.DB) error {
 	status := ctx.Query("status")
 	if status == "" {
 		return ctx.JSON(200, message.Error("参数错误！"))

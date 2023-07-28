@@ -7,12 +7,17 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
-type EditDrawer struct {
+type EditDrawerAction struct {
 	actions.Drawer
 }
 
+// 编辑-抽屉样式
+func EditDrawer() *EditDrawerAction {
+	return &EditDrawerAction{}
+}
+
 // 初始化
-func (p *EditDrawer) Init(ctx *builder.Context) interface{} {
+func (p *EditDrawerAction) Init(ctx *builder.Context) interface{} {
 
 	// 文字
 	p.Name = "编辑"
@@ -36,7 +41,7 @@ func (p *EditDrawer) Init(ctx *builder.Context) interface{} {
 }
 
 // 内容
-func (p *EditDrawer) GetBody(ctx *builder.Context) interface{} {
+func (p *EditDrawerAction) GetBody(ctx *builder.Context) interface{} {
 
 	api := ctx.Template.(interface {
 		UpdateApi(*builder.Context) string
@@ -65,7 +70,7 @@ func (p *EditDrawer) GetBody(ctx *builder.Context) interface{} {
 }
 
 // 弹窗行为
-func (p *EditDrawer) GetActions(ctx *builder.Context) []interface{} {
+func (p *EditDrawerAction) GetActions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		(&action.Component{}).

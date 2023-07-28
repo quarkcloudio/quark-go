@@ -7,11 +7,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type SelectOptions struct {
+type SelectOptionsAction struct {
 	actions.Action
 }
 
 // 执行行为句柄
-func (p *SelectOptions) Handle(ctx *builder.Context, query *gorm.DB) error {
+func (p *SelectOptionsAction) Handle(ctx *builder.Context, query *gorm.DB) error {
 	return ctx.JSON(200, message.Success("操作成功"))
 }

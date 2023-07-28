@@ -12,12 +12,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type SyncPermission struct {
+type SyncPermissionAction struct {
 	actions.Action
 }
 
+// 同步权限
+func SyncPermission() *SyncPermissionAction {
+	return &SyncPermissionAction{}
+}
+
 // 初始化
-func (p *SyncPermission) Init(ctx *builder.Context) interface{} {
+func (p *SyncPermissionAction) Init(ctx *builder.Context) interface{} {
 
 	// 行为名称
 	p.Name = "同步权限"
@@ -38,7 +43,7 @@ func (p *SyncPermission) Init(ctx *builder.Context) interface{} {
 }
 
 // 执行行为句柄
-func (p *SyncPermission) Handle(ctx *builder.Context, query *gorm.DB) error {
+func (p *SyncPermissionAction) Handle(ctx *builder.Context, query *gorm.DB) error {
 	permissions := ctx.Engine.GetUrlPaths()
 	data := []model.Permission{}
 

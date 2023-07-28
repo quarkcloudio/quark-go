@@ -17,13 +17,6 @@ type Search struct {
 }
 
 // 初始化
-func (p *Search) ParentInit() interface{} {
-	p.Component = "textField"
-
-	return p
-}
-
-// 初始化
 func (p *Search) Init(ctx *builder.Context) interface{} {
 	return p
 }

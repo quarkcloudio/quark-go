@@ -5,12 +5,17 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
-type FormExtraBack struct {
+type FormExtraBackAction struct {
 	actions.Action
 }
 
+// 表单扩展行为返回上一页
+func FormExtraBack() *FormExtraBackAction {
+	return &FormExtraBackAction{}
+}
+
 // 初始化
-func (p *FormExtraBack) Init(ctx *builder.Context) interface{} {
+func (p *FormExtraBackAction) Init(ctx *builder.Context) interface{} {
 	// 文字
 	p.Name = "返回上一页"
 

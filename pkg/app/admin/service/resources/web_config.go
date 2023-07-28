@@ -115,11 +115,11 @@ func (p *WebConfig) Fields(ctx *builder.Context) []interface{} {
 // 行为
 func (p *WebConfig) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		(&actions.ChangeWebConfig{}),
-		(&actions.FormSubmit{}),
-		(&actions.FormReset{}),
-		(&actions.FormBack{}),
-		(&actions.FormExtraBack{}),
+		actions.ChangeWebConfig(),
+		actions.FormSubmit(),
+		actions.FormReset(),
+		actions.FormBack(),
+		actions.FormExtraBack(),
 	}
 }
 

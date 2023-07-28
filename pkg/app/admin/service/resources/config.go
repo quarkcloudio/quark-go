@@ -104,25 +104,25 @@ func (p *Config) Fields(ctx *builder.Context) []interface{} {
 // 搜索
 func (p *Config) Searches(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		(&searches.Input{}).Init("title", "标题"),
-		(&searches.Input{}).Init("name", "名称"),
-		(&searches.Status{}).Init(),
+		searches.Input("title", "标题"),
+		searches.Input("name", "名称"),
+		searches.Status(),
 	}
 }
 
 // 行为
 func (p *Config) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		(&actions.CreateDrawer{}),
-		(&actions.BatchDelete{}),
-		(&actions.BatchDisable{}),
-		(&actions.BatchEnable{}),
-		(&actions.ChangeStatus{}),
-		(&actions.EditDrawer{}),
-		(&actions.Delete{}),
-		(&actions.FormSubmit{}),
-		(&actions.FormReset{}),
-		(&actions.FormBack{}),
-		(&actions.FormExtraBack{}),
+		actions.CreateDrawer(),
+		actions.BatchDelete(),
+		actions.BatchDisable(),
+		actions.BatchEnable(),
+		actions.ChangeStatus(),
+		actions.EditDrawer(),
+		actions.Delete(),
+		actions.FormSubmit(),
+		actions.FormReset(),
+		actions.FormBack(),
+		actions.FormExtraBack(),
 	}
 }

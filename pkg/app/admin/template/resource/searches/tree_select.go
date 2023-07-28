@@ -1,13 +1,16 @@
 package searches
 
-import "github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/treeselect"
+import (
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/treeselect"
+	"github.com/quarkcms/quark-go/v2/pkg/builder"
+)
 
 type TreeSelect struct {
 	Search
 }
 
-// 初始化
-func (p *TreeSelect) ParentInit() interface{} {
+// 初始化模板
+func (p *TreeSelect) TemplateInit(ctx *builder.Context) interface{} {
 	p.Component = "treeSelectField"
 
 	return p

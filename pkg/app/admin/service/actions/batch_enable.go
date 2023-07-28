@@ -7,12 +7,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type BatchEnable struct {
+type BatchEnableAction struct {
 	actions.Action
 }
 
+// 批量启用
+func BatchEnable() *BatchEnableAction {
+	return &BatchEnableAction{}
+}
+
 // 初始化
-func (p *BatchEnable) Init(ctx *builder.Context) interface{} {
+func (p *BatchEnableAction) Init(ctx *builder.Context) interface{} {
 
 	// 文字
 	p.Name = "批量启用"
@@ -36,14 +41,14 @@ func (p *BatchEnable) Init(ctx *builder.Context) interface{} {
 }
 
 // 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
-func (p *BatchEnable) GetApiParams() []string {
+func (p *BatchEnableAction) GetApiParams() []string {
 	return []string{
 		"id",
 	}
 }
 
 // 执行行为句柄
-func (p *BatchEnable) Handle(ctx *builder.Context, model *gorm.DB) error {
+func (p *BatchEnableAction) Handle(ctx *builder.Context, model *gorm.DB) error {
 	err := model.Update("status", 1).Error
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))

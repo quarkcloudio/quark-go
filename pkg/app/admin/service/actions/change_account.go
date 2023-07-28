@@ -11,12 +11,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type ChangeAccount struct {
+type ChangeAccountAction struct {
 	actions.Action
 }
 
+// 更改账户信息
+func ChangeAccount() *ChangeAccountAction {
+	return &ChangeAccountAction{}
+}
+
 // 执行行为句柄
-func (p *ChangeAccount) Handle(ctx *builder.Context, query *gorm.DB) error {
+func (p *ChangeAccountAction) Handle(ctx *builder.Context, query *gorm.DB) error {
 	data := map[string]interface{}{}
 	ctx.Bind(&data)
 

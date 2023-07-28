@@ -51,15 +51,15 @@ func (p *File) Fields(ctx *builder.Context) []interface{} {
 // 搜索
 func (p *File) Searches(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		(&searches.Input{}).Init("name", "名称"),
-		(&searches.DateTimeRange{}).Init("created_at", "上传时间"),
+		searches.Input("name", "名称"),
+		searches.DatetimeRange("created_at", "上传时间"),
 	}
 }
 
 // 行为
 func (p *File) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		(&actions.BatchDelete{}),
-		(&actions.Delete{}),
+		actions.BatchDelete(),
+		actions.Delete(),
 	}
 }

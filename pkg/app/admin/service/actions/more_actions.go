@@ -5,12 +5,17 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
-type MoreActions struct {
+type MoreAction struct {
 	actions.Dropdown
 }
 
+// 更多
+func More() *MoreAction {
+	return &MoreAction{}
+}
+
 // 初始化
-func (p *MoreActions) Init(ctx *builder.Context) interface{} {
+func (p *MoreAction) Init(ctx *builder.Context) interface{} {
 
 	// 文字
 	p.Name = "更多"
@@ -42,7 +47,7 @@ func (p *MoreActions) Init(ctx *builder.Context) interface{} {
 }
 
 // 下拉菜单行为
-func (p *MoreActions) SetActions(actions []interface{}) *MoreActions {
+func (p *MoreAction) SetActions(actions []interface{}) *MoreAction {
 	p.Actions = actions
 
 	return p

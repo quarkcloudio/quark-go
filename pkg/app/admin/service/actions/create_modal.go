@@ -8,12 +8,17 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
-type CreateModal struct {
+type CreateModalAction struct {
 	actions.Modal
 }
 
+// 创建-弹窗类型
+func CreateModal() *CreateModalAction {
+	return &CreateModalAction{}
+}
+
 // 初始化
-func (p *CreateModal) Init(ctx *builder.Context) interface{} {
+func (p *CreateModalAction) Init(ctx *builder.Context) interface{} {
 	template := ctx.Template.(types.Resourcer)
 
 	// 文字
@@ -38,7 +43,7 @@ func (p *CreateModal) Init(ctx *builder.Context) interface{} {
 }
 
 // 内容
-func (p *CreateModal) GetBody(ctx *builder.Context) interface{} {
+func (p *CreateModalAction) GetBody(ctx *builder.Context) interface{} {
 
 	api := ctx.Template.(interface {
 		CreationApi(*builder.Context) string
@@ -71,7 +76,7 @@ func (p *CreateModal) GetBody(ctx *builder.Context) interface{} {
 }
 
 // 弹窗行为
-func (p *CreateModal) GetActions(ctx *builder.Context) []interface{} {
+func (p *CreateModalAction) GetActions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		(&action.Component{}).

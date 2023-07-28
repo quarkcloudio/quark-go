@@ -7,12 +7,17 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
-type EditModal struct {
+type EditModalAction struct {
 	actions.Modal
 }
 
+// 编辑-弹窗样式
+func EditModal() *EditModalAction {
+	return &EditModalAction{}
+}
+
 // 初始化
-func (p *EditModal) Init(ctx *builder.Context) interface{} {
+func (p *EditModalAction) Init(ctx *builder.Context) interface{} {
 
 	// 文字
 	p.Name = "编辑"
@@ -36,7 +41,7 @@ func (p *EditModal) Init(ctx *builder.Context) interface{} {
 }
 
 // 内容
-func (p *EditModal) GetBody(ctx *builder.Context) interface{} {
+func (p *EditModalAction) GetBody(ctx *builder.Context) interface{} {
 
 	api := ctx.Template.(interface {
 		UpdateApi(*builder.Context) string
@@ -68,7 +73,7 @@ func (p *EditModal) GetBody(ctx *builder.Context) interface{} {
 }
 
 // 弹窗行为
-func (p *EditModal) GetActions(ctx *builder.Context) []interface{} {
+func (p *EditModalAction) GetActions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		(&action.Component{}).

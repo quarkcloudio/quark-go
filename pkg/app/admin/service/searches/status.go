@@ -7,25 +7,25 @@ import (
 	"gorm.io/gorm"
 )
 
-type Status struct {
+type StatusField struct {
 	searches.Select
 }
 
-// 初始化
-func (p *Status) Init() *Status {
-	p.ParentInit()
-	p.Name = "状态"
+// 状态
+func Status() *StatusField {
+	field := &StatusField{}
+	field.Name = "状态"
 
-	return p
+	return field
 }
 
 // 执行查询
-func (p *Status) Apply(ctx *builder.Context, query *gorm.DB, value interface{}) *gorm.DB {
+func (p *StatusField) Apply(ctx *builder.Context, query *gorm.DB, value interface{}) *gorm.DB {
 	return query.Where("status = ?", value)
 }
 
 // 属性
-func (p *Status) Options(ctx *builder.Context) interface{} {
+func (p *StatusField) Options(ctx *builder.Context) interface{} {
 
 	return []*selectfield.Option{
 		p.Option(0, "禁用"),

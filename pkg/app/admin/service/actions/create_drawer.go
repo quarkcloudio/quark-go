@@ -8,12 +8,17 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
-type CreateDrawer struct {
+type CreateDrawerAction struct {
 	actions.Drawer
 }
 
+// 创建-抽屉类型
+func CreateDrawer() *CreateDrawerAction {
+	return &CreateDrawerAction{}
+}
+
 // 初始化
-func (p *CreateDrawer) Init(ctx *builder.Context) interface{} {
+func (p *CreateDrawerAction) Init(ctx *builder.Context) interface{} {
 	template := ctx.Template.(types.Resourcer)
 
 	// 文字
@@ -38,7 +43,7 @@ func (p *CreateDrawer) Init(ctx *builder.Context) interface{} {
 }
 
 // 内容
-func (p *CreateDrawer) GetBody(ctx *builder.Context) interface{} {
+func (p *CreateDrawerAction) GetBody(ctx *builder.Context) interface{} {
 
 	api := ctx.Template.(interface {
 		CreationApi(*builder.Context) string
@@ -68,7 +73,7 @@ func (p *CreateDrawer) GetBody(ctx *builder.Context) interface{} {
 }
 
 // 弹窗行为
-func (p *CreateDrawer) GetActions(ctx *builder.Context) []interface{} {
+func (p *CreateDrawerAction) GetActions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		(&action.Component{}).

@@ -5,12 +5,17 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
-type FormBack struct {
+type FormBackAction struct {
 	actions.Action
 }
 
+// 返回上一页
+func FormBack() *FormBackAction {
+	return &FormBackAction{}
+}
+
 // 初始化
-func (p *FormBack) Init(ctx *builder.Context) interface{} {
+func (p *FormBackAction) Init(ctx *builder.Context) interface{} {
 
 	// 文字
 	p.Name = "返回上一页"

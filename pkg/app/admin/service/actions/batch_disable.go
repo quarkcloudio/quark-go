@@ -7,12 +7,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type BatchDisable struct {
+type BatchDisableAction struct {
 	actions.Action
 }
 
+// 批量禁用
+func BatchDisable() *BatchDisableAction {
+	return &BatchDisableAction{}
+}
+
 // 初始化
-func (p *BatchDisable) Init(ctx *builder.Context) interface{} {
+func (p *BatchDisableAction) Init(ctx *builder.Context) interface{} {
 
 	// 文字
 	p.Name = "批量禁用"
@@ -36,14 +41,14 @@ func (p *BatchDisable) Init(ctx *builder.Context) interface{} {
 }
 
 // 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
-func (p *BatchDisable) GetApiParams() []string {
+func (p *BatchDisableAction) GetApiParams() []string {
 	return []string{
 		"id",
 	}
 }
 
 // 执行行为句柄
-func (p *BatchDisable) Handle(ctx *builder.Context, query *gorm.DB) error {
+func (p *BatchDisableAction) Handle(ctx *builder.Context, query *gorm.DB) error {
 	err := query.Update("status", 0).Error
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))

@@ -10,12 +10,17 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
-type Import struct {
+type ImportAction struct {
 	actions.Modal
 }
 
+// 导入数据
+func Import() *ImportAction {
+	return &ImportAction{}
+}
+
 // 初始化
-func (p *Import) Init(ctx *builder.Context) interface{} {
+func (p *ImportAction) Init(ctx *builder.Context) interface{} {
 
 	// 文字
 	p.Name = "导入数据"
@@ -30,7 +35,7 @@ func (p *Import) Init(ctx *builder.Context) interface{} {
 }
 
 // 内容
-func (p *Import) GetBody(ctx *builder.Context) interface{} {
+func (p *ImportAction) GetBody(ctx *builder.Context) interface{} {
 	api := "/api/admin/" + ctx.Param("resource") + "/import"
 	getTpl := (&tpl.Component{}).
 		Init().
@@ -72,7 +77,7 @@ func (p *Import) GetBody(ctx *builder.Context) interface{} {
 }
 
 // 弹窗行为
-func (p *Import) GetActions(ctx *builder.Context) []interface{} {
+func (p *ImportAction) GetActions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		(&action.Component{}).

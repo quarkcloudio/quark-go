@@ -144,10 +144,10 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 func (p *Admin) Searches(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
-		(&searches.Input{}).Init("username", "用户名"),
-		(&searches.Input{}).Init("nickname", "昵称"),
-		(&searches.Status{}).Init(),
-		(&searches.DateTimeRange{}).Init("last_login_time", "登录时间"),
+		searches.Input("username", "用户名"),
+		searches.Input("nickname", "昵称"),
+		searches.Status(),
+		searches.DatetimeRange("last_login_time", "登录时间"),
 	}
 }
 
@@ -155,20 +155,22 @@ func (p *Admin) Searches(ctx *builder.Context) []interface{} {
 func (p *Admin) Actions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
-		(&actions.Import{}),
-		(&actions.CreateLink{}),
-		(&actions.BatchDelete{}),
-		(&actions.BatchDisable{}),
-		(&actions.BatchEnable{}),
-		(&actions.DetailLink{}),
-		(&actions.MoreActions{}).SetActions([]interface{}{
-			(&actions.EditLink{}),
-			(&actions.Delete{}),
-		}),
-		(&actions.FormSubmit{}),
-		(&actions.FormReset{}),
-		(&actions.FormBack{}),
-		(&actions.FormExtraBack{}),
+		actions.Import(),
+		actions.CreateLink(),
+		actions.BatchDelete(),
+		actions.BatchDisable(),
+		actions.BatchEnable(),
+		actions.DetailLink(),
+		actions.
+			More().
+			SetActions([]interface{}{
+				actions.EditLink(),
+				actions.Delete(),
+			}),
+		actions.FormSubmit(),
+		actions.FormReset(),
+		actions.FormBack(),
+		actions.FormExtraBack(),
 	}
 }
 

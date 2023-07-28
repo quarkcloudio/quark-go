@@ -7,12 +7,17 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
-type DetailLink struct {
+type DetailLinkAction struct {
 	actions.Link
 }
 
+// 跳转详情页
+func DetailLink() *DetailLinkAction {
+	return &DetailLinkAction{}
+}
+
 // 初始化
-func (p *DetailLink) Init(ctx *builder.Context) interface{} {
+func (p *DetailLinkAction) Init(ctx *builder.Context) interface{} {
 
 	// 文字
 	p.Name = "详情"
@@ -30,6 +35,6 @@ func (p *DetailLink) Init(ctx *builder.Context) interface{} {
 }
 
 // 跳转链接
-func (p *DetailLink) GetHref(ctx *builder.Context) string {
+func (p *DetailLinkAction) GetHref(ctx *builder.Context) string {
 	return "#/layout/index?api=" + strings.Replace(ctx.Path(), "/index", "/detail&id=${id}", -1)
 }

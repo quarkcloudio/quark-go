@@ -6,21 +6,21 @@ import (
 	"gorm.io/gorm"
 )
 
-type DateTimeRange struct {
+type DateTimeRangeField struct {
 	searches.DatetimeRange
 }
 
-// 初始化
-func (p *DateTimeRange) Init(column string, name string) *DateTimeRange {
-	p.ParentInit()
-	p.Column = column
-	p.Name = name
+// 日期范围
+func DatetimeRange(column string, name string) *DateTimeRangeField {
+	field := &DateTimeRangeField{}
+	field.Column = column
+	field.Name = name
 
-	return p
+	return field
 }
 
 // 执行查询
-func (p *DateTimeRange) Apply(ctx *builder.Context, query *gorm.DB, value interface{}) *gorm.DB {
+func (p *DateTimeRangeField) Apply(ctx *builder.Context, query *gorm.DB, value interface{}) *gorm.DB {
 	values, ok := value.([]interface{})
 	if !ok {
 		return query

@@ -1,13 +1,16 @@
 package searches
 
-import "github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/selectfield"
+import (
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/selectfield"
+	"github.com/quarkcms/quark-go/v2/pkg/builder"
+)
 
 type Select struct {
 	Search
 }
 
-// 初始化
-func (p *Select) ParentInit() interface{} {
+// 初始化模板
+func (p *Select) TemplateInit(ctx *builder.Context) interface{} {
 	p.Component = "selectField"
 
 	return p

@@ -7,12 +7,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type BatchDelete struct {
+type BatchDeleteAction struct {
 	actions.Action
 }
 
+// 批量删除
+func BatchDelete() *BatchDeleteAction {
+	return &BatchDeleteAction{}
+}
+
 // 初始化
-func (p *BatchDelete) Init(ctx *builder.Context) interface{} {
+func (p *BatchDeleteAction) Init(ctx *builder.Context) interface{} {
 
 	// 文字
 	p.Name = "批量删除"
@@ -36,14 +41,14 @@ func (p *BatchDelete) Init(ctx *builder.Context) interface{} {
 }
 
 // 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
-func (p *BatchDelete) GetApiParams() []string {
+func (p *BatchDeleteAction) GetApiParams() []string {
 	return []string{
 		"id",
 	}
 }
 
 // 执行行为句柄
-func (p *BatchDelete) Handle(ctx *builder.Context, query *gorm.DB) error {
+func (p *BatchDeleteAction) Handle(ctx *builder.Context, query *gorm.DB) error {
 	err := query.Delete("").Error
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
