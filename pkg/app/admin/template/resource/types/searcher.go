@@ -17,10 +17,10 @@ type Searcher interface {
 	GetColumn(search interface{}) string
 
 	// 获取名称
-	GetName()
+	GetName() string
 
 	// 获取组件名称
-	GetComponent()
+	GetComponent() string
 
 	// 获取接口
 	GetApi() string

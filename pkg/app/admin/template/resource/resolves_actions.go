@@ -287,7 +287,7 @@ func (p *Template) buildAction(ctx *builder.Context, item interface{}) interface
 
 	switch actionType {
 	case "link":
-		linkActioner := item.(types.LinkActioner)
+		linkActioner := item.(types.Linker)
 
 		// 是否显示箭头图标
 		href := linkActioner.GetHref(ctx)
@@ -298,7 +298,7 @@ func (p *Template) buildAction(ctx *builder.Context, item interface{}) interface
 		// 设置跳转链接
 		getAction = getAction.SetLink(href, target)
 	case "modal":
-		modalActioner := item.(types.ModalActioner)
+		modalActioner := item.(types.Modaler)
 
 		// 宽度
 		formWidth := modalActioner.GetWidth()
@@ -322,7 +322,7 @@ func (p *Template) buildAction(ctx *builder.Context, item interface{}) interface
 				SetDestroyOnClose(formDestroyOnClose)
 		})
 	case "drawer":
-		drawerActioner := item.(types.DrawerActioner)
+		drawerActioner := item.(types.Drawer)
 
 		// 宽度
 		formWidth := drawerActioner.GetWidth()
@@ -346,7 +346,7 @@ func (p *Template) buildAction(ctx *builder.Context, item interface{}) interface
 				SetDestroyOnClose(formDestroyOnClose)
 		})
 	case "dropdown":
-		dropdownActioner := item.(types.DropdownActioner)
+		dropdownActioner := item.(types.Dropdowner)
 
 		// 获取下拉菜单
 		overlay := dropdownActioner.GetMenu(ctx)

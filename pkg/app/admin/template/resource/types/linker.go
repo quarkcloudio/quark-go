@@ -4,7 +4,7 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
-type LinkActioner interface {
+type Linker interface {
 	Actioner
 
 	// 获取跳转链接

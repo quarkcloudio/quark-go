@@ -5,7 +5,7 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
-type DropdownActioner interface {
+type Dropdowner interface {
 	Actioner
 
 	// 是否显示箭头图标

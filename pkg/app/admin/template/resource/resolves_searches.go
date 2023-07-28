@@ -26,34 +26,36 @@ func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
 	// 是否携带导出功能
 	withExport := template.GetWithExport()
 	if withExport {
-		search = search.SetExportText("导出").SetExportApi(strings.Replace(ExportPath, ":resource", ctx.Param("resource"), -1))
+		search = search.
+			SetExportText("导出").
+			SetExportApi(strings.Replace(ExportPath, ":resource", ctx.Param("resource"), -1))
 	}
 
 	// 解析搜索项
 	for _, v := range searches {
 
+		// 搜索栏表单项
+		var item interface{}
+		var field = &Field{}
+
+		searchInstance := v.(types.Searcher)
+
 		// 获取组件名称
-		component := v.(interface{ GetComponent() string }).GetComponent()
+		component := searchInstance.GetComponent()
 
 		// label 标签的文本
-		label := v.(interface{ GetName() string }).GetName()
+		label := searchInstance.GetName()
 
 		// 字段名，支持数组
-		name := v.(interface {
-			GetColumn(search interface{}) string
-		}).GetColumn(v)
+		name := searchInstance.GetColumn(v)
 
 		// 获取接口
-		api := v.(interface{ GetApi() string }).GetApi()
+		api := searchInstance.GetApi()
 
 		// 获取属性
 		options := v.(interface {
 			Options(ctx *builder.Context) interface{}
 		}).Options(ctx)
-
-		// 搜索栏表单项
-		var item interface{}
-		var field = &Field{}
 
 		switch component {
 		case "textField":
@@ -93,7 +95,6 @@ func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
 				SetApi(api).
 				SetWidth(nil).
 				SetOptions(options.([]*cascader.Option))
-
 		case "treeSelectField":
 			item = field.
 				TreeSelect(name, label).
