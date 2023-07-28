@@ -56,8 +56,7 @@ func (p *WebConfig) Fields(ctx *builder.Context) []interface{} {
 		for _, config := range configs {
 
 			remark, ok := config["remark"].(string)
-
-			if ok == false {
+			if !ok {
 				remark = ""
 			}
 
