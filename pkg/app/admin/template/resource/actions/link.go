@@ -16,20 +16,12 @@ func (p *Link) ParentInit() interface{} {
 	return p
 }
 
-/**
- * 获取跳转链接
- *
- * @return string
- */
+// 获取跳转链接
 func (p *Link) GetHref(ctx *builder.Context) string {
 	return p.Href
 }
 
-/**
- * 相当于 a 链接的 target 属性，href 存在时生效
- *
- * @return string
- */
+// 相当于 a 链接的 target 属性，href 存在时生效
 func (p *Link) GetTarget(ctx *builder.Context) string {
 	return p.Target
 }

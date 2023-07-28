@@ -37,11 +37,7 @@ func (p *Disable) Init(name string) *Disable {
 	return p
 }
 
-/**
- * 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
- *
- * @return array
- */
+// 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
 func (p *Disable) GetApiParams() []string {
 	return []string{
 		"id",

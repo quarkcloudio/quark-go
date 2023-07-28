@@ -49,141 +49,78 @@ func (p *Action) GetUriKey(action interface{}) string {
 	return uriKey
 }
 
-/**
- * 获取名称
- *
- * @return string
- */
+// 获取名称
 func (p *Action) GetName() string {
 	return p.Name
 }
 
-/**
- * 执行成功后刷新的组件
- *
- * @return string
- */
+// 执行成功后刷新的组件
 func (p *Action) GetReload() string {
 	return p.Reload
 }
 
-/**
- * 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
- *
- * @return array
- */
+// 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
 func (p *Action) GetApiParams() []string {
 	return []string{}
 }
 
-/**
- * 执行行为的接口
- *
- * @return string
- */
+// 执行行为的接口
 func (p *Action) GetApi(ctx *builder.Context) string {
 
 	return ""
 }
 
-/**
- * 【必填】这是 action 最核心的配置，来指定该 action 的作用类型，支持：ajax、link、url、drawer、dialog、confirm、cancel、prev、next、copy、close。
- *
- * @return string
- */
+// 【必填】这是 action 最核心的配置，来指定该 action 的作用类型，支持：ajax、link、url、drawer、dialog、confirm、cancel、prev、next、copy、close。
 func (p *Action) GetActionType() string {
 	return p.ActionType
 }
 
-/**
- * 当action 的作用类型为submit的时候，可以指定提交哪个表格，submitForm为提交表单的key值，为空时提交当前表单
- *
- * @return string
- */
+// 当 action 的作用类型为submit的时候，可以指定提交哪个表格，submitForm为提交表单的key值，为空时提交当前表单
 func (p *Action) GetSubmitForm() string {
 	return p.SubmitForm
 }
 
-/**
- * 设置按钮类型，primary | ghost | dashed | link | text | default
- *
- * @return string
- */
+// 设置按钮类型，primary | ghost | dashed | link | text | default
 func (p *Action) GetType() string {
 	return p.Type
 }
 
-/**
- * 设置按钮大小,large | middle | small | default
- *
- * @return string
- */
+// 设置按钮大小,large | middle | small | default
 func (p *Action) GetSize() string {
 	return p.Size
 }
 
-/**
- * 是否具有loading，当action 的作用类型为ajax,submit时有效
- *
- * @return bool
- */
+// 是否具有loading，当action 的作用类型为ajax,submit时有效
 func (p *Action) GetWithLoading() bool {
 	return p.WithLoading
 }
 
-/**
- * 设置按钮的图标组件
- *
- * @return string
- */
+// 设置按钮的图标组件
 func (p *Action) GetIcon() string {
 	return p.Icon
 }
 
-/**
- * 行为表单字段
- *
- * @return mixed
- */
+// 行为表单字段
 func (p *Action) GetFields() interface{} {
 	return p.Fields
 }
 
-/**
- * 确认标题
- *
- * @return mixed
- */
+// 确认标题
 func (p *Action) GetConfirmTitle() string {
 	return p.ConfirmTitle
 }
 
-/**
- * 确认文字
- *
- * @return mixed
- */
+// 确认文字
 func (p *Action) GetConfirmText() string {
 	return p.ConfirmText
 }
 
-/**
- * 确认类型
- *
- * @return mixed
- */
+// 确认类型
 func (p *Action) GetConfirmType() string {
 	return p.ConfirmType
 }
 
-/**
- * 设置行为前的确认操作
- *
- * @param  string  title
- * @param  string  text
- * @param  string  confirmType
- * @return p
- */
+// 设置行为前的确认操作
 func (p *Action) WithConfirm(title string, text string, confirmType string) *Action {
 
 	p.ConfirmTitle = title
@@ -193,12 +130,7 @@ func (p *Action) WithConfirm(title string, text string, confirmType string) *Act
 	return p
 }
 
-/**
- * 只在列表页展示
- *
- * @param  bool  value
- * @return p
- */
+// 只在列表页展示
 func (p *Action) SetOnlyOnIndex(value bool) *Action {
 	p.OnlyOnIndex = value
 	p.ShowOnIndex = value
@@ -213,11 +145,7 @@ func (p *Action) SetOnlyOnIndex(value bool) *Action {
 	return p
 }
 
-/**
- * 除了列表页外展示
- *
- * @return p
- */
+// 除了列表页外展示
 func (p *Action) SetExceptOnIndex() *Action {
 	p.ShowOnDetail = true
 	p.ShowOnIndexTableRow = true
@@ -231,12 +159,7 @@ func (p *Action) SetExceptOnIndex() *Action {
 	return p
 }
 
-/**
- * 只在表单页展示
- *
- * @param  bool  value
- * @return p
- */
+// 只在表单页展示
 func (p *Action) SetOnlyOnForm(value bool) *Action {
 	p.ShowOnForm = value
 	p.ShowOnIndexTableAlert = !value
@@ -250,11 +173,7 @@ func (p *Action) SetOnlyOnForm(value bool) *Action {
 	return p
 }
 
-/**
- * 除了表单页外展示
- *
- * @return p
- */
+// 除了表单页外展示
 func (p *Action) SetExceptOnForm() *Action {
 	p.ShowOnIndexTableAlert = true
 	p.ShowOnIndex = true
@@ -268,12 +187,7 @@ func (p *Action) SetExceptOnForm() *Action {
 	return p
 }
 
-/**
- * 只在表单页右上角自定义区域展示
- *
- * @param  bool  value
- * @return p
- */
+// 只在表单页右上角自定义区域展示
 func (p *Action) SetOnlyOnFormExtra(value bool) *Action {
 	p.ShowOnForm = !value
 	p.ShowOnIndexTableAlert = !value
@@ -287,11 +201,7 @@ func (p *Action) SetOnlyOnFormExtra(value bool) *Action {
 	return p
 }
 
-/**
- * 除了表单页右上角自定义区域外展示
- *
- * @return p
- */
+// 除了表单页右上角自定义区域外展示
 func (p *Action) SetExceptOnFormExtra() *Action {
 	p.ShowOnIndexTableAlert = true
 	p.ShowOnIndex = true
@@ -305,12 +215,7 @@ func (p *Action) SetExceptOnFormExtra() *Action {
 	return p
 }
 
-/**
- * 只在详情页展示
- *
- * @param  bool  value
- * @return p
- */
+// 只在详情页展示
 func (p *Action) SetOnlyOnDetail(value bool) *Action {
 	p.OnlyOnDetail = value
 	p.ShowOnDetail = value
@@ -324,11 +229,7 @@ func (p *Action) SetOnlyOnDetail(value bool) *Action {
 	return p
 }
 
-/**
- * 除了详情页外展示
- *
- * @return p
- */
+// 除了详情页外展示
 func (p *Action) SetExceptOnDetail() *Action {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = false
@@ -341,12 +242,7 @@ func (p *Action) SetExceptOnDetail() *Action {
 	return p
 }
 
-/**
- * 只在详情页右上角自定义区域展示
- *
- * @param  bool  value
- * @return p
- */
+// 只在详情页右上角自定义区域展示
 func (p *Action) SetOnlyOnDetailExtra(value bool) *Action {
 	p.ShowOnForm = !value
 	p.ShowOnIndexTableAlert = !value
@@ -360,11 +256,7 @@ func (p *Action) SetOnlyOnDetailExtra(value bool) *Action {
 	return p
 }
 
-/**
- * 除了详情页右上角自定义区域外展示
- *
- * @return p
- */
+// 除了详情页右上角自定义区域外展示
 func (p *Action) SetExceptOnDetailExtra() *Action {
 	p.ShowOnIndexTableAlert = true
 	p.ShowOnIndex = true
@@ -378,12 +270,7 @@ func (p *Action) SetExceptOnDetailExtra() *Action {
 	return p
 }
 
-/**
- * 在表格行内展示
- *
- * @param  bool  value
- * @return p
- */
+// 在表格行内展示
 func (p *Action) SetOnlyOnIndexTableRow(value bool) *Action {
 	p.ShowOnIndexTableRow = value
 	p.ShowOnIndex = !value
@@ -397,11 +284,7 @@ func (p *Action) SetOnlyOnIndexTableRow(value bool) *Action {
 	return p
 }
 
-/**
- * 除了表格行内外展示
- *
- * @return p
- */
+// 除了表格行内外展示
 func (p *Action) SetExceptOnIndexTableRow() *Action {
 	p.ShowOnIndexTableRow = false
 	p.ShowOnIndex = true
@@ -415,12 +298,7 @@ func (p *Action) SetExceptOnIndexTableRow() *Action {
 	return p
 }
 
-/**
- * 在表格多选弹出层展示
- *
- * @param  bool  value
- * @return p
- */
+// 在表格多选弹出层展示
 func (p *Action) SetOnlyOnIndexTableAlert(value bool) *Action {
 	p.ShowOnIndexTableAlert = value
 	p.ShowOnIndex = !value
@@ -434,11 +312,7 @@ func (p *Action) SetOnlyOnIndexTableAlert(value bool) *Action {
 	return p
 }
 
-/**
- * 除了表格多选弹出层外展示
- *
- * @return p
- */
+// 除了表格多选弹出层外展示
 func (p *Action) SetExceptOnIndexTableAlert() *Action {
 	p.ShowOnIndexTableAlert = false
 	p.ShowOnIndex = true
@@ -452,90 +326,58 @@ func (p *Action) SetExceptOnIndexTableAlert() *Action {
 	return p
 }
 
-/**
- * 在列表页展示
- *
- * @return p
- */
+// 在列表页展示
 func (p *Action) SetShowOnIndex() *Action {
 	p.ShowOnIndex = true
 
 	return p
 }
 
-/**
- * 在表单页展示
- *
- * @return p
- */
+// 在表单页展示
 func (p *Action) SetShowOnForm() *Action {
 	p.ShowOnForm = true
 
 	return p
 }
 
-/**
- * 在表单页右上角自定义区域展示
- *
- * @return p
- */
+// 在表单页右上角自定义区域展示
 func (p *Action) SetShowOnFormExtra() *Action {
 	p.ShowOnFormExtra = true
 
 	return p
 }
 
-/**
- * 在详情页展示
- *
- * @return p
- */
+// 在详情页展示
 func (p *Action) SetShowOnDetail() *Action {
 	p.ShowOnDetail = true
 
 	return p
 }
 
-/**
- * 在详情页右上角自定义区域展示
- *
- * @return p
- */
+// 在详情页右上角自定义区域展示
 func (p *Action) SetShowOnDetailExtra() *Action {
 	p.ShowOnDetailExtra = true
 
 	return p
 }
 
-/**
- * 在表格行内展示
- *
- * @return p
- */
+// 在表格行内展示
 func (p *Action) SetShowOnIndexTableRow() *Action {
 	p.ShowOnIndexTableRow = true
 
 	return p
 }
 
-/**
- * 在多选弹出层展示
- *
- * @return p
- */
+// 在多选弹出层展示
 func (p *Action) SetShowOnIndexTableAlert() *Action {
 	p.ShowOnIndexTableAlert = true
 
 	return p
 }
 
-/**
- * 判断是否在列表页展示
- *
- * @return bool
- */
+// 判断是否在列表页展示
 func (p *Action) ShownOnIndex() bool {
-	if p.OnlyOnIndex == true {
+	if p.OnlyOnIndex {
 		return true
 	}
 
@@ -550,13 +392,9 @@ func (p *Action) ShownOnIndex() bool {
 	return p.ShowOnIndex
 }
 
-/**
- * 判断是否在表单页展示
- *
- * @return bool
- */
+// 判断是否在表单页展示
 func (p *Action) ShownOnForm() bool {
-	if p.OnlyOnForm == true {
+	if p.OnlyOnForm {
 		return true
 	}
 
@@ -571,11 +409,7 @@ func (p *Action) ShownOnForm() bool {
 	return p.ShowOnForm
 }
 
-/**
- * 判断是否在详情页展示
- *
- * @return bool
- */
+// 判断是否在详情页展示
 func (p *Action) ShownOnDetail() bool {
 	if p.OnlyOnDetail {
 		return true
@@ -592,38 +426,22 @@ func (p *Action) ShownOnDetail() bool {
 	return p.ShowOnDetail
 }
 
-/**
- * 判断是否在表格行内展示
- *
- * @return bool
- */
+// 判断是否在表格行内展示
 func (p *Action) ShownOnIndexTableRow() bool {
 	return p.ShowOnIndexTableRow
 }
 
-/**
- * 判断是否在多选弹出层展示
- *
- * @return bool
- */
+// 判断是否在多选弹出层展示
 func (p *Action) ShownOnIndexTableAlert() bool {
 	return p.ShowOnIndexTableAlert
 }
 
-/**
- * 判断是否在表单页右上角自定义区域展示
- *
- * @return bool
- */
+// 判断是否在表单页右上角自定义区域展示
 func (p *Action) ShownOnFormExtra() bool {
 	return p.ShowOnFormExtra
 }
 
-/**
- * 判断是否在详情页右上角自定义区域展示
- *
- * @return bool
- */
+// 判断是否在详情页右上角自定义区域展示
 func (p *Action) ShownOnDetailExtra() bool {
 	return p.ShowOnDetailExtra
 }

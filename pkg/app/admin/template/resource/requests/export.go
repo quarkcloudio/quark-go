@@ -132,11 +132,7 @@ func (p *ExportRequest) QueryData(ctx *builder.Context) interface{} {
 	return p.performsList(ctx, lists)
 }
 
-/**
- * Get the column filters for the request.
- *
- * @return array
- */
+// Get the column filters for the request.
 func (p *ExportRequest) columnFilters(ctx *builder.Context) map[string]interface{} {
 	querys := ctx.AllQuerys()
 	var data map[string]interface{}
@@ -151,11 +147,7 @@ func (p *ExportRequest) columnFilters(ctx *builder.Context) map[string]interface
 	return data
 }
 
-/**
- * Get the orderings for the request.
- *
- * @return array
- */
+// Get the orderings for the request.
 func (p *ExportRequest) orderings(ctx *builder.Context) map[string]interface{} {
 	var data map[string]interface{}
 

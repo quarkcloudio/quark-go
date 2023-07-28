@@ -12,8 +12,6 @@ type TotalFile struct {
 }
 
 // 初始化
-
-// 初始化
 func (p *TotalFile) Init() *TotalFile {
 	p.Title = "文件数量"
 	p.Col = 6
