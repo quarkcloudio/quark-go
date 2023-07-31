@@ -44,20 +44,18 @@ func (p *CreateModalAction) Init(ctx *builder.Context) interface{} {
 
 // 内容
 func (p *CreateModalAction) GetBody(ctx *builder.Context) interface{} {
+	template := ctx.Template.(types.Resourcer)
 
-	api := ctx.Template.(interface {
-		CreationApi(*builder.Context) string
-	}).CreationApi(ctx)
+	// 创建表单的接口
+	api := template.CreationApi(ctx)
 
-	fields := ctx.Template.(interface {
-		CreationFieldsWithinComponents(*builder.Context) interface{}
-	}).CreationFieldsWithinComponents(ctx)
+	// 包裹在组件内的创建页字段
+	fields := template.CreationFieldsWithinComponents(ctx)
 
-	// 断言BeforeCreating方法，获取初始数据
-	data := ctx.Template.(interface {
-		BeforeCreating(*builder.Context) map[string]interface{}
-	}).BeforeCreating(ctx)
+	// 创建页面显示前回调
+	data := template.BeforeCreating(ctx)
 
+	// 返回数据
 	return (&form.Component{}).
 		Init().
 		SetStyle(map[string]interface{}{

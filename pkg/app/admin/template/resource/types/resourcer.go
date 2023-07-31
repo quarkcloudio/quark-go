@@ -199,8 +199,20 @@ type Resourcer interface {
 	// 创建页字段
 	CreationFields(ctx *builder.Context) interface{}
 
+	// 不包含When组件内字段的创建页字段
+	CreationFieldsWithoutWhen(ctx *builder.Context) interface{}
+
+	// 包裹在组件内的创建页字段
+	CreationFieldsWithinComponents(ctx *builder.Context) interface{}
+
 	// 编辑页字段
 	UpdateFields(ctx *builder.Context) interface{}
+
+	// 不包含When组件内字段的编辑页字段
+	UpdateFieldsWithoutWhen(ctx *builder.Context) interface{}
+
+	// 包裹在组件内的编辑页字段
+	UpdateFieldsWithinComponents(ctx *builder.Context) interface{}
 
 	// 详情页字段
 	DetailFields(ctx *builder.Context) interface{}

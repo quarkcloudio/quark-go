@@ -4,6 +4,7 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/action"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/actions"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
@@ -42,19 +43,18 @@ func (p *EditDrawerAction) Init(ctx *builder.Context) interface{} {
 
 // 内容
 func (p *EditDrawerAction) GetBody(ctx *builder.Context) interface{} {
+	template := ctx.Template.(types.Resourcer)
 
-	api := ctx.Template.(interface {
-		UpdateApi(*builder.Context) string
-	}).UpdateApi(ctx)
+	// 更新表单的接口
+	api := template.UpdateApi(ctx)
 
-	initApi := ctx.Template.(interface {
-		EditValueApi(*builder.Context) string
-	}).EditValueApi(ctx)
+	// 编辑页面获取表单数据接口
+	initApi := template.EditValueApi(ctx)
 
-	fields := ctx.Template.(interface {
-		UpdateFieldsWithinComponents(*builder.Context) interface{}
-	}).UpdateFieldsWithinComponents(ctx)
+	// 包裹在组件内的编辑页字段
+	fields := template.UpdateFieldsWithinComponents(ctx)
 
+	// 返回数据
 	return (&form.Component{}).
 		Init().
 		SetKey("editDrawerForm", false).
