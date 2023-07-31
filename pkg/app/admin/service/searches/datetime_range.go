@@ -13,6 +13,7 @@ type DateTimeRangeField struct {
 // 日期时间范围
 func DatetimeRange(column string, name string) *DateTimeRangeField {
 	field := &DateTimeRangeField{}
+
 	field.Column = column
 	field.Name = name
 

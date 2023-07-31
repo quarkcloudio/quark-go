@@ -13,6 +13,7 @@ type DatetimeField struct {
 // 日期时间
 func Datetime(column string, name string) *DatetimeField {
 	field := &DatetimeField{}
+
 	field.Column = column
 	field.Name = name
 
