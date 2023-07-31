@@ -27,6 +27,7 @@ func (p *ActionLog) Init(ctx *builder.Context) interface{} {
 	// 分页
 	p.PerPage = 10
 
+	// 是否具有导出功能
 	p.WithExport = true
 
 	return p
