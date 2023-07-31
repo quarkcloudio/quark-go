@@ -39,7 +39,11 @@ func (p *WebConfig) Fields(ctx *builder.Context) []interface{} {
 	field := &resource.Field{}
 	groupNames := []string{}
 
-	db.Client.Model(p.Model).Where("status = ?", 1).Distinct("group_name").Pluck("group_name", &groupNames)
+	db.Client.
+		Model(p.Model).
+		Where("status = ?", 1).
+		Distinct("group_name").
+		Pluck("group_name", &groupNames)
 
 	tabPanes := []interface{}{}
 	for _, groupName := range groupNames {
@@ -52,59 +56,47 @@ func (p *WebConfig) Fields(ctx *builder.Context) []interface{} {
 			Find(&configs)
 
 		fields := []interface{}{}
-
 		for _, config := range configs {
-
 			remark, ok := config["remark"].(string)
 			if !ok {
 				remark = ""
 			}
-
 			switch config["type"] {
 			case "text":
 				getField := field.
-					Text(config["name"], config["title"]).SetExtra(remark)
-
+					Text(config["name"], config["title"]).
+					SetExtra(remark)
 				fields = append(fields, getField)
-
 			case "textarea":
 				getField := field.
-					TextArea(config["name"], config["title"]).SetExtra(remark)
-
+					TextArea(config["name"], config["title"]).
+					SetExtra(remark)
 				fields = append(fields, getField)
-
 			case "file":
 				getField := field.
 					File(config["name"], config["title"]).
 					SetButton("上传" + config["title"].(string)).
 					SetExtra(remark)
-
 				fields = append(fields, getField)
-
 			case "picture":
 				getField := field.
 					Image(config["name"], config["title"]).
 					SetButton("上传" + config["title"].(string)).
 					SetExtra(remark)
-
 				fields = append(fields, getField)
-
 			case "switch":
 				getField := field.
 					Switch(config["name"].(string), config["title"].(string)).
 					SetTrueValue("正常").
 					SetFalseValue("禁用").
 					SetExtra(remark)
-
 				fields = append(fields, getField)
 			}
 		}
-
 		tabPane := (&tabs.TabPane{}).
 			Init().
 			SetTitle(groupName).
 			SetBody(fields)
-
 		tabPanes = append(tabPanes, tabPane)
 	}
 
@@ -134,7 +126,6 @@ func (p *WebConfig) BeforeCreating(ctx *builder.Context) map[string]interface{} 
 
 	for _, config := range configs {
 		data[config["name"].(string)] = config["value"]
-
 		if config["type"] == "switch" {
 			if config["value"] != "0" {
 				data[config["name"].(string)] = true
