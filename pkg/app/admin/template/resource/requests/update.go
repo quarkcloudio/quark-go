@@ -72,8 +72,7 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) error {
 	}
 
 	// 获取对象
-	model := db.
-		Client.
+	model := db.Client.
 		Model(modelInstance).
 		Where("id = ?", data["id"]).
 		Updates(newData)

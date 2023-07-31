@@ -52,6 +52,7 @@ func (p *EditRequest) FillData(ctx *builder.Context) map[string]interface{} {
 
 		if result[name] != nil {
 			var fieldValue interface{}
+
 			// 组件名称
 			component := reflect.
 				ValueOf(field).

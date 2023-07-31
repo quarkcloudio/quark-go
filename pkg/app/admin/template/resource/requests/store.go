@@ -86,8 +86,7 @@ func (p *StoreRequest) Handle(ctx *builder.Context) error {
 	}
 
 	id := int(reflectId.Int())
-	db.
-		Client.
+	db.Client.
 		Model(&modelInstance).
 		Where("id = ?", id).
 		Updates(newData)
