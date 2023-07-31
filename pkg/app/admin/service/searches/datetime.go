@@ -10,7 +10,7 @@ type DatetimeField struct {
 	searches.DatetimeRange
 }
 
-// 日期范围
+// 日期时间
 func Datetime(column string, name string) *DatetimeField {
 	field := &DatetimeField{}
 	field.Column = column

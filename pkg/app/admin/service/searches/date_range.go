@@ -10,7 +10,7 @@ type DateRangeField struct {
 	searches.DateRange
 }
 
-// 日期范围
+// 日期
 func DateRange(column string, name string) *DateRangeField {
 	field := &DateRangeField{}
 	field.Column = column
