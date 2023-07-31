@@ -38,7 +38,14 @@ func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
 		var item interface{}
 		var field = &Field{}
 
+		// 搜索实例
 		searchInstance := v.(types.Searcher)
+
+		// 初始化模版
+		searchInstance.TemplateInit(ctx)
+
+		// 初始化
+		searchInstance.Init(ctx)
 
 		// 获取组件名称
 		component := searchInstance.GetComponent()
@@ -53,10 +60,9 @@ func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
 		api := searchInstance.GetApi()
 
 		// 获取属性
-		options := v.(interface {
-			Options(ctx *builder.Context) interface{}
-		}).Options(ctx)
+		options := searchInstance.Options(ctx)
 
+		// 构建组件
 		switch component {
 		case "textField":
 			item = field.
