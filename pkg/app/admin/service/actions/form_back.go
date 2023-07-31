@@ -26,8 +26,11 @@ func (p *FormBackAction) Init(ctx *builder.Context) interface{} {
 	// 行为类型
 	p.ActionType = "back"
 
-	// 设置展示位置
-	p.SetShowOnForm().SetShowOnDetail()
+	// 在表单页展示
+	p.SetShowOnForm()
+
+	// 在详情页展示
+	p.SetShowOnDetail()
 
 	return p
 }

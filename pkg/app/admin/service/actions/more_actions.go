@@ -47,7 +47,7 @@ func (p *MoreAction) Init(ctx *builder.Context) interface{} {
 }
 
 // 下拉菜单行为
-func (p *MoreAction) SetActions(actions []interface{}) *MoreAction {
+func (p *MoreAction) SetActions(actions []interface{}) interface{} {
 	p.Actions = actions
 
 	return p

@@ -1,7 +1,6 @@
 package types
 
 import (
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/actions"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
@@ -23,15 +22,9 @@ type Dropdowner interface {
 	// 菜单
 	GetMenu(ctx *builder.Context) interface{}
 
-	// 创建行为组件
-	buildAction(ctx *builder.Context, item interface{}) interface{}
-
 	// 下拉菜单行为
-	SetActions(actions []interface{}) *actions.Dropdown
+	SetActions(actions []interface{}) interface{}
 
 	// 获取下拉菜单行为
 	GetActions() []interface{}
-
-	// 创建行为接口
-	buildActionApi(ctx *builder.Context, params []string, uriKey string) string
 }

@@ -115,6 +115,12 @@ type Resourcer interface {
 	// 行为
 	Actions(ctx *builder.Context) []interface{}
 
+	// 创建行为组件
+	BuildAction(ctx *builder.Context, item interface{}) interface{}
+
+	// 创建行为接口
+	BuildActionApi(ctx *builder.Context, params []string, uriKey string) string
+
 	// 列表行为
 	IndexActions(ctx *builder.Context) interface{}
 

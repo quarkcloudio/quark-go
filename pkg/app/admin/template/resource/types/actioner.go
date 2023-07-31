@@ -1,7 +1,6 @@
 package types
 
 import (
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/actions"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
 
@@ -59,109 +58,109 @@ type Actioner interface {
 	GetConfirmType() string
 
 	// 设置名称
-	SetName(name string) *actions.Action
+	SetName(name string)
 
 	// 设置执行成功后刷新的组件
-	SetReload(componentKey string) *actions.Action
+	SetReload(componentKey string)
 
 	// 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
-	SetApiParams(apiParams []string) *actions.Action
+	SetApiParams(apiParams []string)
 
 	// 执行行为的接口
-	SetApi(api string) *actions.Action
+	SetApi(api string)
 
 	// 【必填】这是 action 最核心的配置，来指定该 action 的作用类型，支持：ajax、link、url、drawer、dialog、confirm、cancel、prev、next、copy、close。
-	SetActionType(actionType string) *actions.Action
+	SetActionType(actionType string)
 
 	// 当 action 的作用类型为submit的时候，可以指定提交哪个表格，submitForm为提交表单的key值，为空时提交当前表单
-	SetSubmitForm(submitForm string) *actions.Action
+	SetSubmitForm(submitForm string)
 
 	// 设置按钮类型，primary | ghost | dashed | link | text | default
-	SetType(buttonType string) *actions.Action
+	SetType(buttonType string)
 
 	// 设置按钮大小,large | middle | small | default
-	SetSize(size string) *actions.Action
+	SetSize(size string)
 
 	// 是否具有loading，当action 的作用类型为ajax,submit时有效
-	SetWithLoading(loading bool) *actions.Action
+	SetWithLoading(loading bool)
 
 	// 设置按钮的图标组件
-	SetIcon(icon string) *actions.Action
+	SetIcon(icon string)
 
 	// 行为表单字段
-	SetFields(fields interface{}) *actions.Action
+	SetFields(fields interface{})
 
 	// 确认标题
-	SetConfirmTitle(confirmTitle string) *actions.Action
+	SetConfirmTitle(confirmTitle string)
 
 	// 确认文字
-	SetConfirmText(confirmText string) *actions.Action
+	SetConfirmText(confirmText string)
 
 	// 确认类型
-	SetConfirmType(confirmType string) *actions.Action
+	SetConfirmType(confirmType string)
 
 	// 设置行为前的确认操作
-	WithConfirm(title string, text string, confirmType string) *actions.Action
+	WithConfirm(title string, text string, confirmType string)
 
 	// 只在列表页展示
-	SetOnlyOnIndex(value bool) *actions.Action
+	SetOnlyOnIndex(value bool)
 
 	// 除了列表页外展示
-	SetExceptOnIndex() *actions.Action
+	SetExceptOnIndex()
 
 	// 只在表单页展示
-	SetOnlyOnForm(value bool) *actions.Action
+	SetOnlyOnForm(value bool)
 
 	// 除了表单页外展示
-	SetExceptOnForm() *actions.Action
+	SetExceptOnForm()
 
 	// 除了表单页右上角自定义区域外展示
-	SetOnlyOnFormExtra(value bool) *actions.Action
+	SetOnlyOnFormExtra(value bool)
 
 	// 只在详情页展示
-	SetOnlyOnDetail(value bool) *actions.Action
+	SetOnlyOnDetail(value bool)
 
 	// 除了详情页外展示
-	SetExceptOnDetail() *actions.Action
+	SetExceptOnDetail()
 
 	// 只在详情页右上角自定义区域展示
-	SetOnlyOnDetailExtra(value bool) *actions.Action
+	SetOnlyOnDetailExtra(value bool)
 
 	// 除了详情页右上角自定义区域外展示
-	SetExceptOnDetailExtra() *actions.Action
+	SetExceptOnDetailExtra()
 
 	// 在表格行内展示
-	SetOnlyOnIndexTableRow(value bool) *actions.Action
+	SetOnlyOnIndexTableRow(value bool)
 
 	// 除了表格行内外展示
-	SetExceptOnIndexTableRow() *actions.Action
+	SetExceptOnIndexTableRow()
 
 	// 在表格多选弹出层展示
-	SetOnlyOnIndexTableAlert(value bool) *actions.Action
+	SetOnlyOnIndexTableAlert(value bool)
 
 	// 除了表格多选弹出层外展示
-	SetExceptOnIndexTableAlert() *actions.Action
+	SetExceptOnIndexTableAlert()
 
 	// 在列表页展示
-	SetShowOnIndex() *actions.Action
+	SetShowOnIndex()
 
 	// 在表单页展示
-	SetShowOnForm() *actions.Action
+	SetShowOnForm()
 
 	// 在表单页右上角自定义区域展示
-	SetShowOnFormExtra() *actions.Action
+	SetShowOnFormExtra()
 
 	// 在详情页展示
-	SetShowOnDetail() *actions.Action
+	SetShowOnDetail()
 
 	// 在详情页右上角自定义区域展示
-	SetShowOnDetailExtra() *actions.Action
+	SetShowOnDetailExtra()
 
 	// 在表格行内展示
-	SetShowOnIndexTableRow() *actions.Action
+	SetShowOnIndexTableRow()
 
 	// 在多选弹出层展示
-	SetShowOnIndexTableAlert() *actions.Action
+	SetShowOnIndexTableAlert()
 
 	// 判断是否在列表页展示
 	ShownOnIndex() bool

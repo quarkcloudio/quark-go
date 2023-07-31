@@ -35,7 +35,7 @@ func (p *Template) IndexActions(ctx *builder.Context) interface{} {
 
 		// 判断是否在列表页展示
 		if actionInstance.ShownOnIndex() {
-			items = append(items, p.buildAction(ctx, actionInstance))
+			items = append(items, p.BuildAction(ctx, actionInstance))
 		}
 	}
 
@@ -67,7 +67,7 @@ func (p *Template) IndexTableRowActions(ctx *builder.Context) interface{} {
 
 		// 判断是否在表格行内展示
 		if actionInstance.ShownOnIndexTableRow() {
-			items = append(items, p.buildAction(ctx, actionInstance))
+			items = append(items, p.BuildAction(ctx, actionInstance))
 		}
 	}
 
@@ -97,7 +97,7 @@ func (p *Template) IndexTableAlertActions(ctx *builder.Context) interface{} {
 
 		// 判断是否在多选弹出层展示
 		if actionInstance.ShownOnIndexTableAlert() {
-			items = append(items, p.buildAction(ctx, actionInstance))
+			items = append(items, p.BuildAction(ctx, actionInstance))
 		}
 	}
 
@@ -127,7 +127,7 @@ func (p *Template) FormActions(ctx *builder.Context) []interface{} {
 
 		// 判断是否在表单页展示
 		if actionInstance.ShownOnForm() {
-			items = append(items, p.buildAction(ctx, actionInstance))
+			items = append(items, p.BuildAction(ctx, actionInstance))
 		}
 	}
 
@@ -157,7 +157,7 @@ func (p *Template) FormExtraActions(ctx *builder.Context) interface{} {
 
 		// 判断是否在表单页右上角自定义区域展示
 		if actionInstance.ShownOnFormExtra() {
-			items = append(items, p.buildAction(ctx, actionInstance))
+			items = append(items, p.BuildAction(ctx, actionInstance))
 		}
 	}
 
@@ -187,7 +187,7 @@ func (p *Template) DetailActions(ctx *builder.Context) []interface{} {
 
 		// 判断是否在详情页展示
 		if actionInstance.ShownOnDetail() {
-			items = append(items, p.buildAction(ctx, actionInstance))
+			items = append(items, p.BuildAction(ctx, actionInstance))
 		}
 	}
 
@@ -217,7 +217,7 @@ func (p *Template) DetailExtraActions(ctx *builder.Context) interface{} {
 
 		// 判断是否在详情页右上角自定义区域展示
 		if actionInstance.ShownOnDetailExtra() {
-			items = append(items, p.buildAction(ctx, actionInstance))
+			items = append(items, p.BuildAction(ctx, actionInstance))
 		}
 	}
 
@@ -225,7 +225,7 @@ func (p *Template) DetailExtraActions(ctx *builder.Context) interface{} {
 }
 
 // 创建行为组件
-func (p *Template) buildAction(ctx *builder.Context, item interface{}) interface{} {
+func (p *Template) BuildAction(ctx *builder.Context, item interface{}) interface{} {
 	actionInstance := item.(types.Actioner)
 
 	// 行为名称
@@ -246,7 +246,7 @@ func (p *Template) buildAction(ctx *builder.Context, item interface{}) interface
 	// 获取api替换参数
 	params := actionInstance.GetApiParams()
 	if api == "" {
-		api = p.buildActionApi(ctx, params, uriKey)
+		api = p.BuildActionApi(ctx, params, uriKey)
 	}
 
 	// 行为类型
@@ -390,7 +390,7 @@ func (p *Template) buildAction(ctx *builder.Context, item interface{}) interface
 }
 
 // 创建行为接口
-func (p *Template) buildActionApi(ctx *builder.Context, params []string, uriKey string) string {
+func (p *Template) BuildActionApi(ctx *builder.Context, params []string, uriKey string) string {
 	var (
 		paramsUri = ""
 		api       = ""
