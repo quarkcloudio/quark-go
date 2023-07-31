@@ -11,7 +11,7 @@ type EditDrawerAction struct {
 	actions.Drawer
 }
 
-// 编辑-抽屉样式
+// 编辑-抽屉类型
 func EditDrawer() *EditDrawerAction {
 	return &EditDrawerAction{}
 }

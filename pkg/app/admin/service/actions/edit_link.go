@@ -11,7 +11,7 @@ type EditLinkAction struct {
 	actions.Link
 }
 
-// 编辑-跳转样式
+// 编辑-跳转类型
 func EditLink() *EditLinkAction {
 	return &EditLinkAction{}
 }

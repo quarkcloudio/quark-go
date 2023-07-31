@@ -161,8 +161,7 @@ func (p *Admin) Actions(ctx *builder.Context) []interface{} {
 		actions.BatchDisable(),
 		actions.BatchEnable(),
 		actions.DetailLink(),
-		actions.
-			More().
+		actions.More().
 			SetActions([]interface{}{
 				actions.EditLink(),
 				actions.Delete(),

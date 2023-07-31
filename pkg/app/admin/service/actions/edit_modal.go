@@ -11,7 +11,7 @@ type EditModalAction struct {
 	actions.Modal
 }
 
-// 编辑-弹窗样式
+// 编辑-弹窗类型
 func EditModal() *EditModalAction {
 	return &EditModalAction{}
 }
