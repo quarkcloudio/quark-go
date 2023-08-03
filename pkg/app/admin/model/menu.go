@@ -147,6 +147,7 @@ func (model *Menu) FindTreeNode(pid int) (list []*tree.TreeData) {
 func (model *Menu) FindParentTreeNode(chrildPid int) (list []*Menu) {
 	menus := []*Menu{}
 	db.Client.
+		Where("guard_name = ?", "admin").
 		Where("id = ?", chrildPid).
 		Where("type IN ?", []int{1, 2, 3}).
 		Find(&menus)
@@ -198,6 +199,7 @@ func (model *Menu) GetListByAdminId(adminId int) (menuList interface{}, err erro
 	// 最底层列表
 	db.Client.
 		Where("status = ?", 1).
+		Where("guard_name = ?", "admin").
 		Where("id in ?", menuIds).
 		Where("type IN ?", []int{1, 2, 3}).
 		Where("pid <> ?", 0).
@@ -212,6 +214,7 @@ func (model *Menu) GetListByAdminId(adminId int) (menuList interface{}, err erro
 
 	// 所有列表
 	db.Client.
+		Where("guard_name = ?", "admin").
 		Where("id in ?", menuIds).
 		Order("sort asc").
 		Find(&menus)
