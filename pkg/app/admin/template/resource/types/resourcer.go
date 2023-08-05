@@ -220,6 +220,9 @@ type Resourcer interface {
 	// 包裹在组件内的编辑页字段
 	UpdateFieldsWithinComponents(ctx *builder.Context) interface{}
 
+	// 解析表单组件内的字段
+	FormFieldsParser(ctx *builder.Context, fields interface{}) interface{}
+
 	// 详情页字段
 	DetailFields(ctx *builder.Context) interface{}
 

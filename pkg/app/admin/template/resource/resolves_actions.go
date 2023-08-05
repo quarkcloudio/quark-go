@@ -301,49 +301,49 @@ func (p *Template) BuildAction(ctx *builder.Context, item interface{}) interface
 		modalActioner := item.(types.Modaler)
 
 		// 宽度
-		formWidth := modalActioner.GetWidth()
+		modalWidth := modalActioner.GetWidth()
 
 		// 关闭时销毁 Modal 里的子元素
-		formDestroyOnClose := modalActioner.GetDestroyOnClose()
+		modalDestroyOnClose := modalActioner.GetDestroyOnClose()
 
 		// 内容
-		formBody := modalActioner.GetBody(ctx)
+		modalBody := modalActioner.GetBody(ctx)
 
 		// 弹窗行为
-		formActions := modalActioner.GetActions(ctx)
+		modalActions := modalActioner.GetActions(ctx)
 
 		// 设置弹窗
 		getAction = getAction.SetModal(func(modal *modal.Component) interface{} {
 			return modal.
 				SetTitle(name).
-				SetWidth(formWidth).
-				SetBody(formBody).
-				SetActions(formActions).
-				SetDestroyOnClose(formDestroyOnClose)
+				SetWidth(modalWidth).
+				SetBody(modalBody).
+				SetActions(modalActions).
+				SetDestroyOnClose(modalDestroyOnClose)
 		})
 	case "drawer":
 		drawerActioner := item.(types.Drawer)
 
 		// 宽度
-		formWidth := drawerActioner.GetWidth()
+		drawerWidth := drawerActioner.GetWidth()
 
 		// 关闭时销毁 Drawer 里的子元素
-		formDestroyOnClose := drawerActioner.GetDestroyOnClose()
+		drawerDestroyOnClose := drawerActioner.GetDestroyOnClose()
 
 		// 内容
-		formBody := drawerActioner.GetBody(ctx)
+		drawerBody := drawerActioner.GetBody(ctx)
 
 		// 弹窗行为
-		formActions := drawerActioner.GetActions(ctx)
+		drawerActions := drawerActioner.GetActions(ctx)
 
 		// 构建弹窗
 		getAction = getAction.SetDrawer(func(drawer *drawer.Component) interface{} {
 			return drawer.
 				SetTitle(name).
-				SetWidth(formWidth).
-				SetBody(formBody).
-				SetActions(formActions).
-				SetDestroyOnClose(formDestroyOnClose)
+				SetWidth(drawerWidth).
+				SetBody(drawerBody).
+				SetActions(drawerActions).
+				SetDestroyOnClose(drawerDestroyOnClose)
 		})
 	case "dropdown":
 		dropdownActioner := item.(types.Dropdowner)

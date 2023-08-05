@@ -10,7 +10,7 @@ type DrawerForm struct {
 
 // 初始化
 func (p *DrawerForm) TemplateInit(ctx *builder.Context) interface{} {
-	p.ActionType = "drawer"
+	p.ActionType = "drawerForm"
 	p.Width = 520
 
 	return p

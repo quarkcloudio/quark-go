@@ -336,17 +336,16 @@ func (p *Template) CreationFieldsWithinComponents(ctx *builder.Context) interfac
 	fields := template.Fields(ctx)
 	for _, v := range fields {
 
-		// 获取组件
-		component := reflect.
+		hasBody := reflect.
 			ValueOf(v).
 			Elem().
-			FieldByName("Component").
-			String()
+			FieldByName("Body").
+			IsValid()
 
-		// 解析tabPane组件
-		if component == "tabPane" {
+		// 解析组件
+		if hasBody {
 
-			// 获取tabPane组件内容
+			// 获取组件内容
 			body := reflect.
 				ValueOf(v).
 				Elem().
@@ -434,17 +433,16 @@ func (p *Template) UpdateFieldsWithinComponents(ctx *builder.Context) interface{
 	fields := template.Fields(ctx)
 	for _, v := range fields {
 
-		// 组件
-		component := reflect.
+		hasBody := reflect.
 			ValueOf(v).
 			Elem().
-			FieldByName("Component").
-			String()
+			FieldByName("Body").
+			IsValid()
 
-		// 解析tabPane组件
-		if component == "tabPane" {
+		// 解析组件
+		if hasBody {
 
-			// 获取tabPane组件内容
+			// 获取组件内容
 			body := reflect.
 				ValueOf(v).
 				Elem().
@@ -489,6 +487,53 @@ func (p *Template) UpdateFieldsWithinComponents(ctx *builder.Context) interface{
 	return items
 }
 
+// 解析表单组件内的字段
+func (p *Template) FormFieldsParser(ctx *builder.Context, fields interface{}) interface{} {
+	if fields, ok := fields.([]interface{}); ok {
+		for k, v := range fields {
+			hasBody := reflect.
+				ValueOf(v).
+				Elem().
+				FieldByName("Body").
+				IsValid()
+			if hasBody {
+
+				// 获取内容值
+				body := reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Body").
+					Interface()
+
+				// 解析值
+				getFields := p.FormFieldsParser(ctx, body)
+
+				// 更新值
+				reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Body").
+					Set(reflect.ValueOf(getFields))
+			} else {
+				component := reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Component").
+					String()
+				if strings.Contains(component, "Field") {
+
+					// 生成前端验证规则
+					v.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
+				}
+			}
+
+			fields[k] = v
+		}
+	}
+
+	return fields
+}
+
 // 详情页字段
 func (p *Template) DetailFields(ctx *builder.Context) interface{} {
 	var items []interface{}
@@ -519,15 +564,14 @@ func (p *Template) DetailFieldsWithinComponents(ctx *builder.Context, data map[s
 	fields := template.Fields(ctx)
 	for _, v := range fields {
 
-		// 组件名称
-		component := reflect.
+		hasBody := reflect.
 			ValueOf(v).
 			Elem().
-			FieldByName("Component").
-			String()
+			FieldByName("Body").
+			IsValid()
 
-		// 解析tabPane组件
-		if component == "tabPane" {
+		// 解析body数据
+		if hasBody {
 			body := reflect.
 				ValueOf(v).
 				Elem().

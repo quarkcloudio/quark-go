@@ -10,7 +10,7 @@ type ModalForm struct {
 
 // 初始化
 func (p *ModalForm) TemplateInit(ctx *builder.Context) interface{} {
-	p.ActionType = "modal"
+	p.ActionType = "modalForm"
 	p.Width = 520
 
 	return p
