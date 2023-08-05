@@ -192,6 +192,13 @@ func (p *Component) fieldParser(v interface{}, when bool) []interface{} {
 		return items
 	}
 
+	vKind := reflect.
+		ValueOf(v).
+		Kind()
+	if vKind.String() != "interface" {
+		return items
+	}
+
 	hasBody := reflect.
 		ValueOf(v).
 		Elem().
