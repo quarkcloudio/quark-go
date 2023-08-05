@@ -6,6 +6,7 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/action"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/drawer"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/dropdown"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/modal"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/space"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
@@ -345,6 +346,149 @@ func (p *Template) BuildAction(ctx *builder.Context, item interface{}) interface
 				SetActions(drawerActions).
 				SetDestroyOnClose(drawerDestroyOnClose)
 		})
+	case "modalForm":
+		modalFormerActioner := item.(types.ModalFormer)
+
+		// 表单数据接口
+		initApi := p.BuildFormInitApi(ctx, params, uriKey)
+
+		// 字段
+		modalFormFields := modalFormerActioner.Fields(ctx)
+
+		// 解析表单组件内的字段
+		formFields := p.FormFieldsParser(ctx, modalFormFields)
+
+		// 表单初始数据
+		modalFormData := map[string]interface{}{}
+
+		// 宽度
+		modalFormWidth := modalFormerActioner.GetWidth()
+
+		// 关闭时销毁 Modal 里的子元素
+		modalFormDestroyOnClose := modalFormerActioner.GetDestroyOnClose()
+
+		// 构建表单组件
+		formComponent := form.
+			New().
+			SetKey(uriKey, false).
+			SetStyle(map[string]interface{}{
+				"paddingTop": "24px",
+			}).
+			SetApi(api).
+			SetInitApi(initApi).
+			SetBody(formFields).
+			SetInitialValues(modalFormData).
+			SetLabelCol(map[string]interface{}{
+				"span": 6,
+			}).
+			SetWrapperCol(map[string]interface{}{
+				"span": 18,
+			})
+
+		// 取消按钮文案
+		modalFormCancelText := modalFormerActioner.GetCancelText()
+
+		// 提交按钮文案
+		modalFormSubmitText := modalFormerActioner.GetSubmitText()
+
+		// 弹窗行为
+		modalFormlActions := []interface{}{
+			(&action.Component{}).
+				Init().
+				SetLabel(modalFormCancelText).
+				SetActionType("cancel"),
+
+			(&action.Component{}).
+				Init().
+				SetLabel(modalFormSubmitText).
+				SetWithLoading(true).
+				SetReload(reload).
+				SetActionType("submit").
+				SetType("primary", false).
+				SetSubmitForm(uriKey),
+		}
+
+		// 设置弹窗
+		getAction = getAction.
+			SetActionType("modal").
+			SetModal(func(modal *modal.Component) interface{} {
+				return modal.
+					SetTitle(name).
+					SetWidth(modalFormWidth).
+					SetBody(formComponent).
+					SetActions(modalFormlActions).
+					SetDestroyOnClose(modalFormDestroyOnClose)
+			})
+	case "drawerForm":
+		drawerFormerActioner := item.(types.DrawerFormer)
+
+		// 表单数据接口
+		initApi := p.BuildFormInitApi(ctx, params, uriKey)
+
+		// 字段
+		drawerFormFields := drawerFormerActioner.Fields(ctx)
+
+		// 解析表单组件内的字段
+		formFields := p.FormFieldsParser(ctx, drawerFormFields)
+
+		// 表单初始数据
+		drawerFormData := map[string]interface{}{}
+
+		// 宽度
+		drawerFormWidth := drawerFormerActioner.GetWidth()
+
+		// 关闭时销毁 Modal 里的子元素
+		drawerFormDestroyOnClose := drawerFormerActioner.GetDestroyOnClose()
+
+		// 构建表单组件
+		formComponent := form.
+			New().
+			SetKey(uriKey, false).
+			SetApi(api).
+			SetInitApi(initApi).
+			SetBody(formFields).
+			SetInitialValues(drawerFormData).
+			SetLabelCol(map[string]interface{}{
+				"span": 6,
+			}).
+			SetWrapperCol(map[string]interface{}{
+				"span": 18,
+			})
+
+		// 取消按钮文案
+		drawerFormCancelText := drawerFormerActioner.GetCancelText()
+
+		// 提交按钮文案
+		drawerFormSubmitText := drawerFormerActioner.GetSubmitText()
+
+		// 弹窗行为
+		drawerFormlActions := []interface{}{
+			(&action.Component{}).
+				Init().
+				SetLabel(drawerFormCancelText).
+				SetActionType("cancel"),
+
+			(&action.Component{}).
+				Init().
+				SetLabel(drawerFormSubmitText).
+				SetWithLoading(true).
+				SetReload(reload).
+				SetActionType("submit").
+				SetType("primary", false).
+				SetSubmitForm(uriKey),
+		}
+
+		// 设置弹窗
+		getAction = getAction.
+			SetActionType("drawer").
+			SetDrawer(func(drawer *drawer.Component) interface{} {
+				return drawer.
+					SetTitle(name).
+					SetWidth(drawerFormWidth).
+					SetBody(formComponent).
+					SetActions(drawerFormlActions).
+					SetDestroyOnClose(drawerFormDestroyOnClose)
+			})
 	case "dropdown":
 		dropdownActioner := item.(types.Dropdowner)
 
@@ -400,18 +544,50 @@ func (p *Template) BuildActionApi(ctx *builder.Context, params []string, uriKey 
 		paramsUri = paramsUri + v + "=${" + v + "}&"
 	}
 
-	// 自动构建列表页接口
+	// 列表页接口
 	api = strings.Replace(ctx.Path(), "/index", "/action/"+uriKey, -1)
 
-	// 自动构建创建页接口
+	// 创建页接口
 	api = strings.Replace(api, "/create", "/action/"+uriKey, -1)
 
-	// 自动构建编辑页接口
+	// 编辑页接口
 	api = strings.Replace(api, "/edit", "/action/"+uriKey, -1)
 
-	// 自动构建详情页接口
+	// 详情页接口
 	api = strings.Replace(api, "/detail", "/action/"+uriKey, -1)
 
+	// 追加参数
+	if paramsUri != "" {
+		api = api + "?" + paramsUri
+	}
+
+	return api
+}
+
+// 创建表单初始化数据接口
+func (p *Template) BuildFormInitApi(ctx *builder.Context, params []string, uriKey string) string {
+	var (
+		paramsUri = ""
+		api       = ""
+	)
+
+	for _, v := range params {
+		paramsUri = paramsUri + v + "=${" + v + "}&"
+	}
+
+	// 列表页接口
+	api = strings.Replace(ctx.Path(), "/index", "/action/"+uriKey+"/values", -1)
+
+	// 创建页接口
+	api = strings.Replace(api, "/create", "/action/"+uriKey+"/values", -1)
+
+	// 编辑页接口
+	api = strings.Replace(api, "/edit", "/action/"+uriKey+"/values", -1)
+
+	// 详情页接口
+	api = strings.Replace(api, "/detail", "/action/"+uriKey+"/values", -1)
+
+	// 追加参数
 	if paramsUri != "" {
 		api = api + "?" + paramsUri
 	}

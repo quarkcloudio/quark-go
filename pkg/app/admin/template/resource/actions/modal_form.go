@@ -1,19 +1,36 @@
 package actions
 
-import "github.com/quarkcms/quark-go/v2/pkg/builder"
+import (
+	"github.com/quarkcms/quark-go/v2/pkg/builder"
+)
 
 type ModalForm struct {
 	Action
-	Width          int  `json:"width"`
-	DestroyOnClose bool `json:"destroyOnClose"`
+	Width          int    `json:"width"`
+	DestroyOnClose bool   `json:"destroyOnClose"`
+	CancelText     string `json:"cancelText"`
+	SubmitText     string `json:"submitText"`
 }
 
 // 初始化
 func (p *ModalForm) TemplateInit(ctx *builder.Context) interface{} {
 	p.ActionType = "modalForm"
 	p.Width = 520
+	p.Reload = "table"
+	p.CancelText = "取消"
+	p.SubmitText = "提交"
 
 	return p
+}
+
+// 表单字段
+func (p *ModalForm) Fields(ctx *builder.Context) []interface{} {
+	return []interface{}{}
+}
+
+// 表单数据（异步获取）
+func (p *ModalForm) Data(ctx *builder.Context) map[string]interface{} {
+	return map[string]interface{}{}
 }
 
 // 宽度
@@ -26,17 +43,12 @@ func (p *ModalForm) GetDestroyOnClose() bool {
 	return p.DestroyOnClose
 }
 
-// 字段
-func (p *ModalForm) Fields(ctx *builder.Context) []interface{} {
-	return []interface{}{}
+// 获取取消按钮文案
+func (p *ModalForm) GetCancelText() string {
+	return p.CancelText
 }
 
-// 内容
-func (p *ModalForm) GetBody(ctx *builder.Context) interface{} {
-	return nil
-}
-
-// 弹窗行为
-func (p *ModalForm) GetActions(ctx *builder.Context) []interface{} {
-	return []interface{}{}
+// 获取提交按钮文案
+func (p *ModalForm) GetSubmitText() string {
+	return p.SubmitText
 }

@@ -11,19 +11,20 @@ import (
 
 // 路由路径常量
 const (
-	IndexPath          = "/api/admin/:resource/index"           // 列表路径
-	EditablePath       = "/api/admin/:resource/editable"        // 表格行内编辑路径
-	ActionPath         = "/api/admin/:resource/action/:uriKey"  // 执行行为路径
-	CreatePath         = "/api/admin/:resource/create"          // 创建页面路径
-	StorePath          = "/api/admin/:resource/store"           // 创建方法路径
-	EditPath           = "/api/admin/:resource/edit"            // 编辑页面路径
-	EditValuesPath     = "/api/admin/:resource/edit/values"     // 获取编辑表单值路径
-	SavePath           = "/api/admin/:resource/save"            // 保存编辑值路径
-	ImportPath         = "/api/admin/:resource/import"          // 详情页面路径
-	ExportPath         = "/api/admin/:resource/export"          // 导出数据路径
-	DetailPath         = "/api/admin/:resource/detail"          // 导入数据路径
-	ImportTemplatePath = "/api/admin/:resource/import/template" // 导入模板路径
-	FormPath           = "/api/admin/:resource/:uriKey/form"    // 通用表单资源路径
+	IndexPath          = "/api/admin/:resource/index"                 // 列表路径
+	EditablePath       = "/api/admin/:resource/editable"              // 表格行内编辑路径
+	ActionPath         = "/api/admin/:resource/action/:uriKey"        // 执行行为路径
+	ActionValuesPath   = "/api/admin/:resource/action/:uriKey/values" // 行为表单值路径
+	CreatePath         = "/api/admin/:resource/create"                // 创建页面路径
+	StorePath          = "/api/admin/:resource/store"                 // 创建方法路径
+	EditPath           = "/api/admin/:resource/edit"                  // 编辑页面路径
+	EditValuesPath     = "/api/admin/:resource/edit/values"           // 获取编辑表单值路径
+	SavePath           = "/api/admin/:resource/save"                  // 保存编辑值路径
+	ImportPath         = "/api/admin/:resource/import"                // 详情页面路径
+	ExportPath         = "/api/admin/:resource/export"                // 导出数据路径
+	DetailPath         = "/api/admin/:resource/detail"                // 导入数据路径
+	ImportTemplatePath = "/api/admin/:resource/import/template"       // 导入模板路径
+	FormPath           = "/api/admin/:resource/:uriKey/form"          // 通用表单资源路径
 )
 
 // 增删改查模板
@@ -58,6 +59,7 @@ func (p *Template) RouteInit() interface{} {
 	p.GET(IndexPath, p.IndexRender)                   // 列表
 	p.GET(EditablePath, p.EditableRender)             // 表格行内编辑
 	p.Any(ActionPath, p.ActionRender)                 // 执行行为
+	p.Any(ActionValuesPath, p.ActionValuesRender)     // 获取行为表单值
 	p.GET(CreatePath, p.CreationRender)               // 创建页面
 	p.POST(StorePath, p.StoreRender)                  // 创建方法
 	p.GET(EditPath, p.EditRender)                     // 编辑页面
@@ -183,6 +185,11 @@ func (p *Template) EditableRender(ctx *builder.Context) error {
 // 执行行为
 func (p *Template) ActionRender(ctx *builder.Context) error {
 	return (&requests.ActionRequest{}).Handle(ctx)
+}
+
+// 行为表单值
+func (p *Template) ActionValuesRender(ctx *builder.Context) error {
+	return (&requests.ActionRequest{}).Values(ctx)
 }
 
 // 创建页面渲染

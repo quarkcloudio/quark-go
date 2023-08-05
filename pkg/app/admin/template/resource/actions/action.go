@@ -5,7 +5,9 @@ import (
 	"strings"
 
 	"github.com/gobeam/stringy"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
+	"gorm.io/gorm"
 )
 
 type Action struct {
@@ -45,6 +47,12 @@ func (p *Action) TemplateInit(ctx *builder.Context) interface{} {
 	p.ActionType = "ajax"
 
 	return p
+}
+
+// 执行行为句柄
+func (p *Action) Handle(ctx *builder.Context, query *gorm.DB) error {
+
+	return ctx.JSON(200, message.Error("Method not implemented"))
 }
 
 // 行为key

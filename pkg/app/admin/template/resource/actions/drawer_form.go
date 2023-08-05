@@ -1,19 +1,36 @@
 package actions
 
-import "github.com/quarkcms/quark-go/v2/pkg/builder"
+import (
+	"github.com/quarkcms/quark-go/v2/pkg/builder"
+)
 
 type DrawerForm struct {
 	Action
-	Width          int  `json:"width"`
-	DestroyOnClose bool `json:"destroyOnClose"`
+	Width          int    `json:"width"`
+	DestroyOnClose bool   `json:"destroyOnClose"`
+	CancelText     string `json:"cancelText"`
+	SubmitText     string `json:"submitText"`
 }
 
 // 初始化
 func (p *DrawerForm) TemplateInit(ctx *builder.Context) interface{} {
 	p.ActionType = "drawerForm"
 	p.Width = 520
+	p.Reload = "table"
+	p.CancelText = "取消"
+	p.SubmitText = "提交"
 
 	return p
+}
+
+// 表单字段
+func (p *DrawerForm) Fields(ctx *builder.Context) []interface{} {
+	return []interface{}{}
+}
+
+// 表单数据（异步获取）
+func (p *DrawerForm) Data(ctx *builder.Context) map[string]interface{} {
+	return map[string]interface{}{}
 }
 
 // 宽度
@@ -26,12 +43,12 @@ func (p *DrawerForm) GetDestroyOnClose() bool {
 	return p.DestroyOnClose
 }
 
-// 内容
-func (p *DrawerForm) GetBody(ctx *builder.Context) interface{} {
-	return nil
+// 获取取消按钮文案
+func (p *DrawerForm) GetCancelText() string {
+	return p.CancelText
 }
 
-// 弹窗行为
-func (p *DrawerForm) GetActions(ctx *builder.Context) []interface{} {
-	return []interface{}{}
+// 获取提交按钮文案
+func (p *DrawerForm) GetSubmitText() string {
+	return p.SubmitText
 }
