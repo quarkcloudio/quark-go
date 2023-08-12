@@ -28,7 +28,17 @@ func (p *Account) Init(ctx *builder.Context) interface{} {
 
 // 表单接口
 func (p *Account) FormApi(ctx *builder.Context) string {
-	return "/api/admin/account/action/change-account"
+
+	// 获取行为实例
+	actionInstance := actions.ChangeAccount()
+
+	// 获取行为接口接收的参数
+	params := actionInstance.GetApiParams()
+
+	// 获取行为key
+	uriKey := actionInstance.GetUriKey(actionInstance)
+
+	return p.BuildActionApi(ctx, params, uriKey)
 }
 
 // 字段

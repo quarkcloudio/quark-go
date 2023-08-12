@@ -9,25 +9,25 @@ import (
 )
 
 // 列表页表格主体
-func (p *Template) IndexExtraRender(ctx *builder.Context) interface{} {
+func (p *Template) IndexTableExtraRender(ctx *builder.Context) interface{} {
 	return nil
 }
 
 // 列表页工具栏
-func (p *Template) IndexToolBar(ctx *builder.Context) interface{} {
+func (p *Template) IndexTableToolBar(ctx *builder.Context) interface{} {
 	return (&table.ToolBar{}).
 		Init().
-		SetTitle(p.IndexTitle(ctx)).
-		SetActions(p.IndexActions(ctx))
+		SetTitle(p.IndexTableTitle(ctx)).
+		SetActions(p.IndexTableActions(ctx))
 }
 
 // 列表标题
-func (p *Template) IndexTitle(ctx *builder.Context) string {
+func (p *Template) IndexTableTitle(ctx *builder.Context) string {
 
 	// 模版实例
 	template := ctx.Template.(types.Resourcer)
 
-	return template.GetTitle() + "列表"
+	return template.GetTitle() + template.GetTableTitleSuffix()
 }
 
 // 列表页组件渲染
@@ -38,19 +38,19 @@ func (p *Template) IndexComponentRender(ctx *builder.Context, data interface{}) 
 	template := ctx.Template.(types.Resourcer)
 
 	// 列表标题
-	title := p.IndexTitle(ctx)
+	tableTitle := p.IndexTableTitle(ctx)
 
 	// 列表页轮询数据
-	indexPolling := template.GetIndexPolling()
+	tablePolling := template.GetTablePolling()
 
 	// 列表页表格主体
-	indexExtraRender := p.IndexExtraRender(ctx)
+	tableExtraRender := p.IndexTableExtraRender(ctx)
 
 	// 列表页工具栏
-	indexToolBar := p.IndexToolBar(ctx)
+	tableToolBar := p.IndexTableToolBar(ctx)
 
 	// 列表页表格列
-	indexColumns := p.IndexColumns(ctx)
+	tableColumns := p.IndexTableColumns(ctx)
 
 	// 列表页批量操作
 	indexTableAlertActions := p.IndexTableAlertActions(ctx)
@@ -61,11 +61,11 @@ func (p *Template) IndexComponentRender(ctx *builder.Context, data interface{}) 
 	// 表格组件
 	table := (&table.Component{}).
 		Init().
-		SetPolling(int(indexPolling)).
-		SetTitle(title).
-		SetTableExtraRender(indexExtraRender).
-		SetToolBar(indexToolBar).
-		SetColumns(indexColumns).
+		SetPolling(int(tablePolling)).
+		SetTitle(tableTitle).
+		SetTableExtraRender(tableExtraRender).
+		SetToolBar(tableToolBar).
+		SetColumns(tableColumns).
 		SetBatchActions(indexTableAlertActions).
 		SetSearches(indexSearches)
 

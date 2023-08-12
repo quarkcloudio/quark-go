@@ -14,7 +14,7 @@ import (
 )
 
 // 列表行为
-func (p *Template) IndexActions(ctx *builder.Context) interface{} {
+func (p *Template) IndexTableActions(ctx *builder.Context) interface{} {
 	var items []interface{}
 
 	// 模版实例

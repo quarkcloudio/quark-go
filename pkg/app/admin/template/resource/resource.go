@@ -30,14 +30,20 @@ const (
 // 增删改查模板
 type Template struct {
 	builder.Template
-	Title        string                 // 标题
-	SubTitle     string                 // 子标题
-	PerPage      interface{}            // 分页配置
-	IndexPolling int                    // 轮询数据
-	IndexOrder   string                 // 排序规则
-	Model        interface{}            // 挂载模型
-	Field        map[string]interface{} // 注入的字段数据
-	WithExport   bool                   // 是否具有导出功能
+	Title                  string                 // 页面标题
+	SubTitle               string                 // 页面子标题
+	BackIcon               bool                   // 页面是否携带返回Icon
+	PerPage                interface{}            // 列表页分页配置
+	TableTitleSuffix       string                 // 列表页表格标题后缀
+	TableActionColumnTitle string                 // 列表页表格行为列显示文字，既字段的列名
+	TableActionColumnWidth int                    // 列表页表格行为列的宽度
+	TablePolling           int                    // 列表页表格是否轮询数据
+	QueryOrder             string                 // 全局排序规则
+	IndexQueryOrder        string                 // 列表页排序规则
+	ExportQueryOrder       string                 // 导出数据排序规则
+	Model                  interface{}            // 挂载模型
+	Field                  map[string]interface{} // 注入的字段数据
+	WithExport             bool                   // 是否具有导出功能
 }
 
 // 初始化
@@ -50,6 +56,15 @@ func (p *Template) TemplateInit(ctx *builder.Context) interface{} {
 
 	// 初始化数据对象
 	p.DB = db.Client
+
+	// 列表页表格行为列显示文字，既字段的列名
+	p.TableActionColumnTitle = "操作"
+
+	// 列表页表格标题后缀
+	p.TableTitleSuffix = "列表"
+
+	// 页面是否携带返回Icon
+	p.BackIcon = true
 
 	return p
 }
@@ -89,19 +104,49 @@ func (p *Template) GetSubTitle() string {
 	return p.SubTitle
 }
 
+// 页面是否携带返回Icon
+func (p *Template) GetBackIcon() bool {
+	return p.BackIcon
+}
+
 // 获取分页配置
 func (p *Template) GetPerPage() interface{} {
 	return p.PerPage
 }
 
-// 获取轮询数据
-func (p *Template) GetIndexPolling() int {
-	return p.IndexPolling
+// 列表页表格标题后缀
+func (p *Template) GetTableTitleSuffix() string {
+	return p.TableTitleSuffix
 }
 
-// 获取排序规则
-func (p *Template) GetIndexOrder() string {
-	return p.IndexOrder
+// 列表页表格行为列显示文字，既字段的列名
+func (p *Template) GetTableActionColumnTitle() string {
+	return p.TableActionColumnTitle
+}
+
+// 列表页表格行为列的宽度
+func (p *Template) GetTableActionColumnWidth() int {
+	return p.TableActionColumnWidth
+}
+
+// 获取轮询数据
+func (p *Template) GetTablePolling() int {
+	return p.TablePolling
+}
+
+// 获取全局排序规则
+func (p *Template) GetQueryOrder() string {
+	return p.QueryOrder
+}
+
+// 获取列表页排序规则
+func (p *Template) GetIndexQueryOrder() string {
+	return p.IndexQueryOrder
+}
+
+// 获取导出数据排序规则
+func (p *Template) GetExportQueryOrder() string {
+	return p.ExportQueryOrder
 }
 
 // 获取注入的字段数据
@@ -310,11 +355,18 @@ func (p *Template) PageContainerComponentRender(ctx *builder.Context, body inter
 	// 页面子标题
 	subTitle := template.GetSubTitle()
 
+	// 页面是否携带返回Icon
+	backIcon := template.GetBackIcon()
+
 	// 设置头部
 	header := (&pagecontainer.PageHeader{}).
 		Init().
 		SetTitle(title).
 		SetSubTitle(subTitle)
+
+	if !backIcon {
+		header.SetBackIcon(false)
+	}
 
 	return (&pagecontainer.Component{}).
 		Init().

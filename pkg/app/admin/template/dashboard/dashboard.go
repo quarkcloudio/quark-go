@@ -16,8 +16,9 @@ import (
 // 后台登录模板
 type Template struct {
 	builder.Template
-	Title    string // 标题
-	SubTitle string // 子标题
+	Title    string // 页面标题
+	SubTitle string // 页面子标题
+	BackIcon bool   // 页面是否携带返回Icon
 }
 
 // 初始化
@@ -35,6 +36,9 @@ func (p *Template) TemplateInit(ctx *builder.Context) interface{} {
 
 	// 标题
 	p.Title = "仪表盘"
+
+	// 页面是否携带返回Icon
+	p.BackIcon = false
 
 	return p
 }
@@ -56,6 +60,11 @@ func (p *Template) GetSubTitle() string {
 	return p.SubTitle
 }
 
+// 页面是否携带返回Icon
+func (p *Template) GetBackIcon() bool {
+	return p.BackIcon
+}
+
 // 内容
 func (p *Template) Cards(ctx *builder.Context) []interface{} {
 	return nil
@@ -73,14 +82,24 @@ func (p *Template) PageComponentRender(ctx *builder.Context, body interface{}) i
 func (p *Template) PageContainerComponentRender(ctx *builder.Context, body interface{}) interface{} {
 	template := ctx.Template.(Dashboarder)
 
+	// 页面标题
 	title := template.GetTitle()
+
+	// 页面子标题
 	subTitle := template.GetSubTitle()
+
+	// 页面是否携带返回Icon
+	backIcon := template.GetBackIcon()
 
 	// 设置头部
 	header := (&pagecontainer.PageHeader{}).
 		Init().
 		SetTitle(title).
 		SetSubTitle(subTitle)
+
+	if !backIcon {
+		header.SetBackIcon(false)
+	}
 
 	return (&pagecontainer.Component{}).
 		Init().

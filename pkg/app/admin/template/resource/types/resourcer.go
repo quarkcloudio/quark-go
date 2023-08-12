@@ -19,14 +19,32 @@ type Resourcer interface {
 	// 获取子标题
 	GetSubTitle() string
 
+	// 页面是否携带返回Icon
+	GetBackIcon() bool
+
 	// 获取分页配置
 	GetPerPage() interface{}
 
-	// 获取轮询数据
-	GetIndexPolling() int
+	// 列表页表格标题后缀
+	GetTableTitleSuffix() string
 
-	// 获取排序规则
-	GetIndexOrder() string
+	// 列表页表格行为列显示文字，既字段的列名
+	GetTableActionColumnTitle() string
+
+	// 列表页表格行为列的宽度
+	GetTableActionColumnWidth() int
+
+	// 获取轮询数据
+	GetTablePolling() int
+
+	// 获取全局排序规则
+	GetQueryOrder() string
+
+	// 获取列表页排序规则
+	GetIndexQueryOrder() string
+
+	// 获取导出数据排序规则
+	GetExportQueryOrder() string
 
 	// 获取注入的字段数据
 	GetField() map[string]interface{}
@@ -121,8 +139,8 @@ type Resourcer interface {
 	// 创建行为接口
 	BuildActionApi(ctx *builder.Context, params []string, uriKey string) string
 
-	// 列表行为
-	IndexActions(ctx *builder.Context) interface{}
+	// 表格行为
+	IndexTableActions(ctx *builder.Context) interface{}
 
 	// 表格行内行为
 	IndexTableRowActions(ctx *builder.Context) interface{}
@@ -185,13 +203,13 @@ type Resourcer interface {
 	AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error
 
 	// 列表页表格主体
-	IndexExtraRender(ctx *builder.Context) interface{}
+	IndexTableExtraRender(ctx *builder.Context) interface{}
 
 	// 列表页工具栏
-	IndexToolBar(ctx *builder.Context) interface{}
+	IndexTableToolBar(ctx *builder.Context) interface{}
 
 	// 列表标题
-	IndexTitle(ctx *builder.Context) string
+	IndexTableTitle(ctx *builder.Context) string
 
 	// 列表页组件渲染
 	IndexComponentRender(ctx *builder.Context, data interface{}) interface{}

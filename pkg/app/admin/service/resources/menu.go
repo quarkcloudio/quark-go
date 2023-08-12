@@ -33,7 +33,7 @@ func (p *Menu) Init(ctx *builder.Context) interface{} {
 	p.PerPage = false
 
 	// 默认排序
-	p.IndexOrder = "sort asc"
+	p.QueryOrder = "sort asc"
 
 	return p
 }

@@ -28,8 +28,12 @@ func (p *Template) BuildIndexQuery(ctx *builder.Context, query *gorm.DB, search 
 	// 执行表格列上过滤器查询
 	query = p.applyColumnFilters(query, columnFilters)
 
-	// 获取默认排序
-	defaultOrder := template.GetIndexOrder()
+	// 获取排序规则
+	defaultOrder := template.GetQueryOrder()
+	if defaultOrder == "" {
+		defaultOrder = template.GetIndexQueryOrder()
+	}
+
 	if defaultOrder == "" {
 		defaultOrder = "id desc"
 	}
@@ -72,8 +76,12 @@ func (p *Template) BuildExportQuery(ctx *builder.Context, query *gorm.DB, search
 	// 执行表格列上过滤器查询
 	query = p.applyColumnFilters(query, columnFilters)
 
-	// 获取默认排序
-	defaultOrder := template.GetIndexOrder()
+	// 获取排序规则
+	defaultOrder := template.GetQueryOrder()
+	if defaultOrder == "" {
+		defaultOrder = template.GetExportQueryOrder()
+	}
+
 	if defaultOrder == "" {
 		defaultOrder = "id desc"
 	}

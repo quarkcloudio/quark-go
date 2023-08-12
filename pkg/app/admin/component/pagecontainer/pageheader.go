@@ -4,16 +4,16 @@ import "github.com/quarkcms/quark-go/v2/pkg/app/admin/component/component"
 
 type PageHeader struct {
 	component.Element
-	Avatar           interface{} `json:"avatar"`
-	BackIcon         interface{} `json:"backIcon"`
-	Breadcrumb       interface{} `json:"breadcrumb"`
-	BreadcrumbRender interface{} `json:"breadcrumbRender"`
-	Extra            interface{} `json:"extra"`
-	Footer           interface{} `json:"footer"`
-	Ghost            bool        `json:"ghost"`
-	SubTitle         string      `json:"subTitle"`
-	Tags             interface{} `json:"tags"`
-	Title            string      `json:"title"`
+	Avatar           interface{} `json:"avatar,omitempty"`
+	BackIcon         interface{} `json:"backIcon,omitempty"`
+	Breadcrumb       interface{} `json:"breadcrumb,omitempty"`
+	BreadcrumbRender interface{} `json:"breadcrumbRender,omitempty"`
+	Extra            interface{} `json:"extra,omitempty"`
+	Footer           interface{} `json:"footer,omitempty"`
+	Ghost            bool        `json:"ghost,omitempty"`
+	SubTitle         string      `json:"subTitle,omitempty"`
+	Tags             interface{} `json:"tags,omitempty"`
+	Title            string      `json:"title,omitempty"`
 }
 
 // 初始化

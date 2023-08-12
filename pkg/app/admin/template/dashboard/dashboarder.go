@@ -13,6 +13,9 @@ type Dashboarder interface {
 	// 获取页面子标题
 	GetSubTitle() string
 
+	// 页面是否携带返回Icon
+	GetBackIcon() bool
+
 	// 内容
 	Cards(ctx *builder.Context) []interface{}
 

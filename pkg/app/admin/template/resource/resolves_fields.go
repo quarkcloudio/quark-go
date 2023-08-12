@@ -34,7 +34,7 @@ func (p *Template) IndexFields(ctx *builder.Context) interface{} {
 }
 
 // 表格列
-func (p *Template) IndexColumns(ctx *builder.Context) interface{} {
+func (p *Template) IndexTableColumns(ctx *builder.Context) interface{} {
 	var columns []interface{}
 
 	fields := p.IndexFields(ctx)
@@ -51,9 +51,18 @@ func (p *Template) IndexColumns(ctx *builder.Context) interface{} {
 	// 行内行为
 	indexTableRowActions := template.IndexTableRowActions(ctx)
 	if len(indexTableRowActions.([]interface{})) > 0 {
+
+		// 行为列标题
+		columnTitle := p.GetTableActionColumnTitle()
+
+		// 行为列宽度
+		columnWidth := p.GetTableActionColumnWidth()
+
+		// 构建列
 		column := (&table.Column{}).
 			Init().
-			SetTitle("操作").
+			SetTitle(columnTitle).
+			SetWidth(columnWidth).
 			SetAttribute("action").
 			SetValueType("option").
 			SetActions(indexTableRowActions).
