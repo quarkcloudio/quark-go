@@ -614,7 +614,9 @@ func (p *Template) DetailFieldsWithinComponents(ctx *builder.Context, data map[s
 			if v, ok := v.(interface{ IsShownOnDetail() bool }); ok {
 				if v.IsShownOnDetail() {
 					getColumn := p.fieldToColumn(ctx, v)
-					items = append(items, getColumn)
+					if getColumn != nil {
+						items = append(items, getColumn)
+					}
 				}
 			}
 		}
