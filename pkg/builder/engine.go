@@ -21,7 +21,7 @@ const (
 	AppName = "QuarkGo"
 
 	// 版本号
-	Version = "2.1.6"
+	Version = "2.1.7"
 
 	// 包名
 	PkgName = "github.com/quarkcms/quark-go/v2"
@@ -203,23 +203,48 @@ func (p *Engine) initPaths() {
 
 			if strings.Contains(v.Path, ":resource") {
 				url := strings.Replace(v.Path, ":resource", strings.ToLower(structName), -1)
-				//处理行为
+
+				// 处理行为
 				if strings.Contains(url, ":uriKey") {
+
+					// 获取行为
 					actions := provider.(interface {
 						Actions(ctx *Context) []interface{}
 					}).Actions(&Context{})
+
+					// 解析行为
 					for _, av := range actions {
+
+						// 模版初始化
+						av.(interface {
+							TemplateInit(ctx *Context) interface{}
+						}).TemplateInit(&Context{})
+
 						// uri唯一标识
 						uriKey := av.(interface {
 							GetUriKey(interface{}) string
 						}).GetUriKey(av)
-						actionType := av.(interface{ GetActionType() string }).GetActionType()
+
+						// 行为类型
+						actionType := av.(interface {
+							GetActionType() string
+						}).GetActionType()
+
+						// 解析行为
 						if actionType == "dropdown" {
-							dropdownActions := av.(interface{ GetActions() []interface{} }).GetActions()
+
+							// 获取dropdown里面行为
+							dropdownActions := av.(interface {
+								GetActions() []interface{}
+							}).GetActions()
+
+							// 解析行为
 							for _, dropdownAction := range dropdownActions {
+
+								// uri唯一标识
 								uriKey := dropdownAction.(interface {
 									GetUriKey(interface{}) string
-								}).GetUriKey(dropdownAction) // uri唯一标识
+								}).GetUriKey(dropdownAction)
 								url = strings.Replace(url, ":uriKey", uriKey, -1)
 							}
 						} else {
