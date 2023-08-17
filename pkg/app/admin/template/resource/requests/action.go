@@ -36,20 +36,24 @@ func (p *ActionRequest) Handle(ctx *builder.Context) error {
 
 	actions := template.Actions(ctx)
 	for _, v := range actions {
+		actionInstance := v.(types.Actioner)
+
+		// 初始化模版
+		actionInstance.TemplateInit(ctx)
+
+		// 初始化
+		actionInstance.Init(ctx)
+
 		// uri唯一标识
-		uriKey := v.(interface {
-			GetUriKey(interface{}) string
-		}).GetUriKey(v)
+		uriKey := actionInstance.GetUriKey(v)
 
-		actionType := v.(interface{ GetActionType() string }).GetActionType()
+		// 获取行为类型
+		actionType := actionInstance.GetActionType()
+
 		if actionType == "dropdown" {
-			dropdownActions := v.(interface{ GetActions() []interface{} }).GetActions()
-			for _, dropdownAction := range dropdownActions {
-				// uri唯一标识
-				uriKey := dropdownAction.(interface {
-					GetUriKey(interface{}) string
-				}).GetUriKey(dropdownAction)
-
+			dropdownActioner := v.(types.Dropdowner)
+			for _, dropdownAction := range dropdownActioner.GetActions() {
+				uriKey := dropdownActioner.GetUriKey(dropdownAction)
 				if ctx.Param("uriKey") == uriKey {
 					result = dropdownAction.(interface {
 						Handle(*builder.Context, *gorm.DB) error
@@ -94,16 +98,24 @@ func (p *ActionRequest) Values(ctx *builder.Context) error {
 	// 解析行为
 	actions := template.Actions(ctx)
 	for _, v := range actions {
+
+		actionInstance := v.(types.Actioner)
+
+		// 初始化模版
+		actionInstance.TemplateInit(ctx)
+
+		// 初始化
+		actionInstance.Init(ctx)
+
 		// uri唯一标识
-		uriKey := v.(interface{ GetUriKey(interface{}) string }).GetUriKey(v)
+		uriKey := actionInstance.GetUriKey(v)
 
-		actionType := v.(interface{ GetActionType() string }).GetActionType()
+		// 获取行为类型
+		actionType := actionInstance.GetActionType()
 		if actionType == "dropdown" {
-			dropdownActions := v.(interface{ GetActions() []interface{} }).GetActions()
-			for _, dropdownAction := range dropdownActions {
-
-				// uri唯一标识
-				uriKey := dropdownAction.(interface{ GetUriKey(interface{}) string }).GetUriKey(dropdownAction)
+			dropdownActioner := v.(types.Dropdowner)
+			for _, dropdownAction := range dropdownActioner.GetActions() {
+				uriKey := dropdownActioner.GetUriKey(dropdownAction)
 				if ctx.Param("uriKey") == uriKey {
 					data = dropdownAction.(interface {
 						Data(*builder.Context) map[string]interface{}
