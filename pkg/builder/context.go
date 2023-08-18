@@ -35,7 +35,6 @@ type ParamValue struct {
 
 // ContentType returns the Content-Type header of the request.
 func (p *Context) ContentType() string {
-
 	return p.Request.Header.Get("Content-Type")
 }
 
