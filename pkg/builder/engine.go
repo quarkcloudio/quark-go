@@ -552,7 +552,6 @@ func (p *Engine) Group(path string, handlers ...Handle) *Group {
 							return next(c)
 						}
 					}
-
 					return err
 				}
 				return newHandle
