@@ -599,7 +599,6 @@ func (p *Context) JSONOk(message ...interface{}) error {
 
 // 输出失败状态的JSON数据，JSONError("错误")
 func (p *Context) JSONError(message string) error {
-
 	return p.JSON(200, Error(message))
 }
 
