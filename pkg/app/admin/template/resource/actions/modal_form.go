@@ -6,10 +6,10 @@ import (
 
 type ModalForm struct {
 	Action
-	Width          int    `json:"width"`
-	DestroyOnClose bool   `json:"destroyOnClose"`
-	CancelText     string `json:"cancelText"`
-	SubmitText     string `json:"submitText"`
+	Width          int    `json:"width"`          // 弹出层宽度
+	DestroyOnClose bool   `json:"destroyOnClose"` // 关闭时销毁弹出层里的子元素
+	CancelText     string `json:"cancelText"`     // 获取取消按钮文案
+	SubmitText     string `json:"submitText"`     // 获取提交按钮文案
 }
 
 // 初始化

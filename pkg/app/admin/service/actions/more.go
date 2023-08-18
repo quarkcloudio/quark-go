@@ -46,6 +46,13 @@ func (p *MoreAction) Init(ctx *builder.Context) interface{} {
 	return p
 }
 
+// 下拉菜单名称
+func (p *MoreAction) SetName(name string) interface{} {
+	p.Name = name
+
+	return p
+}
+
 // 下拉菜单行为
 func (p *MoreAction) SetActions(actions []interface{}) interface{} {
 	p.Actions = actions

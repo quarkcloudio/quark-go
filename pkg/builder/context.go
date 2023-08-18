@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -317,13 +316,13 @@ func (p *Context) Write(data []byte) {
 
 // Body returns body data
 func (p *Context) Body() []byte {
-	body, err := ioutil.ReadAll(p.Request.Body)
+	body, err := io.ReadAll(p.Request.Body)
 	if err != nil {
 		return nil
 	}
 
 	// 重新赋值
-	p.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+	p.Request.Body = io.NopCloser(bytes.NewBuffer(body))
 
 	return body
 }

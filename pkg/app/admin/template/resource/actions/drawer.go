@@ -4,8 +4,8 @@ import "github.com/quarkcms/quark-go/v2/pkg/builder"
 
 type Drawer struct {
 	Action
-	Width          int  `json:"width"`
-	DestroyOnClose bool `json:"destroyOnClose"`
+	Width          int  `json:"width"`          // 抽屉弹出层宽度
+	DestroyOnClose bool `json:"destroyOnClose"` // 关闭时销毁弹出层里的子元素
 }
 
 // 初始化

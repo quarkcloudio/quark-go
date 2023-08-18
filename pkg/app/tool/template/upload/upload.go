@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/base64"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"reflect"
 	"strconv"
@@ -131,7 +130,7 @@ func (p *Template) Handle(ctx *builder.Context) error {
 	multipartReader := multipart.NewReader(byteReader, strings.TrimLeft(contentTypes[1], "boundary="))
 	for p, err := multipartReader.NextPart(); err != io.EOF; p, err = multipartReader.NextPart() {
 		if p.FormName() == "file" {
-			fileData, _ := ioutil.ReadAll(p)
+			fileData, _ := io.ReadAll(p)
 			fileSystem := storage.
 				New(&storage.Config{
 					LimitSize:        limitSize,

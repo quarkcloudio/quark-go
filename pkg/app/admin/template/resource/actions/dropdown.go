@@ -8,11 +8,11 @@ import (
 
 type Dropdown struct {
 	Action
-	Arrow        bool                   `json:"arrow"`
-	Placement    string                 `json:"placement"`
-	Trigger      []string               `json:"trigger"`
-	OverlayStyle map[string]interface{} `json:"overlayStyle"`
-	Actions      []interface{}          `json:"actions"`
+	Arrow        bool                   `json:"arrow"`        // 下拉框箭头是否显示
+	Placement    string                 `json:"placement"`    // 菜单弹出位置：bottomLeft bottomCenter bottomRight topLeft topCenter topRight
+	Trigger      []string               `json:"trigger"`      // 触发下拉的行为, 移动端不支持 hover,Array<click|hover|contextMenu>
+	OverlayStyle map[string]interface{} `json:"overlayStyle"` // 下拉根元素的样式
+	Actions      []interface{}          `json:"actions"`      // 下拉菜单行为
 }
 
 // 初始化

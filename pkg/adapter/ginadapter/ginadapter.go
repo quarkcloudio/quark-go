@@ -2,7 +2,7 @@ package ginadapter
 
 import (
 	"bytes"
-	"io/ioutil"
+	"io"
 
 	"github.com/gin-gonic/gin"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -10,7 +10,7 @@ import (
 
 // 适配gin框架路由
 func RouteAdapter(b *builder.Engine, ctx *gin.Context) {
-	body, err := ioutil.ReadAll(ctx.Request.Body)
+	body, err := io.ReadAll(ctx.Request.Body)
 	if err != nil {
 		ctx.JSON(200, builder.Error(err.Error()))
 		return
@@ -21,8 +21,8 @@ func RouteAdapter(b *builder.Engine, ctx *gin.Context) {
 		return
 	}
 
-	//把读过的字节流重新放到body
-	ctx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data))
+	// 把读过的字节流重新放到body
+	ctx.Request.Body = io.NopCloser(bytes.NewBuffer(data))
 
 	// 转换Request对象
 	context := b.TransformContext(

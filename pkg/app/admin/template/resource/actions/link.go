@@ -4,8 +4,8 @@ import "github.com/quarkcms/quark-go/v2/pkg/builder"
 
 type Link struct {
 	Action
-	Href   string `json:"href"`
-	Target string `json:"target"`
+	Href   string `json:"href"`   // 获取跳转链接
+	Target string `json:"target"` // 相当于 a 链接的 target 属性，href 存在时生效，_blank | _self | _parent | _top
 }
 
 // 初始化
