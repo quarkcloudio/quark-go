@@ -9,15 +9,21 @@ type FormExtraBackAction struct {
 	actions.Action
 }
 
-// 表单扩展行为返回上一页
-func FormExtraBack() *FormExtraBackAction {
-	return &FormExtraBackAction{}
+// 表单扩展行为返回上一页，FormExtraBack() | FormExtraBack("返回上一页")
+func FormExtraBack(options ...interface{}) *FormExtraBackAction {
+	action := &FormExtraBackAction{}
+
+	// 文字
+	action.Name = "返回上一页"
+	if len(options) == 1 {
+		action.Name = options[0].(string)
+	}
+
+	return action
 }
 
 // 初始化
 func (p *FormExtraBackAction) Init(ctx *builder.Context) interface{} {
-	// 文字
-	p.Name = "返回上一页"
 
 	// 类型
 	p.Type = "link"

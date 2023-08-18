@@ -12,16 +12,21 @@ type EditModalAction struct {
 	actions.Modal
 }
 
-// 编辑-弹窗类型
-func EditModal() *EditModalAction {
-	return &EditModalAction{}
+// 编辑-弹窗类型，EditModal() | EditModal("编辑")
+func EditModal(options ...interface{}) *EditModalAction {
+	action := &EditModalAction{}
+
+	// 文字
+	action.Name = "编辑"
+	if len(options) == 1 {
+		action.Name = options[0].(string)
+	}
+
+	return action
 }
 
 // 初始化
 func (p *EditModalAction) Init(ctx *builder.Context) interface{} {
-
-	// 文字
-	p.Name = "编辑"
 
 	// 类型
 	p.Type = "link"

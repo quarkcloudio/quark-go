@@ -11,16 +11,20 @@ type BatchDeleteAction struct {
 	actions.Action
 }
 
-// 批量删除
-func BatchDelete() *BatchDeleteAction {
-	return &BatchDeleteAction{}
+// 批量删除，BatchDelete() | BatchDelete("批量删除")
+func BatchDelete(options ...interface{}) *BatchDeleteAction {
+	action := &BatchDeleteAction{}
+
+	action.Name = "批量删除"
+	if len(options) == 1 {
+		action.Name = options[0].(string)
+	}
+
+	return action
 }
 
 // 初始化
 func (p *BatchDeleteAction) Init(ctx *builder.Context) interface{} {
-
-	// 文字
-	p.Name = "批量删除"
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"

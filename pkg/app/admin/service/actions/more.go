@@ -9,7 +9,7 @@ type MoreAction struct {
 	actions.Dropdown
 }
 
-// 更多，More("更多",[]interface{}{})
+// 更多，More() | More("更多") | More("更多", []interface{}{})
 func More(options ...interface{}) *MoreAction {
 	moreAction := &MoreAction{}
 

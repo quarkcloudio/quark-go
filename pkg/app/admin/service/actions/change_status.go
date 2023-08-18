@@ -11,16 +11,21 @@ type ChangeStatusAction struct {
 	actions.Action
 }
 
-// 更改状态
-func ChangeStatus() *ChangeStatusAction {
-	return &ChangeStatusAction{}
+// 更改状态，ChangeStatus() | ChangeStatus("<%= (status==1 ? '禁用' : '启用') %>")
+func ChangeStatus(options ...interface{}) *ChangeStatusAction {
+	action := &ChangeStatusAction{}
+
+	// 行为名称，当行为在表格行展示时，支持js表达式
+	action.Name = "<%= (status==1 ? '禁用' : '启用') %>"
+	if len(options) == 1 {
+		action.Name = options[0].(string)
+	}
+
+	return action
 }
 
 // 初始化
 func (p *ChangeStatusAction) Init(ctx *builder.Context) interface{} {
-
-	// 行为名称，当行为在表格行展示时，支持js表达式
-	p.Name = "<%= (status==1 ? '禁用' : '启用') %>"
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"

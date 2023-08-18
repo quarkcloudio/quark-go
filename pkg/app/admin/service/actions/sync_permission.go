@@ -16,16 +16,21 @@ type SyncPermissionAction struct {
 	actions.Action
 }
 
-// 同步权限
-func SyncPermission() *SyncPermissionAction {
-	return &SyncPermissionAction{}
+// 同步权限，SyncPermission() | SyncPermission("同步权限")
+func SyncPermission(options ...interface{}) *SyncPermissionAction {
+	action := &SyncPermissionAction{}
+
+	// 文字
+	action.Name = "导入数据"
+	if len(options) == 1 {
+		action.Name = options[0].(string)
+	}
+
+	return action
 }
 
 // 初始化
 func (p *SyncPermissionAction) Init(ctx *builder.Context) interface{} {
-
-	// 行为名称
-	p.Name = "同步权限"
 
 	// 执行成功后刷新的组件
 	p.Reload = "table"

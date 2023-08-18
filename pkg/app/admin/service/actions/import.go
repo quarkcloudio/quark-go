@@ -14,16 +14,21 @@ type ImportAction struct {
 	actions.Modal
 }
 
-// 导入数据
-func Import() *ImportAction {
-	return &ImportAction{}
+// 导入数据，Import() | Import("导入数据")
+func Import(options ...interface{}) *ImportAction {
+	action := &ImportAction{}
+
+	// 文字
+	action.Name = "导入数据"
+	if len(options) == 1 {
+		action.Name = options[0].(string)
+	}
+
+	return action
 }
 
 // 初始化
 func (p *ImportAction) Init(ctx *builder.Context) interface{} {
-
-	// 文字
-	p.Name = "导入数据"
 
 	// 关闭时销毁 Modal 里的子元素
 	p.DestroyOnClose = true

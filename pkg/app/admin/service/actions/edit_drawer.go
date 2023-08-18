@@ -12,9 +12,17 @@ type EditDrawerAction struct {
 	actions.Drawer
 }
 
-// 编辑-抽屉类型
-func EditDrawer() *EditDrawerAction {
-	return &EditDrawerAction{}
+// 编辑-抽屉类型，EditDrawer() | EditDrawer("编辑")
+func EditDrawer(options ...interface{}) *EditDrawerAction {
+	action := &EditDrawerAction{}
+
+	// 文字
+	action.Name = "编辑"
+	if len(options) == 1 {
+		action.Name = options[0].(string)
+	}
+
+	return action
 }
 
 // 初始化

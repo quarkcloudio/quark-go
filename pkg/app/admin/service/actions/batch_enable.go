@@ -11,16 +11,20 @@ type BatchEnableAction struct {
 	actions.Action
 }
 
-// 批量启用
-func BatchEnable() *BatchEnableAction {
-	return &BatchEnableAction{}
+// 批量启用，BatchEnable() | BatchEnable("批量启用")
+func BatchEnable(options ...interface{}) *BatchEnableAction {
+	action := &BatchEnableAction{}
+
+	action.Name = "批量启用"
+	if len(options) == 1 {
+		action.Name = options[0].(string)
+	}
+
+	return action
 }
 
 // 初始化
 func (p *BatchEnableAction) Init(ctx *builder.Context) interface{} {
-
-	// 文字
-	p.Name = "批量启用"
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"

@@ -11,16 +11,20 @@ type DeleteAction struct {
 	actions.Action
 }
 
-// 删除
-func Delete() *DeleteAction {
+// 删除，Delete() | Delete("删除")
+func Delete(options ...interface{}) *DeleteAction {
+	action := &DeleteAction{}
+
+	action.Name = "删除"
+	if len(options) == 1 {
+		action.Name = options[0].(string)
+	}
+
 	return &DeleteAction{}
 }
 
 // 初始化
 func (p *DeleteAction) Init(ctx *builder.Context) interface{} {
-
-	// 文字
-	p.Name = "删除"
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"

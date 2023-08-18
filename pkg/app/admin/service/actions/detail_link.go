@@ -11,16 +11,21 @@ type DetailLinkAction struct {
 	actions.Link
 }
 
-// 跳转详情页
-func DetailLink() *DetailLinkAction {
-	return &DetailLinkAction{}
+// 跳转详情页，DetailLink() | DetailLink("详情")
+func DetailLink(options ...interface{}) *DetailLinkAction {
+	action := &DetailLinkAction{}
+
+	// 文字
+	action.Name = "详情"
+	if len(options) == 1 {
+		action.Name = options[0].(string)
+	}
+
+	return action
 }
 
 // 初始化
 func (p *DetailLinkAction) Init(ctx *builder.Context) interface{} {
-
-	// 文字
-	p.Name = "详情"
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"

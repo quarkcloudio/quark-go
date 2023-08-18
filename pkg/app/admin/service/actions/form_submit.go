@@ -9,16 +9,21 @@ type FormSubmitAction struct {
 	actions.Action
 }
 
-// 表单提交
-func FormSubmit() *FormSubmitAction {
-	return &FormSubmitAction{}
+// 表单提交，FormSubmit() | FormSubmit("提交")
+func FormSubmit(options ...interface{}) *FormSubmitAction {
+	action := &FormSubmitAction{}
+
+	// 文字
+	action.Name = "提交"
+	if len(options) == 1 {
+		action.Name = options[0].(string)
+	}
+
+	return action
 }
 
 // 初始化
 func (p *FormSubmitAction) Init(ctx *builder.Context) interface{} {
-
-	// 文字
-	p.Name = "提交"
 
 	// 类型
 	p.Type = "primary"

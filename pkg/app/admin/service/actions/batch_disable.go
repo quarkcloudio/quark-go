@@ -11,16 +11,20 @@ type BatchDisableAction struct {
 	actions.Action
 }
 
-// 批量禁用
-func BatchDisable() *BatchDisableAction {
-	return &BatchDisableAction{}
+// 批量禁用，BatchDisable() | BatchDisable("批量禁用")
+func BatchDisable(options ...interface{}) *BatchDisableAction {
+	action := &BatchDisableAction{}
+
+	action.Name = "批量禁用"
+	if len(options) == 1 {
+		action.Name = options[0].(string)
+	}
+
+	return action
 }
 
 // 初始化
 func (p *BatchDisableAction) Init(ctx *builder.Context) interface{} {
-
-	// 文字
-	p.Name = "批量禁用"
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"

@@ -9,16 +9,21 @@ type FormResetAction struct {
 	actions.Action
 }
 
-// 表单重置
-func FormReset() *FormResetAction {
-	return &FormResetAction{}
+// 表单重置，FormReset() | FormReset("重置")
+func FormReset(options ...interface{}) *FormResetAction {
+	action := &FormResetAction{}
+
+	// 文字
+	action.Name = "重置"
+	if len(options) == 1 {
+		action.Name = options[0].(string)
+	}
+
+	return action
 }
 
 // 初始化
 func (p *FormResetAction) Init(ctx *builder.Context) interface{} {
-
-	// 文字
-	p.Name = "重置"
 
 	// 类型
 	p.Type = "default"
