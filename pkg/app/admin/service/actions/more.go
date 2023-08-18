@@ -9,16 +9,25 @@ type MoreAction struct {
 	actions.Dropdown
 }
 
-// 更多
-func More() *MoreAction {
-	return &MoreAction{}
+// 更多，More("更多",[]interface{}{})
+func More(options ...interface{}) *MoreAction {
+	moreAction := &MoreAction{}
+
+	moreAction.Name = "更多"
+	if len(options) == 1 {
+		moreAction.Name = options[0].(string)
+	}
+
+	if len(options) == 2 {
+		moreAction.Name = options[0].(string)
+		moreAction.Actions = options[1].([]interface{})
+	}
+
+	return moreAction
 }
 
 // 初始化
 func (p *MoreAction) Init(ctx *builder.Context) interface{} {
-
-	// 文字
-	p.Name = "更多"
 
 	// 下拉框箭头是否显示
 	p.Arrow = true
@@ -42,13 +51,6 @@ func (p *MoreAction) Init(ctx *builder.Context) interface{} {
 
 	// 设置展示位置
 	p.SetOnlyOnIndexTableRow(true)
-
-	return p
-}
-
-// 下拉菜单名称
-func (p *MoreAction) SetName(name string) interface{} {
-	p.Name = name
 
 	return p
 }
