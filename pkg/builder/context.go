@@ -7,6 +7,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"os"
 	"reflect"
 	"strings"
 
@@ -208,6 +209,29 @@ func (p *Context) Stream(code int, contentType string, r io.Reader) error {
 // File sends a response with the content of the file.
 func (p *Context) File(file string) error {
 	return p.EchoContext.File(file)
+}
+
+// File upload
+func (p *Context) SaveFile(file *multipart.FileHeader, path string) error {
+	src, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+
+	// Destination
+	dst, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+
+	// Copy
+	if _, err = io.Copy(dst, src); err != nil {
+		return err
+	}
+
+	return err
 }
 
 // Attachment sends a response as attachment, prompting client to save the
