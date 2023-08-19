@@ -276,7 +276,7 @@ func (p *FileSystem) checkFileType() error {
 		}
 
 		// 获取允许上传文件的扩展名
-		allowFileExt := ContentTypeList[p.File.ContentType]
+		allowFileExt := ContentTypeList[v]
 		if allowFileExt == "" {
 			allowFileExt = v
 		}
