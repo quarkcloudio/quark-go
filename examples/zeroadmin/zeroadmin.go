@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -70,7 +69,7 @@ func main() {
 
 // 加载静态文件
 func staticFile(root string, dirPath string, server *rest.Server) {
-	rd, _ := ioutil.ReadDir(dirPath)
+	rd, _ := os.ReadDir(dirPath)
 
 	for _, f := range rd {
 		fileName := f.Name()
