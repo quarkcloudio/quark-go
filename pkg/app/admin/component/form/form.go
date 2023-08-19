@@ -195,7 +195,7 @@ func (p *Component) fieldParser(v interface{}, when bool) []interface{} {
 	vKind := reflect.
 		ValueOf(v).
 		Kind()
-	if vKind.String() != "interface" {
+	if !(vKind.String() == "interface" || vKind.String() == "ptr") {
 		return items
 	}
 
@@ -309,8 +309,8 @@ func (p *Component) getWhenFields(item interface{}) []interface{} {
 // 表单默认值，只有初始化以及重置时生效
 func (p *Component) SetInitialValues(initialValues map[string]interface{}) *Component {
 	data := initialValues
-	fields := p.findFields(p.Body, true)
 
+	fields := p.findFields(p.Body, true)
 	if body, ok := fields.([]any); ok {
 		for _, v := range body {
 			value := p.parseInitialValue(v, initialValues)
