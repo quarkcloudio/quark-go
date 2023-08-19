@@ -23,6 +23,9 @@ func BatchDeleteRole() *BatchDeleteRoleAction {
 // 初始化
 func (p *BatchDeleteRoleAction) Init(ctx *builder.Context) interface{} {
 
+	// 设置按钮文字
+	p.Name = "批量删除"
+
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"
 
