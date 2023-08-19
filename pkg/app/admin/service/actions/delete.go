@@ -20,7 +20,7 @@ func Delete(options ...interface{}) *DeleteAction {
 		action.Name = options[0].(string)
 	}
 
-	return &DeleteAction{}
+	return action
 }
 
 // 初始化
