@@ -21,7 +21,7 @@ func SyncPermission(options ...interface{}) *SyncPermissionAction {
 	action := &SyncPermissionAction{}
 
 	// 文字
-	action.Name = "导入数据"
+	action.Name = "同步权限"
 	if len(options) == 1 {
 		action.Name = options[0].(string)
 	}
