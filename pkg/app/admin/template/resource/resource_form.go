@@ -49,9 +49,7 @@ func (p *Template) FormComponentRender(
 	actions []interface{},
 	data map[string]interface{}) interface{} {
 
-	getFields, ok := fields.([]interface{})
-
-	if ok {
+	if _, ok := fields.([]interface{}); ok {
 		component := reflect.
 			ValueOf(fields.([]interface{})[0]).
 			Elem().
@@ -59,13 +57,11 @@ func (p *Template) FormComponentRender(
 			String()
 
 		if component == "tabPane" {
-			return p.FormWithinTabs(ctx, title, extra, api, getFields, actions, data)
-		} else {
-			return p.FormWithinCard(ctx, title, extra, api, fields, actions, data)
+			return p.FormWithinTabs(ctx, title, extra, api, fields, actions, data)
 		}
-	} else {
-		return p.FormWithinCard(ctx, title, extra, api, fields, actions, data)
 	}
+
+	return p.FormWithinCard(ctx, title, extra, api, fields, actions, data)
 }
 
 // 在卡片内的From组件

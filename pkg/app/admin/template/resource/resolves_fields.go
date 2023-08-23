@@ -12,7 +12,6 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/treeselect"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/when"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/table"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/tabs"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 )
@@ -336,60 +335,71 @@ func (p *Template) CreationFieldsWithoutWhen(ctx *builder.Context) interface{} {
 
 // 包裹在组件内的创建页字段
 func (p *Template) CreationFieldsWithinComponents(ctx *builder.Context) interface{} {
-	var items []interface{}
 
 	// 资源实例
 	template := ctx.Template.(types.Resourcer)
 
-	// 解析字段
+	// 获取字段
 	fields := template.Fields(ctx)
-	for _, v := range fields {
 
-		hasBody := reflect.
-			ValueOf(v).
-			Elem().
-			FieldByName("Body").
-			IsValid()
+	// 解析创建页表单组件内的字段
+	items := p.CreationFormFieldsParser(ctx, fields)
 
-		// 解析组件
-		if hasBody {
+	return items
+}
 
-			// 获取组件内容
-			body := reflect.
+// 解析创建页表单组件内的字段
+func (p *Template) CreationFormFieldsParser(ctx *builder.Context, fields interface{}) interface{} {
+	items := []interface{}{}
+
+	// 解析字段
+	if fields, ok := fields.([]interface{}); ok {
+		for _, v := range fields {
+			hasBody := reflect.
 				ValueOf(v).
 				Elem().
 				FieldByName("Body").
-				Interface()
+				IsValid()
+			if hasBody {
 
-			// 解析组件内容
-			var subItems []interface{}
-			for _, sv := range body.([]interface{}) {
-				if sv, ok := sv.(interface{ IsShownOnCreation() bool }); ok {
-					if sv.IsShownOnCreation() {
+				// 获取内容值
+				body := reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Body").
+					Interface()
 
-						// 生成前端验证规则
-						sv.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
+				// 解析值
+				getFields := p.CreationFormFieldsParser(ctx, body)
 
-						// 组合数据
-						subItems = append(subItems, sv)
+				// 更新值
+				reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Body").
+					Set(reflect.ValueOf(getFields))
+
+				items = append(items, v)
+			} else {
+				component := reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Component").
+					String()
+				if strings.Contains(component, "Field") {
+
+					// 判断是否在创建页面
+					if v, ok := v.(interface{ IsShownOnCreation() bool }); ok {
+						if v.IsShownOnCreation() {
+
+							// 生成前端验证规则
+							v.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
+
+							// 组合数据
+							items = append(items, v)
+						}
 					}
-				}
-			}
-
-			// 将解析完成的内容重新压入
-			v.(interface {
-				SetBody(interface{}) *tabs.TabPane
-			}).SetBody(subItems)
-
-			items = append(items, v)
-		} else {
-			if v, ok := v.(interface{ IsShownOnCreation() bool }); ok {
-				if v.IsShownOnCreation() {
-
-					// 生成前端验证规则
-					v.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
-
-					// 组合数据
+				} else {
 					items = append(items, v)
 				}
 			}
@@ -433,60 +443,71 @@ func (p *Template) UpdateFieldsWithoutWhen(ctx *builder.Context) interface{} {
 
 // 包裹在组件内的编辑页字段
 func (p *Template) UpdateFieldsWithinComponents(ctx *builder.Context) interface{} {
-	var items []interface{}
 
 	// 资源实例
 	template := ctx.Template.(types.Resourcer)
 
-	// 解析字段
+	// 获取字段
 	fields := template.Fields(ctx)
-	for _, v := range fields {
 
-		hasBody := reflect.
-			ValueOf(v).
-			Elem().
-			FieldByName("Body").
-			IsValid()
+	// 解析编辑页表单组件内的字段
+	items := p.UpdateFormFieldsParser(ctx, fields)
 
-		// 解析组件
-		if hasBody {
+	return items
+}
 
-			// 获取组件内容
-			body := reflect.
+// 解析编辑页表单组件内的字段
+func (p *Template) UpdateFormFieldsParser(ctx *builder.Context, fields interface{}) interface{} {
+	items := []interface{}{}
+
+	// 解析字段
+	if fields, ok := fields.([]interface{}); ok {
+		for _, v := range fields {
+			hasBody := reflect.
 				ValueOf(v).
 				Elem().
 				FieldByName("Body").
-				Interface()
+				IsValid()
+			if hasBody {
 
-			// 解析组件内容
-			var subItems []interface{}
-			for _, sv := range body.([]interface{}) {
-				if sv, ok := sv.(interface{ IsShownOnUpdate() bool }); ok {
-					if sv.IsShownOnUpdate() {
+				// 获取内容值
+				body := reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Body").
+					Interface()
 
-						// 生成前端验证规则
-						sv.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
+				// 解析值
+				getFields := p.UpdateFormFieldsParser(ctx, body)
 
-						// 组合数据
-						subItems = append(subItems, sv)
+				// 更新值
+				reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Body").
+					Set(reflect.ValueOf(getFields))
+
+				items = append(items, v)
+			} else {
+				component := reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Component").
+					String()
+				if strings.Contains(component, "Field") {
+
+					// 判断是否在编辑页面
+					if v, ok := v.(interface{ IsShownOnUpdate() bool }); ok {
+						if v.IsShownOnUpdate() {
+
+							// 生成前端验证规则
+							v.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
+
+							// 组合数据
+							items = append(items, v)
+						}
 					}
-				}
-			}
-
-			// 将解析完成的内容重新压入
-			v.(interface {
-				SetBody(interface{}) *tabs.TabPane
-			}).SetBody(subItems)
-
-			items = append(items, v)
-		} else {
-			if v, ok := v.(interface{ IsShownOnUpdate() bool }); ok {
-				if v.IsShownOnUpdate() {
-
-					// 生成前端验证规则
-					v.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
-
-					// 组合数据
+				} else {
 					items = append(items, v)
 				}
 			}

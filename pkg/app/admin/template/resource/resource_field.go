@@ -37,6 +37,7 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/textarea"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/time"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/timerange"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/transfer"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/tree"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/treeselect"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/week"
@@ -371,4 +372,11 @@ func (p *Field) Dependency() *dependency.Component {
 	field := dependency.New()
 
 	return field
+}
+
+// 穿梭框组件
+//
+// field.Transfer("name", "穿梭框") 或 field.Transfer("name", "穿梭框", func() interface{} { return p.Field["name"] })
+func (p *Field) Transfer(params ...interface{}) *transfer.Component {
+	return fieldParser(transfer.New(), params, "").(*transfer.Component)
 }
