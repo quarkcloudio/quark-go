@@ -11,7 +11,7 @@ import (
 )
 
 type Action struct {
-	Name       string   `json:"name"`       // 设置按钮文字，支持js表达式，例如：<%= (status==1 ? '禁用' : '启用') %>
+	Name       string   `json:"name"`       // 设置按钮文字；支持js表达式例如：<%= (status==1 ? '禁用' : '启用') %>，行为在表格行时，可以使用当前行的任意字段值，示例中status即为当前行的“状态”字段
 	Reload     string   `json:"reload"`     // 执行成功后刷新的组件
 	ApiParams  []string `json:"apiParams"`  // 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
 	Api        string   `json:"api"`        // 行为接口
