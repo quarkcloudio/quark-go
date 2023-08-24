@@ -151,12 +151,12 @@ func (p *Menu) Searches(ctx *builder.Context) []interface{} {
 // 行为
 func (p *Menu) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		actions.MenuCreateDrawer(),
+		actions.CreateDrawer(),
 		actions.BatchDelete(),
 		actions.BatchDisable(),
 		actions.BatchEnable(),
 		actions.ChangeStatus(),
-		actions.MenuEditDrawer(),
+		actions.EditDrawer(),
 		actions.Delete(),
 		actions.FormSubmit(),
 		actions.FormReset(),
