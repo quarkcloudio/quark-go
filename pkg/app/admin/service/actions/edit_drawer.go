@@ -28,9 +28,6 @@ func EditDrawer(options ...interface{}) *EditDrawerAction {
 // 初始化
 func (p *EditDrawerAction) Init(ctx *builder.Context) interface{} {
 
-	// 文字
-	p.Name = "编辑"
-
 	// 类型
 	p.Type = "link"
 

@@ -28,9 +28,6 @@ func MenuEditDrawer(options ...interface{}) *MenuEditDrawerAction {
 // 初始化
 func (p *MenuEditDrawerAction) Init(ctx *builder.Context) interface{} {
 
-	// 文字
-	p.Name = "编辑"
-
 	// 类型
 	p.Type = "link"
 
@@ -66,15 +63,10 @@ func (p *MenuEditDrawerAction) GetBody(ctx *builder.Context) interface{} {
 	return (&form.Component{}).
 		Init().
 		SetKey("editDrawerForm", false).
+		SetLayout("vertical").
 		SetApi(api).
 		SetInitApi(initApi).
-		SetBody(fields).
-		SetLabelCol(map[string]interface{}{
-			"span": 6,
-		}).
-		SetWrapperCol(map[string]interface{}{
-			"span": 18,
-		})
+		SetBody(fields)
 }
 
 // 弹窗行为

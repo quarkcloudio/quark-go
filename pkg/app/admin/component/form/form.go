@@ -15,28 +15,30 @@ import (
 
 type Component struct {
 	component.Element
-	Title              string                 `json:"title"`
-	Width              string                 `json:"width"`
-	Colon              bool                   `json:"colon"`
-	Values             map[string]interface{} `json:"values"`
-	InitialValues      map[string]interface{} `json:"initialValues"`
-	LabelAlign         string                 `json:"labelAlign"`
-	Name               string                 `json:"name"`
-	Preserve           bool                   `json:"preserve"`
-	RequiredMark       bool                   `json:"requiredMark"`
-	ScrollToFirstError bool                   `json:"scrollToFirstError"`
-	Size               string                 `json:"size"`
-	DateFormatter      string                 `json:"dateFormatter"`
-	Layout             string                 `json:"layout"`
-	LabelCol           map[string]interface{} `json:"labelCol"`
-	WrapperCol         map[string]interface{} `json:"wrapperCol"`
-	ButtonWrapperCol   map[string]interface{} `json:"buttonWrapperCol"`
-	Api                string                 `json:"api"`
-	ApiType            string                 `json:"apiType"`
-	TargetBlank        bool                   `json:"targetBlank"`
-	InitApi            string                 `json:"initApi"`
-	Body               interface{}            `json:"body"`
-	Actions            []interface{}          `json:"actions"`
+	Title              string                 `json:"title,omitempty"`
+	Width              string                 `json:"width,omitempty"`
+	Colon              bool                   `json:"colon,omitempty"`
+	Values             map[string]interface{} `json:"values,omitempty"`
+	InitialValues      map[string]interface{} `json:"initialValues,omitempty"`
+	LabelAlign         string                 `json:"labelAlign,omitempty"`
+	Name               string                 `json:"name,omitempty"`
+	Preserve           bool                   `json:"preserve,omitempty"`
+	RequiredMark       bool                   `json:"requiredMark,omitempty"`
+	ScrollToFirstError bool                   `json:"scrollToFirstError,omitempty"`
+	Size               string                 `json:"size,omitempty"`
+	DateFormatter      string                 `json:"dateFormatter,omitempty"`
+	Layout             string                 `json:"layout,omitempty"`
+	Grid               bool                   `json:"grid,omitempty"`
+	RowProps           map[string]interface{} `json:"rowProps,omitempty"`
+	LabelCol           map[string]interface{} `json:"labelCol,omitempty"`
+	WrapperCol         map[string]interface{} `json:"wrapperCol,omitempty"`
+	ButtonWrapperCol   map[string]interface{} `json:"buttonWrapperCol,omitempty"`
+	Api                string                 `json:"api,omitempty"`
+	ApiType            string                 `json:"apiType,omitempty"`
+	TargetBlank        bool                   `json:"targetBlank,omitempty"`
+	InitApi            string                 `json:"initApi,omitempty"`
+	Body               interface{}            `json:"body,omitempty"`
+	Actions            []interface{}          `json:"actions,omitempty"`
 }
 
 // 初始化组件
@@ -404,9 +406,8 @@ func (p *Component) SetDateFormatter(dateFormatter string) *Component {
 	return p
 }
 
-// 表单布局，horizontal|vertical
+// 表单布局，horizontal | vertical
 func (p *Component) SetLayout(layout string) *Component {
-
 	if layout == "vertical" {
 		p.LabelCol = nil
 		p.WrapperCol = nil
@@ -414,6 +415,20 @@ func (p *Component) SetLayout(layout string) *Component {
 	}
 
 	p.Layout = layout
+
+	return p
+}
+
+// 开启栅格化模式，宽度默认百分比，请使用 colProps 控制宽度，示例：https://procomponents.ant.design/components/form#栅格化布局
+func (p *Component) SetGrid(grid bool) *Component {
+	p.Grid = grid
+
+	return p
+}
+
+// 开启 grid 模式时传递给 Row, 仅在ProFormGroup, ProFormList, ProFormFieldSet 中有效，默认：{ gutter: 8 }
+func (p *Component) SetRowProps(rowProps map[string]interface{}) *Component {
+	p.RowProps = rowProps
 
 	return p
 }

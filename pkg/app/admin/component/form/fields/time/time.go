@@ -16,21 +16,24 @@ type Component struct {
 	ComponentKey string `json:"componentkey"` // 组件标识
 	Component    string `json:"component"`    // 组件名称
 
-	Colon         bool        `json:"colon,omitempty"`         // 配合 label 属性使用，表示是否显示 label 后面的冒号
-	Extra         string      `json:"extra,omitempty"`         // 额外的提示信息，和 help 类似，当需要错误信息和提示文案同时出现时，可以使用这个。
-	HasFeedback   bool        `json:"hasFeedback,omitempty"`   // 配合 validateStatus 属性使用，展示校验状态图标，建议只配合 Input 组件使用
-	Help          string      `json:"help,omitempty"`          // 提示信息，如不设置，则会根据校验规则自动生成
-	Hidden        bool        `json:"hidden,omitempty"`        // 是否隐藏字段（依然会收集和校验字段）
-	InitialValue  interface{} `json:"initialValue,omitempty"`  // 设置子元素默认值，如果与 Form 的 initialValues 冲突则以 Form 为准
-	Label         string      `json:"label,omitempty"`         // label 标签的文本
-	LabelAlign    string      `json:"labelAlign,omitempty"`    // 标签文本对齐方式
-	LabelCol      interface{} `json:"labelCol,omitempty"`      // label 标签布局，同 <Col> 组件，设置 span offset 值，如 {span: 3, offset: 12} 或 sm: {span: 3, offset: 12}。你可以通过 Form 的 labelCol 进行统一设置，不会作用于嵌套 Item。当和 Form 同时设置时，以 Item 为准
-	Name          string      `json:"name,omitempty"`          // 字段名，支持数组
-	NoStyle       bool        `json:"noStyle,omitempty"`       // 为 true 时不带样式，作为纯字段控件使用
-	Required      bool        `json:"required,omitempty"`      // 必填样式设置。如不设置，则会根据校验规则自动生成
-	Tooltip       string      `json:"tooltip,omitempty"`       // 会在 label 旁增加一个 icon，悬浮后展示配置的信息
-	ValuePropName string      `json:"valuePropName,omitempty"` // 子节点的值的属性，如 Switch 的是 'checked'。该属性为 getValueProps 的封装，自定义 getValueProps 后会失效
-	WrapperCol    interface{} `json:"wrapperCol,omitempty"`    // 需要为输入控件设置布局样式时，使用该属性，用法同 labelCol。你可以通过 Form 的 wrapperCol 进行统一设置，不会作用于嵌套 Item。当和 Form 同时设置时，以 Item 为准
+	RowProps      map[string]interface{} `json:"rowProps,omitempty"`      // 开启 grid 模式时传递给 Row, 仅在ProFormGroup, ProFormList, ProFormFieldSet 中有效，默认：{ gutter: 8 }
+	ColProps      map[string]interface{} `json:"colProps,omitempty"`      // 开启 grid 模式时传递给 Col，默认：{ xs: 24 }
+	Secondary     bool                   `json:"secondary,omitempty"`     // 是否是次要控件，只针对 LightFilter 下有效
+	Colon         bool                   `json:"colon,omitempty"`         // 配合 label 属性使用，表示是否显示 label 后面的冒号
+	Extra         string                 `json:"extra,omitempty"`         // 额外的提示信息，和 help 类似，当需要错误信息和提示文案同时出现时，可以使用这个。
+	HasFeedback   bool                   `json:"hasFeedback,omitempty"`   // 配合 validateStatus 属性使用，展示校验状态图标，建议只配合 Input 组件使用
+	Help          string                 `json:"help,omitempty"`          // 提示信息，如不设置，则会根据校验规则自动生成
+	Hidden        bool                   `json:"hidden,omitempty"`        // 是否隐藏字段（依然会收集和校验字段）
+	InitialValue  interface{}            `json:"initialValue,omitempty"`  // 设置子元素默认值，如果与 Form 的 initialValues 冲突则以 Form 为准
+	Label         string                 `json:"label,omitempty"`         // label 标签的文本
+	LabelAlign    string                 `json:"labelAlign,omitempty"`    // 标签文本对齐方式
+	LabelCol      interface{}            `json:"labelCol,omitempty"`      // label 标签布局，同 <Col> 组件，设置 span offset 值，如 {span: 3, offset: 12} 或 sm: {span: 3, offset: 12}。你可以通过 Form 的 labelCol 进行统一设置，不会作用于嵌套 Item。当和 Form 同时设置时，以 Item 为准
+	Name          string                 `json:"name,omitempty"`          // 字段名，支持数组
+	NoStyle       bool                   `json:"noStyle,omitempty"`       // 为 true 时不带样式，作为纯字段控件使用
+	Required      bool                   `json:"required,omitempty"`      // 必填样式设置。如不设置，则会根据校验规则自动生成
+	Tooltip       string                 `json:"tooltip,omitempty"`       // 会在 label 旁增加一个 icon，悬浮后展示配置的信息
+	ValuePropName string                 `json:"valuePropName,omitempty"` // 子节点的值的属性，如 Switch 的是 'checked'。该属性为 getValueProps 的封装，自定义 getValueProps 后会失效
+	WrapperCol    interface{}            `json:"wrapperCol,omitempty"`    // 需要为输入控件设置布局样式时，使用该属性，用法同 labelCol。你可以通过 Form 的 wrapperCol 进行统一设置，不会作用于嵌套 Item。当和 Form 同时设置时，以 Item 为准
 
 	Column      *table.Column `json:"-"` // 列表页、详情页中列属性
 	Align       string        `json:"-"` // 设置列的对齐方式,left | right | center，只在列表页、详情页中有效
@@ -146,6 +149,24 @@ func (p *Component) SetWidth(width interface{}) *Component {
 	style["width"] = width
 	p.Style = style
 
+	return p
+}
+
+// 开启 grid 模式时传递给 Row, 仅在ProFormGroup, ProFormList, ProFormFieldSet 中有效，默认：{ gutter: 8 }
+func (p *Component) SetRowProps(rowProps map[string]interface{}) *Component {
+	p.RowProps = rowProps
+	return p
+}
+
+// 开启 grid 模式时传递给 Col，默认：{ xs: 24 }
+func (p *Component) SetColProps(colProps map[string]interface{}) *Component {
+	p.ColProps = colProps
+	return p
+}
+
+// 是否是次要控件，只针对 LightFilter 下有效
+func (p *Component) SetSecondary(secondary bool) *Component {
+	p.Secondary = secondary
 	return p
 }
 

@@ -59,15 +59,10 @@ func (p *MenuCreateDrawerAction) GetBody(ctx *builder.Context) interface{} {
 	return (&form.Component{}).
 		Init().
 		SetKey("createDrawerForm", false).
+		SetLayout("vertical").
 		SetApi(api).
 		SetBody(fields).
-		SetInitialValues(data).
-		SetLabelCol(map[string]interface{}{
-			"span": 6,
-		}).
-		SetWrapperCol(map[string]interface{}{
-			"span": 18,
-		})
+		SetInitialValues(data)
 }
 
 // 弹窗行为
