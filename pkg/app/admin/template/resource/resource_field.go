@@ -221,12 +221,20 @@ func (p *Field) Editor(params ...interface{}) *editor.Component {
 
 // 分组组件
 //
+// field.Group([]interface{}{field.Text("title", "标题"),field.Number("num","奖品数量")})
 // field.Group("分组组件",[]interface{}{field.Text("title", "标题"),field.Number("num","奖品数量")})
-func (p *Field) Group(title string, items []interface{}) *group.Component {
-	field := group.
-		New().
-		SetTitle(title).
-		SetBody(items)
+func (p *Field) Group(options ...interface{}) *group.Component {
+	field := group.New()
+
+	if len(options) == 1 {
+		field.SetBody(options[0])
+	}
+
+	if len(options) == 2 {
+		field.
+			SetTitle(options[0].(string)).
+			SetBody(options[1])
+	}
 
 	return field
 }
@@ -336,12 +344,20 @@ func (p *Field) TreeSelect(params ...interface{}) *treeselect.Component {
 
 // 间距布局组件
 //
+// field.Space([]interface{}{field.Text("title", "标题"),field.Number("num","奖品数量")})
 // field.Space("间距组件",[]interface{}{field.Text("title", "标题"),field.Number("num","奖品数量")})
-func (p *Field) Space(label string, items []interface{}) *space.Component {
-	field := space.
-		New().
-		SetLabel(label).
-		SetBody(items)
+func (p *Field) Space(options ...interface{}) *space.Component {
+	field := space.New()
+
+	if len(options) == 1 {
+		field.SetBody(options[0])
+	}
+
+	if len(options) == 2 {
+		field.
+			SetLabel(options[0].(string)).
+			SetBody(options[1])
+	}
 
 	return field
 }
