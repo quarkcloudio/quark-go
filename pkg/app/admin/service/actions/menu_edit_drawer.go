@@ -40,6 +40,9 @@ func (p *MenuEditDrawerAction) Init(ctx *builder.Context) interface{} {
 	// 执行成功后刷新的组件
 	p.Reload = "table"
 
+	// 抽屉弹出层宽度
+	p.Width = 750
+
 	// 设置展示位置
 	p.SetOnlyOnIndexTableRow(true)
 

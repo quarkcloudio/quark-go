@@ -53,89 +53,111 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 
 		field.Hidden("pid", "PID").OnlyOnIndex(), // 列表读取且不展示的字段
 
-		field.Text("name", "名称").
-			SetRules([]*rule.Rule{
-				rule.Required(true, "名称必须填写"),
-			}),
+		field.Group([]interface{}{
+			field.Text("name", "名称").
+				SetRules([]*rule.Rule{
+					rule.Required(true, "名称必须填写"),
+				}),
 
-		field.Text("guard_name", "GuardName").
-			SetDefault("admin").
-			OnlyOnForms(),
+			field.Text("guard_name", "GuardName").
+				SetRules([]*rule.Rule{
+					rule.Required(true, "GuardName必须填写"),
+				}).
+				SetDefault("admin").
+				OnlyOnForms(),
 
-		field.Icon("icon", "图标").OnlyOnForms(),
+			field.Icon("icon", "图标").OnlyOnForms(),
+		}),
 
-		field.TreeSelect("pid", "父节点").
-			SetData(menus).
-			SetDefault(0).
-			OnlyOnForms(),
+		field.Group([]interface{}{
+			field.Number("sort", "排序").
+				SetEditable(true).
+				SetDefault(0),
 
-		field.Radio("type", "类型").
-			SetOptions([]*radio.Option{
-				{
-					Value: 1,
-					Label: "目录",
-				},
-				{
-					Value: 2,
-					Label: "菜单",
-				},
-				{
-					Value: 3,
-					Label: "按钮",
-				},
-			}).
-			SetWhen(1, func() interface{} {
-				return []interface{}{
-					field.Text("path", "路由").
-						SetRules([]*rule.Rule{
-							rule.Required(true, "路由必须填写"),
-						}).
-						SetEditable(true).
-						SetHelp("前端路由").
-						BuildFrontendRules(ctx.Path()),
-				}
-			}).
-			SetWhen(2, func() interface{} {
-				return []interface{}{
-					field.Switch("is_engine", "引擎组件").
-						SetTrueValue("是").
-						SetFalseValue("否").
-						SetDefault(true),
+			field.TreeSelect("pid", "父节点").
+				SetData(menus).
+				SetDefault(0).
+				OnlyOnForms(),
 
-					field.Switch("is_link", "外部链接").
-						SetTrueValue("是").
-						SetFalseValue("否").
-						SetDefault(false),
+			field.Switch("status", "状态").
+				SetTrueValue("正常").
+				SetFalseValue("禁用").
+				SetEditable(true).
+				SetDefault(true),
+		}),
 
-					field.Text("path", "路由").
-						SetRules([]*rule.Rule{
-							rule.Required(true, "路由必须填写"),
-						}).
-						SetEditable(true).
-						SetHelp("前端路由或后端api").
-						OnlyOnForms().
-						BuildFrontendRules(ctx.Path()),
-				}
-			}).
-			SetWhen(3, func() interface{} {
+		field.Group([]interface{}{
+			field.Radio("type", "类型").
+				SetOptions([]*radio.Option{
+					{
+						Value: 1,
+						Label: "目录",
+					},
+					{
+						Value: 2,
+						Label: "菜单",
+					},
+					{
+						Value: 3,
+						Label: "按钮",
+					},
+				}).
+				SetRules([]*rule.Rule{
+					rule.Required(true, "类型必须选择"),
+				}).
+				SetDefault(1),
+
+			field.Dependency().
+				SetWhen("type", 1, func() interface{} {
+					return []interface{}{
+						field.Text("path", "路由").
+							SetRules([]*rule.Rule{
+								rule.Required(true, "路由必须填写"),
+							}).
+							SetEditable(true).
+							SetHelp("前端路由").
+							BuildFrontendRules(ctx.Path()),
+					}
+				}),
+
+			field.Dependency().
+				SetWhen("type", 2, func() interface{} {
+					return field.Group([]interface{}{
+						field.Switch("is_engine", "引擎组件").
+							SetTrueValue("是").
+							SetFalseValue("否").
+							SetDefault(true),
+
+						field.Switch("is_link", "外部链接").
+							SetTrueValue("是").
+							SetFalseValue("否").
+							SetDefault(false),
+
+						field.Text("path", "路由").
+							SetRules([]*rule.Rule{
+								rule.Required(true, "路由必须填写"),
+							}).
+							SetEditable(true).
+							SetHelp("前端路由或后端api").
+							OnlyOnForms().
+							BuildFrontendRules(ctx.Path()),
+					})
+				}),
+		}),
+
+		field.Dependency().
+			SetWhen("type", 3, func() interface{} {
 				return []interface{}{
 					field.Select("permission_ids", "绑定权限").
 						SetMode("tags").
 						SetOptions(permissions).
 						OnlyOnForms(),
+
+					// field.Transfer("permission_ids", "绑定权限").
+					// 	SetDataSource(permissions).
+					// 	OnlyOnForms(),
 				}
-			}).
-			SetDefault(1),
-
-		field.Number("sort", "排序").
-			SetEditable(true).
-			SetDefault(0),
-
-		field.Switch("status", "状态").
-			SetTrueValue("正常").
-			SetFalseValue("禁用").
-			SetEditable(true).
-			SetDefault(true),
+			}),
 	}
 }
 
@@ -151,12 +173,12 @@ func (p *Menu) Searches(ctx *builder.Context) []interface{} {
 // 行为
 func (p *Menu) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		actions.CreateDrawer(),
+		actions.MenuCreateDrawer(),
 		actions.BatchDelete(),
 		actions.BatchDisable(),
 		actions.BatchEnable(),
 		actions.ChangeStatus(),
-		actions.EditDrawer(),
+		actions.MenuEditDrawer(),
 		actions.Delete(),
 		actions.FormSubmit(),
 		actions.FormReset(),

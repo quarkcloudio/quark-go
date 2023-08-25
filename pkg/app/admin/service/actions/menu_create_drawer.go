@@ -36,6 +36,9 @@ func (p *MenuCreateDrawerAction) Init(ctx *builder.Context) interface{} {
 	// 关闭时销毁 Drawer 里的子元素
 	p.DestroyOnClose = true
 
+	// 抽屉弹出层宽度
+	p.Width = 750
+
 	// 设置展示位置
 	p.SetOnlyOnIndex(true)
 
