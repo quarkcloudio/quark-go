@@ -1,16 +1,21 @@
 package rule
 
 type Rule struct {
-	Name              string `json:"-"`                  // 需要验证的字段名称
-	RuleType          string `json:"-"`                  // 规则类型，max | min | unique | required
-	Max               int    `json:"max,omitempty"`      // 必须设置 type：string 类型为字符串最大长度；number 类型时为最大值；array 类型时为数组最大长度
-	Message           string `json:"message"`            // 错误信息，不设置时会通过模板自动生成
-	Min               int    `json:"min,omitempty"`      // 必须设置 type：string 类型为字符串最小长度；number 类型时为最小值；array 类型时为数组最小长度
-	Required          bool   `json:"required,omitempty"` // 是否为必选字段
-	UniqueTable       string `json:"-"`                  // type：unique时，指定验证的表名
-	UniqueTableField  string `json:"-"`                  // type：unique时，指定需验证表中的字段
-	UniqueIgnoreValue string `json:"-"`                  // type：unique时，忽略符合条件验证的列，例如：{id}
-	Type              string `json:"type,omitempty"`     // 字段类型，string | number | boolean | url | email
+	Name              string        `json:"-"`                      // 需要验证的字段名称
+	RuleType          string        `json:"-"`                      // 规则类型，max | min | unique | required
+	DefaultField      interface{}   `json:"defaultField,omitempty"` // 仅在 type 为 array 类型时有效，用于指定数组元素的校验规
+	Enum              []interface{} `json:"enum,omitempty"`         // 是否匹配枚举中的值（需要将 type 设置为 enum）
+	Fields            interface{}   `json:"fields,omitempty"`       // 仅在 type 为 array 或 object 类型时有效，用于指定子元素的校验规则
+	Len               int           `json:"len,omitempty"`          // string 类型时为字符串长度；number 类型时为确定数字； array 类型时为数组长度
+	Max               int           `json:"max,omitempty"`          // 必须设置 type：string 类型为字符串最大长度；number 类型时为最大值；array 类型时为数组最大长度
+	Message           string        `json:"message"`                // 错误信息，不设置时会通过模板自动生成
+	Min               int           `json:"min,omitempty"`          // 必须设置 type：string 类型为字符串最小长度；number 类型时为最小值；array 类型时为数组最小长度
+	Pattern           string        `json:"pattern,omitempty"`      // 正则表达式匹配
+	Required          bool          `json:"required,omitempty"`     // 是否为必选字段
+	UniqueTable       string        `json:"-"`                      // type：unique时，指定验证的表名
+	UniqueTableField  string        `json:"-"`                      // type：unique时，指定需验证表中的字段
+	UniqueIgnoreValue string        `json:"-"`                      // type：unique时，忽略符合条件验证的列，例如：{id}
+	Type              string        `json:"type,omitempty"`         // 字段类型，string | number | boolean | method | regexp | integer | float | array | object | enum | date | url | hex | email | any
 }
 
 // 初始化
@@ -45,6 +50,13 @@ func Min(min int, message string) *Rule {
 	p := &Rule{}
 
 	return p.SetMin(min).SetMessage(message)
+}
+
+// 正则表达式匹配
+func Regexp(pattern string, message string) *Rule {
+	p := &Rule{}
+
+	return p.SetRegexp(pattern).SetMessage(message)
 }
 
 // 是否为必选字段
@@ -112,6 +124,13 @@ func (p *Rule) SetMin(min int) *Rule {
 	p.Min = min
 
 	return p.SetRuleType("min")
+}
+
+// 正则表达式匹配
+func (p *Rule) SetRegexp(pattern string) *Rule {
+	p.Pattern = pattern
+
+	return p.SetRuleType("regexp")
 }
 
 // 是否为必选字段
