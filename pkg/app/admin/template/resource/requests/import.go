@@ -21,22 +21,33 @@ import (
 
 type ImportRequest struct{}
 
+// 接收文件信息
+type FileInfo struct {
+	Id   int    `json:"id"`
+	Name string `json:"name"`
+	Size int    `json:"size"`
+}
+
+// 请求结构体
+type HandleRequest struct {
+	FileId []FileInfo `json:"fileId" form:"fileId"`
+}
+
 // 执行行为
 func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
-	data := map[string]interface{}{}
-	json.Unmarshal(ctx.Body(), &data)
-	fileId := data["fileId"]
-	getFileId := 0
+	var requestData HandleRequest
 
-	if value, ok := fileId.(map[string]interface{}); ok {
-		if value, ok := value["0"]; ok {
-			if value, ok := value.(map[string]interface{})["id"]; ok {
-				getFileId = int(value.(float64))
-			}
-		}
+	// 绑定数据
+	ctx.Bind(&requestData)
+
+	// 判断参数
+	if len(requestData.FileId) == 0 {
+		return ctx.JSON(200, message.Error("参数错误！"))
 	}
 
-	if getFileId == 0 {
+	// 判断参数
+	fileId := requestData.FileId[0].Id
+	if fileId == 0 {
 		return ctx.JSON(200, message.Error("参数错误！"))
 	}
 
@@ -50,7 +61,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 	model := db.Client.Model(modelInstance)
 
 	// 获取导入数据
-	importData, err := (&models.File{}).GetExcelData(getFileId)
+	importData, err := (&models.File{}).GetExcelData(fileId)
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}

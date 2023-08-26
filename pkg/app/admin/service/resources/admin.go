@@ -79,7 +79,8 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 
 			return strings.Trim(roleText, ",")
 		}).
-			SetOptions(roles),
+			SetOptions(roles).
+			HideWhenImporting(true),
 
 		field.Text("nickname", "昵称").
 			SetEditable(true).
