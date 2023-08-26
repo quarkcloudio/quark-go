@@ -111,6 +111,9 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 			}),
 
 		field.Radio("sex", "性别").
+			SetRules([]*rule.Rule{
+				rule.Required(true, "请选择性别"),
+			}).
 			SetOptions([]*radio.Option{
 				{
 					Value: 1,
@@ -144,6 +147,9 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 		}).OnlyOnIndex(),
 
 		field.Switch("status", "状态").
+			SetRules([]*rule.Rule{
+				rule.Required(true, "请选择状态"),
+			}).
 			SetTrueValue("正常").
 			SetFalseValue("禁用").
 			SetEditable(true).
