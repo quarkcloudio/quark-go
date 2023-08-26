@@ -32,8 +32,11 @@ func (p *DetailRequest) FillData(ctx *builder.Context) map[string]interface{} {
 	// Gorm对象
 	model := db.Client.Model(&modelInstance)
 
+	// 创建详情页查询
+	query := template.BuildDetailQuery(ctx, model)
+
 	// 查询数据
-	model.Where("id = ?", id).First(&result)
+	query.Where("id = ?", id).First(&result)
 
 	// 获取字段
 	detailFields := template.DetailFields(ctx)
