@@ -67,9 +67,19 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 				rule.Unique("admins", "username", "{id}", "用户名已存在"),
 			}),
 
-		field.Checkbox("role_ids", "角色").
-			SetOptions(roles).
-			OnlyOnForms(),
+		field.Checkbox("role_ids", "角色", func() interface{} {
+			roleText := ""
+			roles, err := (&model.CasbinRule{}).GetUserRoles(p.Field["id"].(int))
+			if err != nil {
+				return roleText
+			}
+			for _, v := range roles {
+				roleText = roleText + "," + v.Name
+			}
+
+			return strings.Trim(roleText, ",")
+		}).
+			SetOptions(roles),
 
 		field.Text("nickname", "昵称").
 			SetEditable(true).
