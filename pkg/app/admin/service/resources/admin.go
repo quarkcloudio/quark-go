@@ -91,6 +91,7 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 		field.Text("email", "邮箱").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "邮箱必须填写"),
+				rule.Email("邮箱格式错误"),
 			}).
 			SetCreationRules([]*rule.Rule{
 				rule.Unique("admins", "email", "邮箱已存在"),
@@ -102,7 +103,7 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 		field.Text("phone", "手机号").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "手机号必须填写"),
-				rule.Regexp(`/^1[3-9]\d{9}$/`, "手机号格式错误"),
+				rule.Phone("手机号格式错误"),
 			}).
 			SetCreationRules([]*rule.Rule{
 				rule.Unique("admins", "phone", "手机号已存在"),

@@ -59,6 +59,62 @@ func Regexp(pattern string, message string) *Rule {
 	return p.SetRegexp(pattern).SetMessage(message)
 }
 
+// 必须为字符串
+func String(message string) *Rule {
+	p := &Rule{}
+
+	return p.SetString().SetMessage(message)
+}
+
+// 必须为数字
+func Number(message string) *Rule {
+	p := &Rule{}
+
+	return p.SetNumber().SetMessage(message)
+}
+
+// 必须为布尔类型
+func Boolean(message string) *Rule {
+	p := &Rule{}
+
+	return p.SetBoolean().SetMessage(message)
+}
+
+// 必须为整型
+func Integer(message string) *Rule {
+	p := &Rule{}
+
+	return p.SetInteger().SetMessage(message)
+}
+
+// 必须为浮点型
+func Float(message string) *Rule {
+	p := &Rule{}
+
+	return p.SetFloat().SetMessage(message)
+}
+
+// 必须为邮箱字段
+func Email(message string) *Rule {
+	p := &Rule{}
+
+	return p.SetEmail().SetMessage(message)
+}
+
+// 必须为链接
+func Url(message string) *Rule {
+	p := &Rule{}
+
+	return p.SetUrl().SetMessage(message)
+}
+
+// 必须为手机号
+func Phone(message string) *Rule {
+	p := &Rule{}
+
+	return p.SetPhone().SetMessage(message)
+}
+
 // 是否为必选字段
 func Required(required bool, message string) *Rule {
 	p := &Rule{}
@@ -138,6 +194,61 @@ func (p *Rule) SetRequired() *Rule {
 	p.Required = true
 
 	return p.SetRuleType("required")
+}
+
+// 必须为字符串
+func (p *Rule) SetString() *Rule {
+	p.Type = "string"
+
+	return p.SetRuleType("string")
+}
+
+// 必须为数字
+func (p *Rule) SetNumber() *Rule {
+	p.Type = "number"
+
+	return p.SetRuleType("number")
+}
+
+// 必须为布尔类型
+func (p *Rule) SetBoolean() *Rule {
+	p.Type = "boolean"
+
+	return p.SetRuleType("boolean")
+}
+
+// 必须为整型
+func (p *Rule) SetInteger() *Rule {
+	p.Type = "integer"
+
+	return p.SetRuleType("integer")
+}
+
+// 必须为浮点型
+func (p *Rule) SetFloat() *Rule {
+	p.Type = "float"
+
+	return p.SetRuleType("float")
+}
+
+// 必须为邮箱字段
+func (p *Rule) SetEmail() *Rule {
+	p.Type = "email"
+
+	return p.SetRuleType("email")
+}
+
+// 必须为链接
+func (p *Rule) SetUrl() *Rule {
+	p.Type = "url"
+
+	return p.SetRuleType("url")
+}
+
+// 必须为手机号
+func (p *Rule) SetPhone() *Rule {
+
+	return p.SetRegexp(`/^1[3-9]\d{9}$/`)
 }
 
 // 设置unique验证类型，插入数据：SetUnique("admins","username")，更新数据：SetUnique("admins","username","{id}")
