@@ -537,24 +537,40 @@ func (p *Template) BuildAction(ctx *builder.Context, item interface{}) interface
 func (p *Template) BuildActionApi(ctx *builder.Context, params []string, uriKey string) string {
 	var (
 		paramsUri = ""
-		api       = ""
+		api       = ctx.Path()
 	)
 
 	for _, v := range params {
 		paramsUri = paramsUri + v + "=${" + v + "}&"
 	}
 
-	// 列表页接口
-	api = strings.Replace(ctx.Path(), "/index", "/action/"+uriKey, -1)
+	// 获取api路径
+	apiPaths := strings.Split(api, "/")
 
-	// 创建页接口
-	api = strings.Replace(api, "/create", "/action/"+uriKey, -1)
+	// 错误路径，直接返回
+	if len(apiPaths) <= 2 {
+		return ""
+	}
 
-	// 编辑页接口
-	api = strings.Replace(api, "/edit", "/action/"+uriKey, -1)
-
-	// 详情页接口
-	api = strings.Replace(api, "/detail", "/action/"+uriKey, -1)
+	// 解析数据
+	switch apiPaths[len(apiPaths)-1] {
+	case "index":
+		// 列表页接口
+		api = strings.Replace(api, "/index", "/action/"+uriKey, -1)
+	case "create":
+		// 创建页接口
+		api = strings.Replace(api, "/create", "/action/"+uriKey, -1)
+	case "edit":
+		// 编辑页接口
+		api = strings.Replace(api, "/edit", "/action/"+uriKey, -1)
+	case "detail":
+		// 详情页接口
+		api = strings.Replace(api, "/detail", "/action/"+uriKey, -1)
+	case "form":
+		// 表单页接口
+		lastPath := apiPaths[len(apiPaths)-2]
+		api = strings.Replace(api, lastPath+"/form", "action/"+uriKey, -1)
+	}
 
 	// 追加参数
 	if paramsUri != "" {
