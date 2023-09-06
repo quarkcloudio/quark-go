@@ -86,64 +86,62 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 				SetDefault(true),
 		}),
 
-		field.Group([]interface{}{
-			field.Radio("type", "类型").
-				SetOptions([]*radio.Option{
-					{
-						Value: 1,
-						Label: "目录",
-					},
-					{
-						Value: 2,
-						Label: "菜单",
-					},
-					{
-						Value: 3,
-						Label: "按钮",
-					},
-				}).
-				SetRules([]*rule.Rule{
-					rule.Required(true, "类型必须选择"),
-				}).
-				SetDefault(1),
+		field.Radio("type", "类型").
+			SetOptions([]*radio.Option{
+				{
+					Value: 1,
+					Label: "目录",
+				},
+				{
+					Value: 2,
+					Label: "菜单",
+				},
+				{
+					Value: 3,
+					Label: "按钮",
+				},
+			}).
+			SetRules([]*rule.Rule{
+				rule.Required(true, "类型必须选择"),
+			}).
+			SetDefault(1),
 
-			field.Dependency().
-				SetWhen("type", 1, func() interface{} {
-					return []interface{}{
-						field.Text("path", "路由").
-							SetRules([]*rule.Rule{
-								rule.Required(true, "路由必须填写"),
-							}).
-							SetEditable(true).
-							SetHelp("前端路由").
-							BuildFrontendRules(ctx.Path()),
-					}
-				}),
+		field.Dependency().
+			SetWhen("type", 1, func() interface{} {
+				return []interface{}{
+					field.Text("path", "路由").
+						SetRules([]*rule.Rule{
+							rule.Required(true, "路由必须填写"),
+						}).
+						SetEditable(true).
+						SetHelp("前端路由").
+						BuildFrontendRules(ctx.Path()),
+				}
+			}),
 
-			field.Dependency().
-				SetWhen("type", 2, func() interface{} {
-					return field.Group([]interface{}{
-						field.Switch("is_engine", "引擎组件").
-							SetTrueValue("是").
-							SetFalseValue("否").
-							SetDefault(true),
+		field.Dependency().
+			SetWhen("type", 2, func() interface{} {
+				return []interface{}{
+					field.Switch("is_engine", "引擎组件").
+						SetTrueValue("是").
+						SetFalseValue("否").
+						SetDefault(true),
 
-						field.Switch("is_link", "外部链接").
-							SetTrueValue("是").
-							SetFalseValue("否").
-							SetDefault(false),
+					field.Switch("is_link", "外部链接").
+						SetTrueValue("是").
+						SetFalseValue("否").
+						SetDefault(false),
 
-						field.Text("path", "路由").
-							SetRules([]*rule.Rule{
-								rule.Required(true, "路由必须填写"),
-							}).
-							SetEditable(true).
-							SetHelp("前端路由或后端api").
-							OnlyOnForms().
-							BuildFrontendRules(ctx.Path()),
-					})
-				}),
-		}),
+					field.Text("path", "路由").
+						SetRules([]*rule.Rule{
+							rule.Required(true, "路由必须填写"),
+						}).
+						SetEditable(true).
+						SetHelp("前端路由或后端api").
+						OnlyOnForms().
+						BuildFrontendRules(ctx.Path()),
+				}
+			}),
 
 		field.Dependency().
 			SetWhen("type", 3, func() interface{} {
