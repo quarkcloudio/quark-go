@@ -115,6 +115,7 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 						}).
 						SetEditable(true).
 						SetHelp("前端路由").
+						SetWidth(400).
 						BuildFrontendRules(ctx.Path()),
 				}
 			}),
@@ -138,6 +139,7 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 						}).
 						SetEditable(true).
 						SetHelp("前端路由或后端api").
+						SetWidth(400).
 						OnlyOnForms().
 						BuildFrontendRules(ctx.Path()),
 				}
@@ -149,6 +151,7 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 					field.Select("permission_ids", "绑定权限").
 						SetMode("tags").
 						SetOptions(permissions).
+						SetWidth(400).
 						OnlyOnForms(),
 
 					// field.Transfer("permission_ids", "绑定权限").
