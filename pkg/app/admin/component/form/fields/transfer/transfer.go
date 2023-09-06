@@ -63,7 +63,7 @@ type Component struct {
 	ShowOnImport   bool            `json:"-"`             // 在导入Excel上展示
 	Callback       interface{}     `json:"-"`             // 回调函数
 
-	DataSource      interface{}            `json:"dataSource,omitempty"`      // 数据源，其中的数据将会被渲染到左边一栏中，targetKeys 中指定的除外
+	DataSource      []*DataSource          `json:"dataSource,omitempty"`      // 数据源，其中的数据将会被渲染到左边一栏中，targetKeys 中指定的除外
 	Disabled        bool                   `json:"disabled,omitempty"`        // 是否禁用
 	SelectionsIcon  interface{}            `json:"selectionsIcon,omitempty"`  // 自定义下拉菜单图标
 	FilterOption    interface{}            `json:"filterOption,omitempty"`    // 根据搜索内容进行筛选，接收 inputValue option 两个参数，当 option 符合筛选条件时，应返回 true，反之则返回 false
@@ -84,6 +84,13 @@ type Component struct {
 	Style           map[string]interface{} `json:"style,omitempty"`           // 自定义样式
 	DefaultValue    interface{}            `json:"defaultValue,omitempty"`    // 默认的选中项
 	Value           interface{}            `json:"value,omitempty"`           // 指定选中项,string[] | number[]
+}
+
+type DataSource struct {
+	Key         string `json:"key,omitempty"`         // 主键
+	Title       string `json:"title,omitempty"`       // 标题
+	Description string `json:"description,omitempty"` // 描述
+	Disabled    bool   `json:"disabled,omitempty"`    // 是否禁用
 }
 
 // 初始化组件
@@ -735,7 +742,7 @@ func (p *Component) SetApi(api string) *Component {
 }
 
 // 数据源，其中的数据将会被渲染到左边一栏中，targetKeys 中指定的除外
-func (p *Component) SetDataSource(dataSource interface{}) *Component {
+func (p *Component) SetDataSource(dataSource []*DataSource) *Component {
 	p.DataSource = dataSource
 
 	return p

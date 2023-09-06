@@ -1,9 +1,11 @@
 package model
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/selectfield"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/transfer"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
 )
 
@@ -36,6 +38,26 @@ func (model *Permission) List() (list []*selectfield.Option, Error error) {
 	}
 
 	return list, nil
+}
+
+// 获取数据源
+func (model *Permission) DataSource() (dataSource []*transfer.DataSource, Error error) {
+	permissions := []Permission{}
+	err := db.Client.Find(&permissions).Error
+	if err != nil {
+		return dataSource, err
+	}
+
+	for _, v := range permissions {
+		option := &transfer.DataSource{
+			Key:         strconv.Itoa(v.Id),
+			Title:       v.Name,
+			Description: v.Remark,
+		}
+		dataSource = append(dataSource, option)
+	}
+
+	return dataSource, nil
 }
 
 // 通过权限id集合获取权限列表
