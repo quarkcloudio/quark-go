@@ -92,6 +92,9 @@ func (p *CasbinRule) AddMenuPermission(menuId int, permissionIds interface{}) (e
 	}
 
 	p.RemoveMenuPermissions(menuId)
+	if len(rules) == 0 {
+		return
+	}
 
 	_, err = enforcer.AddPolicies(rules)
 	if err != nil {

@@ -1,7 +1,6 @@
 package model
 
 import (
-	"strconv"
 	"time"
 
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/selectfield"
@@ -50,7 +49,7 @@ func (model *Permission) DataSource() (dataSource []*transfer.DataSource, Error 
 
 	for _, v := range permissions {
 		option := &transfer.DataSource{
-			Key:         strconv.Itoa(v.Id),
+			Key:         v.Id,
 			Title:       v.Name,
 			Description: v.Remark,
 		}

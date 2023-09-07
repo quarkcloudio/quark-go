@@ -87,10 +87,10 @@ type Component struct {
 }
 
 type DataSource struct {
-	Key         string `json:"key,omitempty"`         // 主键
-	Title       string `json:"title,omitempty"`       // 标题
-	Description string `json:"description,omitempty"` // 描述
-	Disabled    bool   `json:"disabled,omitempty"`    // 是否禁用
+	Key         interface{} `json:"key,omitempty"`         // 主键
+	Title       string      `json:"title,omitempty"`       // 标题
+	Description string      `json:"description,omitempty"` // 描述
+	Disabled    bool        `json:"disabled,omitempty"`    // 是否禁用
 }
 
 // 初始化组件

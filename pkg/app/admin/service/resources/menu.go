@@ -148,18 +148,13 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 		field.Dependency().
 			SetWhen("type", 3, func() interface{} {
 				return []interface{}{
-					// field.Select("permission_ids", "绑定权限").
-					// 	SetMode("tags").
-					// 	SetOptions(permissions).
-					// 	SetWidth(400).
-					// 	OnlyOnForms(),
-
 					field.Transfer("permission_ids", "绑定权限").
 						SetDataSource(permissions).
 						SetListStyle(map[string]interface{}{
 							"width":  320,
 							"height": 300,
 						}).
+						SetShowSearch(true).
 						OnlyOnForms(),
 				}
 			}),
