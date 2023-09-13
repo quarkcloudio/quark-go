@@ -98,7 +98,7 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.JSONOk("上传成功", "", map[string]interface{}{
+	return ctx.JSONOk("上传成功", map[string]interface{}{
 		"id":          id,
 		"contentType": result.ContentType,
 		"ext":         result.Ext,

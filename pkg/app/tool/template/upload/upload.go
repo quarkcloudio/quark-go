@@ -315,5 +315,5 @@ func (p *Template) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSy
 // 执行上传
 func (p *Template) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error {
 
-	return ctx.JSONOk("上传成功", "", result)
+	return ctx.JSONOk("上传成功", result)
 }
