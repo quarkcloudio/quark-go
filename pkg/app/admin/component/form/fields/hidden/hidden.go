@@ -62,6 +62,9 @@ type Component struct {
 	ShowOnExport   bool            `json:"-"`             // 在导出的Excel上展示
 	ShowOnImport   bool            `json:"-"`             // 在导入Excel上展示
 	Callback       interface{}     `json:"-"`             // 回调函数
+
+	DefaultValue interface{} `json:"defaultValue,omitempty"` // 默认的选中项
+	Value        interface{} `json:"value,omitempty"`        // 指定选中项,string[] | number[]
 }
 
 // 初始化组件
@@ -384,6 +387,18 @@ func (p *Component) SetColumnWidth(width int) *Component {
 // 是否忽略保存到数据库，默认为 false
 func (p *Component) SetIgnore(ignore bool) *Component {
 	p.Ignore = ignore
+	return p
+}
+
+// 设置保存值。
+func (p *Component) SetValue(value interface{}) *Component {
+	p.Value = value
+	return p
+}
+
+// 设置默认值。
+func (p *Component) SetDefault(value interface{}) *Component {
+	p.DefaultValue = value
 	return p
 }
 
