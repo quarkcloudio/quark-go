@@ -9,37 +9,15 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-// 创建列表查询
-func (p *Template) BuildIndexQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB {
+// 创建行为查询
+func (p *Template) BuildActionQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 	template := ctx.Template.(types.Resourcer)
 
 	// 初始化查询
 	query = p.initializeQuery(ctx, query)
 
-	// 执行列表查询，这里使用的是透传的实例
-	query = template.IndexQuery(ctx, query)
-
-	// 执行搜索查询
-	query = p.applySearch(ctx, query, search)
-
-	// 执行过滤器查询
-	query = p.applyFilters(query, filters)
-
-	// 执行表格列上过滤器查询
-	query = p.applyColumnFilters(query, columnFilters)
-
-	// 获取排序规则
-	defaultOrder := template.GetQueryOrder()
-	if defaultOrder == "" {
-		defaultOrder = template.GetIndexQueryOrder()
-	}
-
-	if defaultOrder == "" {
-		defaultOrder = "id desc"
-	}
-
-	// 执行排序查询
-	query = p.applyOrderings(query, orderings, defaultOrder)
+	// 执行查询，这里使用的是透传的实例
+	query = template.ActionQuery(ctx, query)
 
 	return query
 }
@@ -53,6 +31,32 @@ func (p *Template) BuildDetailQuery(ctx *builder.Context, query *gorm.DB) *gorm.
 
 	// 执行列表查询，这里使用的是透传的实例
 	query = template.DetailQuery(ctx, query)
+
+	return query
+}
+
+// 创建编辑页查询
+func (p *Template) BuildEditQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+	template := ctx.Template.(types.Resourcer)
+
+	// 初始化查询
+	query = p.initializeQuery(ctx, query)
+
+	// 执行查询，这里使用的是透传的实例
+	query = template.EditQuery(ctx, query)
+
+	return query
+}
+
+// 创建表格行内编辑查询
+func (p *Template) BuildEditableQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+	template := ctx.Template.(types.Resourcer)
+
+	// 初始化查询
+	query = p.initializeQuery(ctx, query)
+
+	// 执行查询，这里使用的是透传的实例
+	query = template.EditableQuery(ctx, query)
 
 	return query
 }
@@ -80,6 +84,41 @@ func (p *Template) BuildExportQuery(ctx *builder.Context, query *gorm.DB, search
 	defaultOrder := template.GetQueryOrder()
 	if defaultOrder == "" {
 		defaultOrder = template.GetExportQueryOrder()
+	}
+
+	if defaultOrder == "" {
+		defaultOrder = "id desc"
+	}
+
+	// 执行排序查询
+	query = p.applyOrderings(query, orderings, defaultOrder)
+
+	return query
+}
+
+// 创建列表查询
+func (p *Template) BuildIndexQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB {
+	template := ctx.Template.(types.Resourcer)
+
+	// 初始化查询
+	query = p.initializeQuery(ctx, query)
+
+	// 执行列表查询，这里使用的是透传的实例
+	query = template.IndexQuery(ctx, query)
+
+	// 执行搜索查询
+	query = p.applySearch(ctx, query, search)
+
+	// 执行过滤器查询
+	query = p.applyFilters(query, filters)
+
+	// 执行表格列上过滤器查询
+	query = p.applyColumnFilters(query, columnFilters)
+
+	// 获取排序规则
+	defaultOrder := template.GetQueryOrder()
+	if defaultOrder == "" {
+		defaultOrder = template.GetIndexQueryOrder()
 	}
 
 	if defaultOrder == "" {
@@ -172,8 +211,8 @@ func (p *Template) Query(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 	return query
 }
 
-// 列表查询
-func (p *Template) IndexQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+// 行为查询
+func (p *Template) ActionQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 
 	return query
 }
@@ -184,8 +223,32 @@ func (p *Template) DetailQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 	return query
 }
 
+// 编辑查询
+func (p *Template) EditQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+
+	return query
+}
+
+// 表格行内编辑查询
+func (p *Template) EditableQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+
+	return query
+}
+
 // 导出查询
 func (p *Template) ExportQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+
+	return query
+}
+
+// 列表查询
+func (p *Template) IndexQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+
+	return query
+}
+
+// 更新查询
+func (p *Template) UpdateQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 
 	return query
 }

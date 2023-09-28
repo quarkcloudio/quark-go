@@ -115,14 +115,26 @@ type Resourcer interface {
 	// 全局查询
 	Query(ctx *builder.Context, query *gorm.DB) *gorm.DB
 
-	// 列表查询
-	IndexQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB
+	// 行为查询
+	ActionQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB
 
 	// 详情查询
 	DetailQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB
 
+	// 编辑查询
+	EditQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB
+
+	// 表格行内编辑查询
+	EditableQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB
+
 	// 导出查询
 	ExportQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB
+
+	// 列表查询
+	IndexQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB
+
+	// 更新查询
+	UpdateQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB
 
 	// 字段
 	Fields(ctx *builder.Context) []interface{}
