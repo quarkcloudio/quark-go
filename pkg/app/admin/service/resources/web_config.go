@@ -135,20 +135,21 @@ func (p *WebConfig) BeforeCreating(ctx *builder.Context) map[string]interface{} 
 		}
 
 		if config["type"] == "picture" || config["type"] == "file" {
+			if config["value"] != nil {
+				// json字符串
+				if strings.Contains(config["value"].(string), "{") {
+					var jsonData interface{}
+					json.Unmarshal([]byte(config["value"].(string)), &jsonData)
 
-			// json字符串
-			if strings.Contains(config["value"].(string), "{") {
-				var jsonData interface{}
-				json.Unmarshal([]byte(config["value"].(string)), &jsonData)
+					// 如果为map
+					if mapData, ok := jsonData.(map[string]interface{}); ok {
+						data[config["name"].(string)] = mapData
+					}
 
-				// 如果为map
-				if mapData, ok := jsonData.(map[string]interface{}); ok {
-					data[config["name"].(string)] = mapData
-				}
-
-				// 如果为数组，返回第一个key的path
-				if arrayData, ok := jsonData.([]map[string]interface{}); ok {
-					data[config["name"].(string)] = arrayData
+					// 如果为数组，返回第一个key的path
+					if arrayData, ok := jsonData.([]map[string]interface{}); ok {
+						data[config["name"].(string)] = arrayData
+					}
 				}
 			}
 		}

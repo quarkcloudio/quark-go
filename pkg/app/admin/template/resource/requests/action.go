@@ -1,8 +1,6 @@
 package requests
 
 import (
-	"strings"
-
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -25,14 +23,8 @@ func (p *ActionRequest) Handle(ctx *builder.Context) error {
 	// Gorm对象
 	model := db.Client.Model(modelInstance)
 
-	id := ctx.Query("id", "")
-	if id != "" {
-		if strings.Contains(id.(string), ",") {
-			model.Where("id IN ?", strings.Split(id.(string), ","))
-		} else {
-			model.Where("id = ?", id)
-		}
-	}
+	// 查询条件
+	model = template.BuildActionQuery(ctx, model)
 
 	actions := template.Actions(ctx)
 	for _, v := range actions {

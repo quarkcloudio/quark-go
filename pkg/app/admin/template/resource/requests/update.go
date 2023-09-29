@@ -16,7 +16,12 @@ type UpdateRequest struct{}
 // 执行行为
 func (p *UpdateRequest) Handle(ctx *builder.Context) error {
 	data := map[string]interface{}{}
-	ctx.Bind(&data)
+
+	// 解析数据
+	err := json.Unmarshal(ctx.Body(), &data)
+	if err != nil {
+		return ctx.JSON(200, message.Error(err.Error()))
+	}
 
 	// 验证参数合法性
 	if data["id"] == "" {
@@ -36,7 +41,7 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) error {
 	}
 
 	// 保存前回调
-	data, err := template.BeforeSaving(ctx, data)
+	data, err = template.BeforeSaving(ctx, data)
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
@@ -72,10 +77,13 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) error {
 	}
 
 	// 获取对象
-	model := db.Client.
-		Model(modelInstance).
-		Where("id = ?", data["id"]).
-		Updates(newData)
+	model := db.Client.Model(modelInstance)
 
-	return template.AfterSaved(ctx, int(data["id"].(float64)), data, model)
+	// 创建更新查询
+	query := template.BuildUpdateQuery(ctx, model)
+
+	// 更新数据
+	query = query.Updates(newData)
+
+	return template.AfterSaved(ctx, int(data["id"].(float64)), data, query)
 }

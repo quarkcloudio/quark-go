@@ -30,8 +30,11 @@ func (p *EditRequest) FillData(ctx *builder.Context) map[string]interface{} {
 	// Gorm对象
 	model := db.Client.Model(&modelInstance)
 
+	// 创建编辑页查询
+	query := template.BuildEditQuery(ctx, model)
+
 	// 查询数据
-	model.Where("id = ?", id).First(&result)
+	query.First(&result)
 
 	// 获取字段
 	updateFields := template.UpdateFields(ctx)

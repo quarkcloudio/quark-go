@@ -36,7 +36,7 @@ func (p *DetailRequest) FillData(ctx *builder.Context) map[string]interface{} {
 	query := template.BuildDetailQuery(ctx, model)
 
 	// 查询数据
-	query.Where("id = ?", id).First(&result)
+	query.First(&result)
 
 	// 获取字段
 	detailFields := template.DetailFields(ctx)

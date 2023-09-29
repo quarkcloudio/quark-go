@@ -2,6 +2,7 @@ package resource
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -131,6 +132,19 @@ func (p *Template) BuildIndexQuery(ctx *builder.Context, query *gorm.DB, search 
 	return query
 }
 
+// 创建更新查询
+func (p *Template) BuildUpdateQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+	template := ctx.Template.(types.Resourcer)
+
+	// 初始化查询
+	query = p.initializeQuery(ctx, query)
+
+	// 执行查询，这里使用的是透传的实例
+	query = template.UpdateQuery(ctx, query)
+
+	return query
+}
+
 // 初始化查询
 func (p *Template) initializeQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 	template := ctx.Template.(types.Resourcer)
@@ -213,24 +227,46 @@ func (p *Template) Query(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 
 // 行为查询
 func (p *Template) ActionQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+	id := ctx.Query("id", "")
+	if id != "" {
+		if strings.Contains(id.(string), ",") {
+			query.Where("id IN ?", strings.Split(id.(string), ","))
+		} else {
+			query.Where("id = ?", id)
+		}
+	}
 
 	return query
 }
 
 // 详情查询
 func (p *Template) DetailQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+	id := ctx.Query("id", "")
+	if id != "" {
+		query.Where("id = ?", id)
+	}
 
 	return query
 }
 
 // 编辑查询
 func (p *Template) EditQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+	id := ctx.Query("id", "")
+	if id != "" {
+		query.Where("id = ?", id)
+	}
 
 	return query
 }
 
 // 表格行内编辑查询
 func (p *Template) EditableQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+	data := ctx.AllQuerys()
+	if data != nil {
+		if data["id"] != nil {
+			query.Where("id = ?", data["id"])
+		}
+	}
 
 	return query
 }
@@ -249,6 +285,13 @@ func (p *Template) IndexQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 
 // 更新查询
 func (p *Template) UpdateQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+	data := map[string]interface{}{}
+	ctx.Bind(&data)
+	if data != nil {
+		if data["id"] != nil {
+			query.Where("id = ?", data["id"])
+		}
+	}
 
 	return query
 }

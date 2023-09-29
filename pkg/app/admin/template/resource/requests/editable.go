@@ -59,8 +59,11 @@ func (p *EditableRequest) Handle(ctx *builder.Context) error {
 		return ctx.JSON(200, message.Error("参数错误！"))
 	}
 
+	// 创建表格行内编辑查询
+	query := template.BuildEditableQuery(ctx, model)
+
 	// 更新数据
-	err := model.Where("id = ?", id).Update(field, value).Error
+	err := query.Update(field, value).Error
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}

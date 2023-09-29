@@ -265,14 +265,26 @@ type Resourcer interface {
 	// 筛选表单
 	Filters(ctx *builder.Context) []interface{}
 
-	// 创建列表查询
-	BuildIndexQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB
+	// 创建执行行为查询
+	BuildActionQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB
 
 	// 创建详情页查询
 	BuildDetailQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB
 
+	// 创建编辑查询
+	BuildEditQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB
+
+	// 创建表格行内编辑查询
+	BuildEditableQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB
+
 	// 创建导出查询
 	BuildExportQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB
+
+	// 创建列表查询
+	BuildIndexQuery(ctx *builder.Context, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB
+
+	// 创建更新查询
+	BuildUpdateQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB
 
 	// 创建请求的验证器
 	ValidatorForCreation(ctx *builder.Context, data map[string]interface{}) error
