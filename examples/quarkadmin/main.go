@@ -1,9 +1,11 @@
 package main
 
 import (
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/install"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/middleware"
+	admininstall "github.com/quarkcms/quark-go/v2/pkg/app/admin/install"
+	adminmiddleware "github.com/quarkcms/quark-go/v2/pkg/app/admin/middleware"
 	adminservice "github.com/quarkcms/quark-go/v2/pkg/app/admin/service"
+	miniappinstall "github.com/quarkcms/quark-go/v2/pkg/app/miniapp/install"
+	miniappmiddleware "github.com/quarkcms/quark-go/v2/pkg/app/miniapp/middleware"
 	miniappservice "github.com/quarkcms/quark-go/v2/pkg/app/miniapp/service"
 	toolservice "github.com/quarkcms/quark-go/v2/pkg/app/tool/service"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -44,11 +46,17 @@ func main() {
 	// WEB根目录
 	b.Static("/", "./web/app")
 
-	// 自动构建数据库、拉取静态文件
-	install.Handle()
+	// 构建管理后台数据库
+	admininstall.Handle()
 
-	// 后台中间件
-	b.Use(middleware.Handle)
+	// 管理后台中间件
+	b.Use(adminmiddleware.Handle)
+
+	// 构建MiniApp数据库
+	miniappinstall.Handle()
+
+	// MiniApp中间件
+	b.Use(miniappmiddleware.Handle)
 
 	// 响应Get请求
 	b.GET("/", func(ctx *builder.Context) error {

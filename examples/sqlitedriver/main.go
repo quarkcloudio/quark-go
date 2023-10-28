@@ -4,7 +4,6 @@ import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/install"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/middleware"
 	adminservice "github.com/quarkcms/quark-go/v2/pkg/app/admin/service"
-	mixservice "github.com/quarkcms/quark-go/v2/pkg/app/mix/service"
 	toolservice "github.com/quarkcms/quark-go/v2/pkg/app/tool/service"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"gorm.io/driver/sqlite"
@@ -21,9 +20,6 @@ func main() {
 
 	// 加载后台服务
 	providers = append(providers, adminservice.Providers...)
-
-	// 加载Mix服务
-	providers = append(providers, mixservice.Providers...)
 
 	// 加载工具服务
 	providers = append(providers, toolservice.Providers...)

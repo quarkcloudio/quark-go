@@ -13,6 +13,7 @@ var Providers = []interface{}{
 	&logins.Index{},
 	&layouts.Index{},
 	&dashboards.Index{},
+	&resources.User{},
 	&resources.Admin{},
 	&resources.Role{},
 	&resources.Permission{},
