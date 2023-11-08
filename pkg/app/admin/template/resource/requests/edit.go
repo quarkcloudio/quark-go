@@ -1,6 +1,8 @@
 package requests
 
 import (
+	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
@@ -112,6 +114,31 @@ func (p *EditRequest) Values(ctx *builder.Context) error {
 
 	// 获取初始数据
 	data = template.BeforeEditing(ctx, data)
+
+	// 解析数据
+	for k, v := range data {
+		getV, ok := v.(string)
+		if ok {
+			if strings.Contains(getV, "{") {
+				var m map[string]interface{}
+				err := json.Unmarshal([]byte(getV), &m)
+				if err != nil {
+					fmt.Printf("Unmarshal with error: %+v\n", err)
+				}
+				v = m
+			}
+			if strings.Contains(getV, "[") {
+				var m []interface{}
+				err := json.Unmarshal([]byte(getV), &m)
+				if err != nil {
+					fmt.Printf("Unmarshal with error: %+v\n", err)
+				}
+				v = m
+			}
+		}
+
+		data[k] = v
+	}
 
 	return ctx.JSON(200, message.Success("获取成功", "", data))
 }
