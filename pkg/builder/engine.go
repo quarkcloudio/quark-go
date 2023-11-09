@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/go-redis/redis/v8"
+	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/quarkcms/quark-go/v2/pkg/dal"
 	"github.com/quarkcms/quark-go/v2/pkg/gopkg"
@@ -21,7 +22,7 @@ const (
 	AppName = "QuarkGo"
 
 	// 版本号
-	Version = "2.1.23"
+	Version = "2.1.24"
 
 	// 包名
 	PkgName = "github.com/quarkcms/quark-go/v2"
@@ -31,6 +32,7 @@ type Engine struct {
 	echo        *echo.Echo                 // Echo框架实例
 	useHandlers []func(ctx *Context) error // 中间件方法
 	config      *Config                    // 配置
+	cookieStore *sessions.CookieStore      // Cookie存储，用于保存Session
 	providers   []interface{}              // 服务列表
 	urlPaths    []*UrlPath                 // 请求路径列表
 	routePaths  []*RouteMapping            // 路由路径列表
@@ -60,11 +62,12 @@ type RedisConfig struct {
 }
 
 type Config struct {
-	AppKey      string        // 应用加密Key，用于JWT认证
-	DBConfig    *DBConfig     // 数据库配置
-	RedisConfig *RedisConfig  // Redis配置
-	StaticPath  string        // 静态文件目录
-	Providers   []interface{} // 服务列表
+	AppKey      string                // 应用加密Key，用于JWT认证
+	DBConfig    *DBConfig             // 数据库配置
+	RedisConfig *RedisConfig          // Redis配置
+	CookieStore *sessions.CookieStore // Cookie存储，用于保存Session
+	StaticPath  string                // 静态文件目录
+	Providers   []interface{}         // 服务列表
 }
 
 // 定义路由组
@@ -99,11 +102,19 @@ func New(config *Config) *Engine {
 		})
 	}
 
+	cookieStore := sessions.NewCookieStore([]byte(config.AppKey))
+
+	// 初始化Cookie存储
+	if config.CookieStore != nil {
+		cookieStore = config.CookieStore
+	}
+
 	// 定义结构体
 	engine := &Engine{
-		echo:      e,
-		providers: config.Providers,
-		config:    config,
+		echo:        e,
+		providers:   config.Providers,
+		config:      config,
+		cookieStore: cookieStore,
 	}
 
 	// 默认WEB资源目录

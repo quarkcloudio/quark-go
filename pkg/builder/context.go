@@ -13,6 +13,7 @@ import (
 
 	"github.com/derekstavis/go-qs"
 	"github.com/gobeam/stringy"
+	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 )
 
@@ -109,6 +110,36 @@ func (p *Context) SetCookie(cookie *http.Cookie) {
 // Cookies returns the HTTP cookies sent with the request.
 func (p *Context) Cookies() []*http.Cookie {
 	return p.EchoContext.Cookies()
+}
+
+// Session returns the named session provided in the request.
+func (p *Context) Session(name string) (*sessions.Session, error) {
+	return p.Engine.cookieStore.Get(p.Request, name)
+}
+
+// SetSession adds a `session` in HTTP response.
+func (p *Context) SetSession(name string, values map[interface{}]interface{}) error {
+	sess, err := p.Engine.cookieStore.Get(p.Request, name)
+	if err != nil {
+		return err
+	}
+
+	sess.Values = values
+
+	return sess.Save(p.Request, p.Writer)
+}
+
+// SetSessionWithOptions adds a `session` with options in HTTP response.
+func (p *Context) SetSessionWithOptions(name string, options *sessions.Options, values map[interface{}]interface{}) error {
+	sess, err := p.Engine.cookieStore.Get(p.Request, name)
+	if err != nil {
+		return err
+	}
+
+	sess.Options = options
+	sess.Values = values
+
+	return sess.Save(p.Request, p.Writer)
 }
 
 // Get retrieves data from the context.
@@ -548,7 +579,7 @@ func (p *Context) getTemplate(ctx *Context) (interface{}, error) {
 	}
 
 	if templateInstance == nil {
-		return nil, errors.New("Unable to find resource instance")
+		return nil, errors.New("unable to find resource instance")
 	}
 
 	return templateInstance, nil

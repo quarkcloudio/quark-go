@@ -49,6 +49,7 @@ require (
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
 	github.com/google/pprof v0.0.0-20230705174524-200ffdc848b8 // indirect
 	github.com/google/uuid v1.3.0 // indirect
+	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.14.0 // indirect
@@ -136,6 +137,7 @@ require (
 	github.com/go-sql-driver/mysql v1.7.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/gookit/goutil v0.6.11
+	github.com/gorilla/sessions v1.2.2
 	github.com/henrylee2cn/ameda v1.5.1 // indirect
 	github.com/henrylee2cn/goutil v1.0.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
