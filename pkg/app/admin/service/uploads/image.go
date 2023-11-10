@@ -35,10 +35,16 @@ func (p *Image) Init(ctx *builder.Context) interface{} {
 	// 设置文件上传路径
 	p.SavePath = "./web/app/storage/images/" + time.Now().Format("20060102") + "/"
 
-	// 添加路由映射关系
+	return p
+}
+
+// 初始化路由映射
+func (p *Image) RouteInit() interface{} {
 	p.GET("/api/admin/upload/:resource/getList", p.GetList)
 	p.Any("/api/admin/upload/:resource/delete", p.Delete)
 	p.POST("/api/admin/upload/:resource/crop", p.Crop)
+	p.POST("/api/admin/upload/:resource/handle", p.Handle)
+	p.POST("/api/admin/upload/:resource/base64Handle", p.HandleFromBase64)
 
 	return p
 }
