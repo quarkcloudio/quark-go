@@ -168,10 +168,12 @@ func (p *CasbinRule) AddMenuAndPermissionToRole(roleId int, menuIds []int) (err 
 	// 先清理数据
 	p.RemoveRoleMenuAndPermissions(roleId)
 
-	// 添加策略
-	_, err = enforcer.AddPolicies(rules)
-	if err != nil {
-		return err
+	if len(rules) > 0 {
+		// 添加策略
+		_, err = enforcer.AddPolicies(rules)
+		if err != nil {
+			return err
+		}
 	}
 
 	return
@@ -247,9 +249,11 @@ func (p *CasbinRule) AddUserRole(modelId int, roleIds []int) (err error) {
 
 	p.RemoveUserRoles(modelId)
 
-	_, err = enforcer.AddRolesForUser("admin|"+strconv.Itoa(modelId), roles)
-	if err != nil {
-		return err
+	if len(roles) > 0 {
+		_, err = enforcer.AddRolesForUser("admin|"+strconv.Itoa(modelId), roles)
+		if err != nil {
+			return err
+		}
 	}
 
 	return
