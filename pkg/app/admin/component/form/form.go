@@ -331,21 +331,14 @@ func (p *Component) SetInitialValues(initialValues map[string]interface{}) *Comp
 	for k, v := range data {
 		getV, ok := v.(string)
 		if ok {
-			if strings.Contains(getV, "{") {
+			if strings.Contains(getV, "{") || strings.Contains(getV, "[") {
 				var m map[string]interface{}
 				err := json.Unmarshal([]byte(getV), &m)
 				if err != nil {
 					fmt.Printf("Unmarshal with error: %+v\n", err)
+				} else {
+					v = m
 				}
-				v = m
-			}
-			if strings.Contains(getV, "[") {
-				var m []interface{}
-				err := json.Unmarshal([]byte(getV), &m)
-				if err != nil {
-					fmt.Printf("Unmarshal with error: %+v\n", err)
-				}
-				v = m
 			}
 		}
 
