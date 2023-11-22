@@ -63,12 +63,13 @@ type Component struct {
 	ShowOnImport   bool            `json:"-"`             // 在导入Excel上展示
 	Callback       interface{}     `json:"-"`             // 回调函数
 
-	DefaultValue interface{}            `json:"defaultValue,omitempty"` // 默认选中的选项
-	Disabled     bool                   `json:"disabled,omitempty"`     // 整组失效
-	Style        map[string]interface{} `json:"style,omitempty"`        // 自定义样式
-	Value        interface{}            `json:"value,omitempty"`        // 指定选中项,string[] | number[]
-	Zoom         int                    `json:"zoom"`                   // 缩放级别
-	MapKey       string                 `json:"mapKey"`                 // 地图Key
+	DefaultValue      interface{}            `json:"defaultValue,omitempty"` // 默认选中的选项
+	Disabled          bool                   `json:"disabled,omitempty"`     // 整组失效
+	Style             map[string]interface{} `json:"style,omitempty"`        // 自定义样式
+	Value             interface{}            `json:"value,omitempty"`        // 指定选中项,string[] | number[]
+	Zoom              int                    `json:"zoom"`                   // 缩放级别
+	MapKey            string                 `json:"mapKey"`                 // 地图Key
+	MapSecurityJsCode string                 `json:"mapSecurityJsCode"`      // 地图安全密钥
 }
 
 // 初始化组件
@@ -93,7 +94,8 @@ func (p *Component) Init() *Component {
 		"latitude":  "39.903755",
 	}
 	p.Zoom = 14
-	p.MapKey = "788e08def03f95c670944fe2c78fa76f"
+	p.MapKey = "70ac74a1443326e66e51a4255700a4e2"
+	p.MapSecurityJsCode = "5c4fc57d6cba5efd1c15c988d18d2a78"
 	p.Style = map[string]interface{}{
 		"height":    500,
 		"width":     "100%",
@@ -724,6 +726,12 @@ func (p *Component) SetZoom(zoom int) *Component {
 // 高德地图key
 func (p *Component) SetMapKey(key string) *Component {
 	p.MapKey = key
+	return p
+}
+
+// 高德地图安全秘钥
+func (p *Component) SetMapSecurityJsCode(securityJsCode string) *Component {
+	p.MapSecurityJsCode = securityJsCode
 	return p
 }
 
