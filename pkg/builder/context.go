@@ -13,8 +13,10 @@ import (
 
 	"github.com/derekstavis/go-qs"
 	"github.com/gobeam/stringy"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
+	"github.com/mitchellh/mapstructure"
 )
 
 // Context is the most important part of gin. It allows us to pass variables between middleware,
@@ -491,6 +493,49 @@ func (p *Context) Token() string {
 	}
 
 	return ""
+}
+
+// 生成JWT认证的token
+func (p *Context) JwtToken(claims interface{}) (tokenString string, err error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims.(jwt.Claims))
+
+	return token.SignedString([]byte(p.Engine.GetConfig().AppKey))
+}
+
+// 获取当前JWT认证的用户信息
+func (p *Context) JwtAuthUser(claims interface{}) (err error) {
+	authUser, err := p.JwtAuthUserMap()
+	if err != nil {
+		return err
+	}
+
+	return mapstructure.Decode(authUser, claims)
+}
+
+// 获取当前JWT认证的用户信息，返回的数据为map格式
+func (p *Context) JwtAuthUserMap() (result jwt.MapClaims, err error) {
+	token, err := jwt.Parse(p.Token(), func(token *jwt.Token) (interface{}, error) {
+		return []byte(p.Engine.config.AppKey), nil
+	})
+	if err != nil {
+		if ve, ok := err.(*jwt.ValidationError); ok {
+			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
+				return nil, errors.New("token is malformed")
+			} else if ve.Errors&jwt.ValidationErrorExpired != 0 {
+				return nil, errors.New("token is expired")
+			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
+				return nil, errors.New("token is not valid yet")
+			} else {
+				return nil, err
+			}
+		}
+	}
+
+	if !token.Valid {
+		return nil, errors.New("token is invalid")
+	}
+
+	return token.Claims.(jwt.MapClaims), nil
 }
 
 // 根据路由判断是否为当前加载实例
