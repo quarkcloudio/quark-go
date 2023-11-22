@@ -3,11 +3,17 @@ package install
 import (
 	"github.com/quarkcms/quark-go/v2/pkg/app/miniapp/model"
 	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcms/quark-go/v2/pkg/utils/file"
 	"gorm.io/gorm"
 )
 
 // 执行安装操作
 func Handle() {
+
+	// 如果锁定文件存在则不执行安装步骤
+	if file.IsExist("install.lock") {
+		return
+	}
 
 	// 迁移数据
 	db.Client.AutoMigrate(
