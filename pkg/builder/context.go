@@ -509,7 +509,15 @@ func (p *Context) JwtAuthUser(claims interface{}) (err error) {
 		return err
 	}
 
-	return mapstructure.Decode(authUser, claims)
+	decoder, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
+		Result:  claims,
+		TagName: "json",
+	})
+	if err != nil {
+		return err
+	}
+
+	return decoder.Decode(authUser)
 }
 
 // 获取当前JWT认证的用户信息，返回的数据为map格式

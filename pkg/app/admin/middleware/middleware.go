@@ -41,8 +41,11 @@ func Handle(ctx *builder.Context) error {
 		return ctx.Next()
 	}
 
+	// 定义管理员结构体
+	adminInfo := &model.AdminClaims{}
+
 	// 获取登录管理员信息
-	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	err := ctx.JwtAuthUser(adminInfo)
 	if err != nil {
 		return ctx.JSON(401, builder.Error(err.Error()))
 	}

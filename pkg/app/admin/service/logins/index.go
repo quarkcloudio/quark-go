@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/dchest/captcha"
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/login"
@@ -75,14 +74,11 @@ func (p *Index) Handle(ctx *builder.Context) error {
 		return ctx.JSON(200, message.Error("用户名或密码错误"))
 	}
 
-	config := ctx.Engine.GetConfig()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, (&model.Admin{}).GetClaims(adminInfo))
-
 	// 更新登录信息
 	(&model.Admin{}).UpdateLastLogin(adminInfo.Id, ctx.ClientIP(), time.Now())
 
 	// 获取token字符串
-	tokenString, err := token.SignedString([]byte(config.AppKey))
+	tokenString, err := ctx.JwtToken((&model.Admin{}).GetClaims(adminInfo))
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
