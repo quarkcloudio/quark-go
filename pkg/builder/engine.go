@@ -22,7 +22,7 @@ const (
 	AppName = "QuarkGo"
 
 	// 版本号
-	Version = "2.1.32"
+	Version = "2.1.33"
 
 	// 包名
 	PkgName = "github.com/quarkcms/quark-go/v2"
@@ -329,7 +329,7 @@ func (p *Engine) handleParser(ctx *Context) error {
 	// 获取模板实例
 	templateInstance = ctx.Template
 	if templateInstance == nil {
-		return ctx.String(200, "Unable to find resource instance")
+		return ctx.String(200, "unable to find resource instance")
 	}
 
 	// 执行挂载的方法
