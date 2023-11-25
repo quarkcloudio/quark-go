@@ -1,6 +1,8 @@
 package types
 
 import (
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/table"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
 	"gorm.io/gorm"
 )
@@ -24,6 +26,12 @@ type Resourcer interface {
 
 	// 获取分页配置
 	GetPerPage() interface{}
+
+	// 获取表单页Form实例
+	GetForm() *form.Component
+
+	// 获取列表页Table实例
+	GetTable() *table.Component
 
 	// 列表页表格标题后缀
 	GetTableTitleSuffix() string

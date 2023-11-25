@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/card"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/tabs"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
@@ -74,8 +73,12 @@ func (p *Template) FormWithinCard(
 	actions []interface{},
 	data map[string]interface{}) interface{} {
 
-	formComponent := (&form.Component{}).
-		Init().
+	// 模版实例
+	template := ctx.Template.(types.Resourcer)
+
+	// Form实例
+	formComponent := template.
+		GetForm().
 		SetStyle(map[string]interface{}{
 			"padding": "24px",
 		}).
@@ -84,6 +87,7 @@ func (p *Template) FormWithinCard(
 		SetBody(fields).
 		SetInitialValues(data)
 
+	// 返回数据
 	return (&card.Component{}).
 		Init().
 		SetTitle(title).
@@ -104,8 +108,12 @@ func (p *Template) FormWithinTabs(
 
 	tabsComponent := (&tabs.Component{}).Init().SetTabPanes(fields).SetTabBarExtraContent(extra)
 
-	return (&form.Component{}).
-		Init().
+	// 模版实例
+	template := ctx.Template.(types.Resourcer)
+
+	// 返回数据
+	return template.
+		GetForm().
 		SetStyle(map[string]interface{}{
 			"backgroundColor": "#fff",
 			"paddingBottom":   "20px",

@@ -1,7 +1,9 @@
 package resource
 
 import (
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/pagecontainer"
+	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/table"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/requests"
 	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcms/quark-go/v2/pkg/builder"
@@ -34,6 +36,8 @@ type Template struct {
 	SubTitle               string                 // 页面子标题
 	BackIcon               bool                   // 页面是否携带返回Icon
 	PerPage                interface{}            // 列表页分页配置
+	Form                   *form.Component        // 表单页Form实例
+	Table                  *table.Component       // 列表页Table实例
 	TableTitleSuffix       string                 // 列表页表格标题后缀
 	TableActionColumnTitle string                 // 列表页表格行为列显示文字，既字段的列名
 	TableActionColumnWidth int                    // 列表页表格行为列的宽度
@@ -56,6 +60,12 @@ func (p *Template) TemplateInit(ctx *builder.Context) interface{} {
 
 	// 初始化数据对象
 	p.DB = db.Client
+
+	// 初始化Form实例
+	p.Form = (&form.Component{}).Init()
+
+	// 初始化Table实例
+	p.Table = (&table.Component{}).Init()
 
 	// 列表页表格行为列显示文字，既字段的列名
 	p.TableActionColumnTitle = "操作"
@@ -112,6 +122,16 @@ func (p *Template) GetBackIcon() bool {
 // 获取分页配置
 func (p *Template) GetPerPage() interface{} {
 	return p.PerPage
+}
+
+// 获取表单页Form实例
+func (p *Template) GetForm() *form.Component {
+	return p.Form
+}
+
+// 获取列表页Table实例
+func (p *Template) GetTable() *table.Component {
+	return p.Table
 }
 
 // 列表页表格标题后缀

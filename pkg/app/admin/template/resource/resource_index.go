@@ -37,6 +37,9 @@ func (p *Template) IndexComponentRender(ctx *builder.Context, data interface{}) 
 	// 模版实例
 	template := ctx.Template.(types.Resourcer)
 
+	// 获取列表页Table实例
+	table := template.GetTable()
+
 	// 列表标题
 	tableTitle := p.IndexTableTitle(ctx)
 
@@ -59,8 +62,7 @@ func (p *Template) IndexComponentRender(ctx *builder.Context, data interface{}) 
 	indexSearches := p.IndexSearches(ctx)
 
 	// 表格组件
-	table := (&table.Component{}).
-		Init().
+	table = table.
 		SetPolling(int(tablePolling)).
 		SetTitle(tableTitle).
 		SetTableExtraRender(tableExtraRender).
