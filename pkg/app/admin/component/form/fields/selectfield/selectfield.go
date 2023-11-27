@@ -113,6 +113,7 @@ type Component struct {
 	TokenSeparators          interface{}            `json:"tokenSeparators,omitempty"`          // 自动分词的分隔符，仅在 mode="tags" 时生效
 	Value                    interface{}            `json:"value,omitempty"`                    // 指定当前选中的条目，多选时为一个数组。（value 数组引用未变化时，Select 不会更新）
 	Virtual                  bool                   `json:"virtual,omitempty"`                  // 设置 false 时关闭虚拟滚动
+	Load                     map[string]string      `json:"load,omitempty"`                     // 单向联动
 	Style                    map[string]interface{} `json:"style,omitempty"`                    // 自定义样式
 }
 
@@ -1011,6 +1012,16 @@ func (p *Component) SetTokenSeparators(tokenSeparators interface{}) *Component {
 // 设置 false 时关闭虚拟滚动
 func (p *Component) SetVirtual(virtual bool) *Component {
 	p.Virtual = virtual
+
+	return p
+}
+
+// 单向联动
+func (p *Component) SetLoad(field string, api string) *Component {
+	p.Load = map[string]string{
+		"field": field,
+		"api":   api,
+	}
 
 	return p
 }
