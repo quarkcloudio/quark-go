@@ -5,7 +5,6 @@ import "github.com/quarkcms/quark-go/v2/pkg/app/admin/component/component"
 type Component struct {
 	component.Element
 	Title                  string        `json:"title"`
-	BodyStyle              interface{}   `json:"bodyStyle"`
 	Centered               bool          `json:"centered"`
 	Closable               bool          `json:"closable"`
 	DestroyOnClose         bool          `json:"destroyOnClose"`
@@ -13,7 +12,6 @@ type Component struct {
 	Keyboard               bool          `json:"keyboard"`
 	Mask                   bool          `json:"mask"`
 	MaskClosable           bool          `json:"maskClosable"`
-	MaskStyle              interface{}   `json:"maskStyle"`
 	Open                   bool          `json:"open"`
 	Width                  int           `json:"width"`
 	ZIndex                 int           `json:"zIndex"`
@@ -50,13 +48,6 @@ func (p *Component) SetStyle(style map[string]interface{}) *Component {
 // 标题
 func (p *Component) SetTitle(title string) *Component {
 	p.Title = title
-
-	return p
-}
-
-// Modal body 样式
-func (p *Component) SetBodyStyle(style interface{}) *Component {
-	p.BodyStyle = style
 
 	return p
 }
@@ -113,13 +104,6 @@ func (p *Component) SetMask(mask bool) *Component {
 // 点击蒙层是否允许关闭
 func (p *Component) SetMaskClosable(maskClosable bool) *Component {
 	p.MaskClosable = maskClosable
-
-	return p
-}
-
-// 遮罩样式
-func (p *Component) SetMaskStyle(style map[string]interface{}) *Component {
-	p.MaskStyle = style
 
 	return p
 }
