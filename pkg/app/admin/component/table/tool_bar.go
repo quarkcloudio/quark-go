@@ -43,97 +43,57 @@ func (p *ToolBar) SetSubTitle(subTitle string) *ToolBar {
 	return p
 }
 
-/**
- * 描述
- *
- * @param  string  description
- * @return p
- */
+// 描述
 func (p *ToolBar) SetDescription(description string) *ToolBar {
 	p.Description = description
 
 	return p
 }
 
-/**
- * 查询区
- *
- * @param  array  search
- * @return p
- */
+// 查询区
 func (p *ToolBar) SetSearch(search interface{}) *ToolBar {
 	p.Search = search
 
 	return p
 }
 
-/**
- * 操作区
- *
- * @param  Closure  callback
- * @return p
- */
+// 操作区
 func (p *ToolBar) SetAction(callback interface{}) *ToolBar {
 	//  p.actions = callback(p.action);
 
 	return p
 }
 
-/**
- * 批量设置操作区
- *
- * @param  array  actions
- * @return p
- */
+// 批量设置操作区
 func (p *ToolBar) SetActions(actions interface{}) *ToolBar {
 	p.Actions = actions
 
 	return p
 }
 
-/**
- * 过滤区，通常配合 LightFilter 使用
- *
- * @param  array  filter
- * @return p
- */
-func (p *ToolBar) filter(filter interface{}) *ToolBar {
+// 过滤区，通常配合 LightFilter 使用
+func (p *ToolBar) SetFilter(filter interface{}) *ToolBar {
 	p.Filter = filter
 
 	return p
 }
 
-/**
- * 是否多行展示
- *
- * @param  array  multipleLine
- * @return p
- */
-func (p *ToolBar) multipleLine(multipleLine bool) *ToolBar {
+// 是否多行展示
+func (p *ToolBar) SetMultipleLine(multipleLine bool) *ToolBar {
 	p.MultipleLine = multipleLine
 
 	return p
 }
 
-/**
- * 菜单配置
- *
- * @param  array  menu
- * @return p
- */
-func (p *ToolBar) menu(menu interface{}) *ToolBar {
+// 菜单配置
+func (p *ToolBar) SetMenu(menu interface{}) *ToolBar {
 	p.Menu = menu
 
 	return p
 }
 
-/**
- * 标签页配置，仅当 multipleLine 为 true 时有效
- *
- * @param  array  tabs
- * @return p
- */
-func (p *ToolBar) tabs(tabs interface{}) *ToolBar {
+// 标签页配置，仅当 multipleLine 为 true 时有效
+func (p *ToolBar) SetTabs(tabs interface{}) *ToolBar {
 	p.Tabs = tabs
 
 	return p

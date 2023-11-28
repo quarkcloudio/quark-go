@@ -78,231 +78,133 @@ func (p *Component) SetRowKey(rowKey string) *Component {
 	return p
 }
 
-/**
- * 获取表格数据接口
- *
- * @param  string  api
- * @return p
- */
+// 获取表格数据接口
 func (p *Component) SetApi(api string) *Component {
 	p.Api = api
 
 	return p
 }
 
-/**
- * 获取表格数据接口类型
- *
- * @param  string  apiType
- * @return p
- */
+// 获取表格数据接口类型
 func (p *Component) SetApiType(apiType string) *Component {
 	p.ApiType = apiType
 
 	return p
 }
 
-/**
- * 表格元素的 table-layout 属性，设为 fixed 表示内容不会影响列的布局,- | auto | fixed
- *
- * @param  string  tableLayout
- * @return p
- */
+// 表格元素的 table-layout 属性，设为 fixed 表示内容不会影响列的布局,- | auto | fixed
 func (p *Component) SetTableLayout(tableLayout string) *Component {
 	p.TableLayout = tableLayout
 
 	return p
 }
 
-/**
- * 表头标题
- *
- * @param  string  title
- * @return p
- */
+//  表头标题
 func (p *Component) SetTitle(title string) *Component {
 	p.HeaderTitle = title
 
 	return p
 }
 
-/**
- * 表头标题
- *
- * @param  string  headerTitle
- * @return p
- */
+// 表头标题
 func (p *Component) SetHeaderTitle(headerTitle string) *Component {
 	p.HeaderTitle = headerTitle
 
 	return p
 }
 
-/**
- * 是否显示搜索表单，传入对象时为搜索表单的配置
- *
- * @param  Closure  callback
- * @return p
- */
+// 是否显示搜索表单，传入对象时为搜索表单的配置
 func (p *Component) SetSearch(callback interface{}) interface{} {
 	// callback(p.Search)
 
 	return p.Search
 }
 
-/**
- * 搜索表单的配置
- *
- * @param  array  search
- * @return p
- */
+// 搜索表单的配置
 func (p *Component) SetSearches(search interface{}) *Component {
 	p.Search = search
 
 	return p
 }
 
-/**
- * 批量设置表格列
- *
- * @param array columns
- * @return p
- */
+// 批量设置表格列
 func (p *Component) SetColumns(columns interface{}) *Component {
 	p.Columns = columns
 
 	return p
 }
 
-/**
- * 批量操作选择项
- *
- * @param array rowSelection
- * @return p
- */
+// 批量操作选择项
 func (p *Component) SetRowSelection(rowSelection interface{}) *Component {
 	p.RowSelection = rowSelection
 
 	return p
 }
 
-/**
- * table 工具栏，设为 false 时不显示,{ fullScreen: true, reload: true ,setting: true}
- *
- * @param  array|bool  options
- * @return p
- */
+// table 工具栏，设为 false 时不显示,{ fullScreen: true, reload: true ,setting: true}
 func (p *Component) SetOptions(options map[string]bool) *Component {
 	p.Options = options
 
 	return p
 }
 
-/**
- * 转化 moment 格式数据为特定类型，false 不做转化,"string" | "number" | false
- *
- * @param  string  dateFormatter
- * @return p
- */
+// 转化 moment 格式数据为特定类型，false 不做转化,"string" | "number" | false
 func (p *Component) SetDateFormatter(dateFormatter string) *Component {
 	p.DateFormatter = dateFormatter
 
 	return p
 }
 
-/**
- * 空值时的显示，不设置 则默认显示 -
- *
- * @param  string  columnEmptyText
- * @return p
- */
+// 空值时的显示，不设置 则默认显示 -
 func (p *Component) SetColumnEmptyText(columnEmptyText string) *Component {
 	p.ColumnEmptyText = columnEmptyText
 
 	return p
 }
 
-/**
- * 透传 ProUtils 中的 ListToolBar 配置项
- *
- * @param  void
- * @return p
- */
+// 透传 ProUtils 中的 ListToolBar 配置项
 func (p *Component) SetToolBar(toolBar interface{}) *Component {
 	p.ToolBar = toolBar
 
 	return p
 }
 
-/**
- * 表格的批量操作
- *
- * @param  array  batchActions
- * @return p
- */
+// 表格的批量操作
 func (p *Component) SetBatchActions(batchActions interface{}) *Component {
 	p.BatchActions = batchActions
 
 	return p
 }
 
-/**
- * 自定义表格的主体函数
- *
- * @param  array  tableExtraRender
- * @return p
- */
+// 自定义表格的主体函数
 func (p *Component) SetTableExtraRender(tableExtraRender interface{}) *Component {
 	p.TableExtraRender = tableExtraRender
 
 	return p
 }
 
-/**
- * 设置表格滚动
- *
- * @param  array  scroll
- * @return p
- */
-func (p *Component) scroll(scroll interface{}) *Component {
+// 设置表格滚动
+func (p *Component) SetScroll(scroll interface{}) *Component {
 	p.Scroll = scroll
 
 	return p
 }
 
-/**
- * 设置表格滚动
- *
- * @param  bool  striped
- * @return p
- */
-func (p *Component) striped(striped bool) *Component {
+// 设置表格滚动
+func (p *Component) SetStriped(striped bool) *Component {
 	p.Striped = striped
 
 	return p
 }
 
-/**
- * 表格数据
- *
- * @param  array|string  datasource
- * @return p
- */
+// 表格数据
 func (p *Component) SetDatasource(datasource interface{}) *Component {
 	p.Datasource = datasource
 
 	return p
 }
 
-/**
- * 表格分页
- *
- * @param  number  current
- * @param  number  pageSize
- * @param  number  total
- * @param  number  defaultCurrent
- * @return p
- */
+// 表格分页
 func (p *Component) SetPagination(current int, pageSize int, total int, defaultCurrent int) *Component {
 	p.Pagination = map[string]int{
 		"current":        current,
@@ -314,12 +216,7 @@ func (p *Component) SetPagination(current int, pageSize int, total int, defaultC
 	return p
 }
 
-/**
- * 是否轮询
- *
- * @param  null|number  polling
- * @return p
- */
+// 是否轮询
 func (p *Component) SetPolling(polling int) *Component {
 	p.Polling = polling
 

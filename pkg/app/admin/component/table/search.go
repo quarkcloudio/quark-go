@@ -37,144 +37,84 @@ func (p *Search) SetStyle(style map[string]interface{}) *Search {
 	return p
 }
 
-/**
- * 过滤表单类型，'query' | 'light'
- *
- * @param string filterType
- * @return p
- */
+// 过滤表单类型，'query' | 'light'
 func (p *Search) SetFilterType(filterType string) *Search {
 	p.FilterType = filterType
 
 	return p
 }
 
-/**
- * 默认状态下是否折叠超出的表单项
- *
- * @param bool collapsed
- * @return p
- */
+// 默认状态下是否折叠超出的表单项
 func (p *Search) SetCollapsed(collapsed bool) *Search {
 	p.DefaultCollapsed = collapsed
 
 	return p
 }
 
-/**
- * 查询按钮的文本
- *
- * @param string searchText
- * @return p
- */
+// 查询按钮的文本
 func (p *Search) SetSearchText(searchText string) *Search {
 	p.SearchText = searchText
 
 	return p
 }
 
-/**
- * 重置按钮的文本
- *
- * @param string resetText
- * @return p
- */
+// 重置按钮的文本
 func (p *Search) SetResetText(resetText string) *Search {
 	p.ResetText = resetText
 
 	return p
 }
 
-/**
- * 提交按钮的文本
- *
- * @param string submitText
- * @return p
- */
+// 提交按钮的文本
 func (p *Search) SetSubmitText(submitText string) *Search {
 	p.SubmitText = submitText
 
 	return p
 }
 
-/**
- * 封装的搜索 Form 的 className
- *
- * @param string className
- * @return p
- */
+// 封装的搜索 Form 的 className
 func (p *Search) SetClassName(className string) *Search {
 	p.ClassName = className
 
 	return p
 }
 
-/**
- * label 宽度,number | 'auto'
- *
- * @param number|string labelWidth
- * @return p
- */
+// label 宽度,number | 'auto'
 func (p *Search) SetLabelWidth(labelWidth int) *Search {
 	p.LabelWidth = labelWidth
 
 	return p
 }
 
-/**
- * 表单项宽度,number[0 - 24]
- *
- * @param number span
- * @return p
- */
+// 表单项宽度,number[0 - 24]
 func (p *Search) SetSpan(span int) *Search {
 	p.Span = span
 
 	return p
 }
 
-/**
- * 是否显示收起之后显示隐藏个数
- *
- * @param bool showHiddenNum
- * @return p
- */
+// 是否显示收起之后显示隐藏个数
 func (p *Search) SetSplit(showHiddenNum bool) *Search {
 	p.ShowHiddenNum = showHiddenNum
 
 	return p
 }
 
-/**
- * 导出按钮文字
- *
- * @param string exportText
- * @return p
- */
+// 导出按钮文字
 func (p *Search) SetExportText(exportText string) *Search {
 	p.ExportText = exportText
 
 	return p
 }
 
-/**
- * 导出数据接口
- *
- * @param string exportApi
- * @return p
- */
+// 导出数据接口
 func (p *Search) SetExportApi(exportApi string) *Search {
 	p.ExportApi = exportApi
 
 	return p
 }
 
-/**
- * 设置搜索表单项
- *
- * @param string exportApi
- * @return p
- */
+// 设置搜索表单项
 func (p *Search) SetItems(item interface{}) *Search {
 	p.Items = append(p.Items, item)
 
