@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 PROJECT_PATH=$(cd $(dirname $0)|cd ..|pwd)
 PROJECT_NAME=/main
 
