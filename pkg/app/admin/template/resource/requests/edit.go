@@ -124,6 +124,13 @@ func (p *EditRequest) Values(ctx *builder.Context) error {
 				err := json.Unmarshal([]byte(getV), &m)
 				if err != nil {
 					fmt.Printf("Unmarshal with error: %+v\n", err)
+					var m map[string]interface{}
+					err := json.Unmarshal([]byte(getV), &m)
+					if err != nil {
+						fmt.Printf("Unmarshal with error: %+v\n", err)
+					} else {
+						v = m
+					}
 				} else {
 					v = m
 				}

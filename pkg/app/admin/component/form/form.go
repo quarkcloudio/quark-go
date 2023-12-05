@@ -336,6 +336,13 @@ func (p *Component) SetInitialValues(initialValues map[string]interface{}) *Comp
 				err := json.Unmarshal([]byte(getV), &m)
 				if err != nil {
 					fmt.Printf("Unmarshal with error: %+v\n", err)
+					var m map[string]interface{}
+					err := json.Unmarshal([]byte(getV), &m)
+					if err != nil {
+						fmt.Printf("Unmarshal with error: %+v\n", err)
+					} else {
+						v = m
+					}
 				} else {
 					v = m
 				}
