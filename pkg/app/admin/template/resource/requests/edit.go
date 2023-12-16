@@ -2,7 +2,6 @@ package requests
 
 import (
 	"encoding/json"
-	"fmt"
 	"reflect"
 	"strings"
 	"time"
@@ -122,25 +121,22 @@ func (p *EditRequest) Values(ctx *builder.Context) error {
 			if strings.Contains(getV, "[") {
 				var m []interface{}
 				err := json.Unmarshal([]byte(getV), &m)
-				if err != nil {
-					fmt.Printf("Unmarshal with error: %+v\n", err)
-					var m map[string]interface{}
-					err := json.Unmarshal([]byte(getV), &m)
-					if err != nil {
-						fmt.Printf("Unmarshal with error: %+v\n", err)
-					} else {
-						v = m
-					}
-				} else {
+				if err == nil {
 					v = m
+				} else {
+					if strings.Contains(getV, "{") {
+						var m map[string]interface{}
+						err := json.Unmarshal([]byte(getV), &m)
+						if err == nil {
+							v = m
+						}
+					}
 				}
 			} else {
 				if strings.Contains(getV, "{") {
 					var m map[string]interface{}
 					err := json.Unmarshal([]byte(getV), &m)
-					if err != nil {
-						fmt.Printf("Unmarshal with error: %+v\n", err)
-					} else {
+					if err == nil {
 						v = m
 					}
 				}

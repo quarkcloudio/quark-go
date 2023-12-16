@@ -2,7 +2,6 @@ package requests
 
 import (
 	"encoding/json"
-	"fmt"
 	"reflect"
 	"strings"
 	"time"
@@ -65,21 +64,28 @@ func (p *DetailRequest) FillData(ctx *builder.Context) map[string]interface{} {
 				fieldValue = result[name]
 				getV, ok := result[name].(string)
 				if ok {
-					if strings.Contains(getV, "{") {
-						var m map[string]interface{}
-						err := json.Unmarshal([]byte(getV), &m)
-						if err != nil {
-							fmt.Printf("Unmarshal with error: %+v\n", err)
-						}
-						fieldValue = m
-					}
 					if strings.Contains(getV, "[") {
 						var m []interface{}
 						err := json.Unmarshal([]byte(getV), &m)
-						if err != nil {
-							fmt.Printf("Unmarshal with error: %+v\n", err)
+						if err == nil {
+							fieldValue = m
+						} else {
+							if strings.Contains(getV, "{") {
+								var m map[string]interface{}
+								err := json.Unmarshal([]byte(getV), &m)
+								if err == nil {
+									fieldValue = m
+								}
+							}
 						}
-						fieldValue = m
+					} else {
+						if strings.Contains(getV, "{") {
+							var m map[string]interface{}
+							err := json.Unmarshal([]byte(getV), &m)
+							if err == nil {
+								fieldValue = m
+							}
+						}
 					}
 				}
 

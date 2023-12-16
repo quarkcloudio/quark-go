@@ -2,7 +2,6 @@ package requests
 
 import (
 	"encoding/json"
-	"fmt"
 	"reflect"
 	"strings"
 	"time"
@@ -149,21 +148,28 @@ func (p *IndexRequest) performsList(ctx *builder.Context, lists []map[string]int
 					fieldValue = v[name]
 					getV, ok := v[name].(string)
 					if ok {
-						if strings.Contains(getV, "{") {
-							var m map[string]interface{}
-							err := json.Unmarshal([]byte(getV), &m)
-							if err != nil {
-								fmt.Printf("Unmarshal with error: %+v\n", err)
-							}
-							fieldValue = m
-						}
 						if strings.Contains(getV, "[") {
 							var m []interface{}
 							err := json.Unmarshal([]byte(getV), &m)
-							if err != nil {
-								fmt.Printf("Unmarshal with error: %+v\n", err)
+							if err == nil {
+								fieldValue = m
+							} else {
+								if strings.Contains(getV, "{") {
+									var m map[string]interface{}
+									err := json.Unmarshal([]byte(getV), &m)
+									if err == nil {
+										fieldValue = m
+									}
+								}
 							}
-							fieldValue = m
+						} else {
+							if strings.Contains(getV, "{") {
+								var m map[string]interface{}
+								err := json.Unmarshal([]byte(getV), &m)
+								if err == nil {
+									fieldValue = m
+								}
+							}
 						}
 					}
 
