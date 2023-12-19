@@ -135,6 +135,7 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/gookit/goutil v0.6.11
 	github.com/gorilla/sessions v1.2.2
+	github.com/h2non/filetype v1.1.3
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

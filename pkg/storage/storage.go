@@ -12,12 +12,12 @@ import (
 	_ "image/jpeg"
 	_ "image/png"
 	"io"
-	"net/http"
 	"os"
 	"strconv"
 	"strings"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	"github.com/gabriel-vasile/mimetype"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/quarkcms/quark-go/v2/pkg/utils/file"
@@ -119,7 +119,7 @@ func (p *FileSystem) Reader(file *File) *FileSystem {
 				file.ContentType = file.Header["Content-Type"][0]
 			}
 		} else {
-			file.ContentType = http.DetectContentType(file.Content)
+			file.ContentType = mimetype.Detect(file.Content).String()
 		}
 	}
 
