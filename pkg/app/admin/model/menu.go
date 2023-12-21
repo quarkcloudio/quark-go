@@ -120,7 +120,7 @@ func (model *Menu) FindTreeNode(pid int) (list []*tree.TreeData) {
 		Where("guard_name = ?", "admin").
 		Where("pid = ?", pid).
 		Where("status = ?", 1).
-		Order("sort asc").
+		Order("sort asc,id asc").
 		Select("name", "id", "pid").
 		Find(&menus)
 
