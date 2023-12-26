@@ -1,6 +1,6 @@
 package navbar
 
-import "github.com/quarkcms/quark-go/v2/pkg/app/miniapp/component/component"
+import "github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/component"
 
 type Component struct {
 	component.Element

@@ -3,14 +3,14 @@ package dashboard
 import (
 	"reflect"
 
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/card"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/descriptions"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/grid"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/pagecontainer"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/statistic"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
-	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/card"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/descriptions"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/grid"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/pagecontainer"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/statistic"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
 )
 
 // 后台登录模板

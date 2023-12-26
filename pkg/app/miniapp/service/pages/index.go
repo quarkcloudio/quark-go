@@ -1,10 +1,10 @@
 package pages
 
 import (
-	"github.com/quarkcms/quark-go/v2/pkg/app/miniapp/component/col"
-	"github.com/quarkcms/quark-go/v2/pkg/app/miniapp/component/image"
-	"github.com/quarkcms/quark-go/v2/pkg/app/miniapp/template/page"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/col"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/image"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/template/page"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 )
 
 type Index struct {

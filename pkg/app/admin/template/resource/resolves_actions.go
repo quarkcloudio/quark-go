@@ -3,14 +3,14 @@ package resource
 import (
 	"strings"
 
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/action"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/drawer"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/dropdown"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/modal"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/space"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/action"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/drawer"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/dropdown"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/modal"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/space"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/types"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 )
 
 // 列表行为

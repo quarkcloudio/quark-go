@@ -1,6 +1,6 @@
 package menu
 
-import "github.com/quarkcms/quark-go/v2/pkg/app/admin/component/component"
+import "github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/component"
 
 type Divider struct {
 	component.Element

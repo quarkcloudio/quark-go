@@ -3,12 +3,12 @@ package layout
 import (
 	"time"
 
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/footer"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/layout"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
-	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/footer"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/layout"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
 )
 
 // 后台登录模板
@@ -95,7 +95,7 @@ func (p *Template) TemplateInit(ctx *builder.Context) interface{} {
 		{
 			"key":   "3",
 			"title": "Github",
-			"href":  "https://github.com/quarkcms",
+			"href":  "https://github.com/quarkcloudio",
 		},
 	}
 

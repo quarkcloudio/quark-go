@@ -8,7 +8,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/quarkcms/quark-go/v2/pkg/utils/file"
+	"github.com/quarkcloudio/quark-go/v2/pkg/utils/file"
 	"github.com/xbmlz/gct"
 )
 
@@ -31,7 +31,7 @@ func New(name string, version string) *PkgGo {
 // 下载文件
 func (p *PkgGo) Download() error {
 
-	// https://goproxy.cn/github.com/quarkcms/quark-go/v2/@v/v1.2.9.zip
+	// https://goproxy.cn/github.com/quarkcloudio/quark-go/v2/@v/v1.2.9.zip
 	fileUrl := domain + p.Name + "/@v/v" + p.Version + ".zip"
 
 	// Get the data

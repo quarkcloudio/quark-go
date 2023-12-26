@@ -1,8 +1,8 @@
 package searches
 
 import (
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/searches"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/searches"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 	"gorm.io/gorm"
 )
 

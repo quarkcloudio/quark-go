@@ -1,8 +1,8 @@
 package layouts
 
 import (
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/layout"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/layout"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 )
 
 type Index struct {

@@ -4,11 +4,11 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/card"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/tabs"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/card"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/tabs"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/types"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 	"gorm.io/gorm"
 )
 

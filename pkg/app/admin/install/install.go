@@ -3,9 +3,9 @@ package install
 import (
 	"os"
 
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
-	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
-	"github.com/quarkcms/quark-go/v2/pkg/utils/file"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
+	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v2/pkg/utils/file"
 	"gorm.io/gorm"
 )
 

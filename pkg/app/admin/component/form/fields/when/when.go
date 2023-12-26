@@ -1,8 +1,8 @@
 package when
 
 import (
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/component"
-	"github.com/quarkcms/quark-go/v2/pkg/utils/hex"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/component"
+	"github.com/quarkcloudio/quark-go/v2/pkg/utils/hex"
 )
 
 type Item struct {

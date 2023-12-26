@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/dchest/captcha"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/login"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/message"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
-	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
-	redisclient "github.com/quarkcms/quark-go/v2/pkg/dal/redis"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/login"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+	redisclient "github.com/quarkcloudio/quark-go/v2/pkg/dal/redis"
 )
 
 // 后台登录模板

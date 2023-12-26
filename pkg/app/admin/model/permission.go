@@ -3,9 +3,9 @@ package model
 import (
 	"time"
 
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/selectfield"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/transfer"
-	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/selectfield"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/transfer"
+	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
 )
 
 // 权限

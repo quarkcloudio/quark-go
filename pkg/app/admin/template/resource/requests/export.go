@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
-	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/types"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
 	"github.com/xuri/excelize/v2"
 )
 

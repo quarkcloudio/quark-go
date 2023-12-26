@@ -1,6 +1,6 @@
 package types
 
-import "github.com/quarkcms/quark-go/v2/pkg/builder"
+import "github.com/quarkcloudio/quark-go/v2/pkg/builder"
 
 type Drawer interface {
 	Actioner

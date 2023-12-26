@@ -10,9 +10,9 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
-	"github.com/quarkcms/quark-go/v2/pkg/dal"
-	"github.com/quarkcms/quark-go/v2/pkg/gopkg"
-	"github.com/quarkcms/quark-go/v2/pkg/utils/file"
+	"github.com/quarkcloudio/quark-go/v2/pkg/dal"
+	"github.com/quarkcloudio/quark-go/v2/pkg/gopkg"
+	"github.com/quarkcloudio/quark-go/v2/pkg/utils/file"
 	"gorm.io/gorm"
 )
 
@@ -25,7 +25,7 @@ const (
 	Version = "2.1.43"
 
 	// 包名
-	PkgName = "github.com/quarkcms/quark-go/v2"
+	PkgName = "github.com/quarkcloudio/quark-go/v2"
 )
 
 type Engine struct {

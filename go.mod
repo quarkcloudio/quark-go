@@ -1,4 +1,4 @@
-module github.com/quarkcms/quark-go/v2
+module github.com/quarkcloudio/quark-go/v2
 
 go 1.18
 

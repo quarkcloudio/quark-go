@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/tabs"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/model"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/service/actions"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
-	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/tabs"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service/actions"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
 )
 
 type WebConfig struct {

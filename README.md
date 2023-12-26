@@ -23,10 +23,10 @@ go mod init demo/hello
 package main
 
 import (
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/service"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/install"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/middleware"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/install"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/middleware"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 	"github.com/glebarez/sqlite""
 	"gorm.io/gorm"
 )
@@ -88,8 +88,8 @@ go run main.go
 1. **后台用户认证使用了AppKey作为JWT的加密密串，生成环境请务必更改**
 
 ## 相关项目
-- [QuarkSmart](https://github.com/quarkcms/quark-smart) 单体应用
-- [QuarkMicro](https://github.com/quarkcms/quark-go) 微服务应用
+- [QuarkSmart](https://github.com/quarkcloudio/quark-smart) 单体应用
+- [QuarkMicro](https://github.com/quarkcloudio/quark-go) 微服务应用
 
 ## 演示站点
 香港站点，页面加载可能比较缓慢
@@ -99,7 +99,7 @@ go run main.go
 - 密码：```123456```
 
 ## 技术支持
-为了避免打扰作者日常工作，你可以在Github上提交 [Issues](https://github.com/quarkcms/quark-go/issues)
+为了避免打扰作者日常工作，你可以在Github上提交 [Issues](https://github.com/quarkcloudio/quark-go/issues)
 
 相关教程，你可以查看 [在线文档](http://www.quarkcms.com/quark-go/)
 

@@ -1,7 +1,7 @@
 package metrics
 
 import (
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/statistic"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/statistic"
 	"gorm.io/gorm"
 )
 

@@ -1,8 +1,8 @@
 package actions
 
 import (
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/actions"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/actions"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 )
 
 type FormExtraBackAction struct {

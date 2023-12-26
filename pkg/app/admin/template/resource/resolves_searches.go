@@ -3,12 +3,12 @@ package resource
 import (
 	"strings"
 
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/cascader"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/selectfield"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/treeselect"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/table"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/template/resource/types"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/cascader"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/selectfield"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/treeselect"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/table"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/types"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 )
 
 // 列表页搜索表单

@@ -7,10 +7,10 @@ import (
 	"unicode/utf8"
 
 	"github.com/derekstavis/go-qs"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/when"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/rule"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
-	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/when"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/rule"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
 )
 
 // 创建请求的验证器

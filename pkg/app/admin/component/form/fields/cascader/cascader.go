@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/component"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/when"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/rule"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/table"
-	"github.com/quarkcms/quark-go/v2/pkg/utils/convert"
-	"github.com/quarkcms/quark-go/v2/pkg/utils/hex"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/component"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/when"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/rule"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/table"
+	"github.com/quarkcloudio/quark-go/v2/pkg/utils/convert"
+	"github.com/quarkcloudio/quark-go/v2/pkg/utils/hex"
 )
 
 type FieldNames struct {

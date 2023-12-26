@@ -1,11 +1,11 @@
 package service
 
 import (
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/service/dashboards"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/service/layouts"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/service/logins"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/service/resources"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/service/uploads"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service/dashboards"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service/layouts"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service/logins"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service/resources"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service/uploads"
 )
 
 // 注册服务

@@ -5,7 +5,7 @@ import (
 	"io"
 
 	"github.com/gin-gonic/gin"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 )
 
 // 适配gin框架路由

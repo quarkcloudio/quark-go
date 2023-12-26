@@ -3,8 +3,8 @@ package model
 import (
 	"time"
 
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form/fields/checkbox"
-	"github.com/quarkcms/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/checkbox"
+	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
 )
 
 // 角色

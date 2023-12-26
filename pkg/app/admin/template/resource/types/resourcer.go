@@ -1,9 +1,9 @@
 package types
 
 import (
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/form"
-	"github.com/quarkcms/quark-go/v2/pkg/app/admin/component/table"
-	"github.com/quarkcms/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/table"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 	"gorm.io/gorm"
 )
 
