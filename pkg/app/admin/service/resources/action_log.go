@@ -17,7 +17,6 @@ type ActionLog struct {
 
 // 初始化
 func (p *ActionLog) Init(ctx *builder.Context) interface{} {
-
 	// 标题
 	p.Title = "操作日志"
 
@@ -35,7 +34,6 @@ func (p *ActionLog) Init(ctx *builder.Context) interface{} {
 
 // 列表查询
 func (p *ActionLog) Query(ctx *builder.Context, query *gorm.DB) *gorm.DB {
-
 	return query.
 		Select("action_logs.*,admins.username").
 		Joins("left join admins on admins.id = action_logs.object_id").
@@ -51,7 +49,7 @@ func (p *ActionLog) Fields(ctx *builder.Context) []interface{} {
 		field.Text("username", "用户"),
 		field.Text("url", "行为").SetEllipsis(true),
 		field.Text("ip", "IP"),
-		field.Datetime("created_at", "发生时间", func() interface{} {
+		field.Datetime("created_at", "发生时间", func(interface{}) interface{} {
 			if p.Field["created_at"] == nil {
 				return p.Field["created_at"]
 			}

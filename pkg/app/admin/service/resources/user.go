@@ -20,7 +20,6 @@ type User struct {
 
 // 初始化
 func (p *User) Init(ctx *builder.Context) interface{} {
-
 	// 标题
 	p.Title = "用户"
 
@@ -45,8 +44,7 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 
 		field.Image("avatar", "头像").OnlyOnForms(),
 
-		field.Text("username", "用户名", func() interface{} {
-
+		field.Text("username", "用户名", func(interface{}) interface{} {
 			return "<a href='#/layout/index?api=/api/admin/user/edit&id=" + strconv.Itoa(p.Field["id"].(int)) + "'>" + p.Field["username"].(string) + "</a>"
 		}).
 			SetRules([]*rule.Rule{
@@ -115,7 +113,7 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 			OnlyOnForms().
 			ShowOnImporting(true),
 
-		field.Datetime("last_login_time", "最后登录时间", func() interface{} {
+		field.Datetime("last_login_time", "最后登录时间", func(interface{}) interface{} {
 			if p.Field["last_login_time"] == nil {
 				return p.Field["last_login_time"]
 			}
@@ -140,7 +138,6 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 
 // 搜索
 func (p *User) Searches(ctx *builder.Context) []interface{} {
-
 	return []interface{}{
 		searches.Input("username", "用户名"),
 		searches.Input("nickname", "昵称"),
@@ -151,7 +148,6 @@ func (p *User) Searches(ctx *builder.Context) []interface{} {
 
 // 行为
 func (p *User) Actions(ctx *builder.Context) []interface{} {
-
 	return []interface{}{
 		actions.Import(),
 		actions.CreateLink(),
@@ -173,7 +169,6 @@ func (p *User) Actions(ctx *builder.Context) []interface{} {
 
 // 编辑页面显示前回调
 func (p *User) BeforeEditing(ctx *builder.Context, data map[string]interface{}) map[string]interface{} {
-
 	// 编辑页面清理password
 	delete(data, "password")
 
@@ -182,7 +177,6 @@ func (p *User) BeforeEditing(ctx *builder.Context, data map[string]interface{}) 
 
 // 保存数据前回调
 func (p *User) BeforeSaving(ctx *builder.Context, submitData map[string]interface{}) (map[string]interface{}, error) {
-
 	// 加密密码
 	if submitData["password"] != nil {
 		submitData["password"] = hash.Make(submitData["password"].(string))

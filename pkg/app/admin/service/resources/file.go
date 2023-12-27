@@ -16,7 +16,6 @@ type File struct {
 
 // 初始化
 func (p *File) Init(ctx *builder.Context) interface{} {
-
 	// 标题
 	p.Title = "文件"
 
@@ -38,7 +37,7 @@ func (p *File) Fields(ctx *builder.Context) []interface{} {
 		field.Text("name", "名称"),
 		field.Text("size", "大小").SetSorter(true),
 		field.Text("ext", "扩展名"),
-		field.Datetime("created_at", "上传时间", func() interface{} {
+		field.Datetime("created_at", "上传时间", func(interface{}) interface{} {
 			if p.Field["created_at"] == nil {
 				return p.Field["created_at"]
 			}

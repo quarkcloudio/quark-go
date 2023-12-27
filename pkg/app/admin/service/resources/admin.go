@@ -23,7 +23,6 @@ type Admin struct {
 
 // 初始化
 func (p *Admin) Init(ctx *builder.Context) interface{} {
-
 	// 标题
 	p.Title = "管理员"
 
@@ -51,8 +50,7 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 
 		field.Image("avatar", "头像").OnlyOnForms(),
 
-		field.Text("username", "用户名", func() interface{} {
-
+		field.Text("username", "用户名", func(interface{}) interface{} {
 			return "<a href='#/layout/index?api=/api/admin/admin/edit&id=" + strconv.Itoa(p.Field["id"].(int)) + "'>" + p.Field["username"].(string) + "</a>"
 		}).
 			SetRules([]*rule.Rule{
@@ -67,7 +65,7 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 				rule.Unique("admins", "username", "{id}", "用户名已存在"),
 			}),
 
-		field.Checkbox("role_ids", "角色", func() interface{} {
+		field.Checkbox("role_ids", "角色", func(interface{}) interface{} {
 			roleText := ""
 			roles, err := (&model.CasbinRule{}).GetUserRoles(p.Field["id"].(int))
 			if err != nil {
@@ -136,7 +134,7 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 			OnlyOnForms().
 			ShowOnImporting(true),
 
-		field.Datetime("last_login_time", "最后登录时间", func() interface{} {
+		field.Datetime("last_login_time", "最后登录时间", func(interface{}) interface{} {
 			if p.Field["last_login_time"] == nil {
 				return p.Field["last_login_time"]
 			}
@@ -161,7 +159,6 @@ func (p *Admin) Fields(ctx *builder.Context) []interface{} {
 
 // 搜索
 func (p *Admin) Searches(ctx *builder.Context) []interface{} {
-
 	return []interface{}{
 		searches.Input("username", "用户名"),
 		searches.Input("nickname", "昵称"),
@@ -172,7 +169,6 @@ func (p *Admin) Searches(ctx *builder.Context) []interface{} {
 
 // 行为
 func (p *Admin) Actions(ctx *builder.Context) []interface{} {
-
 	return []interface{}{
 		actions.Import(),
 		actions.CreateLink(),
@@ -194,7 +190,6 @@ func (p *Admin) Actions(ctx *builder.Context) []interface{} {
 
 // 编辑页面显示前回调
 func (p *Admin) BeforeEditing(ctx *builder.Context, data map[string]interface{}) map[string]interface{} {
-
 	// 编辑页面清理password
 	delete(data, "password")
 
@@ -212,7 +207,6 @@ func (p *Admin) BeforeEditing(ctx *builder.Context, data map[string]interface{})
 
 // 保存数据前回调
 func (p *Admin) BeforeSaving(ctx *builder.Context, submitData map[string]interface{}) (map[string]interface{}, error) {
-
 	// 加密密码
 	if submitData["password"] != nil {
 		submitData["password"] = hash.Make(submitData["password"].(string))
@@ -223,7 +217,6 @@ func (p *Admin) BeforeSaving(ctx *builder.Context, submitData map[string]interfa
 
 // 保存后回调
 func (p *Admin) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
-
 	// 导入操作，直接返回
 	if ctx.IsImport() {
 		return result.Error

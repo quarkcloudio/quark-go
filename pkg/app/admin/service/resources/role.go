@@ -21,7 +21,6 @@ type Role struct {
 
 // 初始化
 func (p *Role) Init(ctx *builder.Context) interface{} {
-
 	// 标题
 	p.Title = "角色"
 
@@ -49,14 +48,14 @@ func (p *Role) Fields(ctx *builder.Context) []interface{} {
 
 		field.Text("guard_name", "GuardName").SetDefault("admin"),
 		field.Tree("menu_ids", "权限").SetData(treeData).OnlyOnForms(),
-		field.Datetime("created_at", "创建时间", func() interface{} {
+		field.Datetime("created_at", "创建时间", func(interface{}) interface{} {
 			if p.Field["created_at"] == nil {
 				return p.Field["created_at"]
 			}
 
 			return p.Field["created_at"].(time.Time).Format("2006-01-02 15:04:05")
 		}).OnlyOnIndex(),
-		field.Datetime("updated_at", "更新时间", func() interface{} {
+		field.Datetime("updated_at", "更新时间", func(interface{}) interface{} {
 			if p.Field["updated_at"] == nil {
 				return p.Field["updated_at"]
 			}

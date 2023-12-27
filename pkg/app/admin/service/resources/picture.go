@@ -16,7 +16,6 @@ type Picture struct {
 
 // 初始化
 func (p *Picture) Init(ctx *builder.Context) interface{} {
-
 	// 标题
 	p.Title = "图片"
 
@@ -35,8 +34,7 @@ func (p *Picture) Fields(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		field.ID("id", "ID"),
-		field.Text("path", "显示", func() interface{} {
-
+		field.Text("path", "显示", func(interface{}) interface{} {
 			return "<img src='" + (&model.Picture{}).GetPath(p.Field["id"]) + "' width=50 height=50 />"
 		}),
 		field.Text("name", "名称").SetEllipsis(true),
@@ -44,7 +42,7 @@ func (p *Picture) Fields(ctx *builder.Context) []interface{} {
 		field.Text("width", "宽度"),
 		field.Text("height", "高度"),
 		field.Text("ext", "扩展名"),
-		field.Datetime("created_at", "上传时间", func() interface{} {
+		field.Datetime("created_at", "上传时间", func(interface{}) interface{} {
 			if p.Field["created_at"] == nil {
 				return p.Field["created_at"]
 			}
