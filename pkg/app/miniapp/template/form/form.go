@@ -70,7 +70,7 @@ func (p *Template) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		p.Action("提交", "primary").
 			SetActionType("submit").
-			SetFormType("submit").
+			SetFormType("button").
 			SetBlock(true),
 	}
 }

@@ -63,6 +63,7 @@ func (p *Component) Init() *Component {
 	p.SelectionEnd = -1
 	p.AdjustPosition = true
 	p.IgnoreCompositionEvent = true
+	p.Value = ""
 
 	return p
 }
