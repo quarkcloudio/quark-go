@@ -140,8 +140,8 @@ func (p *IndexRequest) performsList(ctx *builder.Context, lists []map[string]int
 			callback := field.(interface{ GetCallback() interface{} }).GetCallback()
 
 			if callback != nil {
-				getCallback := callback.(func() interface{})
-				fields[name] = getCallback()
+				getCallback := callback.(func(interface{}) interface{})
+				fields[name] = getCallback(v[name])
 			} else {
 				if v[name] != nil {
 					var fieldValue interface{}

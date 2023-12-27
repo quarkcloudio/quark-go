@@ -28,7 +28,7 @@ func (p *ExportRequest) Handle(ctx *builder.Context) error {
 	index, _ := f.NewSheet("Sheet1")
 	rowData := map[string]interface{}{}
 
-	var a = 'a'
+	a := 'a'
 	for _, fieldValue := range fields.([]interface{}) {
 		Label := reflect.
 			ValueOf(fieldValue).
@@ -40,7 +40,7 @@ func (p *ExportRequest) Handle(ctx *builder.Context) error {
 	}
 
 	for dataKey, dataValue := range data.([]interface{}) {
-		var a = 'a'
+		a := 'a'
 		for _, field := range fields.([]interface{}) {
 
 			name := reflect.
@@ -194,8 +194,8 @@ func (p *ExportRequest) performsList(ctx *builder.Context, lists []map[string]in
 			callback := field.(interface{ GetCallback() interface{} }).GetCallback()
 
 			if callback != nil {
-				getCallback := callback.(func() interface{})
-				fields[name] = getCallback()
+				getCallback := callback.(func(interface{}) interface{})
+				fields[name] = getCallback(v[name])
 			} else {
 				if v[name] != nil {
 					var fieldValue interface{}

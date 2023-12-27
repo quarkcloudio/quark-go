@@ -286,19 +286,16 @@ func (p *Component) SetUpdateRules(rules []*rule.Rule) *Component {
 
 // 获取全局验证规则
 func (p *Component) GetRules() []*rule.Rule {
-
 	return p.Rules
 }
 
 // 获取创建表单验证规则
 func (p *Component) GetCreationRules() []*rule.Rule {
-
 	return p.CreationRules
 }
 
 // 获取更新表单验证规则
 func (p *Component) GetUpdateRules() []*rule.Rule {
-
 	return p.UpdateRules
 }
 
@@ -496,7 +493,6 @@ func (p *Component) SetWhen(value ...any) *Component {
 
 // 获取When组件数据
 func (p *Component) GetWhen() *when.Component {
-
 	return p.When
 }
 
@@ -697,7 +693,7 @@ func (p *Component) GetOptions() interface{} {
 }
 
 // 设置回调函数
-func (p *Component) SetCallback(closure func() interface{}) *Component {
+func (p *Component) SetCallback(closure func(interface{}) interface{}) *Component {
 	if closure != nil {
 		p.Callback = closure
 	}
@@ -807,7 +803,6 @@ func (p *Component) GetValueEnum() interface{} {
 
 // 根据value值获取Option的Label
 func (p *Component) GetOptionLabel(value interface{}) interface{} {
-
 	if value == 1 {
 		return p.CheckedChildren
 	} else {

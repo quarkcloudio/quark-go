@@ -56,8 +56,8 @@ func (p *DetailRequest) FillData(ctx *builder.Context) map[string]interface{} {
 		// 获取实例的回调函数
 		callback := field.(interface{ GetCallback() interface{} }).GetCallback()
 		if callback != nil {
-			getCallback := callback.(func() interface{})
-			fields[name] = getCallback()
+			getCallback := callback.(func(interface{}) interface{})
+			fields[name] = getCallback(result[name])
 		} else {
 			if result[name] != nil {
 				var fieldValue interface{}
@@ -122,7 +122,6 @@ func (p *DetailRequest) FillData(ctx *builder.Context) map[string]interface{} {
 
 // 获取表单初始化数据
 func (p *DetailRequest) Values(ctx *builder.Context) error {
-
 	// 模版实例
 	template := ctx.Template.(types.Resourcer)
 
