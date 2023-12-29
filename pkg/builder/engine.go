@@ -81,7 +81,6 @@ type Handle func(ctx *Context) error
 
 // 初始化对象
 func New(config *Config) *Engine {
-
 	// 初始化echo引擎
 	e := echo.New()
 
@@ -161,7 +160,6 @@ func (p *Engine) NewContext(writer http.ResponseWriter, request *http.Request) *
 
 // 转换Request、Response对象
 func (p *Engine) TransformContext(fullPath string, header map[string][]string, method string, url string, body io.Reader, writer io.Writer) *Context {
-
 	// 转换为http.ResponseWriter
 	w := NewResponse(writer)
 
@@ -391,9 +389,6 @@ func (p *Engine) Render(ctx *Context) error {
 
 	// 解析UseHandler方法
 	err = ctx.useHandlerParser()
-	if err.Error() != ctx.Next().Error() {
-		return err
-	}
 	if err != nil {
 		if err.Error() == ctx.Next().Error() {
 			// 解析模版方法
@@ -672,7 +667,6 @@ func (p *Group) Group(path string, handlers ...Handle) *Group {
 
 // Run Server
 func (p *Engine) Run(addr string) {
-
 	// 处理模版上的路由映射关系
 	p.routeMappingParser()
 
