@@ -89,7 +89,7 @@ go run main.go
 
 ## 相关项目
 - [QuarkSmart](https://github.com/quarkcloudio/quark-smart) 单体应用
-- [QuarkMicro](https://github.com/quarkcloudio/quark-go) 微服务应用
+- [QuarkMicro](https://github.com/quarkcloudio/quark-micro) 微服务应用
 
 ## 演示站点
 香港站点，页面加载可能比较缓慢
@@ -101,7 +101,7 @@ go run main.go
 ## 技术支持
 为了避免打扰作者日常工作，你可以在Github上提交 [Issues](https://github.com/quarkcloudio/quark-go/issues)
 
-相关教程，你可以查看 [在线文档](http://www.quarkcms.com/quark-go/)
+相关教程，你可以查看 [在线文档](http://quarkcloud.io/quark-go/)
 
 ## License
 QuarkGo is licensed under The MIT License (MIT).
