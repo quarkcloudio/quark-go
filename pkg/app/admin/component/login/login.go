@@ -1,6 +1,13 @@
 package login
 
-import "github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/component"
+import (
+	"encoding/json"
+	"reflect"
+	"strings"
+
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/component"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/when"
+)
 
 type ActivityConfig struct {
 	Title    string                 `json:"title,omitempty"`
@@ -11,17 +18,21 @@ type ActivityConfig struct {
 
 type Component struct {
 	component.Element
-	Component          string          `json:"component"`
-	Api                string          `json:"api,omitempty"`
-	Redirect           string          `json:"redirect,omitempty"`
-	Logo               interface{}     `json:"logo,omitempty"`
-	Title              string          `json:"title,omitempty"`
-	SubTitle           string          `json:"subTitle,omitempty"`
-	BackgroundImageUrl string          `json:"backgroundImageUrl,omitempty"`
-	CaptchaIdUrl       string          `json:"captchaIdUrl,omitempty"`
-	CaptchaUrl         string          `json:"captchaUrl,omitempty"`
-	LoginType          []string        `json:"loginType"`
-	ActivityConfig     *ActivityConfig `json:"activityConfig,omitempty"`
+	Component          string                 `json:"component"`
+	Api                string                 `json:"api,omitempty"`
+	Redirect           string                 `json:"redirect,omitempty"`
+	Logo               interface{}            `json:"logo,omitempty"`
+	Title              string                 `json:"title,omitempty"`
+	SubTitle           string                 `json:"subTitle,omitempty"`
+	BackgroundImageUrl string                 `json:"backgroundImageUrl,omitempty"`
+	CaptchaIdUrl       string                 `json:"captchaIdUrl,omitempty"`
+	CaptchaUrl         string                 `json:"captchaUrl,omitempty"`
+	LoginType          []string               `json:"loginType"`
+	ActivityConfig     *ActivityConfig        `json:"activityConfig,omitempty"`
+	Values             map[string]interface{} `json:"values,omitempty"`
+	InitialValues      map[string]interface{} `json:"initialValues,omitempty"`
+	Body               interface{}            `json:"body,omitempty"`
+	Actions            []interface{}          `json:"actions,omitempty"`
 }
 
 // 初始化组件
@@ -105,9 +116,264 @@ func (p *Component) SetActivityConfig(activityConfig *ActivityConfig) *Component
 	return p
 }
 
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "login"
+// 解析initialValue
+func (p *Component) parseInitialValue(item interface{}, initialValues map[string]interface{}) interface{} {
+	var value any
+
+	// 数组直接返回
+	if _, ok := item.([]interface{}); ok {
+		return nil
+	}
+
+	reflectElem := reflect.
+		ValueOf(item).
+		Elem()
+
+	name := reflectElem.
+		FieldByName("Name").
+		String()
+	if name == "" {
+		return nil
+	}
+
+	issetDefaultValue := reflectElem.
+		FieldByName("DefaultValue").
+		IsValid()
+
+	if issetDefaultValue {
+		defaultValue := reflectElem.
+			FieldByName("DefaultValue").
+			Interface()
+
+		if defaultValue != nil {
+			value = defaultValue
+		}
+	}
+
+	issetValue := reflectElem.
+		FieldByName("Value").
+		IsValid()
+
+	if issetValue {
+		getValue := reflectElem.
+			FieldByName("Value").
+			Interface()
+
+		if getValue != nil {
+			value = getValue
+		}
+	}
+
+	if initialValues[name] != nil {
+		value = initialValues[name]
+	}
+
+	return value
+}
+
+// 查找字段
+func (p *Component) findFields(fields interface{}, when bool) interface{} {
+	var items []interface{}
+
+	if getFields, ok := fields.([]interface{}); ok {
+		for _, v := range getFields {
+			items = append(items, p.fieldParser(v, when)...)
+		}
+	} else {
+		items = append(items, p.fieldParser(fields, when)...)
+	}
+
+	return items
+}
+
+// 解析字段
+func (p *Component) fieldParser(v interface{}, when bool) []interface{} {
+	var items []interface{}
+
+	// 数组直接返回
+	if _, ok := v.([]interface{}); ok {
+		return items
+	}
+
+	vKind := reflect.
+		ValueOf(v).
+		Kind()
+	if !(vKind.String() == "interface" || vKind.String() == "ptr") {
+		return items
+	}
+
+	hasBody := reflect.
+		ValueOf(v).
+		Elem().
+		FieldByName("Body").
+		IsValid()
+
+	// 存在body的情况下
+	if hasBody {
+		body := reflect.
+			ValueOf(v).
+			Elem().
+			FieldByName("Body").
+			Interface()
+
+		getItems := p.findFields(body, true)
+		if getItems, ok := getItems.([]interface{}); ok {
+			if len(getItems) > 0 {
+				items = append(items, getItems...)
+			}
+		}
+
+		return items
+	}
+
+	hasTabPanes := reflect.
+		ValueOf(v).
+		Elem().
+		FieldByName("TabPanes").
+		IsValid()
+
+	// 存在TabPanes情况下
+	if hasTabPanes {
+		body := reflect.
+			ValueOf(v).
+			Elem().
+			FieldByName("TabPanes").
+			Interface()
+
+		getItems := p.findFields(body, true)
+		if getItems, ok := getItems.([]interface{}); ok {
+			if len(getItems) > 0 {
+				items = append(items, getItems...)
+			}
+		}
+
+		return items
+	}
+
+	// 默认情况
+	component := reflect.
+		ValueOf(v).
+		Elem().
+		FieldByName("Component").
+		String()
+	if strings.Contains(component, "Field") {
+		items = append(items, v)
+		if when {
+			whenFields := p.getWhenFields(v)
+			if len(whenFields) > 0 {
+				items = append(items, whenFields...)
+			}
+		}
+	}
+
+	return items
+}
+
+// 获取When组件中的字段
+func (p *Component) getWhenFields(item interface{}) []interface{} {
+	var items []interface{}
+	whenIsValid := reflect.
+		ValueOf(item).
+		Elem().
+		FieldByName("When").
+		IsValid()
+	if !whenIsValid {
+		return items
+	}
+
+	getWhen := item.(interface {
+		GetWhen() *when.Component
+	}).GetWhen()
+
+	if getWhen == nil {
+		return items
+	}
+	whenItems := getWhen.Items
+	if whenItems == nil {
+		return items
+	}
+
+	for _, v := range whenItems {
+		if v.Body != nil {
+			if body, ok := v.Body.([]interface{}); ok {
+				if len(body) > 0 {
+					items = append(items, body...)
+				}
+			} else {
+				items = append(items, body)
+			}
+		}
+	}
+
+	return items
+}
+
+// 表单默认值，只有初始化以及重置时生效
+func (p *Component) SetInitialValues(initialValues map[string]interface{}) *Component {
+	data := initialValues
+
+	fields := p.findFields(p.Body, true)
+	if body, ok := fields.([]any); ok {
+		for _, v := range body {
+			value := p.parseInitialValue(v, initialValues)
+			if value != nil {
+				name := reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Name").
+					String()
+
+				data[name] = value
+			}
+		}
+	}
+
+	for k, v := range data {
+		getV, ok := v.(string)
+		if ok {
+			if strings.Contains(getV, "[") {
+				var m []interface{}
+				err := json.Unmarshal([]byte(getV), &m)
+				if err == nil {
+					v = m
+				} else {
+					if strings.Contains(getV, "{") {
+						var m map[string]interface{}
+						err := json.Unmarshal([]byte(getV), &m)
+						if err == nil {
+							v = m
+						}
+					}
+				}
+			} else {
+				if strings.Contains(getV, "{") {
+					var m map[string]interface{}
+					err := json.Unmarshal([]byte(getV), &m)
+					if err == nil {
+						v = m
+					}
+				}
+			}
+		}
+
+		data[k] = v
+	}
+
+	p.InitialValues = data
+
+	return p
+}
+
+// 表单项
+func (p *Component) SetBody(items interface{}) *Component {
+	p.Body = items
+
+	return p
+}
+
+// 设置表单行为
+func (p *Component) SetActions(actions []interface{}) *Component {
+	p.Actions = actions
 
 	return p
 }

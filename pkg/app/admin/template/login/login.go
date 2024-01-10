@@ -20,6 +20,7 @@ type Template struct {
 	Logo     interface{} // 登录页面Logo
 	Title    string      // 标题
 	SubTitle string      // 子标题
+	Body     interface{} `json:"body,omitempty"` // 表单内容
 }
 
 // 初始化
@@ -156,8 +157,7 @@ func (p *Template) Render(ctx *builder.Context) error {
 		SetTitle(title).
 		SetSubTitle(subTitle).
 		SetCaptchaIdUrl(captchaIdUrl).
-		SetCaptchaUrl(captchaUrl).
-		JsonSerialize()
+		SetCaptchaUrl(captchaUrl)
 
 	return ctx.JSON(200, component)
 }
