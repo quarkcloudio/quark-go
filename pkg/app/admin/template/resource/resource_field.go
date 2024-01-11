@@ -21,6 +21,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/icon"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/id"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/image"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/imagecaptcha"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/list"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/mapfield"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/month"
@@ -31,6 +32,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/search"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/selectfield"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/selects"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/smscaptcha"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/space"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/switchfield"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/text"
@@ -395,4 +397,18 @@ func (p *Field) Dependency() *dependency.Component {
 // field.Transfer("name", "穿梭框") 或 field.Transfer("name", "穿梭框", func() interface{} { return p.Field["name"] })
 func (p *Field) Transfer(params ...interface{}) *transfer.Component {
 	return fieldParser(transfer.New(), params, "").(*transfer.Component)
+}
+
+// 图形验证码组件
+//
+// field.ImageCaptcha("captcha", "验证码") 或 field.ImageCaptcha("captcha", "验证码", func() interface{} { return p.Field["username"] })
+func (p *Field) ImageCaptcha(params ...interface{}) *imagecaptcha.Component {
+	return fieldParser(imagecaptcha.New(), params, "请输入").(*imagecaptcha.Component)
+}
+
+// 短信验证码组件
+//
+// field.SmsCaptcha("code", "输入框") 或 field.SmsCaptcha("code", "输入框", func() interface{} { return p.Field["username"] })
+func (p *Field) SmsCaptcha(params ...interface{}) *smscaptcha.Component {
+	return fieldParser(smscaptcha.New(), params, "请输入").(*smscaptcha.Component)
 }
