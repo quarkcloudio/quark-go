@@ -40,6 +40,9 @@ type Loginer interface {
 	// 退出方法
 	Logout(ctx *builder.Context) error
 
+	// 包裹在组件内的创建页字段
+	FieldsWithinComponents(ctx *builder.Context) interface{}
+
 	// 组件渲染
 	Render(ctx *builder.Context) error
 }

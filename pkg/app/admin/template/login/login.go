@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/dchest/captcha"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/when"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/login"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
@@ -131,8 +130,8 @@ func (p *Template) Logout(ctx *builder.Context) error {
 	return ctx.JSON(200, message.Error("退出成功"))
 }
 
-// 获取字段
-func (p *Template) getFields(ctx *builder.Context) interface{} {
+// 包裹在组件内的创建页字段
+func (p *Template) FieldsWithinComponents(ctx *builder.Context) interface{} {
 
 	// 资源实例
 	template := ctx.Template.(Loginer)
@@ -140,13 +139,17 @@ func (p *Template) getFields(ctx *builder.Context) interface{} {
 	// 获取字段
 	fields := template.Fields(ctx)
 
-	return p.findFields(fields, true)
+	// 解析创建页表单组件内的字段
+	items := p.FormFieldsParser(ctx, fields)
+
+	return items
 }
 
-// 查找字段
-func (p *Template) findFields(fields interface{}, when bool) interface{} {
-	var items []interface{}
+// 解析创建页表单组件内的字段
+func (p *Template) FormFieldsParser(ctx *builder.Context, fields interface{}) interface{} {
+	items := []interface{}{}
 
+	// 解析字段
 	if fields, ok := fields.([]interface{}); ok {
 		for _, v := range fields {
 			hasBody := reflect.
@@ -155,17 +158,25 @@ func (p *Template) findFields(fields interface{}, when bool) interface{} {
 				FieldByName("Body").
 				IsValid()
 			if hasBody {
+
+				// 获取内容值
 				body := reflect.
 					ValueOf(v).
 					Elem().
 					FieldByName("Body").
 					Interface()
-				getItems := p.findFields(body, true)
-				if getItems, ok := getItems.([]interface{}); ok {
-					if len(getItems) > 0 {
-						items = append(items, getItems...)
-					}
-				}
+
+				// 解析值
+				getFields := p.FormFieldsParser(ctx, body)
+
+				// 更新值
+				reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Body").
+					Set(reflect.ValueOf(getFields))
+
+				items = append(items, v)
 			} else {
 				component := reflect.
 					ValueOf(v).
@@ -173,53 +184,21 @@ func (p *Template) findFields(fields interface{}, when bool) interface{} {
 					FieldByName("Component").
 					String()
 				if strings.Contains(component, "Field") {
-					items = append(items, v)
-					if when {
-						whenFields := p.getWhenFields(v)
-						if len(whenFields) > 0 {
-							items = append(items, whenFields...)
+
+					// 判断是否在创建页面
+					if v, ok := v.(interface{ IsShownOnCreation() bool }); ok {
+						if v.IsShownOnCreation() {
+
+							// 生成前端验证规则
+							v.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
+
+							// 组合数据
+							items = append(items, v)
 						}
 					}
+				} else {
+					items = append(items, v)
 				}
-			}
-		}
-	}
-
-	return items
-}
-
-// 获取When组件中的字段
-func (p *Template) getWhenFields(item interface{}) []interface{} {
-	var items []interface{}
-	whenIsValid := reflect.
-		ValueOf(item).
-		Elem().
-		FieldByName("When").
-		IsValid()
-	if !whenIsValid {
-		return items
-	}
-
-	getWhen := item.(interface {
-		GetWhen() *when.Component
-	}).GetWhen()
-
-	if getWhen == nil {
-		return items
-	}
-	whenItems := getWhen.Items
-	if whenItems == nil {
-		return items
-	}
-
-	for _, v := range whenItems {
-		if v.Body != nil {
-			if body, ok := v.Body.([]interface{}); ok {
-				if len(body) > 0 {
-					items = append(items, body...)
-				}
-			} else {
-				items = append(items, body)
 			}
 		}
 	}
@@ -246,8 +225,8 @@ func (p *Template) Render(ctx *builder.Context) error {
 	// 子标题
 	subTitle := template.GetSubTitle()
 
-	// 子标题
-	fields := template.Fields(ctx)
+	// 包裹在组件内的字段
+	fields := p.FieldsWithinComponents(ctx)
 
 	// 组件
 	component := (&login.Component{}).

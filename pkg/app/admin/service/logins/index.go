@@ -18,11 +18,15 @@ type Index struct {
 	login.Template
 }
 
+type Captcha struct {
+	Id    string `json:"id" form:"id"`
+	Value string `json:"value" form:"value"`
+}
+
 type LoginRequest struct {
-	Username  string `json:"username" form:"username"`
-	Password  string `json:"password" form:"password"`
-	CaptchaId string `json:"captchaId" form:"captchaId"`
-	Captcha   string `json:"captcha" form:"captcha"`
+	Username string   `json:"username" form:"username"`
+	Password string   `json:"password" form:"password"`
+	Captcha  *Captcha `json:"captcha" form:"captcha"`
 }
 
 // 初始化
@@ -88,15 +92,15 @@ func (p *Index) Handle(ctx *builder.Context) error {
 	if err := ctx.BodyParser(loginRequest); err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
-	if loginRequest.CaptchaId == "" || loginRequest.Captcha == "" {
+	if loginRequest.Captcha.Id == "" || loginRequest.Captcha.Value == "" {
 		return ctx.JSON(200, message.Error("验证码不能为空"))
 	}
 
-	verifyResult := captcha.VerifyString(loginRequest.CaptchaId, loginRequest.Captcha)
+	verifyResult := captcha.VerifyString(loginRequest.Captcha.Id, loginRequest.Captcha.Value)
 	if !verifyResult {
 		return ctx.JSON(200, message.Error("验证码错误"))
 	}
-	captcha.Reload(loginRequest.CaptchaId)
+	captcha.Reload(loginRequest.Captcha.Id)
 
 	if loginRequest.Username == "" || loginRequest.Password == "" {
 		return ctx.JSON(200, message.Error("用户名或密码不能为空"))
