@@ -25,9 +25,6 @@ type Component struct {
 	Title              string                 `json:"title,omitempty"`
 	SubTitle           string                 `json:"subTitle,omitempty"`
 	BackgroundImageUrl string                 `json:"backgroundImageUrl,omitempty"`
-	CaptchaIdUrl       string                 `json:"captchaIdUrl,omitempty"`
-	CaptchaUrl         string                 `json:"captchaUrl,omitempty"`
-	LoginType          []string               `json:"loginType"`
 	ActivityConfig     *ActivityConfig        `json:"activityConfig,omitempty"`
 	Values             map[string]interface{} `json:"values,omitempty"`
 	InitialValues      map[string]interface{} `json:"initialValues,omitempty"`
@@ -43,7 +40,6 @@ func New() *Component {
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "login"
-	p.LoginType = []string{"account"}
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
@@ -89,24 +85,6 @@ func (p *Component) SetSubTitle(subTitle string) *Component {
 // 整个区域的背景图片配置，手机端不会展示
 func (p *Component) SeBackgroundImageUrl(backgroundImageUrl string) *Component {
 	p.BackgroundImageUrl = backgroundImageUrl
-	return p
-}
-
-// 获取验证码ID链接
-func (p *Component) SetCaptchaIdUrl(captchaIdUrl string) *Component {
-	p.CaptchaIdUrl = captchaIdUrl
-	return p
-}
-
-// 验证码链接
-func (p *Component) SetCaptchaUrl(captchaUrl string) *Component {
-	p.CaptchaUrl = captchaUrl
-	return p
-}
-
-// 登录类型，{"account","phone"}
-func (p *Component) SetLoginType(loginType []string) *Component {
-	p.LoginType = loginType
 	return p
 }
 

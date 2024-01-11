@@ -4,9 +4,11 @@ import (
 	"time"
 
 	"github.com/dchest/captcha"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/rule"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/login"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource"
 	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 	"github.com/quarkcloudio/quark-go/v2/pkg/utils/hash"
 	"gorm.io/gorm"
@@ -39,6 +41,45 @@ func (p *Index) Init(ctx *builder.Context) interface{} {
 	p.Redirect = "/layout/index?api=/api/admin/dashboard/index/index"
 
 	return p
+}
+
+// 字段
+func (p *Index) Fields(ctx *builder.Context) []interface{} {
+	field := &resource.Field{}
+
+	// 获取验证码ID链接
+	captchaIdUrl := ctx.RouterPathToUrl("/api/admin/login/index/captchaId")
+
+	// 验证码链接
+	captchaUrl := ctx.RouterPathToUrl("/api/admin/login/index/captcha/:id")
+
+	return []interface{}{
+		field.Text("username").
+			SetRules([]*rule.Rule{
+				rule.Required(true, "请输入用户名"),
+			}).
+			SetPlaceholder("用户名").
+			SetWidth("100%").
+			SetSize("large"),
+
+		field.Password("password").
+			SetRules([]*rule.Rule{
+				rule.Required(true, "请输入密码"),
+			}).
+			SetPlaceholder("密码").
+			SetWidth("100%").
+			SetSize("large"),
+
+		field.ImageCaptcha("captcha").
+			SetCaptchaIdUrl(captchaIdUrl).
+			SetCaptchaUrl(captchaUrl).
+			SetRules([]*rule.Rule{
+				rule.Required(true, "请输入验证码"),
+			}).
+			SetPlaceholder("验证码").
+			SetWidth("100%").
+			SetSize("large"),
+	}
 }
 
 // 登录方法

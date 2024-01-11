@@ -2,9 +2,12 @@ package login
 
 import (
 	"bytes"
+	"reflect"
+	"strings"
 	"time"
 
 	"github.com/dchest/captcha"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/when"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/login"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
@@ -113,6 +116,11 @@ func (p *Template) Captcha(ctx *builder.Context) error {
 	return nil
 }
 
+// 字段
+func (p *Template) Fields(ctx *builder.Context) []interface{} {
+	return []interface{}{}
+}
+
 // 登录方法
 func (p *Template) Handle(ctx *builder.Context) error {
 	return ctx.JSON(200, message.Error("请实现登录方法"))
@@ -121,6 +129,102 @@ func (p *Template) Handle(ctx *builder.Context) error {
 // 退出方法
 func (p *Template) Logout(ctx *builder.Context) error {
 	return ctx.JSON(200, message.Error("退出成功"))
+}
+
+// 获取字段
+func (p *Template) getFields(ctx *builder.Context) interface{} {
+
+	// 资源实例
+	template := ctx.Template.(Loginer)
+
+	// 获取字段
+	fields := template.Fields(ctx)
+
+	return p.findFields(fields, true)
+}
+
+// 查找字段
+func (p *Template) findFields(fields interface{}, when bool) interface{} {
+	var items []interface{}
+
+	if fields, ok := fields.([]interface{}); ok {
+		for _, v := range fields {
+			hasBody := reflect.
+				ValueOf(v).
+				Elem().
+				FieldByName("Body").
+				IsValid()
+			if hasBody {
+				body := reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Body").
+					Interface()
+				getItems := p.findFields(body, true)
+				if getItems, ok := getItems.([]interface{}); ok {
+					if len(getItems) > 0 {
+						items = append(items, getItems...)
+					}
+				}
+			} else {
+				component := reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Component").
+					String()
+				if strings.Contains(component, "Field") {
+					items = append(items, v)
+					if when {
+						whenFields := p.getWhenFields(v)
+						if len(whenFields) > 0 {
+							items = append(items, whenFields...)
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return items
+}
+
+// 获取When组件中的字段
+func (p *Template) getWhenFields(item interface{}) []interface{} {
+	var items []interface{}
+	whenIsValid := reflect.
+		ValueOf(item).
+		Elem().
+		FieldByName("When").
+		IsValid()
+	if !whenIsValid {
+		return items
+	}
+
+	getWhen := item.(interface {
+		GetWhen() *when.Component
+	}).GetWhen()
+
+	if getWhen == nil {
+		return items
+	}
+	whenItems := getWhen.Items
+	if whenItems == nil {
+		return items
+	}
+
+	for _, v := range whenItems {
+		if v.Body != nil {
+			if body, ok := v.Body.([]interface{}); ok {
+				if len(body) > 0 {
+					items = append(items, body...)
+				}
+			} else {
+				items = append(items, body)
+			}
+		}
+	}
+
+	return items
 }
 
 // 组件渲染
@@ -142,11 +246,8 @@ func (p *Template) Render(ctx *builder.Context) error {
 	// 子标题
 	subTitle := template.GetSubTitle()
 
-	// 获取验证码ID链接
-	captchaIdUrl := ctx.RouterPathToUrl("/api/admin/login/:resource/captchaId")
-
-	// 验证码链接
-	captchaUrl := ctx.RouterPathToUrl("/api/admin/login/:resource/captcha/:id")
+	// 子标题
+	fields := template.Fields(ctx)
 
 	// 组件
 	component := (&login.Component{}).
@@ -156,8 +257,7 @@ func (p *Template) Render(ctx *builder.Context) error {
 		SetLogo(logo).
 		SetTitle(title).
 		SetSubTitle(subTitle).
-		SetCaptchaIdUrl(captchaIdUrl).
-		SetCaptchaUrl(captchaUrl)
+		SetBody(fields)
 
 	return ctx.JSON(200, component)
 }

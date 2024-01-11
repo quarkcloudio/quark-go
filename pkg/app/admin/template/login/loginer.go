@@ -31,6 +31,9 @@ type Loginer interface {
 	// 生成验证码
 	Captcha(ctx *builder.Context) error
 
+	// 字段
+	Fields(ctx *builder.Context) []interface{}
+
 	// 登录方法
 	Handle(ctx *builder.Context) error
 
