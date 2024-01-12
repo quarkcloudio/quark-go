@@ -21,6 +21,7 @@ type Component struct {
 	Locale       string            `json:"locale,omitempty"`
 	SiderWidth   int               `json:"siderWidth,omitempty"`
 	Menu         interface{}       `json:"menu,omitempty"`
+	RightMenus   []interface{}     `json:"rightMenus,omitempty"` // 右上角菜单
 	Footer       interface{}       `json:"footer,omitempty"`
 	Body         interface{}       `json:"body,omitempty"`
 }
@@ -140,6 +141,12 @@ func (p *Component) SetSplitMenus(splitMenus bool) *Component {
 // 菜单
 func (p *Component) SetMenu(menu interface{}) *Component {
 	p.Menu = menu
+	return p
+}
+
+// 右上角菜单
+func (p *Component) SetRightMenus(rightMenus []interface{}) *Component {
+	p.RightMenus = rightMenus
 	return p
 }
 

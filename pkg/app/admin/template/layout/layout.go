@@ -3,6 +3,7 @@ package layout
 import (
 	"time"
 
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/action"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/footer"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/layout"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
@@ -28,6 +29,7 @@ type Template struct {
 	SiderWidth   int                      // 侧边菜单宽度
 	Copyright    string                   // 网站版权 time.Now().Format("2006") + " QuarkGo"
 	Links        []map[string]interface{} // 友情链接
+	RightMenus   []interface{}            // 右上角菜单
 }
 
 // 初始化
@@ -97,6 +99,33 @@ func (p *Template) TemplateInit(ctx *builder.Context) interface{} {
 			"title": "Github",
 			"href":  "https://github.com/quarkcloudio",
 		},
+	}
+
+	// 右上角菜单
+	p.RightMenus = []interface{}{
+		action.
+			New().
+			SetLabel("个人设置").
+			SetActionType("link").
+			SetType("link", false).
+			SetIcon("setting").
+			SetStyle(map[string]interface{}{
+				"color": "rgb(0 0 0 / 88%)",
+			}).
+			SetHref("#/layout/index?api=/api/admin/account/setting/form").
+			SetSize("small"),
+
+		action.
+			New().
+			SetLabel("退出登录").
+			SetActionType("ajax").
+			SetType("link", false).
+			SetIcon("logout").
+			SetStyle(map[string]interface{}{
+				"color": "rgb(0 0 0 / 88%)",
+			}).
+			SetApi("/api/admin/logout/index/handle").
+			SetSize("small"),
 	}
 
 	return p
@@ -179,6 +208,11 @@ func (p *Template) GetLinks() []map[string]interface{} {
 	return p.Links
 }
 
+// 右上角菜单
+func (p *Template) GetRightMenus() []interface{} {
+	return p.RightMenus
+}
+
 // 获取当前登录用户菜单
 func (p *Template) GetMenus(ctx *builder.Context) (list interface{}, err error) {
 	config := ctx.Engine.GetConfig()
@@ -246,6 +280,9 @@ func (p *Template) Render(ctx *builder.Context) error {
 	// 友情链接
 	links := template.GetLinks()
 
+	// 右上角菜单
+	rightMenus := template.GetRightMenus()
+
 	// 页脚
 	footer := (&footer.Component{}).
 		Init().
@@ -267,6 +304,7 @@ func (p *Template) Render(ctx *builder.Context) error {
 		SetIconfontUrl(iconfontUrl).
 		SetLocale(locale).
 		SetSiderWidth(siderWidth).
+		SetRightMenus(rightMenus).
 		SetFooter(footer)
 
 	return ctx.JSON(200, component)

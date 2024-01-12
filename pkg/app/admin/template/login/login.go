@@ -129,7 +129,7 @@ func (p *Template) Handle(ctx *builder.Context) error {
 
 // 退出方法
 func (p *Template) Logout(ctx *builder.Context) error {
-	return ctx.JSON(200, message.Error("退出成功"))
+	return ctx.JSON(200, message.Success("退出成功", "/"))
 }
 
 // 包裹在组件内的创建页字段

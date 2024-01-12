@@ -49,6 +49,9 @@ type Layouter interface {
 	// 友情链接
 	GetLinks() []map[string]interface{}
 
+	// 右上角菜单
+	GetRightMenus() []interface{}
+
 	// 获取当前登录管理员菜单
 	GetMenus(ctx *builder.Context) (list interface{}, err error)
 
