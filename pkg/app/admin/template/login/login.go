@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/dchest/captcha"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/divider"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/login"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/tabs"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
 	redisclient "github.com/quarkcloudio/quark-go/v2/pkg/dal/redis"
@@ -208,36 +208,10 @@ func (p *Template) FormFieldsParser(ctx *builder.Context, fields interface{}) in
 	return items
 }
 
-// 在标签页内的From组件
-func (p *Template) FormWithinTabs(
-	ctx *builder.Context,
-	title string,
-	extra interface{},
-	api string,
-	fields interface{},
-	actions []interface{},
-	data map[string]interface{}) interface{} {
-
-	tabsComponent := (&tabs.Component{}).Init().SetTabPanes(fields).SetTabBarExtraContent(extra)
-
-	// 模版实例
-	template := ctx.Template.(types.Resourcer)
-
-	// 返回数据
-	return template.
-		GetForm().
-		SetStyle(map[string]interface{}{
-			"backgroundColor": "#fff",
-			"paddingBottom":   "20px",
-		}).
-		SetApi(api).
-		SetActions(actions).
-		SetBody(tabsComponent).
-		SetInitialValues(data)
-}
-
 // 组件渲染
 func (p *Template) Render(ctx *builder.Context) error {
+	var component interface{}
+
 	template := ctx.Template.(Loginer)
 
 	// 登录接口
@@ -258,16 +232,6 @@ func (p *Template) Render(ctx *builder.Context) error {
 	// 包裹在组件内的字段
 	fields := p.FieldsWithinComponents(ctx)
 
-	// 组件
-	component := (&login.Component{}).
-		Init().
-		SetApi(loginApi).
-		SetRedirect(redirect).
-		SetLogo(logo).
-		SetTitle(title).
-		SetSubTitle(subTitle).
-		SetBody(fields)
-
 	// 解析tabPane组件
 	if _, ok := fields.([]interface{}); ok {
 		componentName := reflect.
@@ -277,7 +241,10 @@ func (p *Template) Render(ctx *builder.Context) error {
 			String()
 
 		if componentName == "tabPane" {
-			tabComponent := (&tabs.Component{}).Init().SetTabPanes(fields)
+			tabComponent := (&tabs.Component{}).
+				Init().
+				SetTabPanes(fields).
+				SetCentered(true)
 
 			// 组件
 			component = (&login.Component{}).
@@ -288,7 +255,31 @@ func (p *Template) Render(ctx *builder.Context) error {
 				SetTitle(title).
 				SetSubTitle(subTitle).
 				SetBody(tabComponent)
+		} else {
+			fields := append([]interface{}{divider.New().SetStyle(map[string]interface{}{"marginTop": "-15px"})}, fields.([]interface{})...)
+
+			// 组件
+			component = (&login.Component{}).
+				Init().
+				SetApi(loginApi).
+				SetRedirect(redirect).
+				SetLogo(logo).
+				SetTitle(title).
+				SetSubTitle(subTitle).
+				SetBody(fields)
 		}
+	} else {
+		fields := append([]interface{}{divider.New().SetStyle(map[string]interface{}{"marginTop": "-15px"})}, fields.([]interface{})...)
+
+		// 组件
+		component = (&login.Component{}).
+			Init().
+			SetApi(loginApi).
+			SetRedirect(redirect).
+			SetLogo(logo).
+			SetTitle(title).
+			SetSubTitle(subTitle).
+			SetBody(fields)
 	}
 
 	return ctx.JSON(200, component)
