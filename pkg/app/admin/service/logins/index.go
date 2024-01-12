@@ -93,7 +93,7 @@ func (p *Index) Fields(ctx *builder.Context) []interface{} {
 // 登录方法
 func (p *Index) Handle(ctx *builder.Context) error {
 	loginRequest := &LoginRequest{}
-	if err := ctx.BodyParser(loginRequest); err != nil {
+	if err := ctx.Bind(loginRequest); err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 	if loginRequest.Captcha.Id == "" || loginRequest.Captcha.Value == "" {
