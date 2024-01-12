@@ -5,6 +5,7 @@ import (
 
 	"github.com/dchest/captcha"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/rule"
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/icon"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/login"
@@ -64,7 +65,8 @@ func (p *Index) Fields(ctx *builder.Context) []interface{} {
 			}).
 			SetPlaceholder("用户名").
 			SetWidth("100%").
-			SetSize("large"),
+			SetSize("large").
+			SetPrefix(icon.New().SetType("icon-user")),
 
 		field.Password("password").
 			SetRules([]*rule.Rule{
@@ -72,7 +74,8 @@ func (p *Index) Fields(ctx *builder.Context) []interface{} {
 			}).
 			SetPlaceholder("密码").
 			SetWidth("100%").
-			SetSize("large"),
+			SetSize("large").
+			SetPrefix(icon.New().SetType("icon-lock")),
 
 		field.ImageCaptcha("captcha").
 			SetCaptchaIdUrl(captchaIdUrl).
@@ -82,7 +85,8 @@ func (p *Index) Fields(ctx *builder.Context) []interface{} {
 			}).
 			SetPlaceholder("验证码").
 			SetWidth("100%").
-			SetSize("large"),
+			SetSize("large").
+			SetPrefix(icon.New().SetType("icon-safetycertificate")),
 	}
 }
 
