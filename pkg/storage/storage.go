@@ -559,11 +559,11 @@ func (p *FileSystem) Save() (fileInfo *FileInfo, err error) {
 	}
 
 	fileInfo = &FileInfo{
-		p.Config.SaveName,
+		p.File.Name,
 		p.File.Size,
 		p.File.Ext,
 		p.File.ContentType,
-		p.Config.SavePath,
+		p.Config.SavePath + p.Config.SaveName,
 		fileUrl,
 		p.File.Hash,
 		p.File.Width,
