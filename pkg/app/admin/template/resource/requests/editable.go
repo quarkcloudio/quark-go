@@ -45,7 +45,7 @@ func (p *EditableRequest) Handle(ctx *builder.Context) error {
 			v = 0
 		}
 
-		if k != "id" {
+		if k != "id" && k != "_t" {
 			field = k
 			value = v
 		}
