@@ -25,7 +25,7 @@ type Option struct {
 	Children []*Option   `json:"children,omitempty"`
 	// 标记是否为叶子节点，设置了 `loadData` 时有效
 	// 设为 `false` 时会强制标记为父节点，即使当前节点没有 children，也会显示展开图标
-	IsLeaf bool `json:"isLeaf,omitempty"`
+	IsLeaf bool `json:"isLeaf"`
 }
 
 type Component struct {
