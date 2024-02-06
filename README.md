@@ -94,7 +94,7 @@ go run main.go
 ## 演示站点
 香港站点，页面加载可能比较缓慢
 
-- 地址：http://smart.quarkcms.com/admin/#/
+- 地址：http://smart.quarkcloud.io/admin/#/
 - 账号：```administrator```
 - 密码：```123456```
 

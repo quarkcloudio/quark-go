@@ -27,9 +27,9 @@ var webConfig = make(map[string]string)
 // 配置表
 func (model *Config) Seeder() {
 	seeders := []Config{
-		{Title: "网站名称", Type: "text", Name: "WEB_SITE_NAME", Sort: 0, GroupName: "基本", Value: "QuarkCMS", Remark: "", Status: 1},
-		{Title: "关键字", Type: "text", Name: "WEB_SITE_KEYWORDS", Sort: 0, GroupName: "基本", Value: "QuarkCMS", Remark: "", Status: 1},
-		{Title: "描述", Type: "textarea", Name: "WEB_SITE_DESCRIPTION", Sort: 0, GroupName: "基本", Value: "QuarkCMS", Remark: "", Status: 1},
+		{Title: "网站名称", Type: "text", Name: "WEB_SITE_NAME", Sort: 0, GroupName: "基本", Value: "QuarkCloud", Remark: "", Status: 1},
+		{Title: "关键字", Type: "text", Name: "WEB_SITE_KEYWORDS", Sort: 0, GroupName: "基本", Value: "QuarkCloud", Remark: "", Status: 1},
+		{Title: "描述", Type: "textarea", Name: "WEB_SITE_DESCRIPTION", Sort: 0, GroupName: "基本", Value: "QuarkCloud", Remark: "", Status: 1},
 		{Title: "Logo", Type: "picture", Name: "WEB_SITE_LOGO", Sort: 0, GroupName: "基本", Value: "", Remark: "", Status: 1},
 		{Title: "统计代码", Type: "textarea", Name: "WEB_SITE_SCRIPT", Sort: 0, GroupName: "基本", Value: "", Remark: "", Status: 1},
 		{Title: "网站域名", Type: "text", Name: "WEB_SITE_DOMAIN", Sort: 0, GroupName: "基本", Value: "", Remark: "", Status: 1},

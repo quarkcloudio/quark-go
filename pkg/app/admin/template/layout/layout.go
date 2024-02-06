@@ -87,12 +87,12 @@ func (p *Template) TemplateInit(ctx *builder.Context) interface{} {
 		{
 			"key":   "1",
 			"title": "Quark",
-			"href":  "http://www.quarkcms.com/",
+			"href":  "http://quarkcloud.io",
 		},
 		{
 			"key":   "2",
-			"title": "爱小圈",
-			"href":  "http://www.ixiaoquan.com",
+			"title": "QuarkGo",
+			"href":  "https://github.com/quarkcloudio/quark-go",
 		},
 		{
 			"key":   "3",
