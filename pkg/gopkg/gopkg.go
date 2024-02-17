@@ -1,15 +1,16 @@
 package gopkg
 
 import (
+	"archive/zip"
 	"fmt"
 	"io"
-	"io/ioutil"
+	"io/fs"
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/quarkcloudio/quark-go/v2/pkg/utils/file"
-	"github.com/xbmlz/gct"
 )
 
 // 包域名地址
@@ -60,9 +61,60 @@ func (p *PkgGo) Download() error {
 
 // 解压文件
 func (p *PkgGo) Unzip() error {
-	filePath := "./tmp/v" + p.Version + ".zip"
 
-	return gct.FileUtils.Unzip(filePath, "./tmp/v"+p.Version)
+	// 需要解压的zip文件路径
+	zipFilePath := "./tmp/v" + p.Version + ".zip"
+
+	// 解压后文件存放的目标目录
+	unzipDir := "./tmp/v" + p.Version
+
+	// 创建一个新的zip.Reader
+	reader, err := zip.OpenReader(zipFilePath)
+	if err != nil {
+		return err
+	}
+
+	defer reader.Close()
+
+	// 遍历zip文件中的所有条目
+	for _, file := range reader.File {
+		path := unzipDir + "/" + file.Name
+
+		// 对于目录，创建对应的目录结构
+		if file.FileInfo().IsDir() {
+			os.MkdirAll(path, file.Mode())
+			continue
+		}
+
+		// 创建对应文件夹
+		if err := os.MkdirAll(filepath.Dir(path), os.ModePerm); err != nil {
+			return err
+		}
+
+		// 对于文件，创建目标文件，并写入解压的数据
+		outputFile, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
+		if err != nil {
+			fmt.Println("Error creating/opening output file:", err)
+			continue
+		}
+		defer outputFile.Close()
+
+		// 从zip读取数据流并写入目标文件
+		inputFile, err := file.Open()
+		if err != nil {
+			fmt.Println("Error opening file inside zip:", err)
+			continue
+		}
+		defer inputFile.Close()
+
+		_, err = io.Copy(outputFile, inputFile)
+		if err != nil {
+			fmt.Println("Error copying file content:", err)
+			continue
+		}
+	}
+
+	return nil
 }
 
 // 保存文件
@@ -121,7 +173,7 @@ func File(src, dst string) error {
 // Dir copies a whole directory recursively
 func Dir(src string, dst string) error {
 	var err error
-	var fds []os.FileInfo
+	var fds []fs.DirEntry
 	var srcinfo os.FileInfo
 
 	if srcinfo, err = os.Stat(src); err != nil {
@@ -132,7 +184,7 @@ func Dir(src string, dst string) error {
 		return err
 	}
 
-	if fds, err = ioutil.ReadDir(src); err != nil {
+	if fds, err = os.ReadDir(src); err != nil {
 		return err
 	}
 	for _, fd := range fds {
