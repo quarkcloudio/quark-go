@@ -162,7 +162,7 @@ func (model *File) GetExcelData(fileId int) (data [][]interface{}, Error error) 
 		return data, errors.New("参数错误！")
 	}
 
-	f, err := excelize.OpenFile(file.Path + file.Name)
+	f, err := excelize.OpenFile(file.Path)
 	if err != nil {
 		return data, err
 	}
