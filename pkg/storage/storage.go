@@ -235,7 +235,8 @@ func (p *FileSystem) GetFileHash() (string, error) {
 	)
 
 	sha256New := sha256.New()
-	byteReader := bytes.NewReader(p.File.Content)
+
+	byteReader := bytes.NewReader(append(p.File.Content, []byte(p.File.Name)...))
 	_, err = io.Copy(sha256New, byteReader)
 	if err != nil {
 		return hashValue, err
