@@ -69,10 +69,19 @@ func (p *CasbinRule) Enforcer() (enforcer *casbin.Enforcer, err error) {
 				Network:  "tcp",
 				Password: redisConfig.Password,
 			},
+			Channel: "/casbin",
 		})
 
 		// Set the watcher for the enforcer.
 		err = Enforcer.SetWatcher(w)
+		if err != nil {
+			return nil, err
+		}
+
+		// Or use the default callback
+		err = w.SetUpdateCallback(func(s string) {
+			Enforcer.LoadPolicy()
+		})
 		if err != nil {
 			return nil, err
 		}
