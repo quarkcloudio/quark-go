@@ -76,12 +76,6 @@ func (p *CasbinRule) Enforcer() (enforcer *casbin.Enforcer, err error) {
 		if err != nil {
 			return nil, err
 		}
-
-		// Or use the default callback
-		err = w.SetUpdateCallback(rediswatcher.DefaultUpdateCallback(Enforcer))
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	return Enforcer, err
