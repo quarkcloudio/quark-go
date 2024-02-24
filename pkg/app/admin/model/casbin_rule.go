@@ -7,7 +7,10 @@ import (
 	"github.com/casbin/casbin/v2"
 	casbinmodel "github.com/casbin/casbin/v2/model"
 	gormadapter "github.com/casbin/gorm-adapter/v3"
+	rediswatcher "github.com/casbin/redis-watcher/v2"
+	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+	"github.com/redis/go-redis/v9"
 )
 
 // 字段
@@ -57,6 +60,28 @@ func (p *CasbinRule) Enforcer() (enforcer *casbin.Enforcer, err error) {
 	Enforcer, err = casbin.NewEnforcer(m, a)
 	if err != nil {
 		return nil, err
+	}
+
+	redisConfig := builder.GetConfig().RedisConfig
+	if redisConfig != nil {
+		w, _ := rediswatcher.NewWatcher(redisConfig.Host+":"+redisConfig.Port, rediswatcher.WatcherOptions{
+			Options: redis.Options{
+				Network:  "tcp",
+				Password: redisConfig.Password,
+			},
+		})
+
+		// Set the watcher for the enforcer.
+		err = Enforcer.SetWatcher(w)
+		if err != nil {
+			return nil, err
+		}
+
+		// Or use the default callback
+		err = w.SetUpdateCallback(rediswatcher.DefaultUpdateCallback(Enforcer))
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return Enforcer, err

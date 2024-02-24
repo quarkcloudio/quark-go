@@ -11,13 +11,14 @@ require (
 	github.com/cloudwego/hertz v0.6.6
 	github.com/dchest/captcha v1.0.0
 	github.com/derekstavis/go-qs v0.0.0-20180720192143-9eef69e6c4e7
+	github.com/gabriel-vasile/mimetype v1.4.2
 	github.com/gin-contrib/static v0.0.1
 	github.com/go-basic/uuid v1.0.0
-	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gobeam/stringy v0.0.6
 	github.com/gofiber/fiber/v2 v2.47.0
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/parnurzeal/gorequest v0.2.16
+	github.com/redis/go-redis/v9 v9.0.3
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/xuri/excelize/v2 v2.7.1
 	golang.org/x/crypto v0.14.0
@@ -33,7 +34,6 @@ require (
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/fatih/color v1.15.0 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/glebarez/go-sqlite v1.21.2 // indirect
 	github.com/glebarez/sqlite v1.9.0 // indirect
@@ -121,6 +121,7 @@ require (
 	github.com/bytedance/gopkg v0.0.0-20230531144706-a12972768317 // indirect
 	github.com/bytedance/sonic v1.9.2 // indirect
 	github.com/casbin/gorm-adapter/v3 v3.18.0
+	github.com/casbin/redis-watcher/v2 v2.5.0
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/clbanning/mxj/v2 v2.5.7 // indirect
@@ -135,7 +136,6 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/gookit/goutil v0.6.11
 	github.com/gorilla/sessions v1.2.2
-	github.com/h2non/filetype v1.1.3
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -164,7 +164,6 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.48.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	github.com/xbmlz/gct v0.0.0-20220707064702-998631a80a6a
 	github.com/xuri/efp v0.0.0-20230422071738-01f4e37c47e9 // indirect
 	github.com/xuri/nfp v0.0.0-20230503010013-3f38cdbb0b83 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect

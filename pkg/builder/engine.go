@@ -7,12 +7,12 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/quarkcloudio/quark-go/v2/pkg/dal"
 	"github.com/quarkcloudio/quark-go/v2/pkg/gopkg"
 	"github.com/quarkcloudio/quark-go/v2/pkg/utils/file"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
@@ -22,7 +22,7 @@ const (
 	AppName = "QuarkGo"
 
 	// 版本号
-	Version = "2.2.10"
+	Version = "2.3.0"
 
 	// 包名
 	PkgName = "github.com/quarkcloudio/quark-go/v2"
@@ -79,8 +79,15 @@ type Group struct {
 // 定义路由方法类型
 type Handle func(ctx *Context) error
 
+// 全局配置
+var AppConfig *Config
+
 // 初始化对象
 func New(config *Config) *Engine {
+
+	// 初始化应用配置
+	AppConfig = config
+
 	// 初始化echo引擎
 	e := echo.New()
 
@@ -134,6 +141,11 @@ func New(config *Config) *Engine {
 
 	// 调用初始化方法
 	return engine
+}
+
+// 获取当前配置
+func GetConfig() *Config {
+	return AppConfig
 }
 
 // 获取当前配置

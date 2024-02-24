@@ -50,6 +50,14 @@ func (p *Template) TemplateInit(ctx *builder.Context) interface{} {
 	// 子标题
 	p.SubTitle = "信息丰富的世界里，唯一稀缺的就是人类的注意力"
 
+	// 如果启动了redis缓存，验证码使用redis缓存
+	if redisclient.Client != nil {
+		captcha.SetCustomStore(&CaptchaStore{
+			RedisClient: redisclient.Client,
+			Expiration:  time.Second * 1000,
+		})
+	}
+
 	return p
 }
 
@@ -87,16 +95,6 @@ func (p *Template) GetTitle() string {
 // 获取登录页面子标题
 func (p *Template) GetSubTitle() string {
 	return p.SubTitle
-}
-
-// 验证码存储驱动，redis | memory
-func (p *Template) CaptchaStore(store string) {
-	if store == "redis" {
-		captcha.SetCustomStore(&CaptchaStore{
-			RedisClient: redisclient.Client,
-			Expiration:  time.Second * 1000,
-		})
-	}
 }
 
 // 验证码ID

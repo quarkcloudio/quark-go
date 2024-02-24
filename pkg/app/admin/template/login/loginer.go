@@ -22,9 +22,6 @@ type Loginer interface {
 	// 获取登录页面子标题
 	GetSubTitle() string
 
-	// 验证码存储驱动，redis | memory
-	CaptchaStore(store string)
-
 	// 验证码ID
 	CaptchaId(ctx *builder.Context) error
 
