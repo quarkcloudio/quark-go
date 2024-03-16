@@ -86,25 +86,33 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 				SetDefault(true),
 		}),
 
-		field.Radio("type", "类型").
-			SetOptions([]*radio.Option{
-				{
-					Value: 1,
-					Label: "目录",
-				},
-				{
-					Value: 2,
-					Label: "菜单",
-				},
-				{
-					Value: 3,
-					Label: "按钮",
-				},
-			}).
-			SetRules([]*rule.Rule{
-				rule.Required(true, "类型必须选择"),
-			}).
-			SetDefault(1),
+		field.Group([]interface{}{
+			field.Radio("type", "类型").
+				SetOptions([]*radio.Option{
+					{
+						Value: 1,
+						Label: "目录",
+					},
+					{
+						Value: 2,
+						Label: "菜单",
+					},
+					{
+						Value: 3,
+						Label: "按钮",
+					},
+				}).
+				SetRules([]*rule.Rule{
+					rule.Required(true, "类型必须选择"),
+				}).
+				SetDefault(1),
+
+			field.Switch("show", "显示").
+				SetTrueValue("显示").
+				SetFalseValue("隐藏").
+				SetEditable(true).
+				SetDefault(true),
+		}),
 
 		field.Dependency().
 			SetWhen("type", 1, func() interface{} {

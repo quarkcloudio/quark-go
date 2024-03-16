@@ -31,3 +31,5 @@ examples/*/web/
 
 # examples web site sqlite files
 examples/*/data.db
+
+.idea/

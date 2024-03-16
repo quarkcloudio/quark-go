@@ -70,6 +70,7 @@ type Component struct {
 	Placeholder  string                 `json:"placeholder,omitempty"`  // 占位符
 	Size         string                 `json:"size"`                   // 大小，large | middle | small
 	AllowClear   bool                   `json:"allowClear"`             // 是否支持清除，默认true
+	AllowSearch  bool                   `json:"allowSearch"`            // 是否支持搜索，默认true
 	Options      []string               `json:"options"`                // 可选项数据源
 }
 
@@ -89,6 +90,8 @@ func (p *Component) Init() *Component {
 	p.ShowOnUpdate = true
 	p.ShowOnExport = true
 	p.ShowOnImport = true
+	p.AllowSearch = true
+	p.AllowClear = true
 	p.Column = (&table.Column{}).Init()
 	p.Options = []string{
 		"", "icon-database", "icon-sever", "icon-mobile", "icon-tablet", "icon-redenvelope",
@@ -253,6 +256,18 @@ func (p *Component) SetNameAsLabel() *Component {
 // 是否必填，如不设置，则会根据校验规则自动生成
 func (p *Component) SetRequired() *Component {
 	p.Required = true
+	return p
+}
+
+// 是否支持清除，默认true
+func (p *Component) SetAllowClear(val bool) *Component {
+	p.Required = val
+	return p
+}
+
+// 是否支持搜索，默认true
+func (p *Component) SetAllowSearch(val bool) *Component {
+	p.Required = val
 	return p
 }
 
