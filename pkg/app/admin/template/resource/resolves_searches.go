@@ -1,6 +1,7 @@
 package resource
 
 import (
+	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/radio"
 	"strings"
 
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/cascader"
@@ -73,6 +74,12 @@ func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
 				Select(name, label).
 				SetWidth(nil).
 				SetOptions(options.([]*selectfield.Option))
+		case "radioField":
+			item = field.
+				Radio(name, label).
+				SetOptions(options.([]*radio.Option)).
+				SetOptionType("button").
+				SetButtonStyle("solid")
 		case "multipleSelectField":
 			item = field.
 				Select(name, label).

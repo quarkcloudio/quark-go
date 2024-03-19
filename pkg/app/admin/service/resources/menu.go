@@ -174,6 +174,10 @@ func (p *Menu) Searches(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		searches.Input("name", "名称"),
 		searches.Input("path", "路由"),
+		searches.Radio("show", "显示", []*radio.Option{{
+			Label: "是",
+			Value: 1,
+		}}),
 		searches.Status(),
 	}
 }
