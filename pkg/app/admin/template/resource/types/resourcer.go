@@ -153,6 +153,9 @@ type Resourcer interface {
 	// 行为
 	Actions(ctx *builder.Context) []interface{}
 
+	// 菜单
+	Menus(ctx *builder.Context) interface{}
+
 	// 创建行为组件
 	BuildAction(ctx *builder.Context, item interface{}) interface{}
 

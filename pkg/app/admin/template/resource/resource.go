@@ -201,6 +201,11 @@ func (p *Template) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{}
 }
 
+// 菜单
+func (p *Template) Menus(ctx *builder.Context) interface{} {
+	return map[string]interface{}{}
+}
+
 // 数据导出前回调
 func (p *Template) BeforeExporting(ctx *builder.Context, list []map[string]interface{}) []interface{} {
 	result := []interface{}{}
