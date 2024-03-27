@@ -18,7 +18,8 @@ func (p *Template) IndexTableToolBar(ctx *builder.Context) interface{} {
 	return (&table.ToolBar{}).
 		Init().
 		SetTitle(p.IndexTableTitle(ctx)).
-		SetActions(p.IndexTableActions(ctx))
+		SetActions(p.IndexTableActions(ctx)).
+		SetMenu(p.IndexTableMenus(ctx))
 }
 
 // 列表标题
