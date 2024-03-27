@@ -64,12 +64,15 @@ func (p *CasbinRule) Enforcer() (enforcer *casbin.Enforcer, err error) {
 
 	redisConfig := builder.GetConfig().RedisConfig
 	if redisConfig != nil {
+
+		// 不同的Channel
+		appKey := builder.GetConfig().AppKey
 		w, _ := rediswatcher.NewWatcher(redisConfig.Host+":"+redisConfig.Port, rediswatcher.WatcherOptions{
 			Options: redis.Options{
 				Network:  "tcp",
 				Password: redisConfig.Password,
 			},
-			Channel: "/casbin",
+			Channel: "/casbin_" + appKey,
 		})
 
 		// Set the watcher for the enforcer.
