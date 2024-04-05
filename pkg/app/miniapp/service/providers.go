@@ -9,5 +9,5 @@ import (
 var Providers = []interface{}{
 	&pages.Index{},
 	&pages.My{},
-	&forms.Index{},
+	&forms.Demo{},
 }
