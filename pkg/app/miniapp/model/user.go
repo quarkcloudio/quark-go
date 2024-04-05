@@ -14,7 +14,7 @@ import (
 // 字段
 type User struct {
 	Id            int            `json:"id" gorm:"autoIncrement"`
-	Username      string         `json:"username" gorm:"size:20;index:Users_username_unique,unique;not null"`
+	Username      string         `json:"username" gorm:"size:20;index:users_username_unique,unique;not null"`
 	Nickname      string         `json:"nickname" gorm:"size:200;not null"`
 	Sex           int            `json:"sex" gorm:"size:4;not null;default:1"`
 	Email         string         `json:"email" gorm:"size:50;index:users_email_unique,unique;not null"`
