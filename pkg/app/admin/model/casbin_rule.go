@@ -191,7 +191,10 @@ func (p *CasbinRule) AddMenuAndPermissionToRole(roleId int, menuIds []int) (err 
 		menuHasPermissions, err := p.GetMenuPermissions(v)
 		if err == nil {
 			for _, sv := range menuHasPermissions {
-				rules = append(rules, []string{"role|" + strconv.Itoa(roleId), sv.Path, sv.Method})
+				// 规则存在不添加
+				if !p.IsExist("role|"+strconv.Itoa(roleId), sv.Path, sv.Method) {
+					rules = append(rules, []string{"role|" + strconv.Itoa(roleId), sv.Path, sv.Method})
+				}
 			}
 		}
 	}
@@ -349,4 +352,20 @@ func (p *CasbinRule) GetUserMenus(modelId int) (menus []*Menu, err error) {
 	}
 
 	return getMenus, nil
+}
+
+// 规则是否存在
+func (p *CasbinRule) IsExist(v0, v1, v2 string) bool {
+
+	var count int64
+
+	query := db.Client.Model(&p).Where("v0 = ?", v0).Where("v1 = ?", v1)
+
+	if v2 != "" {
+		query.Where("v2 = ?", v2)
+	}
+
+	query.Count(&count)
+
+	return count > 0
 }
