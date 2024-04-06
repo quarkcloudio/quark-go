@@ -152,7 +152,7 @@ func (p *Template) Render(ctx *builder.Context) error {
 	if len(banners) > 0 {
 		swiperItems := []*swiper.Item{}
 		for _, banner := range banners {
-			swiperItems = append(swiperItems, p.SwiperItem(banner.SetStyle("width:100%;height:200px;")))
+			swiperItems = append(swiperItems, p.SwiperItem(banner))
 		}
 		components = append(components,
 			p.

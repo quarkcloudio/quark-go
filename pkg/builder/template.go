@@ -69,7 +69,7 @@ func (p *Template) Route() interface{} {
 }
 
 // 是否存在路由
-func (p *Template) hasRouteMapping(method string, path string, handler func(ctx *Context) error) bool {
+func (p *Template) hasRouteMapping(method string, path string) bool {
 	has := false
 	for _, v := range p.RouteMapping {
 		if v.Method == method && v.Path == path {
@@ -81,7 +81,7 @@ func (p *Template) hasRouteMapping(method string, path string, handler func(ctx 
 
 // 注册路由
 func (p *Template) AddRouteMapping(method string, path string, handler func(ctx *Context) error) *Template {
-	if !p.hasRouteMapping(method, path, handler) {
+	if !p.hasRouteMapping(method, path) {
 		getRoute := &RouteMapping{
 			Method:  method,
 			Path:    path,
