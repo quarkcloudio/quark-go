@@ -180,6 +180,7 @@ func (p *CasbinRule) AddMenuAndPermissionToRole(roleId int, menuIds []int) (err 
 	}
 
 	rules := [][]string{}
+	addedRules := make(map[string]bool)
 
 	// 角色拥有的菜单
 	for _, v := range menuIds {
@@ -191,9 +192,10 @@ func (p *CasbinRule) AddMenuAndPermissionToRole(roleId int, menuIds []int) (err 
 		menuHasPermissions, err := p.GetMenuPermissions(v)
 		if err == nil {
 			for _, sv := range menuHasPermissions {
-				// 规则存在不添加
-				if !p.IsExist("role|"+strconv.Itoa(roleId), sv.Path, sv.Method) {
+				rule := "role|" + strconv.Itoa(roleId) + sv.Path + sv.Method
+				if !addedRules[rule] {
 					rules = append(rules, []string{"role|" + strconv.Itoa(roleId), sv.Path, sv.Method})
+					addedRules[rule] = true
 				}
 			}
 		}
@@ -352,20 +354,4 @@ func (p *CasbinRule) GetUserMenus(modelId int) (menus []*Menu, err error) {
 	}
 
 	return getMenus, nil
-}
-
-// 规则是否存在
-func (p *CasbinRule) IsExist(v0, v1, v2 string) bool {
-
-	var count int64
-
-	query := db.Client.Model(&p).Where("v0 = ?", v0).Where("v1 = ?", v1)
-
-	if v2 != "" {
-		query.Where("v2 = ?", v2)
-	}
-
-	query.Count(&count)
-
-	return count > 0
 }
