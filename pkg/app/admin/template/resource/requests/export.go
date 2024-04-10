@@ -28,20 +28,17 @@ func (p *ExportRequest) Handle(ctx *builder.Context) error {
 	index, _ := f.NewSheet("Sheet1")
 	rowData := map[string]interface{}{}
 
-	var a = 'a'
-	for _, fieldValue := range fields.([]interface{}) {
+	for fieldKey, fieldValue := range fields.([]interface{}) {
 		Label := reflect.
 			ValueOf(fieldValue).
 			Elem().
 			FieldByName("Label").
 			String()
-		f.SetCellValue("Sheet1", string(a)+"1", Label)
-		a++
+		f.SetCellValue("Sheet1", p.generateColumnLabel(fieldKey+1)+"1", Label)
 	}
 
 	for dataKey, dataValue := range data.([]interface{}) {
-		var a = 'a'
-		for _, field := range fields.([]interface{}) {
+		for filedKey, field := range fields.([]interface{}) {
 
 			name := reflect.
 				ValueOf(field).
@@ -88,8 +85,7 @@ func (p *ExportRequest) Handle(ctx *builder.Context) error {
 				rowData[name] = dataValue.(map[string]interface{})[name]
 			}
 
-			f.SetCellValue("Sheet1", string(a)+strconv.Itoa(dataKey+2), rowData[name])
-			a++
+			f.SetCellValue("Sheet1", p.generateColumnLabel(filedKey+1)+strconv.Itoa(dataKey+2), rowData[name])
 		}
 	}
 
@@ -235,4 +231,16 @@ func (p *ExportRequest) performsList(ctx *builder.Context, lists []map[string]in
 
 	// 导出前回调
 	return template.BeforeExporting(ctx, result)
+}
+
+// 生成 Excel 中的列标签
+func (p *ExportRequest) generateColumnLabel(index int) (colLabel string) {
+
+	for index > 0 {
+		mod := (index - 1) % 26
+		colLabel = string(rune('A'+mod)) + colLabel
+		index = (index - 1) / 26
+	}
+
+	return colLabel
 }
