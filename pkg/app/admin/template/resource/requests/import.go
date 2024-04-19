@@ -14,6 +14,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v2/pkg/utils/excel"
 	"github.com/quarkcloudio/quark-go/v2/pkg/utils/file"
 	"github.com/quarkcloudio/quark-go/v2/pkg/utils/rand"
 	"github.com/xuri/excelize/v2"
@@ -86,7 +87,6 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 
 	// 解析字段
 	for _, item := range lists {
-
 		// 获取表单数据
 		formValues := p.transformFormValues(fields, item)
 
@@ -166,18 +166,14 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 
 		// 创建表头
 		importHead = append(importHead, "错误信息")
-		a := 'a'
 		for i := 1; i <= len(importHead); i++ {
-			f.SetCellValue("Sheet1", string(a)+"1", importHead[i-1])
-			a++
+			f.SetCellValue("Sheet1", excel.GenerateColumnLabel(i)+"1", importHead[i-1])
 		}
 
 		// 创建数据
 		for k, v := range importFailedData {
-			a := 'a'
 			for i := 1; i <= len(v); i++ {
-				f.SetCellValue("Sheet1", string(a)+strconv.Itoa(k+2), v[i-1])
-				a++
+				f.SetCellValue("Sheet1", excel.GenerateColumnLabel(i)+strconv.Itoa(k+2), v[i-1])
 			}
 		}
 

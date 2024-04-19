@@ -10,6 +10,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/rule"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/utils/excel"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -39,14 +40,10 @@ func (p *ImportTemplateRequest) Handle(ctx *builder.Context) error {
 	// 创建一个工作表
 	index, _ := f.NewSheet("Sheet1")
 
-	//定义一个字符 变量a 是一个byte类型的 表示单个字符
-	var a = 'a'
-
-	//生成26个字符
+	// 创建表头
 	for i := 1; i <= len(exportTitles); i++ {
 		// 设置单元格的值
-		f.SetCellValue("Sheet1", string(a)+"1", exportTitles[i-1])
-		a++
+		f.SetCellValue("Sheet1", excel.GenerateColumnLabel(i)+"1", exportTitles[i-1])
 	}
 
 	// 设置工作簿的默认工作表

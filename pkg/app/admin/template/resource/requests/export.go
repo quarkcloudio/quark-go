@@ -10,6 +10,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/types"
 	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v2/pkg/utils/excel"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -34,7 +35,7 @@ func (p *ExportRequest) Handle(ctx *builder.Context) error {
 			Elem().
 			FieldByName("Label").
 			String()
-		f.SetCellValue("Sheet1", p.generateColumnLabel(fieldKey+1)+"1", Label)
+		f.SetCellValue("Sheet1", excel.GenerateColumnLabel(fieldKey+1)+"1", Label)
 	}
 
 	for dataKey, dataValue := range data.([]interface{}) {
@@ -85,7 +86,7 @@ func (p *ExportRequest) Handle(ctx *builder.Context) error {
 				rowData[name] = dataValue.(map[string]interface{})[name]
 			}
 
-			f.SetCellValue("Sheet1", p.generateColumnLabel(filedKey+1)+strconv.Itoa(dataKey+2), rowData[name])
+			f.SetCellValue("Sheet1", excel.GenerateColumnLabel(filedKey+1)+strconv.Itoa(dataKey+2), rowData[name])
 		}
 	}
 
@@ -231,16 +232,4 @@ func (p *ExportRequest) performsList(ctx *builder.Context, lists []map[string]in
 
 	// 导出前回调
 	return template.BeforeExporting(ctx, result)
-}
-
-// 生成 Excel 中的列标签
-func (p *ExportRequest) generateColumnLabel(index int) (colLabel string) {
-
-	for index > 0 {
-		mod := (index - 1) % 26
-		colLabel = string(rune('A'+mod)) + colLabel
-		index = (index - 1) / 26
-	}
-
-	return colLabel
 }
