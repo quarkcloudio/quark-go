@@ -118,8 +118,15 @@ func (p *CasbinRule) AddMenuPermission(menuId int, permissionIds interface{}) (e
 	}
 
 	rules := [][]string{}
+	addedRules := make(map[string]bool)
+
+	// 菜单拥有的权限
 	for _, v := range permissions {
-		rules = append(rules, []string{"menu|" + strconv.Itoa(menuId), v.Name, "MenuHasPermission"})
+		rule := "menu|" + strconv.Itoa(menuId) + v.Name + "MenuHasPermission"
+		if !addedRules[rule] {
+			rules = append(rules, []string{"menu|" + strconv.Itoa(menuId), v.Name, "MenuHasPermission"})
+			addedRules[rule] = true
+		}
 	}
 
 	p.RemoveMenuPermissions(menuId)
@@ -184,17 +191,21 @@ func (p *CasbinRule) AddMenuAndPermissionToRole(roleId int, menuIds []int) (err 
 
 	// 角色拥有的菜单
 	for _, v := range menuIds {
-		rules = append(rules, []string{"role|" + strconv.Itoa(roleId), "menu|" + strconv.Itoa(v), "RoleHasMenu"})
+		rule := "role|" + strconv.Itoa(roleId) + "menu|" + strconv.Itoa(v) + "RoleHasMenu"
+		if !addedRules[rule] {
+			rules = append(rules, []string{"role|" + strconv.Itoa(roleId), "menu|" + strconv.Itoa(v), "RoleHasMenu"})
+			addedRules[rule] = true
+		}
 	}
 
 	// 角色拥有的权限
-	for _, v := range menuIds {
-		menuHasPermissions, err := p.GetMenuPermissions(v)
+	for _, menuId := range menuIds {
+		menuHasPermissions, err := p.GetMenuPermissions(menuId)
 		if err == nil {
-			for _, sv := range menuHasPermissions {
-				rule := "role|" + strconv.Itoa(roleId) + sv.Path + sv.Method
+			for _, menuHasPermission := range menuHasPermissions {
+				rule := "role|" + strconv.Itoa(roleId) + menuHasPermission.Path + menuHasPermission.Method
 				if !addedRules[rule] {
-					rules = append(rules, []string{"role|" + strconv.Itoa(roleId), sv.Path, sv.Method})
+					rules = append(rules, []string{"role|" + strconv.Itoa(roleId), menuHasPermission.Path, menuHasPermission.Method})
 					addedRules[rule] = true
 				}
 			}
@@ -279,8 +290,14 @@ func (p *CasbinRule) AddUserRole(modelId int, roleIds []int) (err error) {
 	}
 
 	roles := []string{}
+	addedRules := make(map[string]bool)
+
 	for _, v := range roleIds {
-		roles = append(roles, "role|"+strconv.Itoa(v))
+		rule := "role|" + strconv.Itoa(v)
+		if !addedRules[rule] {
+			roles = append(roles, "role|"+strconv.Itoa(v))
+			addedRules[rule] = true
+		}
 	}
 
 	p.RemoveUserRoles(modelId)
