@@ -353,10 +353,6 @@ func (p *CasbinRule) GetUserRoles(modelId int) (roles []*Role, err error) {
 
 // 获取用户拥有的菜单
 func (p *CasbinRule) GetUserMenus(modelId int) (menus []*Menu, err error) {
-	if err != nil {
-		return
-	}
-
 	getMenus := []*Menu{}
 	roles, err := p.GetUserRoles(modelId)
 	if err != nil {
