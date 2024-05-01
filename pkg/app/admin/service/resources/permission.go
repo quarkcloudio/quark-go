@@ -91,6 +91,7 @@ func (p *Permission) Fields(ctx *builder.Context) []interface{} {
 func (p *Permission) Searches(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		searches.Input("name", "名称"),
+		searches.Input("path", "路径"),
 	}
 }
 
