@@ -3,7 +3,6 @@ package resources
 import (
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/rule"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
@@ -47,22 +46,18 @@ func (p *Role) Fields(ctx *builder.Context) []interface{} {
 				rule.Required(true, "名称必须填写"),
 			}),
 
-		field.Text("guard_name", "GuardName").SetDefault("admin"),
-		field.Tree("menu_ids", "权限").SetData(treeData).OnlyOnForms(),
-		field.Datetime("created_at", "创建时间", func() interface{} {
-			if p.Field["created_at"] == nil {
-				return p.Field["created_at"]
-			}
+		field.Text("guard_name", "GuardName").
+			SetDefault("admin"),
 
-			return p.Field["created_at"].(time.Time).Format("2006-01-02 15:04:05")
-		}).OnlyOnIndex(),
-		field.Datetime("updated_at", "更新时间", func() interface{} {
-			if p.Field["updated_at"] == nil {
-				return p.Field["updated_at"]
-			}
+		field.Tree("menu_ids", "权限").
+			SetData(treeData).
+			OnlyOnForms(),
 
-			return p.Field["updated_at"].(time.Time).Format("2006-01-02 15:04:05")
-		}).OnlyOnIndex(),
+		field.Datetime("created_at", "创建时间").
+			OnlyOnIndex(),
+
+		field.Datetime("updated_at", "更新时间").
+			OnlyOnIndex(),
 	}
 }
 

@@ -1,6 +1,10 @@
 # Mac OS X files
 .DS_Store
 
+# Editor
+.idea
+.vscode
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
@@ -31,5 +35,3 @@ examples/*/web/
 
 # examples web site sqlite files
 examples/*/data.db
-
-.idea/

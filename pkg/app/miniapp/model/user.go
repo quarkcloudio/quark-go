@@ -7,6 +7,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	adminmodel "github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v2/pkg/utils/datetime"
 	"github.com/quarkcloudio/quark-go/v2/pkg/utils/hash"
 	"gorm.io/gorm"
 )
@@ -22,12 +23,12 @@ type User struct {
 	Password      string         `json:"password" gorm:"size:255;not null"`
 	Avatar        string         `json:"avatar" gorm:"size:1000"`
 	LastLoginIp   string         `json:"last_login_ip" gorm:"size:255"`
-	LastLoginTime time.Time      `json:"last_login_time"`
+	LastLoginTime datetime.Time  `json:"last_login_time" gorm:"default:null"`
 	WxOpenid      string         `json:"wx_openid" gorm:"size:255"`
 	WxUnionid     string         `json:"wx_unionid" gorm:"size:255"`
 	Status        int            `json:"status" gorm:"size:1;not null;default:1"`
-	CreatedAt     time.Time      `json:"created_at"`
-	UpdatedAt     time.Time      `json:"updated_at"`
+	CreatedAt     datetime.Time  `json:"created_at"`
+	UpdatedAt     datetime.Time  `json:"updated_at"`
 	DeletedAt     gorm.DeletedAt `json:"deleted_at"`
 }
 
@@ -60,7 +61,7 @@ func (model *User) Seeder() {
 	db.Client.Create(&menuSeeders)
 
 	seeders := []User{
-		{Username: "tangtanglove", Nickname: "默认用户", Email: "tangtanglove@yourweb.com", Phone: "10086", Password: hash.Make("123456"), Sex: 1, Status: 1, LastLoginTime: time.Now()},
+		{Username: "tangtanglove", Nickname: "默认用户", Email: "tangtanglove@yourweb.com", Phone: "10086", Password: hash.Make("123456"), Sex: 1, Status: 1, LastLoginTime: datetime.Time{Time: time.Now()}},
 	}
 
 	db.Client.Create(&seeders)
@@ -133,7 +134,7 @@ func (model *User) GetInfoByUsername(username string) (User *User, Error error) 
 }
 
 // 更新最后一次登录数据
-func (model *User) UpdateLastLogin(uid int, lastLoginIp string, lastLoginTime time.Time) error {
+func (model *User) UpdateLastLogin(uid int, lastLoginIp string, lastLoginTime datetime.Time) error {
 	data := User{
 		LastLoginIp:   lastLoginIp,
 		LastLoginTime: lastLoginTime,

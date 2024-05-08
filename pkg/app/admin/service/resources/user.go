@@ -2,7 +2,6 @@ package resources
 
 import (
 	"strconv"
-	"time"
 
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/radio"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/rule"
@@ -115,17 +114,7 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 			OnlyOnForms().
 			ShowOnImporting(true),
 
-		field.Datetime("last_login_time", "最后登录时间", func() interface{} {
-			if p.Field["last_login_time"] == nil {
-				return p.Field["last_login_time"]
-			}
-
-			if p.Field["last_login_time"].(time.Time).Format("2006-01-02 15:04:05") == "0001-01-01 00:00:00" {
-				return nil
-			}
-
-			return p.Field["last_login_time"].(time.Time).Format("2006-01-02 15:04:05")
-		}).OnlyOnIndex(),
+		field.Datetime("last_login_time", "最后登录时间").OnlyOnIndex(),
 
 		field.Switch("status", "状态").
 			SetRules([]*rule.Rule{

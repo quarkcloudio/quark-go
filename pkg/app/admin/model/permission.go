@@ -1,23 +1,22 @@
 package model
 
 import (
-	"time"
-
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/selectfield"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/transfer"
 	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v2/pkg/utils/datetime"
 )
 
 // 权限
 type Permission struct {
-	Id        int       `json:"id" gorm:"autoIncrement"`
-	Name      string    `json:"name" gorm:"size:500;not null"`
-	GuardName string    `json:"group_name" gorm:"size:100;not null"`
-	Path      string    `json:"path" gorm:"size:500;not null"`
-	Method    string    `json:"method" gorm:"size:500;not null"`
-	Remark    string    `json:"remark" gorm:"size:100"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	Id        int           `json:"id" gorm:"autoIncrement"`
+	Name      string        `json:"name" gorm:"size:500;not null"`
+	GuardName string        `json:"group_name" gorm:"size:100;not null"`
+	Path      string        `json:"path" gorm:"size:500;not null"`
+	Method    string        `json:"method" gorm:"size:500;not null"`
+	Remark    string        `json:"remark" gorm:"size:100"`
+	CreatedAt datetime.Time `json:"created_at"`
+	UpdatedAt datetime.Time `json:"updated_at"`
 }
 
 // 获取列表

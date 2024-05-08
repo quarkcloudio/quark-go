@@ -1,19 +1,18 @@
 package model
 
 import (
-	"time"
-
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/checkbox"
 	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v2/pkg/utils/datetime"
 )
 
 // 角色
 type Role struct {
-	Id        int       `json:"id" gorm:"autoIncrement"`
-	Name      string    `json:"name" gorm:"size:255;not null"`
-	GuardName string    `json:"guard_name" gorm:"size:100;not null"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	Id        int           `json:"id" gorm:"autoIncrement"`
+	Name      string        `json:"name" gorm:"size:255;not null"`
+	GuardName string        `json:"guard_name" gorm:"size:100;not null"`
+	CreatedAt datetime.Time `json:"created_at"`
+	UpdatedAt datetime.Time `json:"updated_at"`
 }
 
 // 获取角色列表

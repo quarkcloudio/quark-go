@@ -1,8 +1,6 @@
 package resources
 
 import (
-	"time"
-
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service/actions"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service/searches"
@@ -38,13 +36,7 @@ func (p *File) Fields(ctx *builder.Context) []interface{} {
 		field.Text("name", "名称"),
 		field.Text("size", "大小").SetSorter(true),
 		field.Text("ext", "扩展名"),
-		field.Datetime("created_at", "上传时间", func() interface{} {
-			if p.Field["created_at"] == nil {
-				return p.Field["created_at"]
-			}
-
-			return p.Field["created_at"].(time.Time).Format("2006-01-02 15:04:05")
-		}),
+		field.Datetime("created_at", "上传时间"),
 	}
 }
 

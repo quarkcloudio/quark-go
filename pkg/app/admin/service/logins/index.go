@@ -11,6 +11,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/login"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource"
 	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v2/pkg/utils/datetime"
 	"github.com/quarkcloudio/quark-go/v2/pkg/utils/hash"
 	"gorm.io/gorm"
 )
@@ -124,7 +125,7 @@ func (p *Index) Handle(ctx *builder.Context) error {
 	}
 
 	// 更新登录信息
-	(&model.Admin{}).UpdateLastLogin(adminInfo.Id, ctx.ClientIP(), time.Now())
+	(&model.Admin{}).UpdateLastLogin(adminInfo.Id, ctx.ClientIP(), datetime.Time{Time: time.Now()})
 
 	// 获取token字符串
 	tokenString, err := ctx.JwtToken((&model.Admin{}).GetClaims(adminInfo))

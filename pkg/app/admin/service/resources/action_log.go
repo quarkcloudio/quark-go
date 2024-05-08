@@ -1,8 +1,6 @@
 package resources
 
 import (
-	"time"
-
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service/actions"
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service/searches"
@@ -51,13 +49,7 @@ func (p *ActionLog) Fields(ctx *builder.Context) []interface{} {
 		field.Text("username", "用户"),
 		field.Text("url", "行为").SetEllipsis(true),
 		field.Text("ip", "IP"),
-		field.Datetime("created_at", "发生时间", func() interface{} {
-			if p.Field["created_at"] == nil {
-				return p.Field["created_at"]
-			}
-
-			return p.Field["created_at"].(time.Time).Format("2006-01-02 15:04:05")
-		}),
+		field.Datetime("created_at", "发生时间"),
 	}
 }
 
