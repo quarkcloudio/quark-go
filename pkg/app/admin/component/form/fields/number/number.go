@@ -243,7 +243,7 @@ func (p *Component) BuildFrontendRules(path string) interface{} {
 
 	uri := strings.Split(path, "/")
 	isCreating := (uri[len(uri)-1] == "create") || (uri[len(uri)-1] == "store")
-	isEditing := (uri[len(uri)-1] == "edit") || (uri[len(uri)-1] == "upText")
+	isEditing := (uri[len(uri)-1] == "edit") || (uri[len(uri)-1] == "update")
 
 	if len(p.Rules) > 0 {
 		rules = rule.ConvertToFrontendRules(p.Rules)
@@ -550,7 +550,7 @@ func (p *Component) HideWhenCreating(callback bool) *Component {
 	return p
 }
 
-// Specify that the element should be hidden from the upText view.
+// Specify that the element should be hidden from the update view.
 func (p *Component) HideWhenUpdating(callback bool) *Component {
 	p.ShowOnUpdate = !callback
 
@@ -592,7 +592,7 @@ func (p *Component) ShowOnCreating(callback bool) *Component {
 	return p
 }
 
-// Specify that the element should be hidden from the upText view.
+// Specify that the element should be hidden from the update view.
 func (p *Component) ShowOnUpdating(callback bool) *Component {
 	p.ShowOnUpdate = callback
 
