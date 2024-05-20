@@ -11,6 +11,13 @@ type Time struct {
 	time.Time
 }
 
+// 当前时间
+func TimeNow() Time {
+	return Time{
+		Time: time.Now(),
+	}
+}
+
 // 编码为自定义的Json格式
 func (t Time) MarshalJSON() ([]byte, error) {
 

@@ -61,7 +61,7 @@ func (model *User) Seeder() {
 	db.Client.Create(&menuSeeders)
 
 	seeders := []User{
-		{Username: "tangtanglove", Nickname: "默认用户", Email: "tangtanglove@yourweb.com", Phone: "10086", Password: hash.Make("123456"), Sex: 1, Status: 1, LastLoginTime: datetime.Time{Time: time.Now()}},
+		{Username: "tangtanglove", Nickname: "默认用户", Email: "tangtanglove@yourweb.com", Phone: "10086", Password: hash.Make("123456"), Sex: 1, Status: 1, LastLoginTime: datetime.TimeNow()},
 	}
 
 	db.Client.Create(&seeders)
