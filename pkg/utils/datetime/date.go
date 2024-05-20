@@ -38,17 +38,17 @@ func (t *Date) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	var now time.Time
+	var now Date
 
 	// 自定义格式解析
-	if now, err = time.ParseInLocation("2006-01-02", string(data), time.Local); err == nil {
-		*t = Date{now}
+	if now, err = ParseDate(string(data), "2006-01-02"); err == nil {
+		*t = now
 		return err
 	}
 
 	// 带引号的自定义格式解析
-	if now, err = time.ParseInLocation("\"2006-01-02\"", string(data), time.Local); err == nil {
-		*t = Date{now}
+	if now, err = ParseDate(string(data), "\"2006-01-02\""); err == nil {
+		*t = now
 		return err
 	}
 
@@ -76,7 +76,19 @@ func (t *Date) Scan(i interface{}) error {
 	return errors.New("无法将值转换为时间戳")
 }
 
-// 返回字符串
-func (t *Date) String() string {
+// 将Date类型转换为Time类型
+func (t Date) ToTime() Time {
+	return Time{
+		Time: t.Time,
+	}
+}
+
+// 格式化为字符串
+func (t Date) ToString() string {
 	return t.Format("2006-01-02")
+}
+
+// 自定义格式字符串
+func (t Date) FormatToString(format string) string {
+	return t.Format(format)
 }
