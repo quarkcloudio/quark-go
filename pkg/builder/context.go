@@ -17,6 +17,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/mitchellh/mapstructure"
+	"github.com/quarkcloudio/quark-go/v2/pkg/utils/tag"
 )
 
 // Context is the most important part of gin. It allows us to pass variables between middleware,
@@ -157,7 +158,26 @@ func (p *Context) Set(key string, val interface{}) {
 // Bind binds the request body into provided type `i`. The default binder
 // does it based on Content-Type header.
 func (p *Context) Bind(i interface{}) error {
-	return p.EchoContext.Bind(i)
+
+	if err := p.EchoContext.Bind(i); err != nil {
+		return err
+	}
+
+	// Set tag defaults
+	// type Example struct {
+	// 	Page      int                    `default:"1"`
+	// 	Size      int                    `default:"10"`
+	// 	IsBool    bool                   `default:"true"`
+	// 	Keyword   string                 `default:"hello world"`
+	// 	Number    float64                `default:"1.23"`
+	// 	Status    [3]int                 `default:"1,2"`
+	// 	TimeRange []string               `default:"12:30,13:30"`
+	// 	Data      map[string]interface{} `default:"age:18,name:zero"`
+	// }
+	// {Page:1 Size:10 Keyword:hello world Number:1.23 Status:[1 2 0] TimeRange:[12:30 13:30] Data:map[age:18 name:zero]}
+	tag.SetDefaults(reflect.ValueOf(i).Elem())
+
+	return nil
 }
 
 // Validate validates provided `i`. It is usually called after `Context#Bind()`.
@@ -350,7 +370,26 @@ func (p *Context) ClientIP() string {
 // application/json, application/xml, application/x-www-form-urlencoded, multipart/form-data
 // If none of the content types above are matched, it will return a ErrUnprocessableEntity error
 func (p *Context) BodyParser(i interface{}) error {
-	return p.EchoContext.Bind(i)
+
+	if err := p.EchoContext.Bind(i); err != nil {
+		return err
+	}
+
+	// Set tag defaults
+	// type Example struct {
+	// 	Page      int                    `default:"1"`
+	// 	Size      int                    `default:"10"`
+	// 	IsBool    bool                   `default:"true"`
+	// 	Keyword   string                 `default:"hello world"`
+	// 	Number    float64                `default:"1.23"`
+	// 	Status    [3]int                 `default:"1,2"`
+	// 	TimeRange []string               `default:"12:30,13:30"`
+	// 	Data      map[string]interface{} `default:"age:18,name:zero"`
+	// }
+	// {Page:1 Size:10 Keyword:hello world Number:1.23 Status:[1 2 0] TimeRange:[12:30 13:30] Data:map[age:18 name:zero]}
+	tag.SetDefaults(reflect.ValueOf(i).Elem())
+
+	return nil
 }
 
 // 获取请求头数据
