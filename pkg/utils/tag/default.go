@@ -9,6 +9,12 @@ import (
 // 设置默认值
 func SetDefaults(value reflect.Value) {
 
+	// 检查传递的值是否是结构体或结构体指针类型
+	if value.Kind() != reflect.Struct && (value.Kind() != reflect.Ptr || value.Elem().Kind() != reflect.Struct) {
+		// 如果不是结构体或结构体指针类型，直接返回
+		return
+	}
+	
 	// 解引用指针类型
 	if value.Kind() == reflect.Ptr {
 		if value.IsNil() {
