@@ -118,7 +118,7 @@ func (p *Component) SetWaterMarkProps(waterMarkProps interface{}) *Component {
 	return p
 }
 
-// 配置水印，Layout 会透传给 PageContainer，但是以 PageContainer 的配置优先
+// tab 的配置
 func (p *Component) SetTabProps(tabProps interface{}) *Component {
 	p.TabProps = tabProps
 	return p
