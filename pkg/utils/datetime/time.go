@@ -26,7 +26,7 @@ func (t Time) MarshalJSON() ([]byte, error) {
 		return []byte("null"), nil
 	}
 
-	return []byte("\"" + t.Format("2006-01-02 15:04:05") + "\""), nil
+	return []byte("\"" + t.Format("15:04:05") + "\""), nil
 }
 
 // 将Json格式解码
@@ -41,24 +41,13 @@ func (t *Time) UnmarshalJSON(data []byte) error {
 	var now Time
 
 	// 自定义格式解析
-	if now, err = ParseTime(string(data), "2006-01-02 15:04:05"); err == nil {
+	if now, err = ParseTime(string(data), "15:04:05"); err == nil {
 		*t = now
 		return err
 	}
 
 	// 带引号的自定义格式解析
-	if now, err = ParseTime(string(data), "\"2006-01-02 15:04:05\""); err == nil {
-		*t = now
-		return err
-	}
-
-	// 默认格式解析
-	if now, err = ParseTime(string(data), time.RFC3339); err == nil {
-		*t = now
-		return err
-	}
-
-	if now, err = ParseTime(string(data), "\""+time.RFC3339+"\""); err == nil {
+	if now, err = ParseTime(string(data), "\"15:04:05\""); err == nil {
 		*t = now
 		return err
 	}
@@ -87,16 +76,16 @@ func (t *Time) Scan(i interface{}) error {
 	return errors.New("无法将值转换为时间戳")
 }
 
-// 将Time类型转换为Date类型
-func (t Time) ToDate() Date {
-	return Date{
+// 将Time类型转换为Datetime类型
+func (t Time) ToDatetime() Datetime {
+	return Datetime{
 		Time: t.Time,
 	}
 }
 
 // 格式化为字符串
 func (t Time) ToString() string {
-	return t.Format("2006-01-02 15:04:05")
+	return t.Format("15:04:05")
 }
 
 // 自定义格式字符串

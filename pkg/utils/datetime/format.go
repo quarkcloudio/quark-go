@@ -24,21 +24,39 @@ func ParseDateInLocation(location *time.Location, values ...string) (Date, error
 }
 
 // 将字符串解析为时间
-// ParseTime("2024-05-20 11:22:33") | ParseTime("2024/05/20 11:22:33", "2006/01/02 15:04:05")
+// ParseTime("14:00:00") | ParseTime("14-00-00", "15-04-05")
 func ParseTime(values ...string) (Time, error) {
 
-	time, err := parseInLocation("2006-01-02 15:04:05", time.Local, values...)
+	date, err := parseInLocation("15:04:05", time.Local, values...)
 
-	return Time{Time: time}, err
+	return Time{Time: date}, err
 }
 
 // 将字符串解析为时间
-// ParseTimeInLocation(time.Local, "2024-05-20 11:22:33") | ParseTimeInLocation(time.Local, "2024/05/20 11:22:33", "2006/01/02 15:04:05")
+// ParseTimeInLocation(time.Local, "14:00:00") | ParseTimeInLocation(time.Local, "14-00-00", "15-04-05")
 func ParseTimeInLocation(location *time.Location, values ...string) (Time, error) {
+
+	date, err := parseInLocation("15:04:05", location, values...)
+
+	return Time{Time: date}, err
+}
+
+// 将字符串解析为日期时间
+// ParseDatetime("2024-05-20 11:22:33") | ParseDatetime("2024/05/20 11:22:33", "2006/01/02 15:04:05")
+func ParseDatetime(values ...string) (Datetime, error) {
+
+	time, err := parseInLocation("2006-01-02 15:04:05", time.Local, values...)
+
+	return Datetime{Time: time}, err
+}
+
+// 将字符串解析为时间
+// ParseDatetimeInLocation(time.Local, "2024-05-20 11:22:33") | ParseDatetimeInLocation(time.Local, "2024/05/20 11:22:33", "2006/01/02 15:04:05")
+func ParseDatetimeInLocation(location *time.Location, values ...string) (Datetime, error) {
 
 	time, err := parseInLocation("2006-01-02 15:04:05", location, values...)
 
-	return Time{Time: time}, err
+	return Datetime{Time: time}, err
 }
 
 // 用于解析带有可选自定义格式的日期或时间字符串

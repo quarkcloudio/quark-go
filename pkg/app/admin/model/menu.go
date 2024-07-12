@@ -14,23 +14,23 @@ import (
 
 // 字段
 type Menu struct {
-	Id         int           `json:"id" gorm:"autoIncrement"`
-	Name       string        `json:"name" gorm:"size:100;not null"`
-	GuardName  string        `json:"group_name" gorm:"size:100;not null"`
-	Icon       string        `json:"icon" gorm:"size:100;"`
-	Type       int           `json:"type" gorm:"size:100;not null"` // 菜单类型：1目录，2菜单，3按钮
-	Pid        int           `json:"pid" gorm:"size:11;default:0"`
-	Sort       int           `json:"sort" gorm:"size:11;default:0"`
-	Path       string        `json:"path" gorm:"size:255"`
-	Show       int           `json:"show" gorm:"size:1;not null;default:1"`
-	IsEngine   int           `json:"is_engine" gorm:"size:1;not null;default:0"`
-	IsLink     int           `json:"is_link" gorm:"size:1;not null;default:0"`
-	Status     int           `json:"status" gorm:"size:1;not null;default:1"`
-	Key        string        `json:"key" gorm:"<-:false"`
-	Locale     string        `json:"locale" gorm:"<-:false"`
-	HideInMenu bool          `json:"hide_in_menu" gorm:"<-:false"`
-	CreatedAt  datetime.Time `json:"created_at"`
-	UpdatedAt  datetime.Time `json:"updated_at"`
+	Id         int               `json:"id" gorm:"autoIncrement"`
+	Name       string            `json:"name" gorm:"size:100;not null"`
+	GuardName  string            `json:"group_name" gorm:"size:100;not null"`
+	Icon       string            `json:"icon" gorm:"size:100;"`
+	Type       int               `json:"type" gorm:"size:100;not null"` // 菜单类型：1目录，2菜单，3按钮
+	Pid        int               `json:"pid" gorm:"size:11;default:0"`
+	Sort       int               `json:"sort" gorm:"size:11;default:0"`
+	Path       string            `json:"path" gorm:"size:255"`
+	Show       int               `json:"show" gorm:"size:1;not null;default:1"`
+	IsEngine   int               `json:"is_engine" gorm:"size:1;not null;default:0"`
+	IsLink     int               `json:"is_link" gorm:"size:1;not null;default:0"`
+	Status     int               `json:"status" gorm:"size:1;not null;default:1"`
+	Key        string            `json:"key" gorm:"<-:false"`
+	Locale     string            `json:"locale" gorm:"<-:false"`
+	HideInMenu bool              `json:"hide_in_menu" gorm:"<-:false"`
+	CreatedAt  datetime.Datetime `json:"created_at"`
+	UpdatedAt  datetime.Datetime `json:"updated_at"`
 }
 
 // 菜单表

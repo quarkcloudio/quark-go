@@ -14,22 +14,22 @@ import (
 
 // 字段
 type User struct {
-	Id            int            `json:"id" gorm:"autoIncrement"`
-	Username      string         `json:"username" gorm:"size:20;index:users_username_unique,unique;not null"`
-	Nickname      string         `json:"nickname" gorm:"size:200;not null"`
-	Sex           int            `json:"sex" gorm:"size:4;not null;default:1"`
-	Email         string         `json:"email" gorm:"size:50;index:users_email_unique,unique;not null"`
-	Phone         string         `json:"phone" gorm:"size:11;index:users_phone_unique,unique;not null"`
-	Password      string         `json:"password" gorm:"size:255;not null"`
-	Avatar        string         `json:"avatar" gorm:"size:1000"`
-	LastLoginIp   string         `json:"last_login_ip" gorm:"size:255"`
-	LastLoginTime datetime.Time  `json:"last_login_time" gorm:"default:null"`
-	WxOpenid      string         `json:"wx_openid" gorm:"size:255"`
-	WxUnionid     string         `json:"wx_unionid" gorm:"size:255"`
-	Status        int            `json:"status" gorm:"size:1;not null;default:1"`
-	CreatedAt     datetime.Time  `json:"created_at"`
-	UpdatedAt     datetime.Time  `json:"updated_at"`
-	DeletedAt     gorm.DeletedAt `json:"deleted_at"`
+	Id            int               `json:"id" gorm:"autoIncrement"`
+	Username      string            `json:"username" gorm:"size:20;index:users_username_unique,unique;not null"`
+	Nickname      string            `json:"nickname" gorm:"size:200;not null"`
+	Sex           int               `json:"sex" gorm:"size:4;not null;default:1"`
+	Email         string            `json:"email" gorm:"size:50;index:users_email_unique,unique;not null"`
+	Phone         string            `json:"phone" gorm:"size:11;index:users_phone_unique,unique;not null"`
+	Password      string            `json:"password" gorm:"size:255;not null"`
+	Avatar        string            `json:"avatar" gorm:"size:1000"`
+	LastLoginIp   string            `json:"last_login_ip" gorm:"size:255"`
+	LastLoginTime datetime.Datetime `json:"last_login_time" gorm:"default:null"`
+	WxOpenid      string            `json:"wx_openid" gorm:"size:255"`
+	WxUnionid     string            `json:"wx_unionid" gorm:"size:255"`
+	Status        int               `json:"status" gorm:"size:1;not null;default:1"`
+	CreatedAt     datetime.Datetime `json:"created_at"`
+	UpdatedAt     datetime.Datetime `json:"updated_at"`
+	DeletedAt     gorm.DeletedAt    `json:"deleted_at"`
 }
 
 // 用户JWT结构体
@@ -61,7 +61,7 @@ func (model *User) Seeder() {
 	db.Client.Create(&menuSeeders)
 
 	seeders := []User{
-		{Username: "tangtanglove", Nickname: "默认用户", Email: "tangtanglove@yourweb.com", Phone: "10086", Password: hash.Make("123456"), Sex: 1, Status: 1, LastLoginTime: datetime.TimeNow()},
+		{Username: "tangtanglove", Nickname: "默认用户", Email: "tangtanglove@yourweb.com", Phone: "10086", Password: hash.Make("123456"), Sex: 1, Status: 1, LastLoginTime: datetime.Now()},
 	}
 
 	db.Client.Create(&seeders)
@@ -134,7 +134,7 @@ func (model *User) GetInfoByUsername(username string) (User *User, Error error) 
 }
 
 // 更新最后一次登录数据
-func (model *User) UpdateLastLogin(uid int, lastLoginIp string, lastLoginTime datetime.Time) error {
+func (model *User) UpdateLastLogin(uid int, lastLoginIp string, lastLoginTime datetime.Datetime) error {
 	data := User{
 		LastLoginIp:   lastLoginIp,
 		LastLoginTime: lastLoginTime,

@@ -7,17 +7,17 @@ import (
 
 // 字段
 type Config struct {
-	Id        int           `json:"id" gorm:"autoIncrement"`
-	Title     string        `json:"title" gorm:"size:255;not null"`
-	Type      string        `json:"type" gorm:"size:20;not null"`
-	Name      string        `json:"name" gorm:"size:255;not null"`
-	Sort      int           `json:"sort" gorm:"size:11;default:0"`
-	GroupName string        `json:"group_name" gorm:"size:255;not null"`
-	Value     string        `json:"value" gorm:"size:2000"`
-	Remark    string        `json:"remark" gorm:"size:100;not null"`
-	Status    int           `json:"status" gorm:"size:1;not null;default:1"`
-	CreatedAt datetime.Time `json:"created_at"`
-	UpdatedAt datetime.Time `json:"updated_at"`
+	Id        int               `json:"id" gorm:"autoIncrement"`
+	Title     string            `json:"title" gorm:"size:255;not null"`
+	Type      string            `json:"type" gorm:"size:20;not null"`
+	Name      string            `json:"name" gorm:"size:255;not null"`
+	Sort      int               `json:"sort" gorm:"size:11;default:0"`
+	GroupName string            `json:"group_name" gorm:"size:255;not null"`
+	Value     string            `json:"value" gorm:"size:2000"`
+	Remark    string            `json:"remark" gorm:"size:100;not null"`
+	Status    int               `json:"status" gorm:"size:1;not null;default:1"`
+	CreatedAt datetime.Datetime `json:"created_at"`
+	UpdatedAt datetime.Datetime `json:"updated_at"`
 }
 
 // 存储配置

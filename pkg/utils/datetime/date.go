@@ -76,9 +76,9 @@ func (t *Date) Scan(i interface{}) error {
 	return errors.New("无法将值转换为时间戳")
 }
 
-// 将Date类型转换为Time类型
-func (t Date) ToTime() Time {
-	return Time{
+// 将Date类型转换为DateTime类型
+func (t Date) ToDateTime() Datetime {
+	return Datetime{
 		Time: t.Time,
 	}
 }

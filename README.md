@@ -85,7 +85,7 @@ go run main.go
 密码：```123456```
 
 ## 特别注意
-1. **后台用户认证使用了AppKey作为JWT的加密密串，生成环境请务必更改**
+1. **后台用户认证使用了AppKey作为JWT的加密密串，生产环境请务必更改**
 
 ## 相关项目
 - [QuarkSmart](https://github.com/quarkcloudio/quark-smart) 单体应用

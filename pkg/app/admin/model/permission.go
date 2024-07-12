@@ -9,14 +9,14 @@ import (
 
 // 权限
 type Permission struct {
-	Id        int           `json:"id" gorm:"autoIncrement"`
-	Name      string        `json:"name" gorm:"size:500;not null"`
-	GuardName string        `json:"group_name" gorm:"size:100;not null"`
-	Path      string        `json:"path" gorm:"size:500;not null"`
-	Method    string        `json:"method" gorm:"size:500;not null"`
-	Remark    string        `json:"remark" gorm:"size:100"`
-	CreatedAt datetime.Time `json:"created_at"`
-	UpdatedAt datetime.Time `json:"updated_at"`
+	Id        int               `json:"id" gorm:"autoIncrement"`
+	Name      string            `json:"name" gorm:"size:500;not null"`
+	GuardName string            `json:"group_name" gorm:"size:100;not null"`
+	Path      string            `json:"path" gorm:"size:500;not null"`
+	Method    string            `json:"method" gorm:"size:500;not null"`
+	Remark    string            `json:"remark" gorm:"size:100"`
+	CreatedAt datetime.Datetime `json:"created_at"`
+	UpdatedAt datetime.Datetime `json:"updated_at"`
 }
 
 // 获取列表

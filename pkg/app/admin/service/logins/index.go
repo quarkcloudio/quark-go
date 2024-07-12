@@ -123,7 +123,7 @@ func (p *Index) Handle(ctx *builder.Context) error {
 	}
 
 	// 更新登录信息
-	(&model.Admin{}).UpdateLastLogin(adminInfo.Id, ctx.ClientIP(), datetime.TimeNow())
+	(&model.Admin{}).UpdateLastLogin(adminInfo.Id, ctx.ClientIP(), datetime.Now())
 
 	// 获取token字符串
 	tokenString, err := ctx.JwtToken((&model.Admin{}).GetClaims(adminInfo))

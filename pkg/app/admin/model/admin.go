@@ -13,20 +13,20 @@ import (
 
 // 字段
 type Admin struct {
-	Id            int            `json:"id" gorm:"autoIncrement"`
-	Username      string         `json:"username" gorm:"size:20;index:admins_username_unique,unique;not null"`
-	Nickname      string         `json:"nickname" gorm:"size:200;not null"`
-	Sex           int            `json:"sex" gorm:"size:4;not null;default:1"`
-	Email         string         `json:"email" gorm:"size:50;index:admins_email_unique,unique;not null"`
-	Phone         string         `json:"phone" gorm:"size:11;index:admins_phone_unique,unique;not null"`
-	Password      string         `json:"password" gorm:"size:255;not null"`
-	Avatar        string         `json:"avatar" gorm:"size:1000"`
-	LastLoginIp   string         `json:"last_login_ip" gorm:"size:255"`
-	LastLoginTime datetime.Time  `json:"last_login_time"`
-	Status        int            `json:"status" gorm:"size:1;not null;default:1"`
-	CreatedAt     datetime.Time  `json:"created_at"`
-	UpdatedAt     datetime.Time  `json:"updated_at"`
-	DeletedAt     gorm.DeletedAt `json:"deleted_at"`
+	Id            int               `json:"id" gorm:"autoIncrement"`
+	Username      string            `json:"username" gorm:"size:20;index:admins_username_unique,unique;not null"`
+	Nickname      string            `json:"nickname" gorm:"size:200;not null"`
+	Sex           int               `json:"sex" gorm:"size:4;not null;default:1"`
+	Email         string            `json:"email" gorm:"size:50;index:admins_email_unique,unique;not null"`
+	Phone         string            `json:"phone" gorm:"size:11;index:admins_phone_unique,unique;not null"`
+	Password      string            `json:"password" gorm:"size:255;not null"`
+	Avatar        string            `json:"avatar" gorm:"size:1000"`
+	LastLoginIp   string            `json:"last_login_ip" gorm:"size:255"`
+	LastLoginTime datetime.Datetime `json:"last_login_time"`
+	Status        int               `json:"status" gorm:"size:1;not null;default:1"`
+	CreatedAt     datetime.Datetime `json:"created_at"`
+	UpdatedAt     datetime.Datetime `json:"updated_at"`
+	DeletedAt     gorm.DeletedAt    `json:"deleted_at"`
 }
 
 // 管理员JWT结构体
@@ -45,7 +45,7 @@ type AdminClaims struct {
 // 管理员Seeder
 func (model *Admin) Seeder() {
 	seeders := []Admin{
-		{Username: "administrator", Nickname: "超级管理员", Email: "admin@yourweb.com", Phone: "10086", Password: hash.Make("123456"), Sex: 1, Status: 1, LastLoginTime: datetime.TimeNow()},
+		{Username: "administrator", Nickname: "超级管理员", Email: "admin@yourweb.com", Phone: "10086", Password: hash.Make("123456"), Sex: 1, Status: 1, LastLoginTime: datetime.Now()},
 	}
 
 	db.Client.Create(&seeders)
@@ -124,7 +124,7 @@ func (model *Admin) GetMenuListById(id interface{}) (menuList interface{}, Error
 }
 
 // 更新最后一次登录数据
-func (model *Admin) UpdateLastLogin(uid int, lastLoginIp string, lastLoginTime datetime.Time) error {
+func (model *Admin) UpdateLastLogin(uid int, lastLoginIp string, lastLoginTime datetime.Datetime) error {
 	data := Admin{
 		LastLoginIp:   lastLoginIp,
 		LastLoginTime: lastLoginTime,

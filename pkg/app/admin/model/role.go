@@ -8,11 +8,11 @@ import (
 
 // 角色
 type Role struct {
-	Id        int           `json:"id" gorm:"autoIncrement"`
-	Name      string        `json:"name" gorm:"size:255;not null"`
-	GuardName string        `json:"guard_name" gorm:"size:100;not null"`
-	CreatedAt datetime.Time `json:"created_at"`
-	UpdatedAt datetime.Time `json:"updated_at"`
+	Id        int               `json:"id" gorm:"autoIncrement"`
+	Name      string            `json:"name" gorm:"size:255;not null"`
+	GuardName string            `json:"guard_name" gorm:"size:100;not null"`
+	CreatedAt datetime.Datetime `json:"created_at"`
+	UpdatedAt datetime.Datetime `json:"updated_at"`
 }
 
 // 获取角色列表
