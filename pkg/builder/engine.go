@@ -223,7 +223,7 @@ func (p *Engine) initPaths() {
 			structName := getNames[len(getNames)-1]
 
 			if strings.Contains(v.Path, ":resource") {
-				url := strings.Replace(v.Path, ":resource", strings.ToLower(structName), -1)
+				url := strings.Replace(v.Path, ":resource", strings.ToLower(string(structName[0]))+structName[1:], -1)
 
 				// 处理行为
 				if strings.Contains(url, ":uriKey") {
