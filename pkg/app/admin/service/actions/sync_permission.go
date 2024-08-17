@@ -100,10 +100,5 @@ func (p *SyncPermissionAction) Handle(ctx *builder.Context, query *gorm.DB) erro
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
-	err = db.Client.Model(&model.Permission{}).Where("name NOT IN ?", currentNames).Delete("").Error
-	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
-	}
-
 	return ctx.JSON(200, message.Success("操作成功"))
 }
