@@ -51,6 +51,7 @@ var ContentTypeList = map[string]string{
 	"image/jpeg":                         "jpg",
 	"image/x-ms-bmp":                     "bmp",
 	"image/x-icon":                       "ico",
+	"image/svg+xml":                      "svg",
 	"image/x-cursor":                     "cur",
 	"image/vnd.adobe.photoshop":          "pnd",
 	"image/png":                          "png",

@@ -24,6 +24,7 @@ func (p *Image) Init(ctx *builder.Context) interface{} {
 		"image/png",
 		"image/gif",
 		"image/jpeg",
+		"image/svg+xml",
 	}
 
 	// 设置文件上传路径
