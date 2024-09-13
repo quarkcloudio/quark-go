@@ -27,8 +27,6 @@ func (p *ChangeWebConfigAction) Handle(ctx *builder.Context, query *gorm.DB) err
 	result := true
 
 	for k, v := range data {
-		config := map[string]interface{}{}
-		db.Client.Model(&model.Config{}).Where("name =?", k).First(&config)
 		if getValue, ok := v.([]interface{}); ok {
 			v, _ = json.Marshal(getValue)
 		}
