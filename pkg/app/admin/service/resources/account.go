@@ -47,10 +47,9 @@ func (p *Account) Fields(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 
-		field.Image("avatar", "头像").OnlyOnForms(),
+		field.Image("avatar", "头像"),
 
 		field.Text("nickname", "昵称").
-			SetEditable(true).
 			SetRules([]*rule.Rule{
 				rule.New().SetRequired().SetMessage("昵称必须填写"),
 			}),
@@ -58,23 +57,11 @@ func (p *Account) Fields(ctx *builder.Context) []interface{} {
 		field.Text("email", "邮箱").
 			SetRules([]*rule.Rule{
 				rule.New().SetRequired().SetMessage("邮箱必须填写"),
-			}).
-			SetCreationRules([]*rule.Rule{
-				rule.New().SetUnique("admins", "email").SetMessage("邮箱已存在"),
-			}).
-			SetUpdateRules([]*rule.Rule{
-				rule.New().SetUnique("admins", "email", "{id}").SetMessage("邮箱已存在"),
 			}),
 
 		field.Text("phone", "手机号").
 			SetRules([]*rule.Rule{
 				rule.New().SetRequired().SetMessage("手机号必须填写"),
-			}).
-			SetCreationRules([]*rule.Rule{
-				rule.New().SetUnique("admins", "phone").SetMessage("手机号已存在"),
-			}).
-			SetUpdateRules([]*rule.Rule{
-				rule.New().SetUnique("admins", "phone", "{id}").SetMessage("手机号已存在"),
 			}),
 
 		field.Radio("sex", "性别").
@@ -90,11 +77,7 @@ func (p *Account) Fields(ctx *builder.Context) []interface{} {
 			}).
 			SetDefault(1),
 
-		field.Password("password", "密码").
-			SetCreationRules([]*rule.Rule{
-				rule.New().SetRequired().SetMessage("密码必须填写"),
-			}).
-			OnlyOnForms(),
+		field.Password("password", "密码"),
 	}
 }
 
