@@ -53,7 +53,6 @@ func (p *SyncPermissionAction) Handle(ctx *builder.Context, query *gorm.DB) erro
 	data := []model.Permission{}
 
 	var names []string
-	var currentNames []string
 	db.Client.Model(&model.Permission{}).Pluck("name", &names)
 	for _, v := range permissions {
 		if strings.Contains(v.Url, "/api/admin") {
@@ -64,7 +63,6 @@ func (p *SyncPermissionAction) Handle(ctx *builder.Context, query *gorm.DB) erro
 			name := stringy.
 				New(url).
 				CamelCase("?", "")
-			currentNames = append(currentNames, name)
 
 			// 判断数据库中是否已存在
 			for _, nv := range names {
