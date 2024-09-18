@@ -84,7 +84,7 @@ func (p *Image) GetList(ctx *builder.Context) error {
 	}
 
 	return ctx.JSON(200, message.Success(
-		"上传成功",
+		"获取成功",
 		"",
 		map[string]interface{}{
 			"pagination": pagination,
