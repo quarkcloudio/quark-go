@@ -21,12 +21,5 @@ func (p *Index) Content(ctx *builder.Context) interface{} {
 		p.Row([]*col.Component{
 			p.Col(24, "Hello World!"),
 		}).SetStyle("text-align:center;"),
-		p.Row([]*col.Component{
-			p.Col(24,
-				p.Action("跳转到表单页", "primary").
-					SetBlock(true).
-					SetLink("/pages/engine/default?api=/api/miniapp/form/demo/index", "navigateTo"),
-			),
-		}).SetStyle("text-align:center;"),
 	}
 }
