@@ -135,7 +135,7 @@ func (p *WebConfig) BeforeCreating(ctx *builder.Context) map[string]interface{} 
 		}
 
 		if config["type"] == "picture" || config["type"] == "file" {
-			if config["value"] != nil {
+			if config["value"] != nil && config["value"] != "" {
 				// json字符串
 				if strings.Contains(config["value"].(string), "{") {
 					var jsonData interface{}
@@ -151,6 +151,8 @@ func (p *WebConfig) BeforeCreating(ctx *builder.Context) map[string]interface{} 
 						data[config["name"].(string)] = arrayData
 					}
 				}
+			} else {
+				data[config["name"].(string)] = nil
 			}
 		}
 	}
