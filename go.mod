@@ -22,8 +22,8 @@ require (
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/xuri/excelize/v2 v2.7.1
 	golang.org/x/crypto v0.14.0
-	gorm.io/driver/mysql v1.5.1
-	gorm.io/gorm v1.25.2
+	gorm.io/driver/mysql v1.5.7
+	gorm.io/gorm v1.25.12
 )
 
 require (
@@ -101,7 +101,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/postgres v1.5.2 // indirect
 	gorm.io/driver/sqlserver v1.5.1 // indirect
-	gorm.io/plugin/dbresolver v1.4.1 // indirect
+	gorm.io/plugin/dbresolver v1.5.3 // indirect
 	modernc.org/libc v1.24.1 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.6.0 // indirect
@@ -171,7 +171,7 @@ require (
 	golang.org/x/arch v0.4.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
-	golang.org/x/text v0.13.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gorm.io/driver/sqlite v1.5.2
