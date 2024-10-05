@@ -21,7 +21,7 @@ func (p *Account) Init(ctx *builder.Context) interface{} {
 	p.Title = "个人设置"
 
 	// 模型
-	p.Model = &model.Admin{}
+	p.Model = &model.User{}
 
 	return p
 }
@@ -95,7 +95,7 @@ func (p *Account) Actions(ctx *builder.Context) []interface{} {
 // 创建页面显示前回调
 func (p *Account) BeforeCreating(ctx *builder.Context) map[string]interface{} {
 	data := map[string]interface{}{}
-	adminInfo, _ := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	adminInfo, _ := (&model.User{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	db.Client.
 		Model(p.Model).
 		Where("id = ?", adminInfo.Id).

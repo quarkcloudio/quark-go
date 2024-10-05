@@ -59,9 +59,9 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 					rule.Required(true, "名称必须填写"),
 				}),
 
-			field.Text("guard_name", "GuardName").
+			field.Text("guard_name", "守卫").
 				SetRules([]*rule.Rule{
-					rule.Required(true, "GuardName必须填写"),
+					rule.Required(true, "守卫必须填写"),
 				}).
 				SetDefault("admin").
 				OnlyOnForms(),

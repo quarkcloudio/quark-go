@@ -34,7 +34,7 @@ type Picture struct {
 func (model *Picture) GetListBySearch(appKey string, tokenString string, categoryId interface{}, name interface{}, startDate interface{}, endDate interface{}, page int) (list []*Picture, total int64, Error error) {
 	pictures := []*Picture{}
 
-	adminInfo, err := (&Admin{}).GetAuthUser(appKey, tokenString)
+	adminInfo, err := (&User{}).GetAuthUser(appKey, tokenString)
 	if err != nil {
 		return pictures, 0, err
 	}

@@ -20,7 +20,7 @@ func Handle() {
 	// 迁移数据
 	db.Client.AutoMigrate(
 		&model.ActionLog{},
-		&model.Admin{},
+		&model.User{},
 		&model.Config{},
 		&model.Menu{},
 		&model.File{},
@@ -33,13 +33,13 @@ func Handle() {
 	)
 
 	// 如果超级管理员不存在，初始化数据库数据
-	adminInfo, err := (&model.Admin{}).GetInfoById(1)
+	adminInfo, err := (&model.User{}).GetInfoById(1)
 	if err != nil && err != gorm.ErrRecordNotFound {
 		panic(err)
 	}
 	if adminInfo.Id == 0 {
 		// 数据填充
-		(&model.Admin{}).Seeder()
+		(&model.User{}).Seeder()
 		(&model.Config{}).Seeder()
 		(&model.Menu{}).Seeder()
 	}

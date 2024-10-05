@@ -4,7 +4,6 @@ import (
 	admininstall "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/install"
 	adminmiddleware "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/middleware"
 	adminservice "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service"
-	miniappinstall "github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/install"
 	miniappmiddleware "github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/middleware"
 	miniappservice "github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/service"
 	toolservice "github.com/quarkcloudio/quark-go/v3/pkg/app/tool/service"
@@ -57,9 +56,6 @@ func main() {
 
 	// 管理后台中间件
 	b.Use(adminmiddleware.Handle)
-
-	// 构建MiniApp数据库
-	miniappinstall.Handle()
 
 	// MiniApp中间件
 	b.Use(miniappmiddleware.Handle)

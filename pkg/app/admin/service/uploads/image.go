@@ -133,7 +133,7 @@ func (p *Image) Crop(ctx *builder.Context) error {
 		return ctx.JSON(200, message.Error("文件不存在"))
 	}
 
-	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	adminInfo, err := (&model.User{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
@@ -229,7 +229,7 @@ func (p *Image) Crop(ctx *builder.Context) error {
 	if fileInfo != nil {
 		// 更新数据库
 		(&model.Picture{}).UpdateById(pictureInfo.Id, &model.Picture{
-			ObjType: "ADMINID",
+			ObjType: "ADMIN",
 			ObjId:   adminInfo.Id,
 			Name:    fileInfo.Name,
 			Size:    fileInfo.Size,
@@ -259,7 +259,7 @@ func (p *Image) Crop(ctx *builder.Context) error {
 
 	// 更新数据库
 	(&model.Picture{}).UpdateById(pictureInfo.Id, &model.Picture{
-		ObjType: "ADMINID",
+		ObjType: "ADMIN",
 		ObjId:   adminInfo.Id,
 		Name:    result.Name,
 		Size:    result.Size,
@@ -282,7 +282,7 @@ func (p *Image) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSyste
 		return fileSystem, nil, err
 	}
 
-	pictureInfo, _ := (&model.Picture{}).GetInfoByHash(fileHash)
+	pictureInfo, err := (&model.Picture{}).GetInfoByHash(fileHash)
 	if err != nil {
 		return fileSystem, nil, err
 	}
@@ -316,14 +316,14 @@ func (p *Image) AfterHandle(ctx *builder.Context, result *storage.FileInfo) erro
 		result.Url = (&model.Picture{}).GetPath(result.Url)
 	}
 
-	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	adminInfo, err := (&model.User{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	// 插入数据库
 	id, err := (&model.Picture{}).InsertGetId(&model.Picture{
-		ObjType: "ADMINID",
+		ObjType: "ADMIN",
 		ObjId:   adminInfo.Id,
 		Name:    result.Name,
 		Size:    result.Size,

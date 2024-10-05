@@ -35,7 +35,7 @@ func (p *ChangeAccountAction) Handle(ctx *builder.Context, query *gorm.DB) error
 	}
 
 	// 获取登录管理员信息
-	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	adminInfo, err := (&model.User{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}

@@ -42,7 +42,7 @@ func Handle(ctx *builder.Context) error {
 	}
 
 	// 定义管理员结构体
-	adminInfo := &model.AdminClaims{}
+	adminInfo := &model.UserClaims{}
 
 	// 获取登录管理员信息
 	err := ctx.JwtAuthUser(adminInfo)

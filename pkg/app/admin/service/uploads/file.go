@@ -53,7 +53,7 @@ func (p *File) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem
 		return fileSystem, nil, err
 	}
 
-	getFileInfo, _ := (&model.File{}).GetInfoByHash(fileHash)
+	getFileInfo, err := (&model.File{}).GetInfoByHash(fileHash)
 	if err != nil {
 		return fileSystem, nil, err
 	}
@@ -86,14 +86,14 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 		result.Url = (&model.File{}).GetPath(result.Url)
 	}
 
-	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	adminInfo, err := (&model.User{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	// 插入数据库
 	id, err := (&model.File{}).InsertGetId(&model.File{
-		ObjType: "ADMINID",
+		ObjType: "ADMIN",
 		ObjId:   adminInfo.Id,
 		Name:    result.Name,
 		Size:    result.Size,

@@ -16,7 +16,7 @@ type PictureCategory struct {
 func (model *PictureCategory) GetAuthList(appKey string, tokenString string) (list []*PictureCategory, Error error) {
 	categorys := []*PictureCategory{}
 
-	adminInfo, err := (&Admin{}).GetAuthUser(appKey, tokenString)
+	adminInfo, err := (&User{}).GetAuthUser(appKey, tokenString)
 	if err != nil {
 		return categorys, err
 	}

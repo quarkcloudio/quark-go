@@ -109,7 +109,7 @@ func (p *Index) Handle(ctx *builder.Context) error {
 		return ctx.JSON(200, message.Error("用户名或密码不能为空"))
 	}
 
-	adminInfo, err := (&model.Admin{}).GetInfoByUsername(loginRequest.Username)
+	adminInfo, err := (&model.User{}).GetInfoByUsername(loginRequest.Username)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return ctx.JSON(200, message.Error("用户不存在"))
@@ -123,10 +123,10 @@ func (p *Index) Handle(ctx *builder.Context) error {
 	}
 
 	// 更新登录信息
-	(&model.Admin{}).UpdateLastLogin(adminInfo.Id, ctx.ClientIP(), datetime.Now())
+	(&model.User{}).UpdateLastLogin(adminInfo.Id, ctx.ClientIP(), datetime.Now())
 
 	// 获取token字符串
-	tokenString, err := ctx.JwtToken((&model.Admin{}).GetClaims(adminInfo))
+	tokenString, err := ctx.JwtToken((&model.User{}).GetAdminClaims(adminInfo))
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}

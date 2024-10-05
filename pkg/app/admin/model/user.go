@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	adminmodel "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
 	"github.com/quarkcloudio/quark-go/v3/pkg/utils/datetime"
 	"github.com/quarkcloudio/quark-go/v3/pkg/utils/hash"
@@ -15,15 +14,15 @@ import (
 // 字段
 type User struct {
 	Id            int               `json:"id" gorm:"autoIncrement"`
-	Username      string            `json:"username" gorm:"size:20;index:users_username_unique,unique;not null"`
+	Username      string            `json:"username" gorm:"size:20;index:admins_username_unique,unique;not null"`
 	Nickname      string            `json:"nickname" gorm:"size:200;not null"`
 	Sex           int               `json:"sex" gorm:"size:4;not null;default:1"`
-	Email         string            `json:"email" gorm:"size:50;index:users_email_unique,unique;not null"`
-	Phone         string            `json:"phone" gorm:"size:11;index:users_phone_unique,unique;not null"`
+	Email         string            `json:"email" gorm:"size:50;index:admins_email_unique,unique;not null"`
+	Phone         string            `json:"phone" gorm:"size:11;index:admins_phone_unique,unique;not null"`
 	Password      string            `json:"password" gorm:"size:255;not null"`
 	Avatar        string            `json:"avatar" gorm:"size:1000"`
 	LastLoginIp   string            `json:"last_login_ip" gorm:"size:255"`
-	LastLoginTime datetime.Datetime `json:"last_login_time" gorm:"default:null"`
+	LastLoginTime datetime.Datetime `json:"last_login_time"`
 	WxOpenid      string            `json:"wx_openid" gorm:"size:255"`
 	WxUnionid     string            `json:"wx_unionid" gorm:"size:255"`
 	Status        int               `json:"status" gorm:"size:1;not null;default:1"`
@@ -32,7 +31,7 @@ type User struct {
 	DeletedAt     gorm.DeletedAt    `json:"deleted_at"`
 }
 
-// 用户JWT结构体
+// 管理员JWT结构体
 type UserClaims struct {
 	Id        int    `json:"id"`
 	Username  string `json:"username"`
@@ -45,38 +44,48 @@ type UserClaims struct {
 	jwt.RegisteredClaims
 }
 
-// 用户Seeder
+// 管理员Seeder
 func (model *User) Seeder() {
-
-	// 如果菜单已存在，不执行Seeder操作
-	if (&adminmodel.Menu{}).IsExist(18) {
-		return
-	}
-
-	// 创建菜单
-	menuSeeders := []*adminmodel.Menu{
-		{Id: 18, Name: "用户管理", GuardName: "admin", Icon: "icon-user", Type: 1, Pid: 0, Sort: 0, Path: "/user", Show: 1, IsEngine: 0, IsLink: 0, Status: 1},
-		{Id: 19, Name: "用户列表", GuardName: "admin", Icon: "", Type: 2, Pid: 18, Sort: 0, Path: "/api/admin/user/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
-	}
-	db.Client.Create(&menuSeeders)
-
 	seeders := []User{
-		{Username: "tangtanglove", Nickname: "默认用户", Email: "tangtanglove@yourweb.com", Phone: "10086", Password: hash.Make("123456"), Sex: 1, Status: 1, LastLoginTime: datetime.Now()},
+		{Username: "administrator", Nickname: "超级管理员", Email: "admin@yourweb.com", Phone: "10086", Password: hash.Make("123456"), Sex: 1, Status: 1, LastLoginTime: datetime.Now()},
 	}
 
 	db.Client.Create(&seeders)
 }
 
-// 获取用户JWT信息
-func (model *User) GetClaims(UserInfo *User) (userClaims *UserClaims) {
-	userClaims = &UserClaims{
-		UserInfo.Id,
-		UserInfo.Username,
-		UserInfo.Nickname,
-		UserInfo.Sex,
-		UserInfo.Email,
-		UserInfo.Phone,
-		UserInfo.Avatar,
+// 获取管理员JWT信息
+func (model *User) GetAdminClaims(adminInfo *User) (adminClaims *UserClaims) {
+	adminClaims = &UserClaims{
+		adminInfo.Id,
+		adminInfo.Username,
+		adminInfo.Nickname,
+		adminInfo.Sex,
+		adminInfo.Email,
+		adminInfo.Phone,
+		adminInfo.Avatar,
+		"admin",
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)), // 过期时间，默认24小时
+			IssuedAt:  jwt.NewNumericDate(time.Now()),                     // 颁发时间
+			NotBefore: jwt.NewNumericDate(time.Now()),                     // 不早于时间
+			Issuer:    "QuarkGo",                                          // 颁发人
+			Subject:   "Admin Token",                                      // 主题信息
+		},
+	}
+
+	return adminClaims
+}
+
+// 获取普通用户JWT信息
+func (model *User) GetUserClaims(adminInfo *User) (adminClaims *UserClaims) {
+	adminClaims = &UserClaims{
+		adminInfo.Id,
+		adminInfo.Username,
+		adminInfo.Nickname,
+		adminInfo.Sex,
+		adminInfo.Email,
+		adminInfo.Phone,
+		adminInfo.Avatar,
 		"user",
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)), // 过期时间，默认24小时
@@ -87,11 +96,11 @@ func (model *User) GetClaims(UserInfo *User) (userClaims *UserClaims) {
 		},
 	}
 
-	return userClaims
+	return adminClaims
 }
 
 // 获取当前认证的用户信息，默认参数为tokenString
-func (model *User) GetAuthUser(appKey string, tokenString string) (userClaims *UserClaims, Error error) {
+func (model *User) GetAuthUser(appKey string, tokenString string) (adminClaims *UserClaims, Error error) {
 	token, err := jwt.ParseWithClaims(tokenString, &UserClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(appKey), nil
 	})
@@ -108,7 +117,6 @@ func (model *User) GetAuthUser(appKey string, tokenString string) (userClaims *U
 			}
 		}
 	}
-
 	if claims, ok := token.Claims.(*UserClaims); ok && token.Valid {
 		return claims, nil
 	}
@@ -116,21 +124,27 @@ func (model *User) GetAuthUser(appKey string, tokenString string) (userClaims *U
 	return nil, errors.New("token不可用")
 }
 
-// 通过ID获取用户信息
-func (model *User) GetInfoById(id interface{}) (User *User, Error error) {
-	err := db.Client.Where("status = ?", 1).Where("id = ?", id).First(&User).Error
+// 通过ID获取管理员信息
+func (model *User) GetInfoById(id interface{}) (admin *User, Error error) {
+	err := db.Client.Where("status = ?", 1).Where("id = ?", id).First(&admin).Error
 
-	return User, err
+	return admin, err
 }
 
-// 通过用户名获取用户信息
-func (model *User) GetInfoByUsername(username string) (User *User, Error error) {
-	err := db.Client.Where("status = ?", 1).Where("username = ?", username).First(&User).Error
-	if User.Avatar != "" {
-		User.Avatar = (&adminmodel.Picture{}).GetPath(User.Avatar) // 获取头像地址
+// 通过用户名获取管理员信息
+func (model *User) GetInfoByUsername(username string) (admin *User, Error error) {
+	err := db.Client.Where("status = ?", 1).Where("username = ?", username).First(&admin).Error
+	if admin.Avatar != "" {
+		admin.Avatar = (&Picture{}).GetPath(admin.Avatar) // 获取头像地址
 	}
 
-	return User, err
+	return admin, err
+}
+
+// 通过ID获取管理员拥有的菜单列表
+func (model *User) GetMenuListById(id interface{}) (menuList interface{}, Error error) {
+
+	return (&Menu{}).GetListByAdminId(id.(int))
 }
 
 // 更新最后一次登录数据

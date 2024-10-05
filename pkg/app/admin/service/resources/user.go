@@ -2,15 +2,18 @@ package resources
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/radio"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/rule"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/message"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service/actions"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service/searches"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource"
-	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/model"
 	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 	"github.com/quarkcloudio/quark-go/v3/pkg/utils/hash"
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -39,6 +42,9 @@ func (p *User) Init(ctx *builder.Context) interface{} {
 func (p *User) Fields(ctx *builder.Context) []interface{} {
 	field := &resource.Field{}
 
+	// 角色列表
+	roles, _ := (&model.Role{}).List()
+
 	return []interface{}{
 		field.ID("id", "ID"),
 
@@ -54,11 +60,26 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 				rule.Max(20, "用户名不能超过20个字符"),
 			}).
 			SetCreationRules([]*rule.Rule{
-				rule.Unique("users", "username", "用户名已存在"),
+				rule.Unique("admins", "username", "用户名已存在"),
 			}).
 			SetUpdateRules([]*rule.Rule{
-				rule.Unique("users", "username", "{id}", "用户名已存在"),
+				rule.Unique("admins", "username", "{id}", "用户名已存在"),
 			}),
+
+		field.Checkbox("role_ids", "角色", func() interface{} {
+			roleText := ""
+			roles, err := (&model.CasbinRule{}).GetUserRoles(p.Field["id"].(int))
+			if err != nil {
+				return roleText
+			}
+			for _, v := range roles {
+				roleText = roleText + "," + v.Name
+			}
+
+			return strings.Trim(roleText, ",")
+		}).
+			SetOptions(roles).
+			HideWhenImporting(true),
 
 		field.Text("nickname", "昵称").
 			SetEditable(true).
@@ -72,10 +93,10 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 				rule.Email("邮箱格式错误"),
 			}).
 			SetCreationRules([]*rule.Rule{
-				rule.Unique("users", "email", "邮箱已存在"),
+				rule.Unique("admins", "email", "邮箱已存在"),
 			}).
 			SetUpdateRules([]*rule.Rule{
-				rule.Unique("users", "email", "{id}", "邮箱已存在"),
+				rule.Unique("admins", "email", "{id}", "邮箱已存在"),
 			}),
 
 		field.Text("phone", "手机号").
@@ -84,10 +105,10 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 				rule.Phone("手机号格式错误"),
 			}).
 			SetCreationRules([]*rule.Rule{
-				rule.Unique("users", "phone", "手机号已存在"),
+				rule.Unique("admins", "phone", "手机号已存在"),
 			}).
 			SetUpdateRules([]*rule.Rule{
-				rule.Unique("users", "phone", "{id}", "手机号已存在"),
+				rule.Unique("admins", "phone", "{id}", "手机号已存在"),
 			}),
 
 		field.Radio("sex", "性别").
@@ -166,6 +187,15 @@ func (p *User) BeforeEditing(ctx *builder.Context, data map[string]interface{}) 
 	// 编辑页面清理password
 	delete(data, "password")
 
+	roles, err := (&model.CasbinRule{}).GetUserRoles(data["id"].(int))
+	if err == nil {
+		roleIds := []int{}
+		for _, role := range roles {
+			roleIds = append(roleIds, role.Id)
+		}
+		data["role_ids"] = roleIds
+	}
+
 	return data
 }
 
@@ -178,4 +208,38 @@ func (p *User) BeforeSaving(ctx *builder.Context, submitData map[string]interfac
 	}
 
 	return submitData, nil
+}
+
+// 保存后回调
+func (p *User) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
+
+	// 导入操作，直接返回
+	if ctx.IsImport() {
+		return result.Error
+	}
+
+	// 返回错误信息
+	if result.Error != nil {
+		return ctx.JSON(200, message.Error(result.Error.Error()))
+	}
+
+	if data["role_ids"] != nil {
+		if roleIds, ok := data["role_ids"].([]interface{}); ok {
+			ids := []int{}
+			for _, v := range roleIds {
+				roleId := int(v.(float64))
+				ids = append(ids, roleId)
+			}
+
+			err := (&model.CasbinRule{}).AddUserRole(id, ids)
+			if err != nil {
+				return ctx.JSON(200, message.Error(err.Error()))
+			}
+		}
+	}
+
+	return ctx.JSON(200, message.Success(
+		"操作成功",
+		strings.Replace("/layout/index?api="+resource.IndexPath, ":resource", ctx.Param("resource"), -1),
+	))
 }

@@ -3,7 +3,7 @@ package middleware
 import (
 	"strings"
 
-	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/model"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 )
 

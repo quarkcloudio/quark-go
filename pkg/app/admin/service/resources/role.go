@@ -46,7 +46,7 @@ func (p *Role) Fields(ctx *builder.Context) []interface{} {
 				rule.Required(true, "名称必须填写"),
 			}),
 
-		field.Text("guard_name", "GuardName").
+		field.Text("guard_name", "守卫").
 			SetDefault("admin"),
 
 		field.Tree("menu_ids", "权限").

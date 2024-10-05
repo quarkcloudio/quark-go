@@ -38,8 +38,8 @@ func (p *Menu) Seeder() {
 	seeders := []Menu{
 		{Id: 1, Name: "控制台", GuardName: "admin", Icon: "icon-home", Type: 1, Pid: 0, Sort: 0, Path: "/dashboard", Show: 1, IsEngine: 0, IsLink: 0, Status: 1},
 		{Id: 2, Name: "主页", GuardName: "admin", Icon: "", Type: 2, Pid: 1, Sort: 0, Path: "/api/admin/dashboard/index/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
-		{Id: 3, Name: "管理员", GuardName: "admin", Icon: "icon-admin", Type: 1, Pid: 0, Sort: 100, Path: "/admin", Show: 1, IsEngine: 0, IsLink: 0, Status: 1},
-		{Id: 4, Name: "管理员列表", GuardName: "admin", Icon: "", Type: 2, Pid: 3, Sort: 0, Path: "/api/admin/admin/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
+		{Id: 3, Name: "用户管理", GuardName: "admin", Icon: "icon-admin", Type: 1, Pid: 0, Sort: 100, Path: "/user", Show: 1, IsEngine: 0, IsLink: 0, Status: 1},
+		{Id: 4, Name: "用户列表", GuardName: "admin", Icon: "", Type: 2, Pid: 3, Sort: 0, Path: "/api/admin/user/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
 		{Id: 5, Name: "权限列表", GuardName: "admin", Icon: "", Type: 2, Pid: 3, Sort: 0, Path: "/api/admin/permission/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
 		{Id: 6, Name: "角色列表", GuardName: "admin", Icon: "", Type: 2, Pid: 3, Sort: 0, Path: "/api/admin/role/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
 		{Id: 7, Name: "系统配置", GuardName: "admin", Icon: "icon-setting", Type: 1, Pid: 0, Sort: 100, Path: "/system", Show: 1, IsEngine: 0, IsLink: 0, Status: 1},

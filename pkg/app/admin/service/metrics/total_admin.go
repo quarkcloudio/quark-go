@@ -13,7 +13,7 @@ type TotalAdmin struct {
 
 // 初始化
 func (p *TotalAdmin) Init() *TotalAdmin {
-	p.Title = "管理员数量"
+	p.Title = "用户数量"
 	p.Col = 6
 
 	return p
@@ -24,6 +24,6 @@ func (p *TotalAdmin) Calculate() *statistic.Component {
 
 	return p.
 		Init().
-		Count(db.Client.Model(&model.Admin{})).
+		Count(db.Client.Model(&model.User{})).
 		SetValueStyle(map[string]string{"color": "#3f8600"})
 }

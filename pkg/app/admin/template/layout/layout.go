@@ -216,7 +216,7 @@ func (p *Template) GetRightMenus() []interface{} {
 // 获取当前登录用户菜单
 func (p *Template) GetMenus(ctx *builder.Context) (list interface{}, err error) {
 	config := ctx.Engine.GetConfig()
-	admin := &model.Admin{}
+	admin := &model.User{}
 
 	// 获取登录管理员信息
 	adminInfo, err := admin.GetAuthUser(config.AppKey, ctx.Token())
