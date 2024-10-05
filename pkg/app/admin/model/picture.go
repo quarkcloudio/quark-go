@@ -41,7 +41,7 @@ func (model *Picture) GetListBySearch(appKey string, tokenString string, categor
 
 	query := db.Client.Model(&Picture{}).
 		Where("status =?", 1).
-		Where("obj_type = ?", "ADMINID").
+		Where("obj_type = ?", "ADMIN").
 		Where("obj_id", adminInfo.Id)
 
 	if categoryId != "" {

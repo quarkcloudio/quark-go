@@ -22,7 +22,7 @@ func (model *PictureCategory) GetAuthList(appKey string, tokenString string) (li
 	}
 
 	err = db.Client.
-		Where("obj_type = ?", "ADMINID").
+		Where("obj_type = ?", "ADMIN").
 		Where("obj_id", adminInfo.Id).
 		Find(&categorys).Error
 	if err != nil {
