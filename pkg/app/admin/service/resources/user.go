@@ -60,10 +60,10 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 				rule.Max(20, "用户名不能超过20个字符"),
 			}).
 			SetCreationRules([]*rule.Rule{
-				rule.Unique("admins", "username", "用户名已存在"),
+				rule.Unique("users", "username", "用户名已存在"),
 			}).
 			SetUpdateRules([]*rule.Rule{
-				rule.Unique("admins", "username", "{id}", "用户名已存在"),
+				rule.Unique("users", "username", "{id}", "用户名已存在"),
 			}),
 
 		field.Checkbox("role_ids", "角色", func() interface{} {
