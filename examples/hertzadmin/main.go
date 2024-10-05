@@ -5,11 +5,11 @@ package main
 import (
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
-	"github.com/quarkcloudio/quark-go/v2/pkg/adapter/hertzadapter"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/install"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/middleware"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/adapter/hertzadapter"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/install"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/middleware"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

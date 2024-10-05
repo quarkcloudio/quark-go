@@ -7,13 +7,13 @@ import (
 	"time"
 
 	"github.com/dchest/captcha"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/divider"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/login"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/tabs"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
-	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
-	redisclient "github.com/quarkcloudio/quark-go/v2/pkg/dal/redis"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/divider"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/login"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/message"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/tabs"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
+	redisclient "github.com/quarkcloudio/quark-go/v3/pkg/dal/redis"
 )
 
 // 后台登录模板

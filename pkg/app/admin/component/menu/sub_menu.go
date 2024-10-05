@@ -1,7 +1,7 @@
 package menu
 
 import (
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/component"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/component"
 )
 
 type SubMenu struct {

@@ -3,13 +3,13 @@ package form
 import (
 	"reflect"
 
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/form/fields/calendar"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/form/fields/cascader"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/form/fields/checkbox"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/form/fields/input"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/form/fields/picker"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/form/fields/radio"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/form/fields/switchfield"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/form/fields/calendar"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/form/fields/cascader"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/form/fields/checkbox"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/form/fields/input"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/form/fields/picker"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/form/fields/radio"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/form/fields/switchfield"
 )
 
 type Field struct{}

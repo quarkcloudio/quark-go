@@ -4,10 +4,10 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/form"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/template/page"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
-	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/form"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/template/page"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
 )
 
 // 后台登录模板

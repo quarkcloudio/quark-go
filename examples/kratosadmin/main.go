@@ -5,11 +5,11 @@ import (
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"github.com/quarkcloudio/quark-go/v2/pkg/adapter/kratosadapter"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/install"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/middleware"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/adapter/kratosadapter"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/install"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/middleware"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

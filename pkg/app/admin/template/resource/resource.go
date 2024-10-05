@@ -1,13 +1,13 @@
 package resource
 
 import (
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/pagecontainer"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/table"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/requests"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/types"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
-	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/pagecontainer"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/table"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource/requests"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource/types"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
 	"gorm.io/gorm"
 )
 

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/quarkcloudio/quark-go/v2/examples/hertzadmin/biz/handler/resources"
+	"github.com/quarkcloudio/quark-go/v3/examples/hertzadmin/biz/handler/resources"
 )
 
 // 注册服务

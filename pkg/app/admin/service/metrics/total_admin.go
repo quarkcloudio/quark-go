@@ -1,10 +1,10 @@
 package metrics
 
 import (
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/statistic"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/dashboard/metrics"
-	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/statistic"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/dashboard/metrics"
+	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
 )
 
 type TotalAdmin struct {

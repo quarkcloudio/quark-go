@@ -3,16 +3,16 @@ package page
 import (
 	"reflect"
 
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/action"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/col"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/grid"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/image"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/navbar"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/page"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/row"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/swiper"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
-	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/action"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/col"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/grid"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/image"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/navbar"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/page"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/row"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/swiper"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
 )
 
 // MiniApp模板

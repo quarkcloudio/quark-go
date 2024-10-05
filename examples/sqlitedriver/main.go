@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/install"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/middleware"
-	adminservice "github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service"
-	toolservice "github.com/quarkcloudio/quark-go/v2/pkg/app/tool/service"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/install"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/middleware"
+	adminservice "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service"
+	toolservice "github.com/quarkcloudio/quark-go/v3/pkg/app/tool/service"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )

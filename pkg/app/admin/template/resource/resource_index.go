@@ -3,9 +3,9 @@ package resource
 import (
 	"reflect"
 
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/table"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/types"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/table"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource/types"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 )
 
 // 列表页表格主体

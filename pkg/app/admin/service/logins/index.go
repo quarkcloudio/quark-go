@@ -2,15 +2,15 @@ package logins
 
 import (
 	"github.com/dchest/captcha"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/rule"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/icon"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/login"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
-	"github.com/quarkcloudio/quark-go/v2/pkg/utils/datetime"
-	"github.com/quarkcloudio/quark-go/v2/pkg/utils/hash"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/rule"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/icon"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/message"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/login"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/utils/datetime"
+	"github.com/quarkcloudio/quark-go/v3/pkg/utils/hash"
 	"gorm.io/gorm"
 )
 

@@ -5,10 +5,10 @@ import (
 	"reflect"
 
 	"github.com/gobeam/stringy"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/types"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
-	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/message"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource/types"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
 )
 
 type UpdateRequest struct{}

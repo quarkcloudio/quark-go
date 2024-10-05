@@ -1,13 +1,13 @@
 package resources
 
 import (
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/radio"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/rule"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service/actions"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
-	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/radio"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/rule"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service/actions"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
 )
 
 type Account struct {

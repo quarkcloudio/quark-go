@@ -4,7 +4,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/quarkcloudio/quark-go/v2/examples/zeroadmin/internal/svc"
+	"github.com/quarkcloudio/quark-go/v3/examples/zeroadmin/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )

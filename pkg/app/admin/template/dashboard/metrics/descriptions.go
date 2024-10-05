@@ -1,7 +1,7 @@
 package metrics
 
 import (
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/descriptions"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/descriptions"
 )
 
 type Descriptions struct {

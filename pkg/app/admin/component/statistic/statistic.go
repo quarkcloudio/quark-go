@@ -1,6 +1,6 @@
 package statistic
 
-import "github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/component"
+import "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/component"
 
 type Component struct {
 	component.Element

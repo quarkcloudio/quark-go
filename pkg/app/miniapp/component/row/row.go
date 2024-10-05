@@ -1,8 +1,8 @@
 package row
 
 import (
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/col"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/component/component"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/col"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/component/component"
 )
 
 type Component struct {

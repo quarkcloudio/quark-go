@@ -1,8 +1,8 @@
 package actions
 
 import (
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/actions"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource/actions"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 )
 
 type FormResetAction struct {

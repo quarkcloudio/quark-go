@@ -1,8 +1,8 @@
 package metrics
 
 import (
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/descriptions"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/dashboard/metrics"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/descriptions"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/dashboard/metrics"
 )
 
 type TeamInfo struct {
@@ -27,7 +27,7 @@ func (p *TeamInfo) Calculate() *descriptions.Component {
 		field.Text("联系方式").SetValue("dai_hang_love@126.com"),
 		field.Text("官方网址").SetValue("<a href='https://quarkcloud.io' target='_blank'>quarkcloud.io</a>"),
 		field.Text("文档地址").SetValue("<a href='https://quarkcloud.io' target='_blank'>查看文档</a>"),
-		field.Text("BUG反馈").SetValue("<a href='https://github.com/quarkcloudio/quark-go/v2/issues' target='_blank'>提交BUG</a>"),
+		field.Text("BUG反馈").SetValue("<a href='https://github.com/quarkcloudio/quark-go/v3/issues' target='_blank'>提交BUG</a>"),
 		field.Text("代码仓储").SetValue("<a href='https://github.com/quarkcloudio/quark-go' target='_blank'>Github</a>"),
 	})
 }

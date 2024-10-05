@@ -10,7 +10,7 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/quarkcloudio/quark-go/v2/pkg/utils/file"
+	"github.com/quarkcloudio/quark-go/v3/pkg/utils/file"
 )
 
 // 包域名地址
@@ -32,7 +32,7 @@ func New(name string, version string) *PkgGo {
 // 下载文件
 func (p *PkgGo) Download() error {
 
-	// https://goproxy.cn/github.com/quarkcloudio/quark-go/v2/@v/v1.2.9.zip
+	// https://goproxy.cn/github.com/quarkcloudio/quark-go/v3/@v/v1.2.9.zip
 	fileUrl := domain + p.Name + "/@v/v" + p.Version + ".zip"
 
 	// Get the data

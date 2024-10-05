@@ -1,10 +1,10 @@
 package model
 
 import (
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/selectfield"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/transfer"
-	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
-	"github.com/quarkcloudio/quark-go/v2/pkg/utils/datetime"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/selectfield"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/transfer"
+	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v3/pkg/utils/datetime"
 )
 
 // 权限

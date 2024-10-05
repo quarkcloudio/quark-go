@@ -1,9 +1,9 @@
 package dropdown
 
 import (
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/component"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/drawer"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/modal"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/component"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/drawer"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/modal"
 )
 
 type Item struct {

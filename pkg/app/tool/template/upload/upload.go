@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
-	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
-	"github.com/quarkcloudio/quark-go/v2/pkg/storage"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v3/pkg/storage"
 )
 
 // 文件上传

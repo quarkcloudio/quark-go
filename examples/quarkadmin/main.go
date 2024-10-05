@@ -1,14 +1,14 @@
 package main
 
 import (
-	admininstall "github.com/quarkcloudio/quark-go/v2/pkg/app/admin/install"
-	adminmiddleware "github.com/quarkcloudio/quark-go/v2/pkg/app/admin/middleware"
-	adminservice "github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service"
-	miniappinstall "github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/install"
-	miniappmiddleware "github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/middleware"
-	miniappservice "github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/service"
-	toolservice "github.com/quarkcloudio/quark-go/v2/pkg/app/tool/service"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	admininstall "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/install"
+	adminmiddleware "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/middleware"
+	adminservice "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service"
+	miniappinstall "github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/install"
+	miniappmiddleware "github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/middleware"
+	miniappservice "github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/service"
+	toolservice "github.com/quarkcloudio/quark-go/v3/pkg/app/tool/service"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

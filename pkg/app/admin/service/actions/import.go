@@ -1,13 +1,13 @@
 package actions
 
 import (
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/action"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/space"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/tpl"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource/actions"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/action"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/space"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/tpl"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource/actions"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 )
 
 type ImportAction struct {

@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/component"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/when"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/component"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/when"
 )
 
 type ActivityConfig struct {

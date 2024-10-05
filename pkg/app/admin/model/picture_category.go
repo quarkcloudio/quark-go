@@ -1,6 +1,6 @@
 package model
 
-import "github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+import "github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
 
 // 字段
 type PictureCategory struct {

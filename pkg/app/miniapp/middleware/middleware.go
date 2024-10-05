@@ -3,8 +3,8 @@ package middleware
 import (
 	"strings"
 
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/model"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/model"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 )
 
 // 中间件
