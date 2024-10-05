@@ -29,6 +29,8 @@ func Handle() {
 		&model.PictureCategory{},
 		&model.Permission{},
 		&model.Role{},
+		&model.Department{},
+		&model.Position{},
 		&model.CasbinRule{},
 	)
 
@@ -42,6 +44,7 @@ func Handle() {
 		(&model.User{}).Seeder()
 		(&model.Config{}).Seeder()
 		(&model.Menu{}).Seeder()
+		(&model.Department{}).Seeder()
 	}
 
 	// 创建锁定文件

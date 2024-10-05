@@ -37,12 +37,12 @@ func main() {
 			Dialector: mysql.Open(dsn),
 			Opts:      &gorm.Config{},
 		},
-		RedisConfig: &builder.RedisConfig{
-			Host:     "127.0.0.1",
-			Port:     "6379",
-			Password: "",
-			Database: 0,
-		},
+		// RedisConfig: &builder.RedisConfig{
+		// 	Host:     "127.0.0.1",
+		// 	Port:     "6379",
+		// 	Password: "",
+		// 	Database: 0,
+		// },
 	}
 
 	// 实例化对象
