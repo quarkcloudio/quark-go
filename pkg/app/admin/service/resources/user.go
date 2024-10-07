@@ -172,7 +172,7 @@ func (p *User) Actions(ctx *builder.Context) []interface{} {
 		actions.More().
 			SetActions([]interface{}{
 				actions.EditLink(),
-				actions.Delete(),
+				actions.DeleteSpecial(),
 			}),
 		actions.FormSubmit(),
 		actions.FormReset(),

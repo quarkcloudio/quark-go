@@ -53,6 +53,8 @@ func (p *Menu) Seeder() {
 		{Id: 15, Name: "图片管理", GuardName: "admin", Icon: "", Type: 2, Pid: 13, Sort: 0, Path: "/api/admin/picture/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
 		{Id: 16, Name: "我的账号", GuardName: "admin", Icon: "icon-user", Type: 1, Pid: 0, Sort: 100, Path: "/account", Show: 1, IsEngine: 0, IsLink: 0, Status: 1},
 		{Id: 17, Name: "个人设置", GuardName: "admin", Icon: "", Type: 2, Pid: 16, Sort: 0, Path: "/api/admin/account/setting/form", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
+		{Id: 18, Name: "部门列表", GuardName: "admin", Icon: "", Type: 2, Pid: 3, Sort: 0, Path: "/api/admin/department/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
+		{Id: 19, Name: "职位列表", GuardName: "admin", Icon: "", Type: 2, Pid: 3, Sort: 0, Path: "/api/admin/position/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
 	}
 
 	db.Client.Create(&seeders)
