@@ -48,13 +48,15 @@ func (p *Department) Fields(ctx *builder.Context) []interface{} {
 				rule.Max(100, "名称不能超过100个字符"),
 			}),
 
-		field.TreeSelect("pid", "父节点").
-			SetData(departments).
-			SetRules([]*rule.Rule{
-				rule.Required(true, "请选择父节点"),
-			}).
-			SetDefault(1).
-			OnlyOnForms(),
+		field.Dependency().SetWhen("id", ">", 1, func() interface{} {
+			return field.TreeSelect("pid", "父节点").
+				SetData(departments).
+				SetRules([]*rule.Rule{
+					rule.Required(true, "请选择父节点"),
+				}).
+				SetDefault(1).
+				OnlyOnForms()
+		}),
 
 		field.Number("sort", "排序").
 			SetEditable(true).
