@@ -1,6 +1,7 @@
 package resources
 
 import (
+	"encoding/json"
 	"strconv"
 	"strings"
 
@@ -24,7 +25,9 @@ type User struct {
 func (p *User) Init(ctx *builder.Context) interface{} {
 
 	// 树形下拉框
-	p.TableTreeBar.SetTreeData((&model.Department{}).TableTree())
+	p.TableTreeBar.
+		SetName("departmentIds").
+		SetTreeData((&model.Department{}).TableTree())
 
 	// 标题
 	p.Title = "用户"
@@ -41,12 +44,39 @@ func (p *User) Init(ctx *builder.Context) interface{} {
 	return p
 }
 
+// 列表查询
+func (p *User) IndexQuery(ctx *builder.Context, query *gorm.DB) *gorm.DB {
+	departmentIds := ctx.Query("departmentIds")
+	if departmentIds == nil || departmentIds == "" {
+		return query
+	}
+
+	var ids []int
+	err := json.Unmarshal([]byte(departmentIds.(string)), &ids)
+	if err != nil {
+		return query
+	}
+
+	for _, v := range ids {
+		childrenIds := (&model.Department{}).GetChildrenIds(v)
+		ids = append(ids, childrenIds...)
+	}
+
+	return query.Where("department_id in ?", ids)
+}
+
 // 字段
 func (p *User) Fields(ctx *builder.Context) []interface{} {
 	field := &resource.Field{}
 
 	// 角色列表
 	roles, _ := (&model.Role{}).List()
+
+	// 部门列表
+	departments, _ := (&model.Department{}).TreeSelect()
+
+	// 职位列表
+	positions, _ := (&model.Position{}).List()
 
 	return []interface{}{
 		field.ID("id", "ID"),
@@ -69,16 +99,26 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 				rule.Unique("users", "username", "{id}", "用户名已存在"),
 			}),
 
-		field.Checkbox("role_ids", "角色").
-			SetOptions(roles).
-			OnlyOnForms().
-			HideWhenImporting(true),
-
 		field.Text("nickname", "昵称").
 			SetEditable(true).
 			SetRules([]*rule.Rule{
 				rule.Required(true, "昵称必须填写"),
 			}),
+
+		field.Checkbox("role_ids", "角色").
+			SetOptions(roles).
+			OnlyOnForms().
+			HideWhenImporting(true),
+
+		field.TreeSelect("department_id", "部门").
+			SetData(departments).
+			OnlyOnForms().
+			HideWhenImporting(true),
+
+		field.Checkbox("position_ids", "职位").
+			SetOptions(positions).
+			OnlyOnForms().
+			HideWhenImporting(true),
 
 		field.Text("email", "邮箱").
 			SetRules([]*rule.Rule{

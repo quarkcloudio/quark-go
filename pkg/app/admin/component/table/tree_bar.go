@@ -25,6 +25,7 @@ type TreeData struct {
 type TreeBar struct {
 	component.Element
 	Component           string                 `json:"component"`                     // 组件名称
+	Name                string                 `json:"name,omitempty"`                // 字段名，支持数组
 	AutoExpandParent    bool                   `json:"autoExpandParent,omitempty"`    // 是否自动展开父节点
 	BockNode            bool                   `json:"blockNode,omitempty"`           // 是否节点占据一行
 	Checkable           bool                   `json:"checkable,omitempty"`           // 节点前添加 Checkbox 复选框
@@ -55,15 +56,22 @@ type TreeBar struct {
 	Value               interface{}            `json:"value,omitempty"`               // 指定当前选中的条目，多选时为一个数组。（value 数组引用未变化时，Select 不会更新）
 	Virtual             bool                   `json:"virtual,omitempty"`             // 设置 false 时关闭虚拟滚动
 	Style               map[string]interface{} `json:"style,omitempty"`               // 自定义样式
-	SearchPlaceholder   string                 `json:"searchPlaceholder,omitempty"`   // 搜索框占位文本
 }
 
 // 初始化
 func (p *TreeBar) Init() *TreeBar {
 	p.Component = "treeBar"
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
-	p.SearchPlaceholder = "请输入搜索内容"
+	p.Name = "treeBarSelectedKeys"
+	p.Placeholder = "请输入搜索内容"
 	p.DefaultExpandAll = true
+	p.ShowLine = true
+	return p
+}
+
+// 字段名，支持数组
+func (p *TreeBar) SetName(name string) *TreeBar {
+	p.Name = name
 	return p
 }
 
@@ -268,9 +276,4 @@ func (p *TreeBar) SetStyle(style map[string]interface{}) *TreeBar {
 	p.Style = style
 
 	return p
-}
-
-// 搜索框占位符
-func (p *TreeBar) SetSearchPlaceholder(placeholder string) {
-	p.SearchPlaceholder = placeholder
 }

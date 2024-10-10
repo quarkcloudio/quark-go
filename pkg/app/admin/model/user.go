@@ -21,6 +21,8 @@ type User struct {
 	Phone         string            `json:"phone" gorm:"size:11;index:admins_phone_unique,unique;not null"`
 	Password      string            `json:"password" gorm:"size:255;not null"`
 	Avatar        string            `json:"avatar" gorm:"size:1000"`
+	DepartmentId  int               `json:"department_id" gorm:"size:11;not null;default:0"`
+	PositionIds   string            `json:"position_ids" gorm:"size:1000;default:null"`
 	LastLoginIp   string            `json:"last_login_ip" gorm:"size:255"`
 	LastLoginTime datetime.Datetime `json:"last_login_time"`
 	WxOpenid      string            `json:"wx_openid" gorm:"size:255"`
@@ -47,7 +49,7 @@ type UserClaims struct {
 // 管理员Seeder
 func (model *User) Seeder() {
 	seeders := []User{
-		{Username: "administrator", Nickname: "超级管理员", Email: "admin@yourweb.com", Phone: "10086", Password: hash.Make("123456"), Sex: 1, Status: 1, LastLoginTime: datetime.Now()},
+		{Username: "administrator", Nickname: "超级管理员", Email: "admin@yourweb.com", Phone: "10086", Password: hash.Make("123456"), Sex: 1, DepartmentId: 1, Status: 1, LastLoginTime: datetime.Now()},
 	}
 
 	db.Client.Create(&seeders)

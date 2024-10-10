@@ -25,6 +25,9 @@ func (p *Position) Init(ctx *builder.Context) interface{} {
 	// 分页
 	p.PerPage = 10
 
+	// 默认排序
+	p.IndexQueryOrder = "sort asc, id asc"
+
 	return p
 }
 

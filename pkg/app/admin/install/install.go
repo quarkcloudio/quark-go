@@ -44,7 +44,9 @@ func Handle() {
 		(&model.User{}).Seeder()
 		(&model.Config{}).Seeder()
 		(&model.Menu{}).Seeder()
+		(&model.Role{}).Seeder()
 		(&model.Department{}).Seeder()
+		(&model.Position{}).Seeder()
 	}
 
 	// 创建锁定文件

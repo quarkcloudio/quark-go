@@ -16,6 +16,15 @@ type Role struct {
 	UpdatedAt datetime.Datetime `json:"updated_at"`
 }
 
+// Seeder
+func (model *Role) Seeder() {
+	seeders := []Role{
+		{Name: "普通角色", GuardName: "admin", DataScope: 1},
+	}
+
+	db.Client.Create(&seeders)
+}
+
 // 获取角色列表
 func (model *Role) List() (list []*checkbox.Option, Error error) {
 	roles := []Role{}
