@@ -58,8 +58,7 @@ func (p *Template) IndexTableColumns(ctx *builder.Context) interface{} {
 		columnWidth := p.GetTableActionColumnWidth()
 
 		// 构建列
-		column := (&table.Column{}).
-			Init().
+		column := template.GetTableColumn(ctx).
 			SetTitle(columnTitle).
 			SetWidth(columnWidth).
 			SetAttribute("action").

@@ -39,6 +39,10 @@ type Template struct {
 	PerPage                interface{}            // 列表页分页配置
 	Form                   *form.Component        // 表单页Form实例
 	Table                  *table.Component       // 列表页Table实例
+	TableSearch            *table.Search          // 列表Table组件中的搜索实例
+	TableColumn            *table.Column          // 列表Table组件中的Column实例
+	TableToolBar           *table.ToolBar         // 列表Table组件中的ToolBar实例
+	TableTreeBar           *table.TreeBar         // 列表Table组件中的TreeBar实例
 	TableTitleSuffix       string                 // 列表页表格标题后缀
 	TableActionColumnTitle string                 // 列表页表格行为列显示文字，既字段的列名
 	TableActionColumnWidth int                    // 列表页表格行为列的宽度
@@ -67,6 +71,18 @@ func (p *Template) TemplateInit(ctx *builder.Context) interface{} {
 
 	// 初始化Table实例
 	p.Table = (&table.Component{}).Init()
+
+	// 初始化TableSearch实例
+	p.TableSearch = (&table.Search{}).Init()
+
+	// 初始化TableColumn实例
+	p.TableColumn = (&table.Column{}).Init()
+
+	// 初始化TableToolBar实例
+	p.TableToolBar = (&table.ToolBar{}).Init()
+
+	// 初始化TableTreeBar实例
+	p.TableTreeBar = (&table.TreeBar{}).Init()
 
 	// 列表页表格行为列显示文字，既字段的列名
 	p.TableActionColumnTitle = "操作"
@@ -134,6 +150,26 @@ func (p *Template) GetForm() *form.Component {
 // 获取列表页Table实例
 func (p *Template) GetTable() *table.Component {
 	return p.Table
+}
+
+// 获取TableSearch实例
+func (p *Template) GetTableSearch(ctx *builder.Context) *table.Search {
+	return p.TableSearch
+}
+
+// 获取TableColumn实例
+func (p *Template) GetTableColumn(ctx *builder.Context) *table.Column {
+	return p.TableColumn
+}
+
+// 获取工具栏实例
+func (p *Template) GetTableToolBar(ctx *builder.Context) *table.ToolBar {
+	return p.TableToolBar
+}
+
+// 获取树形实例
+func (p *Template) GetTableTreeBar(ctx *builder.Context) *table.TreeBar {
+	return p.TableTreeBar
 }
 
 // 列表页表格标题后缀

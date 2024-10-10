@@ -23,6 +23,9 @@ type User struct {
 // 初始化
 func (p *User) Init(ctx *builder.Context) interface{} {
 
+	// 树形下拉框
+	p.TableTreeBar.SetTreeData((&model.Department{}).TableTree())
+
 	// 标题
 	p.Title = "用户"
 
@@ -66,19 +69,9 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 				rule.Unique("users", "username", "{id}", "用户名已存在"),
 			}),
 
-		field.Checkbox("role_ids", "角色", func() interface{} {
-			roleText := ""
-			roles, err := (&model.CasbinRule{}).GetUserRoles(p.Field["id"].(int))
-			if err != nil {
-				return roleText
-			}
-			for _, v := range roles {
-				roleText = roleText + "," + v.Name
-			}
-
-			return strings.Trim(roleText, ",")
-		}).
+		field.Checkbox("role_ids", "角色").
 			SetOptions(roles).
+			OnlyOnForms().
 			HideWhenImporting(true),
 
 		field.Text("nickname", "昵称").
@@ -97,7 +90,7 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 			}).
 			SetUpdateRules([]*rule.Rule{
 				rule.Unique("admins", "email", "{id}", "邮箱已存在"),
-			}),
+			}).OnlyOnForms(),
 
 		field.Text("phone", "手机号").
 			SetRules([]*rule.Rule{

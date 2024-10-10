@@ -33,6 +33,18 @@ type Resourcer interface {
 	// 获取列表页Table实例
 	GetTable() *table.Component
 
+	// 获取TableSearch实例
+	GetTableSearch(ctx *builder.Context) *table.Search
+
+	// 获取TableColumn实例
+	GetTableColumn(ctx *builder.Context) *table.Column
+
+	// 获取工具栏实例
+	GetTableToolBar(ctx *builder.Context) *table.ToolBar
+
+	// 获取树形实例
+	GetTableTreeBar(ctx *builder.Context) *table.TreeBar
+
 	// 列表页表格标题后缀
 	GetTableTitleSuffix() string
 
@@ -230,6 +242,9 @@ type Resourcer interface {
 
 	// 列表页工具栏
 	IndexTableToolBar(ctx *builder.Context) interface{}
+
+	// 列表页树形表格
+	IndexTableTreeBar(ctx *builder.Context) interface{}
 
 	// 列表标题
 	IndexTableTitle(ctx *builder.Context) string

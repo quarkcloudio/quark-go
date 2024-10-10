@@ -8,7 +8,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/cascader"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/selectfield"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/treeselect"
-	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/table"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource/types"
 	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 )
@@ -23,7 +22,7 @@ func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
 	searches := template.Searches(ctx)
 
 	// 搜索组件
-	search := (&table.Search{}).Init()
+	search := template.GetTableSearch(ctx)
 
 	// 是否携带导出功能
 	withExport := template.GetWithExport()

@@ -17,6 +17,7 @@ type Component struct {
 	DateFormatter    string          `json:"dateFormatter"`
 	ColumnEmptyText  string          `json:"columnEmptyText"`
 	ToolBar          interface{}     `json:"toolBar"`
+	TreeBar          interface{}     `json:"treeBar"`
 	TableExtraRender interface{}     `json:"tableExtraRender"`
 	Scroll           interface{}     `json:"scroll"`
 	Striped          bool            `json:"striped"`
@@ -42,10 +43,16 @@ func NewSearch() *Search {
 	return (&Search{}).Init()
 }
 
-// 获取SearchItem
+// 获取工具栏
 func NewToolBar() *ToolBar {
 
 	return (&ToolBar{}).Init()
+}
+
+// 获取TreeBar
+func NewTreeBar() *TreeBar {
+
+	return (&TreeBar{}).Init()
 }
 
 // 初始化
@@ -165,6 +172,13 @@ func (p *Component) SetColumnEmptyText(columnEmptyText string) *Component {
 // 透传 ProUtils 中的 ListToolBar 配置项
 func (p *Component) SetToolBar(toolBar interface{}) *Component {
 	p.ToolBar = toolBar
+
+	return p
+}
+
+// 树形栏
+func (p *Component) SetTreeBar(treeBar interface{}) *Component {
+	p.TreeBar = treeBar
 
 	return p
 }

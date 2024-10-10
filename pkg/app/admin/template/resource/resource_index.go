@@ -3,7 +3,6 @@ package resource
 import (
 	"reflect"
 
-	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/table"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource/types"
 	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 )
@@ -15,19 +14,22 @@ func (p *Template) IndexTableExtraRender(ctx *builder.Context) interface{} {
 
 // 列表页工具栏
 func (p *Template) IndexTableToolBar(ctx *builder.Context) interface{} {
-	return (&table.ToolBar{}).
-		Init().
+	template := ctx.Template.(types.Resourcer)
+	return template.GetTableToolBar(ctx).
 		SetTitle(p.IndexTableTitle(ctx)).
 		SetActions(p.IndexTableActions(ctx)).
 		SetMenu(p.IndexTableMenus(ctx))
 }
 
+// 列表页树形表格
+func (p *Template) IndexTableTreeBar(ctx *builder.Context) interface{} {
+	template := ctx.Template.(types.Resourcer)
+	return template.GetTableTreeBar(ctx)
+}
+
 // 列表标题
 func (p *Template) IndexTableTitle(ctx *builder.Context) string {
-
-	// 模版实例
 	template := ctx.Template.(types.Resourcer)
-
 	return template.GetTitle() + template.GetTableTitleSuffix()
 }
 
@@ -53,6 +55,9 @@ func (p *Template) IndexComponentRender(ctx *builder.Context, data interface{}) 
 	// 列表页工具栏
 	tableToolBar := p.IndexTableToolBar(ctx)
 
+	// 列表页树形工具
+	tableTreeBar := p.IndexTableTreeBar(ctx)
+
 	// 列表页表格列
 	tableColumns := p.IndexTableColumns(ctx)
 
@@ -68,6 +73,7 @@ func (p *Template) IndexComponentRender(ctx *builder.Context, data interface{}) 
 		SetTitle(tableTitle).
 		SetTableExtraRender(tableExtraRender).
 		SetToolBar(tableToolBar).
+		SetTreeBar(tableTreeBar).
 		SetColumns(tableColumns).
 		SetBatchActions(indexTableAlertActions).
 		SetSearches(indexSearches)
