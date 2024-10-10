@@ -368,3 +368,115 @@ func (p *CasbinRule) GetUserMenus(modelId int) (menus []*Menu, err error) {
 
 	return getMenus, nil
 }
+
+// 给角色添加数据权限
+func (p *CasbinRule) AddDepartmentToRole(roleId int, departmentIds []int) (err error) {
+	enforcer, err := p.Enforcer()
+	if err != nil {
+		return err
+	}
+
+	rules := [][]string{}
+	addedRules := make(map[string]bool)
+
+	// 角色拥有的菜单
+	for _, v := range departmentIds {
+		rule := "roleDepartment|" + strconv.Itoa(roleId) + strconv.Itoa(v) + "RoleHasDepartment"
+		if !addedRules[rule] {
+			rules = append(rules, []string{"roleDepartment|" + strconv.Itoa(roleId), strconv.Itoa(v), "RoleHasDepartment"})
+			addedRules[rule] = true
+		}
+	}
+
+	// 先清理数据
+	p.RemoveRoleDepartments(roleId)
+
+	if len(rules) > 0 {
+		// 添加策略
+		_, err = enforcer.AddPolicies(rules)
+		if err != nil {
+			return err
+		}
+	}
+
+	return
+}
+
+// 删除角色拥有的部门
+func (p *CasbinRule) RemoveRoleDepartments(roleId int) (err error) {
+	enforcer, err := p.Enforcer()
+	if err != nil {
+		return err
+	}
+
+	_, err = enforcer.DeleteUser("roleDepartment|" + strconv.Itoa(roleId))
+	if err != nil {
+		return err
+	}
+
+	return
+}
+
+// 获取角色拥有的部门
+func (p *CasbinRule) GetRoleDepartments(roleId int) (departments []*Department, err error) {
+	enforcer, err := p.Enforcer()
+	if err != nil {
+		return
+	}
+
+	departmentIds := []int{}
+	roleHasDepartmentIds := enforcer.GetPermissionsForUser("roleDepartment|" + strconv.Itoa(roleId))
+	for _, v := range roleHasDepartmentIds {
+		departmentId, err := strconv.Atoi(v[1])
+		if err != nil {
+			return nil, err
+		}
+		departmentIds = append(departmentIds, departmentId)
+	}
+
+	return (&Department{}).GetListByIds(departmentIds)
+}
+
+// 获取用户拥有的部门
+func (p *CasbinRule) GetUserDepartments(modelId int) (menus []*Department, err error) {
+	getDepartments := []*Department{}
+	roles, err := p.GetUserRoles(modelId)
+	if err != nil {
+		return
+	}
+
+	userInfo, err := (&User{}).GetInfoById(modelId)
+	if err != nil {
+		return
+	}
+
+	for _, v := range roles {
+		switch v.DataScope {
+		case 1:
+			departments, err := (&Department{}).GetList()
+			if err == nil {
+				getDepartments = append(getDepartments, departments...)
+			}
+		case 2:
+			departments, err := p.GetRoleDepartments(v.Id)
+			if err == nil {
+				getDepartments = append(getDepartments, departments...)
+			}
+		case 3:
+			department, err := (&Department{}).GetInfoById(userInfo.DepartmentId)
+			if err == nil {
+				getDepartments = append(getDepartments, department)
+			}
+		case 4:
+			department, err := (&Department{}).GetInfoById(userInfo.DepartmentId)
+			if err == nil {
+				getDepartments = append(getDepartments, department)
+			}
+			departments := (&Department{}).GetChildrenDepartments(userInfo.DepartmentId)
+			getDepartments = append(getDepartments, departments...)
+		case 5:
+		}
+	}
+
+	return getDepartments, nil
+}

@@ -121,6 +121,7 @@ func New() *Component {
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "treeField"
+	p.Checkable = true
 	p.Colon = true
 	p.LabelAlign = "right"
 	p.ShowOnIndex = true

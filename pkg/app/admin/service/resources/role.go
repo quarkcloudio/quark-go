@@ -76,6 +76,7 @@ func (p *Role) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		actions.CreateLink(),
 		actions.BatchDeleteRole(),
+		actions.DataScope(),
 		actions.EditLink(),
 		actions.DeleteRole(),
 		actions.FormSubmit(),
