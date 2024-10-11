@@ -66,10 +66,8 @@ func (p *Position) Fields(ctx *builder.Context) []interface{} {
 func (p *Position) Searches(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
-		searches.Input("username", "用户名"),
-		searches.Input("nickname", "昵称"),
+		searches.Input("name", "用户名"),
 		searches.Status(),
-		searches.DatetimeRange("last_login_time", "登录时间"),
 	}
 }
 
@@ -81,9 +79,5 @@ func (p *Position) Actions(ctx *builder.Context) []interface{} {
 		actions.BatchDelete(),
 		actions.EditModal(),
 		actions.Delete(),
-		actions.FormSubmit(),
-		actions.FormReset(),
-		actions.FormBack(),
-		actions.FormExtraBack(),
 	}
 }
