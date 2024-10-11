@@ -66,7 +66,7 @@ func (p *Position) Fields(ctx *builder.Context) []interface{} {
 func (p *Position) Searches(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
-		searches.Input("name", "用户名"),
+		searches.Input("name", "名称"),
 		searches.Status(),
 	}
 }
