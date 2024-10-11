@@ -29,7 +29,7 @@ func (p *Department) Init(ctx *builder.Context) interface{} {
 	p.Model = &model.Department{}
 
 	// 分页
-	p.PerPage = 10
+	p.PerPage = false
 
 	// 默认排序
 	p.IndexQueryOrder = "sort asc, id asc"
