@@ -34,7 +34,7 @@ func (model *Role) GetInfoById(id interface{}) (role *Role, Error error) {
 
 // 更新角色数据范围
 func (model *Role) UpdateRoleDataScope(roleId int, dataScope int, departmentIds []int) (err error) {
-	err = db.Client.Where("id = ?", roleId).Update("data_scope", dataScope).Error
+	err = db.Client.Model(model).Where("id = ?", roleId).Update("data_scope", dataScope).Error
 	if err == nil {
 		if dataScope == 2 {
 			(&CasbinRule{}).AddDepartmentToRole(roleId, departmentIds)

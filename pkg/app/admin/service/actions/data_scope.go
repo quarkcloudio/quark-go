@@ -124,7 +124,7 @@ func (p *DataScopeAction) Data(ctx *builder.Context) map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"id":             id,
+		"id":             role.Id,
 		"name":           role.Name,
 		"data_scope":     role.DataScope,
 		"department_ids": departmentIds,
@@ -134,8 +134,8 @@ func (p *DataScopeAction) Data(ctx *builder.Context) map[string]interface{} {
 // 执行行为句柄
 func (p *DataScopeAction) Handle(ctx *builder.Context, query *gorm.DB) error {
 	type Form struct {
-		Id            int   `form:"id" json:"id" binding:"required"`
-		DataScope     int   `form:"data_scope" json:"data_scope" binding:"required"`
+		Id            int   `form:"id" json:"id"`
+		DataScope     int   `form:"data_scope" json:"data_scope"`
 		DepartmentIds []int `form:"department_ids" json:"department_ids"`
 	}
 	var form Form
@@ -150,5 +150,5 @@ func (p *DataScopeAction) Handle(ctx *builder.Context, query *gorm.DB) error {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
-	return ctx.JSON(200, message.Error("操作成功"))
+	return ctx.JSON(200, message.Success("操作成功"))
 }
