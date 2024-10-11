@@ -2,6 +2,22 @@ package table
 
 import "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/component"
 
+type Expandable struct {
+	ChildrenColumnName     string        `json:"childrenColumnName,omitempty"`
+	ColumnTitle            interface{}   `json:"columnTitle,omitempty"`
+	ColumnWidth            interface{}   `json:"columnWidth,omitempty"`
+	DefaultExpandAllRows   bool          `json:"defaultExpandAllRows,omitempty"`
+	DefaultExpandedRowKeys []interface{} `json:"defaultExpandedRowKeys,omitempty"`
+	ExpandedRowClassName   string        `json:"expandedRowClassName,omitempty"`
+	ExpandedRowKeys        []interface{} `json:"expandedRowKeys,omitempty"`
+	ExpandIcon             interface{}   `json:"expandIcon,omitempty"`
+	ExpandRowByClick       bool          `json:"expandRowByClick,omitempty"`
+	Fixed                  interface{}   `json:"fixed,omitempty"`
+	IndentSize             int           `json:"indentSize,omitempty"`
+	RowExpandable          bool          `json:"rowExpandable,omitempty"`
+	ShowExpandColumn       bool          `json:"showExpandColumn,omitempty"`
+}
+
 type Component struct {
 	component.Element
 	RowKey           string          `json:"rowKey"`
@@ -19,6 +35,7 @@ type Component struct {
 	ToolBar          interface{}     `json:"toolBar"`
 	TreeBar          interface{}     `json:"treeBar"`
 	TableExtraRender interface{}     `json:"tableExtraRender"`
+	Expandable       *Expandable     `json:"expandable,omitempty"`
 	Scroll           interface{}     `json:"scroll"`
 	Striped          bool            `json:"striped"`
 	Datasource       interface{}     `json:"datasource"`
@@ -193,6 +210,13 @@ func (p *Component) SetBatchActions(batchActions interface{}) *Component {
 // 自定义表格的主体函数
 func (p *Component) SetTableExtraRender(tableExtraRender interface{}) *Component {
 	p.TableExtraRender = tableExtraRender
+
+	return p
+}
+
+// 配置展开行
+func (p *Component) SetExpandable(expandable *Expandable) *Component {
+	p.Expandable = expandable
 
 	return p
 }

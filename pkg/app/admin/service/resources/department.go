@@ -2,6 +2,7 @@ package resources
 
 import (
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/rule"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/table"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service/actions"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service/searches"
@@ -16,6 +17,10 @@ type Department struct {
 
 // 初始化
 func (p *Department) Init(ctx *builder.Context) interface{} {
+
+	p.Table.SetExpandable(&table.Expandable{
+		DefaultExpandedRowKeys: []interface{}{1},
+	})
 
 	// 标题
 	p.Title = "部门"
