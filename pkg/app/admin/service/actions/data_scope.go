@@ -1,6 +1,8 @@
 package actions
 
 import (
+	"strconv"
+
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/selectfield"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/rule"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/message"
@@ -106,16 +108,47 @@ func (p *DataScopeAction) Fields(ctx *builder.Context) []interface{} {
 // 表单数据（异步获取）
 func (p *DataScopeAction) Data(ctx *builder.Context) map[string]interface{} {
 	id := ctx.Query("id")
-	name := ctx.Query("name")
+	idInt, err := strconv.Atoi(id.(string))
+	if err != nil {
+		return nil
+	}
+
+	role, err := (&model.Role{}).GetInfoById(idInt)
+	if err != nil {
+		return nil
+	}
+
+	departmentIds, err := (&model.CasbinRule{}).GetRoleDepartmentIds(idInt)
+	if err != nil {
+		return nil
+	}
 
 	return map[string]interface{}{
-		"id":   id,
-		"name": name,
+		"id":             id,
+		"name":           role.Name,
+		"data_scope":     role.DataScope,
+		"department_ids": departmentIds,
 	}
 }
 
 // 执行行为句柄
 func (p *DataScopeAction) Handle(ctx *builder.Context, query *gorm.DB) error {
+	type Form struct {
+		Id            int   `form:"id" json:"id" binding:"required"`
+		DataScope     int   `form:"data_scope" json:"data_scope" binding:"required"`
+		DepartmentIds []int `form:"department_ids" json:"department_ids"`
+	}
+	var form Form
+	err := ctx.Bind(&form)
+	if err != nil {
+		return ctx.JSON(200, message.Error(err.Error()))
+	}
 
-	return ctx.JSON(200, message.Error("Method not implemented"))
+	// 更新角色数据权限
+	err = (&model.Role{}).UpdateRoleDataScope(form.Id, form.DataScope, form.DepartmentIds)
+	if err != nil {
+		return ctx.JSON(200, message.Error(err.Error()))
+	}
+
+	return ctx.JSON(200, message.Error("操作成功"))
 }

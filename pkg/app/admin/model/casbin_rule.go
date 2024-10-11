@@ -417,23 +417,31 @@ func (p *CasbinRule) RemoveRoleDepartments(roleId int) (err error) {
 	return
 }
 
-// 获取角色拥有的部门
-func (p *CasbinRule) GetRoleDepartments(roleId int) (departments []*Department, err error) {
+// 获取角色拥有的部门Ids
+func (p *CasbinRule) GetRoleDepartmentIds(roleId int) (ids []int, err error) {
 	enforcer, err := p.Enforcer()
 	if err != nil {
 		return
 	}
 
-	departmentIds := []int{}
 	roleHasDepartmentIds := enforcer.GetPermissionsForUser("roleDepartment|" + strconv.Itoa(roleId))
 	for _, v := range roleHasDepartmentIds {
 		departmentId, err := strconv.Atoi(v[1])
 		if err != nil {
 			return nil, err
 		}
-		departmentIds = append(departmentIds, departmentId)
+		ids = append(ids, departmentId)
 	}
 
+	return
+}
+
+// 获取角色拥有的部门
+func (p *CasbinRule) GetRoleDepartments(roleId int) (departments []*Department, err error) {
+	departmentIds, err := p.GetRoleDepartmentIds(roleId)
+	if err != nil {
+		return
+	}
 	return (&Department{}).GetListByIds(departmentIds)
 }
 
