@@ -95,12 +95,12 @@ func (p *Department) Actions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		actions.CreateModal(),
-		actions.BatchDelete(),
-		actions.BatchDisable(),
-		actions.BatchEnable(),
 		actions.ChangeStatus(),
 		actions.EditModal(),
 		actions.DeleteSpecial(),
+		actions.BatchDelete(),
+		actions.BatchDisable(),
+		actions.BatchEnable(),
 	}
 }
 
