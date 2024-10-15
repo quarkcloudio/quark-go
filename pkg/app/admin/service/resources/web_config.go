@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"strings"
 
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/tabs"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service/actions"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource"
 	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
+	"gorm.io/gorm"
 )
 
 type WebConfig struct {
@@ -26,12 +28,6 @@ func (p *WebConfig) Init(ctx *builder.Context) interface{} {
 	p.Model = &model.Config{}
 
 	return p
-}
-
-// 表单接口
-func (p *WebConfig) FormApi(ctx *builder.Context) string {
-
-	return "/api/admin/webConfig/action/change-web-config-action"
 }
 
 // 字段
@@ -106,7 +102,6 @@ func (p *WebConfig) Fields(ctx *builder.Context) []interface{} {
 // 行为
 func (p *WebConfig) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		actions.ChangeWebConfig(),
 		actions.FormSubmit(),
 		actions.FormReset(),
 		actions.FormBack(),
@@ -114,8 +109,8 @@ func (p *WebConfig) Actions(ctx *builder.Context) []interface{} {
 	}
 }
 
-// 创建页面显示前回调
-func (p *WebConfig) BeforeCreating(ctx *builder.Context) map[string]interface{} {
+// 表单显示前回调
+func (p *WebConfig) BeforeFormShowing(ctx *builder.Context) map[string]interface{} {
 	configs := []map[string]interface{}{}
 	data := map[string]interface{}{}
 
@@ -158,4 +153,33 @@ func (p *WebConfig) BeforeCreating(ctx *builder.Context) map[string]interface{} 
 	}
 
 	return data
+}
+
+func (p *WebConfig) FormHandle(ctx *builder.Context, query *gorm.DB, data map[string]interface{}) error {
+	result := true
+	for k, v := range data {
+		if getValue, ok := v.([]interface{}); ok {
+			v, _ = json.Marshal(getValue)
+		}
+		if getValue, ok := v.([]map[string]interface{}); ok {
+			v, _ = json.Marshal(getValue)
+		}
+		if getValue, ok := v.(map[string]interface{}); ok {
+			v, _ = json.Marshal(getValue)
+		}
+		updateResult := db.Client.Model(&model.Config{}).Where("name", k).Update("value", v)
+		if updateResult.Error != nil {
+			result = false
+		}
+	}
+
+	if !result {
+		return ctx.JSON(200, message.Error("操作失败，请重试！"))
+	}
+
+	// 刷新网站配置
+	(&model.Config{}).Refresh()
+
+	// 返回成功
+	return ctx.JSON(200, message.Success("操作成功"))
 }

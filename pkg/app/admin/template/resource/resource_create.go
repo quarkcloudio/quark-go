@@ -24,6 +24,9 @@ func (p *Template) CreationApi(ctx *builder.Context) string {
 	if uri[len(uri)-1] == "index" {
 		return stringy.New(ctx.Path()).ReplaceLast("/index", "/store")
 	}
+	if uri[len(uri)-1] == "form" {
+		return stringy.New(ctx.Path()).ReplaceLast("/form", "/store")
+	}
 
 	return stringy.New(ctx.Path()).ReplaceLast("/create", "/store")
 }

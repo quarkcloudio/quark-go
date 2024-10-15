@@ -1,13 +1,18 @@
 package resources
 
 import (
+	"encoding/json"
+
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/radio"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/rule"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service/actions"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource"
 	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
+	"github.com/quarkcloudio/quark-go/v3/pkg/utils/hash"
+	"gorm.io/gorm"
 )
 
 type Account struct {
@@ -24,21 +29,6 @@ func (p *Account) Init(ctx *builder.Context) interface{} {
 	p.Model = &model.User{}
 
 	return p
-}
-
-// 表单接口
-func (p *Account) FormApi(ctx *builder.Context) string {
-
-	// 获取行为实例
-	actionInstance := actions.ChangeAccount()
-
-	// 获取行为接口接收的参数
-	params := actionInstance.GetApiParams()
-
-	// 获取行为key
-	uriKey := actionInstance.GetUriKey(actionInstance)
-
-	return p.BuildActionApi(ctx, params, uriKey)
 }
 
 // 字段
@@ -84,7 +74,6 @@ func (p *Account) Fields(ctx *builder.Context) []interface{} {
 // 行为
 func (p *Account) Actions(ctx *builder.Context) []interface{} {
 	return []interface{}{
-		actions.ChangeAccount(),
 		actions.FormSubmit(),
 		actions.FormReset(),
 		actions.FormBack(),
@@ -92,8 +81,8 @@ func (p *Account) Actions(ctx *builder.Context) []interface{} {
 	}
 }
 
-// 创建页面显示前回调
-func (p *Account) BeforeCreating(ctx *builder.Context) map[string]interface{} {
+// 表单显示前回调
+func (p *Account) BeforeFormShowing(ctx *builder.Context) map[string]interface{} {
 	data := map[string]interface{}{}
 	adminInfo, _ := (&model.User{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	db.Client.
@@ -104,4 +93,29 @@ func (p *Account) BeforeCreating(ctx *builder.Context) map[string]interface{} {
 	delete(data, "password")
 
 	return data
+}
+
+func (p *Account) FormHandle(ctx *builder.Context, query *gorm.DB, data map[string]interface{}) error {
+
+	if data["avatar"] != "" && data["avatar"] != nil {
+		data["avatar"], _ = json.Marshal(data["avatar"])
+	}
+
+	// 加密密码
+	if data["password"] != nil {
+		data["password"] = hash.Make(data["password"].(string))
+	}
+
+	// 获取登录管理员信息
+	adminInfo, err := (&model.User{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	if err != nil {
+		return ctx.JSON(200, message.Error(err.Error()))
+	}
+
+	err = query.Where("id", adminInfo.Id).Updates(data).Error
+	if err != nil {
+		return ctx.JSON(200, message.Error(err.Error()))
+	}
+
+	return ctx.JSON(200, message.Success("操作成功"))
 }

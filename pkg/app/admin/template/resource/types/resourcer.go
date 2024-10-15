@@ -234,6 +234,12 @@ type Resourcer interface {
 	// 表单标题
 	FormTitle(ctx *builder.Context) string
 
+	// 表单页面显示前回调
+	BeforeFormShowing(ctx *builder.Context) map[string]interface{}
+
+	// 表单执行
+	FormHandle(ctx *builder.Context, query *gorm.DB, data map[string]interface{}) error
+
 	// 保存数据前回调
 	BeforeSaving(ctx *builder.Context, submitData map[string]interface{}) (map[string]interface{}, error)
 

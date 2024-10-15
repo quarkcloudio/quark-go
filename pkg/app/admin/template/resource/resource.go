@@ -316,7 +316,18 @@ func (p *Template) CreationRender(ctx *builder.Context) error {
 
 // 创建方法
 func (p *Template) StoreRender(ctx *builder.Context) error {
-	return (&requests.StoreRequest{}).Handle(ctx)
+	data := map[string]interface{}{}
+	ctx.Bind(&data)
+
+	template := ctx.Template.(types.Resourcer)
+
+	// 模型结构体
+	modelInstance := template.GetModel()
+
+	// 数据库实例
+	model := db.Client.Model(modelInstance)
+
+	return template.FormHandle(ctx, model, data)
 }
 
 // 编辑页面渲染
@@ -387,7 +398,7 @@ func (p *Template) FormRender(ctx *builder.Context) error {
 	template := ctx.Template.(types.Resourcer)
 
 	// 获取数据
-	data := template.BeforeCreating(ctx)
+	data := template.BeforeFormShowing(ctx)
 
 	// 组件渲染
 	body := template.CreationComponentRender(ctx, data)

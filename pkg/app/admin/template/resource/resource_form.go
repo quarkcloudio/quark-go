@@ -7,6 +7,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/card"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/tabs"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource/requests"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource/types"
 	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 	"gorm.io/gorm"
@@ -122,6 +123,16 @@ func (p *Template) FormWithinTabs(
 		SetActions(actions).
 		SetBody(tabsComponent).
 		SetInitialValues(data)
+}
+
+// 表单页面显示前回调
+func (p *Template) BeforeFormShowing(ctx *builder.Context) map[string]interface{} {
+	return map[string]interface{}{}
+}
+
+// 表单执行
+func (p *Template) FormHandle(ctx *builder.Context, query *gorm.DB, data map[string]interface{}) (err error) {
+	return (&requests.StoreRequest{}).Handle(ctx)
 }
 
 // 保存数据前回调
