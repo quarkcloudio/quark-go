@@ -44,7 +44,7 @@ func (p *Menu) Seeder() {
 		{Id: 6, Name: "角色列表", GuardName: "admin", Icon: "", Type: 2, Pid: 3, Sort: 0, Path: "/api/admin/role/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
 		{Id: 7, Name: "系统配置", GuardName: "admin", Icon: "icon-setting", Type: 1, Pid: 0, Sort: 100, Path: "/system", Show: 1, IsEngine: 0, IsLink: 0, Status: 1},
 		{Id: 8, Name: "设置管理", GuardName: "admin", Icon: "", Type: 1, Pid: 7, Sort: 0, Path: "/system/config", Show: 1, IsEngine: 0, IsLink: 0, Status: 1},
-		{Id: 9, Name: "网站设置", GuardName: "admin", Icon: "", Type: 2, Pid: 8, Sort: 0, Path: "/api/admin/webConfig/setting/form", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
+		{Id: 9, Name: "网站设置", GuardName: "admin", Icon: "", Type: 2, Pid: 8, Sort: 0, Path: "/api/admin/webConfig/form", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
 		{Id: 10, Name: "配置管理", GuardName: "admin", Icon: "", Type: 2, Pid: 8, Sort: 0, Path: "/api/admin/config/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
 		{Id: 11, Name: "菜单管理", GuardName: "admin", Icon: "", Type: 2, Pid: 7, Sort: 0, Path: "/api/admin/menu/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
 		{Id: 12, Name: "操作日志", GuardName: "admin", Icon: "", Type: 2, Pid: 7, Sort: 100, Path: "/api/admin/actionLog/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
@@ -52,7 +52,7 @@ func (p *Menu) Seeder() {
 		{Id: 14, Name: "文件管理", GuardName: "admin", Icon: "", Type: 2, Pid: 13, Sort: 0, Path: "/api/admin/file/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
 		{Id: 15, Name: "图片管理", GuardName: "admin", Icon: "", Type: 2, Pid: 13, Sort: 0, Path: "/api/admin/picture/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
 		{Id: 16, Name: "我的账号", GuardName: "admin", Icon: "icon-user", Type: 1, Pid: 0, Sort: 100, Path: "/account", Show: 1, IsEngine: 0, IsLink: 0, Status: 1},
-		{Id: 17, Name: "个人设置", GuardName: "admin", Icon: "", Type: 2, Pid: 16, Sort: 0, Path: "/api/admin/account/setting/form", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
+		{Id: 17, Name: "个人设置", GuardName: "admin", Icon: "", Type: 2, Pid: 16, Sort: 0, Path: "/api/admin/account/form", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
 		{Id: 18, Name: "部门列表", GuardName: "admin", Icon: "", Type: 2, Pid: 3, Sort: 0, Path: "/api/admin/department/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
 		{Id: 19, Name: "职位列表", GuardName: "admin", Icon: "", Type: 2, Pid: 3, Sort: 0, Path: "/api/admin/position/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
 	}

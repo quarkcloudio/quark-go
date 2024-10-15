@@ -26,8 +26,7 @@ const (
 	ExportPath         = "/api/admin/:resource/export"                // 导出数据路径
 	DetailPath         = "/api/admin/:resource/detail"                // 导入数据路径
 	ImportTemplatePath = "/api/admin/:resource/import/template"       // 导入模板路径
-	SettingFormPath    = "/api/admin/:resource/setting/form"          // 设置表单路径
-	FormPath           = "/api/admin/:resource/:uriKey/form"          // 通用表单资源路径
+	FormPath           = "/api/admin/:resource/form"                  // 设置表单路径
 )
 
 // 增删改查模板
@@ -111,7 +110,6 @@ func (p *Template) RouteInit() interface{} {
 	p.GET(ExportPath, p.ExportRender)                 // 导出数据
 	p.POST(ImportPath, p.ImportRender)                // 导入数据
 	p.GET(ImportTemplatePath, p.ImportTemplateRender) // 导入模板
-	p.GET(SettingFormPath, p.FormRender)              // 设置表单
 	p.GET(FormPath, p.FormRender)                     // 通用表单资源
 
 	return p
