@@ -2,10 +2,8 @@ package resources
 
 import (
 	"strconv"
-	"strings"
 
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/rule"
-	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service/actions"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service/searches"
@@ -103,7 +101,7 @@ func (p *Role) BeforeEditing(ctx *builder.Context, data map[string]interface{}) 
 }
 
 // 保存后回调
-func (p *Role) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
+func (p *Role) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) (err error) {
 	if data["menu_ids"] != nil {
 		if menuIds, ok := data["menu_ids"].([]interface{}); ok {
 			ids := []int{}
@@ -112,15 +110,12 @@ func (p *Role) AfterSaved(ctx *builder.Context, id int, data map[string]interfac
 				ids = append(ids, menuId)
 			}
 
-			err := (&model.CasbinRule{}).AddMenuAndPermissionToRole(id, ids)
+			err = (&model.CasbinRule{}).AddMenuAndPermissionToRole(id, ids)
 			if err != nil {
-				return ctx.JSON(200, message.Error(err.Error()))
+				return err
 			}
 		}
 	}
 
-	return ctx.JSON(200, message.Success(
-		"操作成功",
-		strings.Replace("/layout/index?api="+resource.IndexPath, ":resource", ctx.Param("resource"), -1),
-	))
+	return err
 }

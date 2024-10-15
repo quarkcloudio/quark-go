@@ -85,5 +85,8 @@ func (p *UpdateRequest) Handle(ctx *builder.Context) error {
 	// 更新数据
 	query = query.Updates(newData)
 
-	return template.AfterSaved(ctx, int(data["id"].(float64)), data, query)
+	// 保存后回调
+	err = template.AfterSaved(ctx, int(data["id"].(float64)), data, query)
+
+	return template.AfterSavedRedirectTo(ctx, err)
 }

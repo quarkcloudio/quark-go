@@ -3,11 +3,9 @@ package resources
 import (
 	"encoding/json"
 	"strconv"
-	"strings"
 
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/radio"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/rule"
-	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service/actions"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service/searches"
@@ -244,16 +242,11 @@ func (p *User) BeforeSaving(ctx *builder.Context, submitData map[string]interfac
 }
 
 // 保存后回调
-func (p *User) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
-
-	// 导入操作，直接返回
-	if ctx.IsImport() {
-		return result.Error
-	}
+func (p *User) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) (err error) {
 
 	// 返回错误信息
 	if result.Error != nil {
-		return ctx.JSON(200, message.Error(result.Error.Error()))
+		return result.Error
 	}
 
 	if data["role_ids"] != nil {
@@ -266,13 +259,10 @@ func (p *User) AfterSaved(ctx *builder.Context, id int, data map[string]interfac
 
 			err := (&model.CasbinRule{}).AddUserRole(id, ids)
 			if err != nil {
-				return ctx.JSON(200, message.Error(err.Error()))
+				return err
 			}
 		}
 	}
 
-	return ctx.JSON(200, message.Success(
-		"操作成功",
-		strings.Replace("/layout/index?api="+resource.IndexPath, ":resource", ctx.Param("resource"), -1),
-	))
+	return err
 }

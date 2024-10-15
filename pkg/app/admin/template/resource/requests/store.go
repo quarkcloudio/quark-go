@@ -91,5 +91,8 @@ func (p *StoreRequest) Handle(ctx *builder.Context) error {
 		Where("id = ?", id).
 		Updates(newData)
 
-	return template.AfterSaved(ctx, id, data, model)
+	// 保存后回调
+	err = template.AfterSaved(ctx, id, data, model)
+
+	return template.AfterSavedRedirectTo(ctx, err)
 }

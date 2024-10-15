@@ -120,6 +120,9 @@ type Resourcer interface {
 	// 导入数据
 	ImportRender(ctx *builder.Context) error
 
+	// 导入数据后回调
+	AfterImported(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) (err error)
+
 	// 导入数据模板
 	ImportTemplateRender(ctx *builder.Context) error
 
@@ -236,6 +239,9 @@ type Resourcer interface {
 
 	// 保存数据后回调
 	AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error
+
+	// 保存数据后跳转回调
+	AfterSavedRedirectTo(ctx *builder.Context, err error) error
 
 	// 列表页表格主体
 	IndexTableExtraRender(ctx *builder.Context) interface{}

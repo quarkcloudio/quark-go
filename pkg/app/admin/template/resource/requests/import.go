@@ -131,7 +131,7 @@ func (p *ImportRequest) Handle(ctx *builder.Context, indexRoute string) error {
 		model.Order("id desc").First(&getLastData)
 
 		// 保存后回调
-		err = template.AfterSaved(ctx, getLastData["id"].(int), data, result)
+		err = template.AfterImported(ctx, getLastData["id"].(int), data, result)
 		if err != nil {
 			importResult = false
 			importFailedNum = importFailedNum + 1

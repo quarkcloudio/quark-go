@@ -129,17 +129,22 @@ func (p *Template) BeforeSaving(ctx *builder.Context, submitData map[string]inte
 	return submitData, nil
 }
 
-// 保存数据后回调
-func (p *Template) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) error {
+// 导入数据后回调
+func (p *Template) AfterImported(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) (err error) {
+	return err
+}
 
-	// 导入操作直接返回
-	if ctx.IsImport() {
-		return result.Error
-	}
+// 保存数据后回调
+func (p *Template) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) (err error) {
+	return err
+}
+
+// 保存数据后跳转回调
+func (p *Template) AfterSavedRedirectTo(ctx *builder.Context, err error) error {
 
 	// 返回错误信息
-	if result.Error != nil {
-		return ctx.JSON(200, message.Error(result.Error.Error()))
+	if err != nil {
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	return ctx.JSON(200, message.Success("操作成功！", strings.Replace("/layout/index?api="+IndexPath, ":resource", ctx.Param("resource"), -1)))

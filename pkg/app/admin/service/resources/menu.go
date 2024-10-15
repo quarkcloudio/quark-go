@@ -2,11 +2,9 @@ package resources
 
 import (
 	"strconv"
-	"strings"
 
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/radio"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/rule"
-	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service/actions"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service/searches"
@@ -237,16 +235,9 @@ func (p *Menu) AfterSaved(ctx *builder.Context, id int, data map[string]interfac
 	if data["permission_ids"] != nil {
 		err := (&model.CasbinRule{}).AddMenuPermission(id, data["permission_ids"])
 		if err != nil {
-			return ctx.JSON(200, message.Error(err.Error()))
+			return err
 		}
 	}
 
-	if result.Error != nil {
-		return ctx.JSON(200, message.Error(result.Error.Error()))
-	}
-
-	return ctx.JSON(200, message.Success(
-		"操作成功",
-		strings.Replace("/layout/index?api="+resource.IndexPath, ":resource", ctx.Param("resource"), -1),
-	))
+	return result.Error
 }
