@@ -63,6 +63,9 @@ func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
 		// 获取属性
 		options := searchInstance.Options(ctx)
 
+		// 获取Select组件的Load
+		load := searchInstance.Load(ctx)
+
 		// 构建组件
 		switch component {
 		case "textField":
@@ -73,7 +76,8 @@ func (p *Template) IndexSearches(ctx *builder.Context) interface{} {
 			item = field.
 				Select(name, label).
 				SetWidth(nil).
-				SetOptions(options.([]*selectfield.Option))
+				SetOptions(options.([]*selectfield.Option)).
+				SetLoad(load["field"], load["api"])
 		case "radioField":
 			item = field.
 				Radio(name, label).

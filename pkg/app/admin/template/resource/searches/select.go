@@ -25,3 +25,8 @@ func (p *Select) Option(value interface{}, label string) *selectfield.Option {
 		Label: label,
 	}
 }
+
+// 单向联动,返回数据类型：map[string]string{"field": "you_want_load_field","api": "admin/resource_name/action/select-options"}
+func (p *Select) Load(ctx *builder.Context) map[string]string {
+	return nil
+}
