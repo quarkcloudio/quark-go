@@ -24,7 +24,6 @@ func (model *Position) Seeder() {
 		{Name: "项目经理", Sort: 0, Status: 1},
 		{Name: "普通员工", Sort: 0, Status: 1},
 	}
-
 	db.Client.Create(&seeders)
 }
 
@@ -35,13 +34,11 @@ func (model *Position) List() (list []*checkbox.Option, Error error) {
 	if err != nil {
 		return list, err
 	}
-
 	for _, v := range positions {
 		list = append(list, &checkbox.Option{
 			Label: v.Name,
 			Value: v.Id,
 		})
 	}
-
 	return list, nil
 }
