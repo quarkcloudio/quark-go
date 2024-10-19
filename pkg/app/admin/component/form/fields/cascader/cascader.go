@@ -2,8 +2,10 @@ package cascader
 
 import (
 	"encoding/json"
+	"reflect"
 	"strings"
 
+	"github.com/gobeam/stringy"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/component"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/when"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/rule"
@@ -879,23 +881,101 @@ func (p *Component) SetOpen(open bool) *Component {
 	return p
 }
 
+// buildTree 使用反射构建树结构
+func (p *Component) buildTree(items interface{}, pid int, parentKeyName string, labelName string, valueName string) []*Option {
+	var tree []*Option
+
+	// 通过反射获取切片的值
+	v := reflect.ValueOf(items)
+
+	// 确保传入的是切片类型
+	if v.Kind() != reflect.Slice {
+		return nil
+	}
+
+	// 遍历切片中的每个元素
+	for i := 0; i < v.Len(); i++ {
+		item := v.Index(i)
+
+		// 使用反射获取字段
+		valueField := item.FieldByName(
+			stringy.
+				New(valueName).
+				CamelCase("?", ""),
+		)
+
+		parentKeyField := item.FieldByName(
+			stringy.
+				New(parentKeyName).
+				CamelCase("?", ""),
+		)
+		labelField := item.FieldByName(
+			stringy.
+				New(labelName).
+				CamelCase("?", ""),
+		)
+
+		// 确保字段存在并且类型正确
+		if !valueField.IsValid() || !parentKeyField.IsValid() || !labelField.IsValid() {
+			continue
+		}
+
+		// 断言字段类型
+		value := int(valueField.Int())
+		parentKey := int(parentKeyField.Int())
+		label := labelField.String()
+
+		// 如果当前项的 Pid 与传入的 pid 匹配
+		if parentKey == pid {
+			// 递归查找子节点
+			children := p.buildTree(items, value, parentKeyName, labelName, valueName)
+
+			// 构建级联选择框的选项
+			option := &Option{
+				Value:    value,
+				Label:    label,
+				Children: children,
+			}
+
+			tree = append(tree, option)
+		}
+	}
+	return tree
+}
+
+func (p *Component) ListToOptions(list interface{}, parentKeyName string, labelName string, valueName string) []*Option {
+	return p.buildTree(list, 0, parentKeyName, labelName, valueName)
+}
+
 // 可选项数据源
 //
-//	[]*cascader.Option {
-//		{
-//			Value :"zhejiang",
-//			Label:"Zhejiang",
-//			Children : []*cascader.Option {
-//				{
-//					Value:"hangzhou",
-//					Label:"Hangzhou",
+//	SetOptions([]*cascader.Option {
+//			{
+//				Value :"zhejiang",
+//				Label:"Zhejiang",
+//				Children : []*cascader.Option {
+//					{
+//						Value:"hangzhou",
+//						Label:"Hangzhou",
+//					},
 //				},
 //			},
-//		},
-//	}
-func (p *Component) SetOptions(options []*Option) *Component {
-	p.Options = options
-
+//		})
+//
+// 或者
+//
+// SetOptions(options, "parent_key_name", "label_name", "value_name")
+func (p *Component) SetOptions(options ...interface{}) *Component {
+	if len(options) == 1 {
+		getOptions, ok := options[0].([]*Option)
+		if ok {
+			p.Options = getOptions
+			return p
+		}
+	}
+	if len(options) == 4 {
+		p.Options = p.ListToOptions(options[0], options[1].(string), options[2].(string), options[3].(string))
+	}
 	return p
 }
 

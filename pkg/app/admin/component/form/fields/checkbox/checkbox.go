@@ -2,8 +2,10 @@ package checkbox
 
 import (
 	"encoding/json"
+	"reflect"
 	"strings"
 
+	"github.com/gobeam/stringy"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/component"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/when"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/rule"
@@ -701,10 +703,73 @@ func (p *Component) GetCallback() interface{} {
 	return p.Callback
 }
 
-// 设置属性，示例：[]*checkbox.Option{{Value: 1, Label: "中国"}, {Value: 2, Label: "美国"}, {Value: 3, Label: "日本"}}
-func (p *Component) SetOptions(options []*Option) *Component {
-	p.Options = options
+// 使用反射构建树结构
+func (p *Component) buildOptions(items interface{}, labelName string, valueName string) []*Option {
+	var options []*Option
 
+	v := reflect.ValueOf(items)
+
+	// 确保传入的是切片类型
+	if v.Kind() != reflect.Slice {
+		return nil
+	}
+
+	// 遍历切片中的每个元素
+	for i := 0; i < v.Len(); i++ {
+		item := v.Index(i)
+
+		// 使用反射获取字段
+		valueField := item.FieldByName(
+			stringy.
+				New(valueName).
+				CamelCase("?", ""),
+		)
+		labelField := item.FieldByName(
+			stringy.
+				New(labelName).
+				CamelCase("?", ""),
+		)
+
+		// 确保字段存在并且类型正确
+		if !valueField.IsValid() || !labelField.IsValid() {
+			continue
+		}
+
+		// 断言字段类型
+		value := valueField.Interface()
+		label := labelField.String()
+
+		// 构建级联选择框的选项
+		option := &Option{
+			Value: value,
+			Label: label,
+		}
+
+		options = append(options, option)
+	}
+	return options
+}
+
+func (p *Component) ListToOptions(list interface{}, labelName string, valueName string) []*Option {
+	return p.buildOptions(list, labelName, valueName)
+}
+
+// 设置属性，示例：[]*checkbox.Option{{Value: 1, Label: "中国"}, {Value: 2, Label: "美国"}, {Value: 3, Label: "日本"}}
+//
+// 或者
+//
+// SetOptions(options, "label_name", "value_name")
+func (p *Component) SetOptions(options ...interface{}) *Component {
+	if len(options) == 1 {
+		getOptions, ok := options[0].([]*Option)
+		if ok {
+			p.Options = getOptions
+			return p
+		}
+	}
+	if len(options) == 3 {
+		p.Options = p.ListToOptions(options[0], options[1].(string), options[2].(string))
+	}
 	return p
 }
 
