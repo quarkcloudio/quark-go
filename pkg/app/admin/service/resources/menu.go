@@ -76,7 +76,6 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 				SetEditable(true).
 				SetDefault(true),
 		}),
-
 		field.Group([]interface{}{
 			field.Radio("type", "类型").
 				SetOptions([]*radio.Option{
@@ -94,7 +93,6 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 				SetEditable(true).
 				SetDefault(true),
 		}),
-
 		field.Dependency().
 			SetWhen("type", 1, func() interface{} {
 				return []interface{}{
@@ -108,7 +106,6 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 						BuildFrontendRules(ctx.Path()),
 				}
 			}),
-
 		field.Dependency().
 			SetWhen("type", 2, func() interface{} {
 				return []interface{}{
@@ -131,7 +128,6 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 						BuildFrontendRules(ctx.Path()),
 				}
 			}),
-
 		field.Dependency().
 			SetWhen("type", 3, func() interface{} {
 				return []interface{}{
@@ -193,7 +189,6 @@ func (p *Menu) BeforeIndexShowing(ctx *builder.Context, list []map[string]interf
 func (p *Menu) BeforeEditing(ctx *builder.Context, data map[string]interface{}) map[string]interface{} {
 	id := ctx.Query("id", "")
 	idInt, err := strconv.Atoi(id.(string))
-
 	if id != "" && err == nil {
 		permissionIds := []int{}
 		permissions, err := (&model.CasbinRule{}).GetMenuPermissions(idInt)
