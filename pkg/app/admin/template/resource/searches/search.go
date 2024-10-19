@@ -69,7 +69,7 @@ func (p *Search) Options(ctx *builder.Context) interface{} {
 	return nil
 }
 
-// 单向联动,返回数据类型：map[string]string{"field": "you_want_load_field","api": "admin/resource_name/action/select-options"}
+// 单向联动,返回数据类型：map[string]string{"field": "you_want_load_field","api": "/api/admin/resource_name/action/select-options"}
 func (p *Search) Load(ctx *builder.Context) map[string]string {
 	return nil
 }

@@ -13,17 +13,19 @@ type Select struct {
 // 初始化模板
 func (p *Select) TemplateInit(ctx *builder.Context) interface{} {
 	p.Component = "selectField"
-
 	return p
 }
 
 // 设置Option
 func (p *Select) Option(value interface{}, label string) *selectfield.Option {
-
 	return &selectfield.Option{
 		Value: value,
 		Label: label,
 	}
+}
+
+func (p *Select) Options(ctx *builder.Context) interface{} {
+	return []*selectfield.Option{}
 }
 
 // 单向联动,返回数据类型：map[string]string{"field": "you_want_load_field","api": "admin/resource_name/action/select-options"}
