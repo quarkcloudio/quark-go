@@ -61,7 +61,7 @@ func (p *DataScopeAction) Init(ctx *builder.Context) interface{} {
 func (p *DataScopeAction) Fields(ctx *builder.Context) []interface{} {
 	field := &resource.Field{}
 
-	departments := (&model.Department{}).Tree()
+	departments, _ := (&model.Department{}).GetList()
 
 	return []interface{}{
 		field.Hidden("id", "ID"),
@@ -99,7 +99,9 @@ func (p *DataScopeAction) Fields(ctx *builder.Context) []interface{} {
 		field.Dependency().
 			SetWhen("data_scope", 2, func() interface{} {
 				return []interface{}{
-					field.Tree("department_ids", "数据权限").SetDefaultExpandAll(true).SetData(departments),
+					field.Tree("department_ids", "数据权限").
+						SetDefaultExpandAll(true).
+						SetData(departments, "pid", "id", "name"),
 				}
 			}),
 	}

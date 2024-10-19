@@ -22,10 +22,13 @@ type User struct {
 // 初始化
 func (p *User) Init(ctx *builder.Context) interface{} {
 
+	// 列表
+	departments, _ := (&model.Department{}).GetList()
+
 	// 树形下拉框
 	p.TableTreeBar.
 		SetName("departmentIds").
-		SetTreeData((&model.Department{}).TableTree())
+		SetTreeData(departments, "pid", "id", "name")
 
 	// 标题
 	p.Title = "用户"
@@ -70,8 +73,8 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 	// 角色列表
 	roles, _ := (&model.Role{}).List()
 
-	// 部门列表
-	departments, _ := (&model.Department{}).TreeSelect()
+	// 列表
+	departments, _ := (&model.Department{}).GetList()
 
 	// 职位列表
 	positions, _ := (&model.Position{}).List()
@@ -103,7 +106,7 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 			OnlyOnForms().
 			HideWhenImporting(true),
 		field.TreeSelect("department_id", "部门").
-			SetData(departments).
+			SetData(departments, "pid", "name", "id").
 			OnlyOnForms().
 			HideWhenImporting(true),
 		field.Checkbox("position_ids", "职位").
