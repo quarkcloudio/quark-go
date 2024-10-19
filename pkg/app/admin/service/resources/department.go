@@ -106,7 +106,6 @@ func (p *Department) BeforeIndexShowing(ctx *builder.Context, list []map[string]
 		for _, v := range list {
 			result = append(result, v)
 		}
-
 		return result
 	}
 	// 转换成树形表格
