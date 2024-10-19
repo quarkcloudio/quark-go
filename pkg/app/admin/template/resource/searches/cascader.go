@@ -18,7 +18,7 @@ func (p *Cascader) TemplateInit(ctx *builder.Context) interface{} {
 }
 
 // 设置Option
-func (p *Cascader) Option(value interface{}, label string) *cascader.Option {
+func (p *Cascader) Option(label string, value interface{}) *cascader.Option {
 
 	return &cascader.Option{
 		Value: value,

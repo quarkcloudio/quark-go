@@ -48,38 +48,14 @@ func (p *Permission) Fields(ctx *builder.Context) []interface{} {
 
 		field.Select("method", "方法").
 			SetOptions([]*selectfield.Option{
-				{
-					Value: "Any",
-					Label: "Any",
-				},
-				{
-					Value: "GET",
-					Label: "GET",
-				},
-				{
-					Value: "HEAD",
-					Label: "HEAD",
-				},
-				{
-					Value: "OPTIONS",
-					Label: "OPTIONS",
-				},
-				{
-					Value: "POST",
-					Label: "POST",
-				},
-				{
-					Value: "PUT",
-					Label: "PUT",
-				},
-				{
-					Value: "PATCH",
-					Label: "PATCH",
-				},
-				{
-					Value: "DELETE",
-					Label: "DELETE",
-				},
+				field.SelectOption("Any", "Any"),
+				field.SelectOption("GET", "GET"),
+				field.SelectOption("HEAD", "HEAD"),
+				field.SelectOption("OPTIONS", "OPTIONS"),
+				field.SelectOption("POST", "POST"),
+				field.SelectOption("PUT", "PUT"),
+				field.SelectOption("PATCH", "PATCH"),
+				field.SelectOption("DELETE", "DELETE"),
 			}).
 			SetFilters(true).
 			SetDefault("GET"),

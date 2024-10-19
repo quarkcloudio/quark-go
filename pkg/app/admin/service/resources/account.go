@@ -56,14 +56,8 @@ func (p *Account) Fields(ctx *builder.Context) []interface{} {
 
 		field.Radio("sex", "性别").
 			SetOptions([]*radio.Option{
-				{
-					Value: 1,
-					Label: "男",
-				},
-				{
-					Value: 2,
-					Label: "女",
-				},
+				field.RadioOption("男", 1),
+				field.RadioOption("女", 2),
 			}).
 			SetDefault(1),
 

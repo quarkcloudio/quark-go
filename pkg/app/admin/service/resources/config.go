@@ -52,29 +52,13 @@ func (p *Config) Fields(ctx *builder.Context) []interface{} {
 			SetUpdateRules([]*rule.Rule{
 				rule.Unique("configs", "name", "{id}", "名称已存在"),
 			}),
-
 		field.Radio("type", "表单类型").
 			SetOptions([]*radio.Option{
-				{
-					Value: "text",
-					Label: "输入框",
-				},
-				{
-					Value: "textarea",
-					Label: "文本域",
-				},
-				{
-					Value: "picture",
-					Label: "图片",
-				},
-				{
-					Value: "file",
-					Label: "文件",
-				},
-				{
-					Value: "switch",
-					Label: "开关",
-				},
+				field.RadioOption("text", "文本"),
+				field.RadioOption("textarea", "文本域"),
+				field.RadioOption("picture", "图片"),
+				field.RadioOption("file", "文件"),
+				field.RadioOption("switch", "开关"),
 			}).
 			SetDefault("text").
 			OnlyOnForms(),

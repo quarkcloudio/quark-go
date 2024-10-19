@@ -28,7 +28,7 @@ func (p *StatusField) Apply(ctx *builder.Context, query *gorm.DB, value interfac
 func (p *StatusField) Options(ctx *builder.Context) interface{} {
 
 	return []*selectfield.Option{
-		p.Option(0, "禁用"),
-		p.Option(1, "正常"),
+		p.Option("禁用", 0),
+		p.Option("正常", 1),
 	}
 }

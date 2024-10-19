@@ -17,7 +17,7 @@ func (p *Select) TemplateInit(ctx *builder.Context) interface{} {
 }
 
 // 设置Option
-func (p *Select) Option(value interface{}, label string) *selectfield.Option {
+func (p *Select) Option(label string, value interface{}) *selectfield.Option {
 	return &selectfield.Option{
 		Value: value,
 		Label: label,

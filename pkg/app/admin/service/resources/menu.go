@@ -87,18 +87,9 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 		field.Group([]interface{}{
 			field.Radio("type", "类型").
 				SetOptions([]*radio.Option{
-					{
-						Value: 1,
-						Label: "目录",
-					},
-					{
-						Value: 2,
-						Label: "菜单",
-					},
-					{
-						Value: 3,
-						Label: "按钮",
-					},
+					field.RadioOption("目录", 1),
+					field.RadioOption("菜单", 2),
+					field.RadioOption("按钮", 3),
 				}).
 				SetRules([]*rule.Rule{
 					rule.Required(true, "类型必须选择"),

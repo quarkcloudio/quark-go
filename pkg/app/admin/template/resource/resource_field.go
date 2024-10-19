@@ -119,11 +119,31 @@ func (p *Field) Radio(params ...interface{}) *radio.Component {
 	return fieldParser(radio.New(), params, "").(*radio.Component)
 }
 
+// 单选组件Option
+//
+// field.RadioOption("男", 1)
+func (p *Field) RadioOption(label string, value interface{}) *radio.Option {
+	return &radio.Option{
+		Label: label,
+		Value: value,
+	}
+}
+
 // 多选组件
 //
 // field.Checkbox("name", "多选") 或 field.Checkbox("name", "多选", func() interface{} { return p.Field["name"] })
 func (p *Field) Checkbox(params ...interface{}) *checkbox.Component {
 	return fieldParser(checkbox.New(), params, "").(*checkbox.Component)
+}
+
+// 多选组件Option
+//
+// field.CheckboxOption("多选", "1")
+func (p *Field) CheckboxOption(label string, value interface{}) *checkbox.Option {
+	return &checkbox.Option{
+		Label: label,
+		Value: value,
+	}
 }
 
 // 日期组件
@@ -180,6 +200,16 @@ func (p *Field) Icon(params ...interface{}) *icon.Component {
 // field.Select("name", "文本") 或 field.Select("name", "文本", func() interface{} { return p.Field["name"] })
 func (p *Field) Select(params ...interface{}) *selectfield.Component {
 	return fieldParser(selectfield.New(), params, "请选择").(*selectfield.Component)
+}
+
+// 下拉框组件Option
+//
+// field.SelectOption("多选", "1")
+func (p *Field) SelectOption(label string, value interface{}) *selectfield.Option {
+	return &selectfield.Option{
+		Label: label,
+		Value: value,
+	}
 }
 
 // 级联菜单组件

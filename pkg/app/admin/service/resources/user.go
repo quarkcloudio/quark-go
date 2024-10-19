@@ -147,14 +147,8 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 				rule.Required(true, "请选择性别"),
 			}).
 			SetOptions([]*radio.Option{
-				{
-					Value: 1,
-					Label: "男",
-				},
-				{
-					Value: 2,
-					Label: "女",
-				},
+				field.RadioOption("男", 1),
+				field.RadioOption("女", 2),
 			}).
 			SetFilters(true).
 			SetDefault(1),

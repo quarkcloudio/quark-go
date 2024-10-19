@@ -17,7 +17,7 @@ func (p *Radio) TemplateInit(ctx *builder.Context) interface{} {
 }
 
 // 设置Option
-func (p *Radio) Option(value interface{}, label string) *radio.Option {
+func (p *Radio) Option(label string, value interface{}) *radio.Option {
 
 	return &radio.Option{
 		Value: value,
