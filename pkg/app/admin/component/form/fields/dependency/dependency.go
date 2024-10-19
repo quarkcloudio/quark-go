@@ -425,6 +425,8 @@ func (p *Component) SetWhen(value ...any) *Component {
 
 	getOption := convert.AnyToString(option)
 	switch operator {
+	case "!=":
+		i.Condition = "<%=String(" + name + ") !== '" + getOption + "' %>"
 	case "=":
 		i.Condition = "<%=String(" + name + ") === '" + getOption + "' %>"
 	case ">":
@@ -573,6 +575,30 @@ func (p *Component) OnlyOnForms() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = true
+	p.ShowOnUpdate = true
+	p.ShowOnExport = false
+	p.ShowOnImport = false
+
+	return p
+}
+
+// Specify that the element should only be shown on the creation view.
+func (p *Component) OnlyOnCreating() *Component {
+	p.ShowOnIndex = false
+	p.ShowOnDetail = false
+	p.ShowOnCreation = true
+	p.ShowOnUpdate = false
+	p.ShowOnExport = false
+	p.ShowOnImport = false
+
+	return p
+}
+
+// Specify that the element should only be shown on the update view.
+func (p *Component) OnlyOnUpdating() *Component {
+	p.ShowOnIndex = false
+	p.ShowOnDetail = false
+	p.ShowOnCreation = false
 	p.ShowOnUpdate = true
 	p.ShowOnExport = false
 	p.ShowOnImport = false

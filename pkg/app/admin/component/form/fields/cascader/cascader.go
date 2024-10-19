@@ -515,31 +515,25 @@ func (p *Component) SetWhen(value ...any) *Component {
 
 	getOption := convert.AnyToString(option)
 	switch operator {
+	case "!=":
+		i.Condition = "<%=String(" + p.Name + ") !== '" + getOption + "' %>"
 	case "=":
 		i.Condition = "<%=String(" + p.Name + ") === '" + getOption + "' %>"
-		break
 	case ">":
 		i.Condition = "<%=String(" + p.Name + ") > '" + getOption + "' %>"
-		break
 	case "<":
 		i.Condition = "<%=String(" + p.Name + ") < '" + getOption + "' %>"
-		break
 	case "<=":
 		i.Condition = "<%=String(" + p.Name + ") <= '" + getOption + "' %>"
-		break
 	case ">=":
 		i.Condition = "<%=String(" + p.Name + ") => '" + getOption + "' %>"
-		break
 	case "has":
 		i.Condition = "<%=(String(" + p.Name + ").indexOf('" + getOption + "') !=-1) %>"
-		break
 	case "in":
 		jsonStr, _ := json.Marshal(option)
 		i.Condition = "<%=(" + string(jsonStr) + ".indexOf(" + p.Name + ") !=-1) %>"
-		break
 	default:
 		i.Condition = "<%=String(" + p.Name + ") === '" + getOption + "' %>"
-		break
 	}
 
 	i.ConditionName = p.Name
@@ -670,6 +664,30 @@ func (p *Component) OnlyOnForms() *Component {
 	p.ShowOnIndex = false
 	p.ShowOnDetail = false
 	p.ShowOnCreation = true
+	p.ShowOnUpdate = true
+	p.ShowOnExport = false
+	p.ShowOnImport = false
+
+	return p
+}
+
+// Specify that the element should only be shown on the creation view.
+func (p *Component) OnlyOnCreating() *Component {
+	p.ShowOnIndex = false
+	p.ShowOnDetail = false
+	p.ShowOnCreation = true
+	p.ShowOnUpdate = false
+	p.ShowOnExport = false
+	p.ShowOnImport = false
+
+	return p
+}
+
+// Specify that the element should only be shown on the update view.
+func (p *Component) OnlyOnUpdating() *Component {
+	p.ShowOnIndex = false
+	p.ShowOnDetail = false
+	p.ShowOnCreation = false
 	p.ShowOnUpdate = true
 	p.ShowOnExport = false
 	p.ShowOnImport = false
@@ -896,6 +914,10 @@ func (p *Component) buildTree(items interface{}, pid int, parentKeyName string, 
 	// 遍历切片中的每个元素
 	for i := 0; i < v.Len(); i++ {
 		item := v.Index(i)
+
+		if item.Kind() == reflect.Ptr && item.Elem().IsValid() {
+			item = item.Elem() // 解引用指针
+		}
 
 		// 使用反射获取字段
 		valueField := item.FieldByName(

@@ -1,6 +1,9 @@
 package table
 
 import (
+	"reflect"
+
+	"github.com/gobeam/stringy"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/component"
 )
 
@@ -257,16 +260,128 @@ func (p *TreeBar) SetSwitcherIcon(switcherIcon interface{}) *TreeBar {
 	return p
 }
 
-// treeNodes 数据，如果设置则不需要手动构造 TreeNode 节点（value 在整个树范围内唯一）
-func (p *TreeBar) SetTreeData(treeData []*TreeData) *TreeBar {
-	p.TreeData = treeData
+// buildTree 使用反射构建树结构
+func (p *TreeBar) buildTree(items interface{}, pid int, parentKeyName string, keyName string, titleName string) []*TreeData {
+	var tree []*TreeData
 
+	// 通过反射获取切片的值
+	v := reflect.ValueOf(items)
+
+	// 确保传入的是切片类型
+	if v.Kind() != reflect.Slice {
+		return nil
+	}
+
+	// 遍历切片中的每个元素
+	for i := 0; i < v.Len(); i++ {
+		item := v.Index(i)
+
+		if item.Kind() == reflect.Ptr && item.Elem().IsValid() {
+			item = item.Elem() // 解引用指针
+		}
+
+		// 使用反射获取字段
+		keyField := item.FieldByName(
+			stringy.
+				New(keyName).
+				CamelCase("?", ""),
+		)
+
+		parentKeyField := item.FieldByName(
+			stringy.
+				New(parentKeyName).
+				CamelCase("?", ""),
+		)
+		titleField := item.FieldByName(
+			stringy.
+				New(titleName).
+				CamelCase("?", ""),
+		)
+
+		// 确保字段存在并且类型正确
+		if !keyField.IsValid() || !parentKeyField.IsValid() || !titleField.IsValid() {
+			continue
+		}
+
+		// 断言字段类型
+		key := int(keyField.Int())
+		parentKey := int(parentKeyField.Int())
+		title := titleField.String()
+
+		// 如果当前项的 Pid 与传入的 pid 匹配
+		if parentKey == pid {
+			// 递归查找子节点
+			children := p.buildTree(items, key, parentKeyName, keyName, titleName)
+
+			// 构建级联选择框的选项
+			option := &TreeData{
+				Key:      key,
+				Title:    title,
+				Children: children,
+			}
+
+			tree = append(tree, option)
+		}
+	}
+	return tree
+}
+
+func (p *TreeBar) ListToTreeData(list interface{}, parentKeyName string, keyName string, titleName string) []*TreeData {
+	return p.buildTree(list, 0, parentKeyName, keyName, titleName)
+}
+
+// 可选项数据源
+//
+//	SetTreeData([]*tree.TreeData {
+//			{
+//				Key :"zhejiang",
+//				Title:"Zhejiang",
+//				Children : []*tree.TreeData {
+//					{
+//						Key:"hangzhou",
+//						Title:"Hangzhou",
+//					},
+//				},
+//			},
+//		})
+//
+// 或者
+//
+// SetTreeData(options, "parent_key_name", "key_name", "title_name")
+func (p *TreeBar) SetTreeData(treeData ...interface{}) *TreeBar {
+	if len(treeData) == 1 {
+		getOptions, ok := treeData[0].([]*TreeData)
+		if ok {
+			p.TreeData = getOptions
+			return p
+		}
+	}
+	if len(treeData) == 4 {
+		p.TreeData = p.ListToTreeData(treeData[0], treeData[1].(string), treeData[2].(string), treeData[3].(string))
+	}
 	return p
 }
 
-// treeNodes 数据，如果设置则不需要手动构造 TreeNode 节点（value 在整个树范围内唯一）
-func (p *TreeBar) SetData(treeData []*TreeData) *TreeBar {
-	p.TreeData = treeData
+// 可选项数据源
+//
+//	SetData([]*tree.TreeData {
+//			{
+//				Key :"zhejiang",
+//				Title:"Zhejiang",
+//				Children : []*tree.TreeData {
+//					{
+//						Key:"hangzhou",
+//						Title:"Hangzhou",
+//					},
+//				},
+//			},
+//		})
+//
+// 或者
+//
+// SetData(options, "parent_key_name", "key_name", "title_name")
+func (p *TreeBar) SetData(treeData ...interface{}) *TreeBar {
+	p.SetTreeData(treeData...)
 
 	return p
 }

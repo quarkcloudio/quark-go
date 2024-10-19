@@ -43,7 +43,7 @@ func (p *Department) Fields(ctx *builder.Context) []interface{} {
 	field := &resource.Field{}
 
 	// 列表
-	departments, _ := (&model.Department{}).TreeSelect()
+	departments, _ := (&model.Department{}).GetList()
 
 	return []interface{}{
 		field.Hidden("id", "ID"),                 // 列表读取且不展示的字段
@@ -54,14 +54,21 @@ func (p *Department) Fields(ctx *builder.Context) []interface{} {
 				rule.Min(2, "名称不能少于2个字符"),
 				rule.Max(100, "名称不能超过100个字符"),
 			}),
-		field.Dependency().SetWhen("id", ">", 1, func() interface{} {
+		field.TreeSelect("pid", "父节点").
+			SetData(departments, "pid", "name", "id").
+			SetRules([]*rule.Rule{
+				rule.Required(true, "请选择父节点"),
+			}).
+			SetDefault(1).
+			OnlyOnCreating(),
+		field.Dependency().SetWhen("id", "!=", 1, func() interface{} {
 			return field.TreeSelect("pid", "父节点").
-				SetData(departments).
+				SetData(departments, "pid", "name", "id").
 				SetRules([]*rule.Rule{
 					rule.Required(true, "请选择父节点"),
 				}).
 				SetDefault(1).
-				OnlyOnForms()
+				OnlyOnUpdating()
 		}),
 		field.Number("sort", "排序").
 			SetEditable(true).

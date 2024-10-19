@@ -576,6 +576,30 @@ func (p *Component) OnlyOnForms() *Component {
 	return p
 }
 
+// Specify that the element should only be shown on the creation view.
+func (p *Component) OnlyOnCreating() *Component {
+	p.ShowOnIndex = false
+	p.ShowOnDetail = false
+	p.ShowOnCreation = true
+	p.ShowOnUpdate = false
+	p.ShowOnExport = false
+	p.ShowOnImport = false
+
+	return p
+}
+
+// Specify that the element should only be shown on the update view.
+func (p *Component) OnlyOnUpdating() *Component {
+	p.ShowOnIndex = false
+	p.ShowOnDetail = false
+	p.ShowOnCreation = false
+	p.ShowOnUpdate = true
+	p.ShowOnExport = false
+	p.ShowOnImport = false
+
+	return p
+}
+
 // Specify that the element should only be shown on export file.
 func (p *Component) OnlyOnExport() *Component {
 	p.ShowOnIndex = false

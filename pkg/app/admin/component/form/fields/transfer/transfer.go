@@ -2,8 +2,10 @@ package transfer
 
 import (
 	"encoding/json"
+	"reflect"
 	"strings"
 
+	"github.com/gobeam/stringy"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/component"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/when"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/rule"
@@ -493,31 +495,25 @@ func (p *Component) SetWhen(value ...any) *Component {
 
 	getOption := convert.AnyToString(option)
 	switch operator {
+	case "!=":
+		i.Condition = "<%=String(" + p.Name + ") !== '" + getOption + "' %>"
 	case "=":
 		i.Condition = "<%=String(" + p.Name + ") === '" + getOption + "' %>"
-		break
 	case ">":
 		i.Condition = "<%=String(" + p.Name + ") > '" + getOption + "' %>"
-		break
 	case "<":
 		i.Condition = "<%=String(" + p.Name + ") < '" + getOption + "' %>"
-		break
 	case "<=":
 		i.Condition = "<%=String(" + p.Name + ") <= '" + getOption + "' %>"
-		break
 	case ">=":
 		i.Condition = "<%=String(" + p.Name + ") => '" + getOption + "' %>"
-		break
 	case "has":
 		i.Condition = "<%=(String(" + p.Name + ").indexOf('" + getOption + "') !=-1) %>"
-		break
 	case "in":
 		jsonStr, _ := json.Marshal(option)
 		i.Condition = "<%=(" + string(jsonStr) + ".indexOf(" + p.Name + ") !=-1) %>"
-		break
 	default:
 		i.Condition = "<%=String(" + p.Name + ") === '" + getOption + "' %>"
-		break
 	}
 
 	i.ConditionName = p.Name
@@ -655,6 +651,30 @@ func (p *Component) OnlyOnForms() *Component {
 	return p
 }
 
+// Specify that the element should only be shown on the creation view.
+func (p *Component) OnlyOnCreating() *Component {
+	p.ShowOnIndex = false
+	p.ShowOnDetail = false
+	p.ShowOnCreation = true
+	p.ShowOnUpdate = false
+	p.ShowOnExport = false
+	p.ShowOnImport = false
+
+	return p
+}
+
+// Specify that the element should only be shown on the update view.
+func (p *Component) OnlyOnUpdating() *Component {
+	p.ShowOnIndex = false
+	p.ShowOnDetail = false
+	p.ShowOnCreation = false
+	p.ShowOnUpdate = true
+	p.ShowOnExport = false
+	p.ShowOnImport = false
+
+	return p
+}
+
 // Specify that the element should only be shown on export file.
 func (p *Component) OnlyOnExport() *Component {
 	p.ShowOnIndex = false
@@ -741,10 +761,87 @@ func (p *Component) SetApi(api string) *Component {
 	return p
 }
 
-// 数据源，其中的数据将会被渲染到左边一栏中，targetKeys 中指定的除外
-func (p *Component) SetDataSource(dataSource []*DataSource) *Component {
-	p.DataSource = dataSource
+// 使用反射构建树结构
+func (p *Component) buildDataSource(items interface{}, keyName string, titleName string, descriptionName string) []*DataSource {
+	var options []*DataSource
 
+	v := reflect.ValueOf(items)
+
+	// 确保传入的是切片类型
+	if v.Kind() != reflect.Slice {
+		return nil
+	}
+
+	// 遍历切片中的每个元素
+	for i := 0; i < v.Len(); i++ {
+		item := v.Index(i)
+
+		if item.Kind() == reflect.Ptr && item.Elem().IsValid() {
+			item = item.Elem() // 解引用指针
+		}
+
+		// 使用反射获取字段
+		keyField := item.FieldByName(
+			stringy.
+				New(keyName).
+				CamelCase("?", ""),
+		)
+		titleField := item.FieldByName(
+			stringy.
+				New(titleName).
+				CamelCase("?", ""),
+		)
+		descriptionField := item.FieldByName(
+			stringy.
+				New(descriptionName).
+				CamelCase("?", ""),
+		)
+		// 确保字段存在并且类型正确
+		if !keyField.IsValid() || !titleField.IsValid() || !descriptionField.IsValid() {
+			continue
+		}
+
+		// 断言字段类型
+		key := keyField.Interface()
+		title := titleField.String()
+		description := descriptionField.String()
+
+		// 构建级联选择框的选项
+		option := &DataSource{
+			Key:         key,
+			Title:       title,
+			Description: description,
+		}
+
+		options = append(options, option)
+	}
+	return options
+}
+
+func (p *Component) ListToDataSource(list interface{}, keyName string, titleName string, descriptionName string) []*DataSource {
+	return p.buildDataSource(list, keyName, titleName, descriptionName)
+}
+
+//	[]*transfer.DataSource{
+//			{Key: 1, Title: "新闻", Description: "新闻描述"},
+//			{Key: 2, Title: "音乐", Description: "音乐描述"},
+//			{Key: 3, Title: "体育", Description: "体育描述"},
+//		}
+//
+// 或者
+//
+// SetDataSource(dataSource, "key_name", "title_name", "description_name")
+func (p *Component) SetDataSource(dataSource ...interface{}) *Component {
+	if len(dataSource) == 1 {
+		getOptions, ok := dataSource[0].([]*DataSource)
+		if ok {
+			p.DataSource = getOptions
+			return p
+		}
+	}
+	if len(dataSource) == 4 {
+		p.DataSource = p.ListToDataSource(dataSource[0], dataSource[1].(string), dataSource[2].(string), dataSource[3].(string))
+	}
 	return p
 }
 
