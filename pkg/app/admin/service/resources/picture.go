@@ -34,7 +34,6 @@ func (p *Picture) Fields(ctx *builder.Context) []interface{} {
 	return []interface{}{
 		field.ID("id", "ID"),
 		field.Text("path", "显示", func() interface{} {
-
 			return "<img src='" + (&model.Picture{}).GetPath(p.Field["id"]) + "' width=50 height=50 />"
 		}),
 		field.Text("name", "名称").SetEllipsis(true),

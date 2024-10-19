@@ -34,23 +34,18 @@ func (p *Position) Init(ctx *builder.Context) interface{} {
 // 字段
 func (p *Position) Fields(ctx *builder.Context) []interface{} {
 	field := &resource.Field{}
-
 	return []interface{}{
 		field.ID("id", "ID"),
-
 		field.Text("name", "名称").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "名称必须填写"),
 				rule.Min(2, "名称不能少于2个字符"),
 				rule.Max(100, "名称不能超过100个字符"),
 			}),
-
 		field.Number("sort", "排序").
 			SetEditable(true).
 			SetDefault(0),
-
 		field.TextArea("remark", "备注"),
-
 		field.Switch("status", "状态").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "请选择状态"),
@@ -64,7 +59,6 @@ func (p *Position) Fields(ctx *builder.Context) []interface{} {
 
 // 搜索
 func (p *Position) Searches(ctx *builder.Context) []interface{} {
-
 	return []interface{}{
 		searches.Input("name", "名称"),
 		searches.Status(),
@@ -73,7 +67,6 @@ func (p *Position) Searches(ctx *builder.Context) []interface{} {
 
 // 行为
 func (p *Position) Actions(ctx *builder.Context) []interface{} {
-
 	return []interface{}{
 		actions.CreateModal(),
 		actions.ChangeStatus(),

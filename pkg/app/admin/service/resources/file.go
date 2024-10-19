@@ -30,7 +30,6 @@ func (p *File) Init(ctx *builder.Context) interface{} {
 // 字段
 func (p *File) Fields(ctx *builder.Context) []interface{} {
 	field := &resource.Field{}
-
 	return []interface{}{
 		field.ID("id", "ID"),
 		field.Text("name", "名称"),

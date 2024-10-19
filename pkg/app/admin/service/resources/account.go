@@ -36,31 +36,25 @@ func (p *Account) Fields(ctx *builder.Context) []interface{} {
 	field := &resource.Field{}
 
 	return []interface{}{
-
 		field.Image("avatar", "头像"),
-
 		field.Text("nickname", "昵称").
 			SetRules([]*rule.Rule{
 				rule.New().SetRequired().SetMessage("昵称必须填写"),
 			}),
-
 		field.Text("email", "邮箱").
 			SetRules([]*rule.Rule{
 				rule.New().SetRequired().SetMessage("邮箱必须填写"),
 			}),
-
 		field.Text("phone", "手机号").
 			SetRules([]*rule.Rule{
 				rule.New().SetRequired().SetMessage("手机号必须填写"),
 			}),
-
 		field.Radio("sex", "性别").
 			SetOptions([]*radio.Option{
 				field.RadioOption("男", 1),
 				field.RadioOption("女", 2),
 			}).
 			SetDefault(1),
-
 		field.Password("password", "密码"),
 	}
 }
@@ -83,33 +77,26 @@ func (p *Account) BeforeFormShowing(ctx *builder.Context) map[string]interface{}
 		Model(p.Model).
 		Where("id = ?", adminInfo.Id).
 		First(&data)
-
 	delete(data, "password")
-
 	return data
 }
 
 func (p *Account) FormHandle(ctx *builder.Context, query *gorm.DB, data map[string]interface{}) error {
-
 	if data["avatar"] != "" && data["avatar"] != nil {
 		data["avatar"], _ = json.Marshal(data["avatar"])
 	}
-
 	// 加密密码
 	if data["password"] != nil {
 		data["password"] = hash.Make(data["password"].(string))
 	}
-
 	// 获取登录管理员信息
 	adminInfo, err := (&model.User{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
-
 	err = query.Where("id", adminInfo.Id).Updates(data).Error
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
-
 	return ctx.JSON(200, message.Success("操作成功"))
 }

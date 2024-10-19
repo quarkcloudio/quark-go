@@ -18,9 +18,10 @@ type Department struct {
 // 初始化
 func (p *Department) Init(ctx *builder.Context) interface{} {
 
-	p.Table.SetExpandable(&table.Expandable{
-		DefaultExpandedRowKeys: []interface{}{1},
-	})
+	p.Table.
+		SetExpandable(&table.Expandable{
+			DefaultExpandedRowKeys: []interface{}{1},
+		})
 
 	// 标题
 	p.Title = "部门"
@@ -45,17 +46,14 @@ func (p *Department) Fields(ctx *builder.Context) []interface{} {
 	departments, _ := (&model.Department{}).TreeSelect()
 
 	return []interface{}{
-		field.Hidden("id", "ID"), // 列表读取且不展示的字段
-
+		field.Hidden("id", "ID"),                 // 列表读取且不展示的字段
 		field.Hidden("pid", "PID").OnlyOnIndex(), // 列表读取且不展示的字段
-
 		field.Text("name", "名称").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "名称必须填写"),
 				rule.Min(2, "名称不能少于2个字符"),
 				rule.Max(100, "名称不能超过100个字符"),
 			}),
-
 		field.Dependency().SetWhen("id", ">", 1, func() interface{} {
 			return field.TreeSelect("pid", "父节点").
 				SetData(departments).
@@ -65,11 +63,9 @@ func (p *Department) Fields(ctx *builder.Context) []interface{} {
 				SetDefault(1).
 				OnlyOnForms()
 		}),
-
 		field.Number("sort", "排序").
 			SetEditable(true).
 			SetDefault(0),
-
 		field.Switch("status", "状态").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "请选择状态"),
@@ -83,7 +79,6 @@ func (p *Department) Fields(ctx *builder.Context) []interface{} {
 
 // 搜索
 func (p *Department) Searches(ctx *builder.Context) []interface{} {
-
 	return []interface{}{
 		searches.Input("name", "名称"),
 		searches.Status(),
@@ -92,7 +87,6 @@ func (p *Department) Searches(ctx *builder.Context) []interface{} {
 
 // 行为
 func (p *Department) Actions(ctx *builder.Context) []interface{} {
-
 	return []interface{}{
 		actions.CreateModal(),
 		actions.ChangeStatus(),
@@ -115,9 +109,7 @@ func (p *Department) BeforeIndexShowing(ctx *builder.Context, list []map[string]
 
 		return result
 	}
-
 	// 转换成树形表格
 	tree, _ := lister.ListToTree(list, "id", "pid", "children", 0)
-
 	return tree
 }

@@ -78,11 +78,8 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		field.ID("id", "ID"),
-
 		field.Image("avatar", "头像").OnlyOnForms(),
-
 		field.Text("username", "用户名", func() interface{} {
-
 			return "<a href='#/layout/index?api=/api/admin/user/edit&id=" + strconv.Itoa(p.Field["id"].(int)) + "'>" + p.Field["username"].(string) + "</a>"
 		}).
 			SetRules([]*rule.Rule{
@@ -96,28 +93,23 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 			SetUpdateRules([]*rule.Rule{
 				rule.Unique("users", "username", "{id}", "用户名已存在"),
 			}),
-
 		field.Text("nickname", "昵称").
 			SetEditable(true).
 			SetRules([]*rule.Rule{
 				rule.Required(true, "昵称必须填写"),
 			}),
-
 		field.Checkbox("role_ids", "角色").
 			SetOptions(roles).
 			OnlyOnForms().
 			HideWhenImporting(true),
-
 		field.TreeSelect("department_id", "部门").
 			SetData(departments).
 			OnlyOnForms().
 			HideWhenImporting(true),
-
 		field.Checkbox("position_ids", "职位").
 			SetOptions(positions).
 			OnlyOnForms().
 			HideWhenImporting(true),
-
 		field.Text("email", "邮箱").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "邮箱必须填写"),
@@ -129,7 +121,6 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 			SetUpdateRules([]*rule.Rule{
 				rule.Unique("admins", "email", "{id}", "邮箱已存在"),
 			}).OnlyOnForms(),
-
 		field.Text("phone", "手机号").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "手机号必须填写"),
@@ -141,7 +132,6 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 			SetUpdateRules([]*rule.Rule{
 				rule.Unique("admins", "phone", "{id}", "手机号已存在"),
 			}),
-
 		field.Radio("sex", "性别").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "请选择性别"),
@@ -152,16 +142,13 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 			}).
 			SetFilters(true).
 			SetDefault(1),
-
 		field.Password("password", "密码").
 			SetCreationRules([]*rule.Rule{
 				rule.Required(true, "密码必须填写"),
 			}).
 			OnlyOnForms().
 			ShowOnImporting(true),
-
 		field.Datetime("last_login_time", "最后登录时间").OnlyOnIndex(),
-
 		field.Switch("status", "状态").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "请选择状态"),
@@ -175,7 +162,6 @@ func (p *User) Fields(ctx *builder.Context) []interface{} {
 
 // 搜索
 func (p *User) Searches(ctx *builder.Context) []interface{} {
-
 	return []interface{}{
 		searches.Input("username", "用户名"),
 		searches.Input("nickname", "昵称"),
@@ -186,7 +172,6 @@ func (p *User) Searches(ctx *builder.Context) []interface{} {
 
 // 行为
 func (p *User) Actions(ctx *builder.Context) []interface{} {
-
 	return []interface{}{
 		actions.Import(),
 		actions.CreateLink(),
@@ -208,10 +193,7 @@ func (p *User) Actions(ctx *builder.Context) []interface{} {
 
 // 编辑页面显示前回调
 func (p *User) BeforeEditing(ctx *builder.Context, data map[string]interface{}) map[string]interface{} {
-
-	// 编辑页面清理password
 	delete(data, "password")
-
 	roles, err := (&model.CasbinRule{}).GetUserRoles(data["id"].(int))
 	if err == nil {
 		roleIds := []int{}
@@ -220,29 +202,22 @@ func (p *User) BeforeEditing(ctx *builder.Context, data map[string]interface{}) 
 		}
 		data["role_ids"] = roleIds
 	}
-
 	return data
 }
 
 // 保存数据前回调
 func (p *User) BeforeSaving(ctx *builder.Context, submitData map[string]interface{}) (map[string]interface{}, error) {
-
-	// 加密密码
 	if submitData["password"] != nil {
 		submitData["password"] = hash.Make(submitData["password"].(string))
 	}
-
 	return submitData, nil
 }
 
 // 保存后回调
 func (p *User) AfterSaved(ctx *builder.Context, id int, data map[string]interface{}, result *gorm.DB) (err error) {
-
-	// 返回错误信息
 	if result.Error != nil {
 		return result.Error
 	}
-
 	if data["role_ids"] != nil {
 		if roleIds, ok := data["role_ids"].([]interface{}); ok {
 			ids := []int{}
@@ -250,13 +225,11 @@ func (p *User) AfterSaved(ctx *builder.Context, id int, data map[string]interfac
 				roleId := int(v.(float64))
 				ids = append(ids, roleId)
 			}
-
 			err := (&model.CasbinRule{}).AddUserRole(id, ids)
 			if err != nil {
 				return err
 			}
 		}
 	}
-
 	return err
 }

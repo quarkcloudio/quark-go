@@ -41,22 +41,17 @@ func (p *Role) Fields(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		field.ID("id", "ID"),
-
 		field.Text("name", "名称").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "名称必须填写"),
 			}),
-
 		field.Text("guard_name", "守卫").
 			SetDefault("admin"),
-
 		field.Tree("menu_ids", "权限").
 			SetData(treeData).
 			OnlyOnForms(),
-
 		field.Datetime("created_at", "创建时间").
 			OnlyOnIndex(),
-
 		field.Datetime("updated_at", "更新时间").
 			OnlyOnIndex(),
 	}
@@ -96,7 +91,6 @@ func (p *Role) BeforeEditing(ctx *builder.Context, data map[string]interface{}) 
 		}
 		data["menu_ids"] = ids
 	}
-
 	return data
 }
 
@@ -109,13 +103,11 @@ func (p *Role) AfterSaved(ctx *builder.Context, id int, data map[string]interfac
 				menuId := int(v.(float64))
 				ids = append(ids, menuId)
 			}
-
 			err = (&model.CasbinRule{}).AddMenuAndPermissionToRole(id, ids)
 			if err != nil {
 				return err
 			}
 		}
 	}
-
 	return err
 }

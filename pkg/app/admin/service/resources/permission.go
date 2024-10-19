@@ -35,17 +35,14 @@ func (p *Permission) Fields(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		field.ID("id", "ID"),
-
 		field.Text("name", "名称").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "名称必须填写"),
 			}),
-
 		field.Text("path", "路径").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "路径必须填写"),
 			}),
-
 		field.Select("method", "方法").
 			SetOptions([]*selectfield.Option{
 				field.SelectOption("Any", "Any"),

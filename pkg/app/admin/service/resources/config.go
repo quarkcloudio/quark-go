@@ -35,12 +35,10 @@ func (p *Config) Fields(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		field.ID("id", "ID"),
-
 		field.Text("title", "标题").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "标题必须填写"),
 			}),
-
 		field.Text("name", "名称").
 			SetEditable(true).
 			SetRules([]*rule.Rule{
@@ -62,21 +60,17 @@ func (p *Config) Fields(ctx *builder.Context) []interface{} {
 			}).
 			SetDefault("text").
 			OnlyOnForms(),
-
 		field.Text("sort", "排序").
 			SetEditable(true).
 			SetDefault(0).
 			SetHelp("值越小越靠前").
 			OnlyOnForms(),
-
 		field.Text("group_name", "分组名称").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "分组名称必须填写"),
 			}).OnlyOnForms(),
-
 		field.Text("remark", "备注").
 			OnlyOnForms(),
-
 		field.Switch("status", "状态").
 			SetTrueValue("正常").
 			SetFalseValue("禁用").
