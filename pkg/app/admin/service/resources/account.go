@@ -39,15 +39,15 @@ func (p *Account) Fields(ctx *builder.Context) []interface{} {
 		field.Image("avatar", "头像"),
 		field.Text("nickname", "昵称").
 			SetRules([]*rule.Rule{
-				rule.New().SetRequired().SetMessage("昵称必须填写"),
+				rule.Required(true, "昵称必须填写"),
 			}),
 		field.Text("email", "邮箱").
 			SetRules([]*rule.Rule{
-				rule.New().SetRequired().SetMessage("邮箱必须填写"),
+				rule.Required(true, "邮箱必须填写"),
 			}),
 		field.Text("phone", "手机号").
 			SetRules([]*rule.Rule{
-				rule.New().SetRequired().SetMessage("手机号必须填写"),
+				rule.Required(true, "手机号必须填写"),
 			}),
 		field.Radio("sex", "性别").
 			SetOptions([]*radio.Option{
