@@ -102,8 +102,7 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 						}).
 						SetEditable(true).
 						SetHelp("前端路由").
-						SetWidth(400).
-						BuildFrontendRules(ctx.Path()),
+						SetWidth(400),
 				}
 			}),
 		field.Dependency().
@@ -124,8 +123,7 @@ func (p *Menu) Fields(ctx *builder.Context) []interface{} {
 						SetEditable(true).
 						SetHelp("前端路由或后端api").
 						SetWidth(400).
-						OnlyOnForms().
-						BuildFrontendRules(ctx.Path()),
+						OnlyOnForms(),
 				}
 			}),
 		field.Dependency().

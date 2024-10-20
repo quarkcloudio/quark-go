@@ -386,7 +386,53 @@ func (p *Template) CreationFormFieldsParser(ctx *builder.Context, fields interfa
 					FieldByName("Component").
 					String()
 				if strings.Contains(component, "Field") {
+					whenIsValid := reflect.
+						ValueOf(v).
+						Elem().
+						FieldByName("When").
+						IsValid()
+					if whenIsValid {
+						getWhen := v.(interface {
+							GetWhen() *when.Component
+						}).GetWhen()
+						if getWhen != nil {
+							whenItems := getWhen.Items
+							if whenItems != nil {
+								for _, sv := range whenItems {
+									if sv.Body != nil {
+										if svBody, ok := sv.Body.([]interface{}); ok {
+											// 解析值
+											getSvBody := p.CreationFormFieldsParser(ctx, svBody)
+											// 更新值
+											reflect.
+												ValueOf(sv).
+												Elem().
+												FieldByName("Body").
+												Set(reflect.ValueOf(getSvBody))
+										} else {
+											if strings.Contains(component, "Field") {
+												// 判断是否在编辑页面
+												if getSvBody, ok := sv.Body.(interface{ IsShownOnCreation() bool }); ok {
+													if getSvBody.IsShownOnCreation() {
 
+														// 生成前端验证规则
+														getSvBody.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
+
+														// 更新值
+														reflect.
+															ValueOf(sv).
+															Elem().
+															FieldByName("Body").
+															Set(reflect.ValueOf(getSvBody))
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 					// 判断是否在创建页面
 					if v, ok := v.(interface{ IsShownOnCreation() bool }); ok {
 						if v.IsShownOnCreation() {
@@ -494,7 +540,53 @@ func (p *Template) UpdateFormFieldsParser(ctx *builder.Context, fields interface
 					FieldByName("Component").
 					String()
 				if strings.Contains(component, "Field") {
+					whenIsValid := reflect.
+						ValueOf(v).
+						Elem().
+						FieldByName("When").
+						IsValid()
+					if whenIsValid {
+						getWhen := v.(interface {
+							GetWhen() *when.Component
+						}).GetWhen()
+						if getWhen != nil {
+							whenItems := getWhen.Items
+							if whenItems != nil {
+								for _, sv := range whenItems {
+									if sv.Body != nil {
+										if svBody, ok := sv.Body.([]interface{}); ok {
+											// 解析值
+											getSvBody := p.UpdateFormFieldsParser(ctx, svBody)
+											// 更新值
+											reflect.
+												ValueOf(sv).
+												Elem().
+												FieldByName("Body").
+												Set(reflect.ValueOf(getSvBody))
+										} else {
+											if strings.Contains(component, "Field") {
+												// 判断是否在编辑页面
+												if getSvBody, ok := sv.Body.(interface{ IsShownOnUpdate() bool }); ok {
+													if getSvBody.IsShownOnUpdate() {
 
+														// 生成前端验证规则
+														getSvBody.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
+
+														// 更新值
+														reflect.
+															ValueOf(sv).
+															Elem().
+															FieldByName("Body").
+															Set(reflect.ValueOf(getSvBody))
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 					// 判断是否在编辑页面
 					if v, ok := v.(interface{ IsShownOnUpdate() bool }); ok {
 						if v.IsShownOnUpdate() {

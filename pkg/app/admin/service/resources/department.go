@@ -68,8 +68,7 @@ func (p *Department) Fields(ctx *builder.Context) []interface{} {
 					rule.Required(true, "请选择父节点"),
 				}).
 				SetDefault(1).
-				OnlyOnUpdating().
-				BuildFrontendRules(ctx.Path())
+				OnlyOnUpdating()
 		}),
 		field.Number("sort", "排序").
 			SetEditable(true).
