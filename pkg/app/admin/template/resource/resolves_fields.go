@@ -410,21 +410,19 @@ func (p *Template) CreationFormFieldsParser(ctx *builder.Context, fields interfa
 												FieldByName("Body").
 												Set(reflect.ValueOf(getSvBody))
 										} else {
-											if strings.Contains(component, "Field") {
-												// 判断是否在编辑页面
-												if getSvBody, ok := sv.Body.(interface{ IsShownOnCreation() bool }); ok {
-													if getSvBody.IsShownOnCreation() {
+											// 判断是否在编辑页面
+											if getSvBody, ok := sv.Body.(interface{ IsShownOnCreation() bool }); ok {
+												if getSvBody.IsShownOnCreation() {
 
-														// 生成前端验证规则
-														getSvBody.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
+													// 生成前端验证规则
+													getSvBody.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
 
-														// 更新值
-														reflect.
-															ValueOf(sv).
-															Elem().
-															FieldByName("Body").
-															Set(reflect.ValueOf(getSvBody))
-													}
+													// 更新值
+													reflect.
+														ValueOf(sv).
+														Elem().
+														FieldByName("Body").
+														Set(reflect.ValueOf(getSvBody))
 												}
 											}
 										}
@@ -564,21 +562,19 @@ func (p *Template) UpdateFormFieldsParser(ctx *builder.Context, fields interface
 												FieldByName("Body").
 												Set(reflect.ValueOf(getSvBody))
 										} else {
-											if strings.Contains(component, "Field") {
-												// 判断是否在编辑页面
-												if getSvBody, ok := sv.Body.(interface{ IsShownOnUpdate() bool }); ok {
-													if getSvBody.IsShownOnUpdate() {
+											// 判断是否在编辑页面
+											if getSvBody, ok := sv.Body.(interface{ IsShownOnUpdate() bool }); ok {
+												if getSvBody.IsShownOnUpdate() {
 
-														// 生成前端验证规则
-														getSvBody.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
+													// 生成前端验证规则
+													getSvBody.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
 
-														// 更新值
-														reflect.
-															ValueOf(sv).
-															Elem().
-															FieldByName("Body").
-															Set(reflect.ValueOf(getSvBody))
-													}
+													// 更新值
+													reflect.
+														ValueOf(sv).
+														Elem().
+														FieldByName("Body").
+														Set(reflect.ValueOf(getSvBody))
 												}
 											}
 										}
