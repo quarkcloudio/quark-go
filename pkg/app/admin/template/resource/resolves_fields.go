@@ -634,6 +634,42 @@ func (p *Template) FormFieldsParser(ctx *builder.Context, fields interface{}) in
 					FieldByName("Component").
 					String()
 				if strings.Contains(component, "Field") {
+					whenIsValid := reflect.
+						ValueOf(v).
+						Elem().
+						FieldByName("When").
+						IsValid()
+					if whenIsValid {
+						getWhen := v.(interface {
+							GetWhen() *when.Component
+						}).GetWhen()
+						if getWhen != nil {
+							whenItems := getWhen.Items
+							for _, sv := range whenItems {
+								if sv.Body != nil {
+									if svBody, ok := sv.Body.([]interface{}); ok {
+										// 解析值
+										getSvBody := p.FormFieldsParser(ctx, svBody)
+										// 更新值
+										reflect.
+											ValueOf(sv).
+											Elem().
+											FieldByName("Body").
+											Set(reflect.ValueOf(getSvBody))
+									} else {
+										// 生成前端验证规则
+										sv.Body.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
+										// 更新值
+										reflect.
+											ValueOf(sv).
+											Elem().
+											FieldByName("Body").
+											Set(reflect.ValueOf(sv.Body))
+									}
+								}
+							}
+						}
+					}
 
 					// 生成前端验证规则
 					v.(interface{ BuildFrontendRules(string) interface{} }).BuildFrontendRules(ctx.Path())
