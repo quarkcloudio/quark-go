@@ -35,8 +35,8 @@ func (p *ActionLog) Init(ctx *builder.Context) interface{} {
 func (p *ActionLog) Query(ctx *builder.Context, query *gorm.DB) *gorm.DB {
 
 	return query.
-		Select("action_logs.*,admins.username").
-		Joins("left join admins on admins.id = action_logs.object_id").
+		Select("action_logs.*,users.username").
+		Joins("left join users on users.id = action_logs.object_id").
 		Where("type = ?", "admin")
 }
 
