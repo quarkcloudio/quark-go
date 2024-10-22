@@ -926,7 +926,7 @@ func (p *Template) getWhenFields(item interface{}) []interface{} {
 					items = append(items, body...)
 				}
 			} else {
-				items = append(items, body)
+				items = append(items, v.Body)
 			}
 		}
 	}
