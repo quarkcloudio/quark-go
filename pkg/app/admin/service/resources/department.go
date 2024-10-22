@@ -46,8 +46,8 @@ func (p *Department) Fields(ctx *builder.Context) []interface{} {
 	departments, _ := (&model.Department{}).GetList()
 
 	return []interface{}{
-		field.Hidden("id", "ID"),                 // 列表读取且不展示的字段
-		field.Hidden("pid", "PID").OnlyOnIndex(), // 列表读取且不展示的字段
+		field.Hidden("id", "ID"),   // 列表读取且不展示的字段
+		field.Hidden("pid", "PID"), // 列表读取且不展示的字段
 		field.Text("name", "名称").
 			SetRules([]*rule.Rule{
 				rule.Required(true, "名称必须填写"),
