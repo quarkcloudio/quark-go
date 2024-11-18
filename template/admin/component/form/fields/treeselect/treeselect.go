@@ -992,18 +992,20 @@ func (p *Component) buildTree(items interface{}, pid int, parentKeyName string, 
 		valueField := item.FieldByName(
 			stringy.
 				New(valueName).
-				CamelCase("?", ""),
+				CamelCase("?", "").
+				Get(),
 		)
 
 		parentKeyField := item.FieldByName(
 			stringy.
 				New(parentKeyName).
-				CamelCase("?", ""),
+				CamelCase("?", "").
+				Get(),
 		)
 		titleField := item.FieldByName(
 			stringy.
 				New(titleName).
-				CamelCase("?", ""),
+				CamelCase("?", "").Get(),
 		)
 
 		// 确保字段存在并且类型正确

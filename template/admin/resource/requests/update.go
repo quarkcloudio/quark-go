@@ -64,7 +64,8 @@ func (p *UpdateRequest) Handle(ctx *quark.Context) error {
 
 		camelCaseName := stringy.
 			New(k).
-			CamelCase("?", "")
+			CamelCase("?", "").
+			Get()
 
 		fieldIsValid := reflect.
 			ValueOf(modelInstance).

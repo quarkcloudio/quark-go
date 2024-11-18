@@ -56,7 +56,8 @@ func (p *StoreRequest) Handle(ctx *quark.Context, data map[string]interface{}) e
 
 		camelCaseName := stringy.
 			New(k).
-			CamelCase("?", "")
+			CamelCase("?", "").
+			Get()
 
 		fieldIsValid := reflect.
 			ValueOf(modelInstance).

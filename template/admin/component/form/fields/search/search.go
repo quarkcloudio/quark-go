@@ -777,12 +777,14 @@ func (p *Component) buildOptions(items interface{}, labelName string, valueName 
 		valueField := item.FieldByName(
 			stringy.
 				New(valueName).
-				CamelCase("?", ""),
+				CamelCase("?", "").
+				Get(),
 		)
 		labelField := item.FieldByName(
 			stringy.
 				New(labelName).
-				CamelCase("?", ""),
+				CamelCase("?", "").
+				Get(),
 		)
 
 		// 确保字段存在并且类型正确

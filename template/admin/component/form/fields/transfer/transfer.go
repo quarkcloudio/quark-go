@@ -787,17 +787,20 @@ func (p *Component) buildDataSource(items interface{}, keyName string, titleName
 		keyField := item.FieldByName(
 			stringy.
 				New(keyName).
-				CamelCase("?", ""),
+				CamelCase("?", "").
+				Get(),
 		)
 		titleField := item.FieldByName(
 			stringy.
 				New(titleName).
-				CamelCase("?", ""),
+				CamelCase("?", "").
+				Get(),
 		)
 		descriptionField := item.FieldByName(
 			stringy.
 				New(descriptionName).
-				CamelCase("?", ""),
+				CamelCase("?", "").
+				Get(),
 		)
 		// 确保字段存在并且类型正确
 		if !keyField.IsValid() || !titleField.IsValid() || !descriptionField.IsValid() {

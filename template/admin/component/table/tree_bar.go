@@ -284,13 +284,15 @@ func (p *TreeBar) buildTree(items interface{}, pid int, parentKeyName string, ke
 		keyField := item.FieldByName(
 			stringy.
 				New(keyName).
-				CamelCase("?", "").Get(),
+				CamelCase("?", "").
+				Get(),
 		)
 
 		parentKeyField := item.FieldByName(
 			stringy.
 				New(parentKeyName).
-				CamelCase("?", "").Get(),
+				CamelCase("?", "").
+				Get(),
 		)
 		titleField := item.FieldByName(
 			stringy.
