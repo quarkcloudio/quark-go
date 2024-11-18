@@ -11,7 +11,7 @@ require (
 	github.com/gin-contrib/static v0.0.1
 	github.com/glebarez/sqlite v1.9.0
 	github.com/go-basic/uuid v1.0.0
-	github.com/gobeam/stringy v0.0.6
+	github.com/gobeam/stringy v0.0.7
 	github.com/gofiber/fiber/v2 v2.47.0
 	github.com/gogf/gf/v2 v2.7.4
 	github.com/golang-jwt/jwt/v4 v4.5.0
