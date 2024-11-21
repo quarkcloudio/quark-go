@@ -24,6 +24,12 @@ func (p *ConfigService) Refresh() {
 	}
 }
 
+// 设置配置信息
+func (p *ConfigService) SetValue(key string, value string) {
+	db.Client.Model(&model.Config{}).Where("name", key).Update("value", value)
+	p.Refresh()
+}
+
 // 获取配置信息
 func (p *ConfigService) GetValue(key string) string {
 	if len(webConfig) == 0 {
