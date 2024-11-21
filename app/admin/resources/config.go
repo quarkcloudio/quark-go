@@ -52,11 +52,11 @@ func (p *Config) Fields(ctx *quark.Context) []interface{} {
 			}),
 		field.Radio("type", "表单类型").
 			SetOptions([]radio.Option{
-				field.RadioOption("text", "文本"),
-				field.RadioOption("textarea", "文本域"),
-				field.RadioOption("picture", "图片"),
-				field.RadioOption("file", "文件"),
-				field.RadioOption("switch", "开关"),
+				field.RadioOption("文本", "text"),
+				field.RadioOption("文本域", "textarea"),
+				field.RadioOption("图片", "picture"),
+				field.RadioOption("文件", "file"),
+				field.RadioOption("开关", "switch"),
 			}).
 			SetDefault("text").
 			OnlyOnForms(),
