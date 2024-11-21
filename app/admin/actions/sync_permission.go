@@ -62,7 +62,7 @@ func (p *SyncPermissionAction) Handle(ctx *quark.Context, query *gorm.DB) error 
 			url = strings.ReplaceAll(url, "/", "_") + "_" + strings.ToLower(v.Method)
 			name := stringy.
 				New(url).
-				CamelCase("?", "").
+				PascalCase("?", "").
 				Get()
 
 			// 判断数据库中是否已存在

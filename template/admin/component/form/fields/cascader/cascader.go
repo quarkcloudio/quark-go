@@ -926,20 +926,20 @@ func (p *Component) buildTree(items interface{}, pid int, parentKeyName string, 
 		valueField := item.FieldByName(
 			stringy.
 				New(valueName).
-				CamelCase("?", "").
+				PascalCase("?", "").
 				Get(),
 		)
 
 		parentKeyField := item.FieldByName(
 			stringy.
 				New(parentKeyName).
-				CamelCase("?", "").
+				PascalCase("?", "").
 				Get(),
 		)
 		labelField := item.FieldByName(
 			stringy.
 				New(labelName).
-				CamelCase("?", "").
+				PascalCase("?", "").
 				Get(),
 		)
 

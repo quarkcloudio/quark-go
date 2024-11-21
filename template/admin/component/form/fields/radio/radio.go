@@ -750,13 +750,13 @@ func (p *Component) buildOptions(items interface{}, labelName string, valueName 
 		valueField := item.FieldByName(
 			stringy.
 				New(valueName).
-				CamelCase("?", "").
+				PascalCase("?", "").
 				Get(),
 		)
 		labelField := item.FieldByName(
 			stringy.
 				New(labelName).
-				CamelCase("?", "").
+				PascalCase("?", "").
 				Get(),
 		)
 
