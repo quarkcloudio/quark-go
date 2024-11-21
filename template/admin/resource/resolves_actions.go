@@ -592,16 +592,24 @@ func (p *Template) BuildFormInitApi(ctx *quark.Context, params []string, uriKey 
 	}
 
 	// 列表页接口
-	api = strings.Replace(ctx.Path(), "/index", "/action/"+uriKey+"/values", -1)
+	if ctx.IsIndex() {
+		api = strings.Replace(ctx.Path(), "/index", "/action/"+uriKey+"/values", -1)
+	}
 
 	// 创建页接口
-	api = strings.Replace(api, "/create", "/action/"+uriKey+"/values", -1)
+	if ctx.IsCreating() {
+		api = strings.Replace(ctx.Path(), "/create", "/action/"+uriKey+"/values", -1)
+	}
 
 	// 编辑页接口
-	api = strings.Replace(api, "/edit", "/action/"+uriKey+"/values", -1)
+	if ctx.IsEditing() {
+		api = strings.Replace(api, "/edit", "/action/"+uriKey+"/values", -1)
+	}
 
 	// 详情页接口
-	api = strings.Replace(api, "/detail", "/action/"+uriKey+"/values", -1)
+	if ctx.IsDetail() {
+		api = strings.Replace(api, "/detail", "/action/"+uriKey+"/values", -1)
+	}
 
 	// 追加参数
 	if paramsUri != "" {
