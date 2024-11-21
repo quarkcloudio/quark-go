@@ -584,31 +584,39 @@ func (p *Template) BuildActionApi(ctx *quark.Context, params []string, uriKey st
 func (p *Template) BuildFormInitApi(ctx *quark.Context, params []string, uriKey string) string {
 	var (
 		paramsUri = ""
-		api       = ""
+		api       = ctx.Path()
 	)
 
 	for _, v := range params {
 		paramsUri = paramsUri + v + "=${" + v + "}&"
 	}
 
-	// 列表页接口
-	if ctx.IsIndex() {
-		api = strings.Replace(ctx.Path(), "/index", "/action/"+uriKey+"/values", -1)
+	// 获取api路径
+	apiPaths := strings.Split(api, "/")
+
+	// 错误路径，直接返回
+	if len(apiPaths) <= 2 {
+		return ""
 	}
 
-	// 创建页接口
-	if ctx.IsCreating() {
-		api = strings.Replace(ctx.Path(), "/create", "/action/"+uriKey+"/values", -1)
-	}
-
-	// 编辑页接口
-	if ctx.IsEditing() {
+	// 解析数据
+	switch apiPaths[len(apiPaths)-1] {
+	case "index":
+		// 列表页接口
+		api = strings.Replace(api, "/index", "/action/"+uriKey+"/values", -1)
+	case "create":
+		// 创建页接口
+		api = strings.Replace(api, "/create", "/action/"+uriKey+"/values", -1)
+	case "edit":
+		// 编辑页接口
 		api = strings.Replace(api, "/edit", "/action/"+uriKey+"/values", -1)
-	}
-
-	// 详情页接口
-	if ctx.IsDetail() {
+	case "detail":
+		// 详情页接口
 		api = strings.Replace(api, "/detail", "/action/"+uriKey+"/values", -1)
+	case "form":
+		// 表单页接口
+		lastPath := apiPaths[len(apiPaths)-2]
+		api = strings.Replace(api, lastPath+"/form", "action/"+uriKey+"/values", -1)
 	}
 
 	// 追加参数
