@@ -79,14 +79,14 @@ func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
 	// 侧边菜单宽度
 	p.SiderWidth = 208
 
-	// 网站版权 time.Now().Format("2006") + " QuarkGo"
-	p.Copyright = time.Now().Format("2006") + " QuarkGo"
+	// 网站版权 time.Now().Format("2006") + " QuarkCloud"
+	p.Copyright = time.Now().Format("2006") + " QuarkCloud"
 
 	// 友情链接
 	p.Links = []map[string]interface{}{
 		{
 			"key":   "1",
-			"title": "Quark",
+			"title": "QuarkCloud",
 			"href":  "http://quarkcloud.io",
 		},
 		{
