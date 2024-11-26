@@ -86,13 +86,13 @@ func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
 	p.Links = []map[string]interface{}{
 		{
 			"key":   "1",
-			"title": "QuarkCloud",
-			"href":  "http://quarkcloud.io",
+			"title": "QuarkGo",
+			"href":  "https://github.com/quarkcloudio/quark-go",
 		},
 		{
 			"key":   "2",
-			"title": "QuarkGo",
-			"href":  "https://github.com/quarkcloudio/quark-go",
+			"title": "QuarkCloud",
+			"href":  "http://quarkcloud.io",
 		},
 		{
 			"key":   "3",
