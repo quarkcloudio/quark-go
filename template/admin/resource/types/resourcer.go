@@ -58,7 +58,10 @@ type Resourcer interface {
 	GetTableListToTree() interface{}
 
 	// 获取分页配置
-	GetPerPage() interface{}
+	GetPageSize() interface{}
+
+	// 指定每页可以显示多少条，[10, 20, 50, 100]
+	GetPageSizeOptions() []int
 
 	// 获取全局排序规则
 	GetQueryOrder() string

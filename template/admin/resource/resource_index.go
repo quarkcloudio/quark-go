@@ -114,21 +114,22 @@ func (p *Template) IndexComponentRender(ctx *quark.Context, data interface{}) in
 		SetSearches(indexSearches)
 
 	// 获取分页
-	perPage := template.GetPerPage()
-	if perPage == nil {
+	pageSize := template.GetPageSize()
+	if pageSize == nil {
 		return table.SetDatasource(data)
 	}
 
 	// 不分页，直接返回数据
-	if reflect.TypeOf(perPage).String() != "int" {
+	if reflect.TypeOf(pageSize).String() != "int" {
 		return table.SetDatasource(data)
 	} else {
-		current := data.(map[string]interface{})["currentPage"]
-		perPage := data.(map[string]interface{})["perPage"]
+		current := data.(map[string]interface{})["page"]
+		pageSize := data.(map[string]interface{})["pageSize"]
+		pageSizeOptions := data.(map[string]interface{})["pageSizeOptions"]
 		total := data.(map[string]interface{})["total"]
 		items := data.(map[string]interface{})["items"]
 		component = table.
-			SetPagination(current.(int), perPage.(int), int(total.(int64)), 1).
+			SetPagination(current.(int), pageSize.(int), int(total.(int64)), 1, pageSizeOptions.([]int)).
 			SetDatasource(items)
 	}
 

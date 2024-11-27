@@ -23,7 +23,7 @@ func (p *Picture) Init(ctx *quark.Context) interface{} {
 	p.Model = &model.Picture{}
 
 	// 分页
-	p.PerPage = 10
+	p.PageSize = 10
 
 	return p
 }

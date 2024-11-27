@@ -32,8 +32,11 @@ func (p *IndexRequest) QueryData(ctx *quark.Context) interface{} {
 	query := template.BuildIndexQuery(ctx, model, searches, filters, p.columnFilters(ctx), p.orderings(ctx))
 
 	// 获取分页
-	perPage := template.GetPerPage()
-	if perPage == nil {
+	pageSize := template.GetPageSize()
+
+	// 指定每页可以显示多少条，[10, 20, 50, 100]
+	pageSizeOptions := template.GetPageSizeOptions()
+	if pageSize == nil {
 		query.Find(&lists)
 
 		// 返回解析列表
@@ -41,7 +44,7 @@ func (p *IndexRequest) QueryData(ctx *quark.Context) interface{} {
 	}
 
 	// 不分页，直接返回lists
-	if reflect.TypeOf(perPage).String() != "int" {
+	if reflect.TypeOf(pageSize).String() != "int" {
 		query.Find(&lists)
 
 		// 返回解析列表
@@ -59,7 +62,7 @@ func (p *IndexRequest) QueryData(ctx *quark.Context) interface{} {
 				page = int(data["current"].(float64))
 			}
 			if data["pageSize"] != nil {
-				perPage = int(data["pageSize"].(float64))
+				pageSize = int(data["pageSize"].(float64))
 			}
 		}
 	}
@@ -68,16 +71,17 @@ func (p *IndexRequest) QueryData(ctx *quark.Context) interface{} {
 	query.Count(&total)
 
 	// 获取列表
-	query.Limit(perPage.(int)).Offset((page - 1) * perPage.(int)).Find(&lists)
+	query.Limit(pageSize.(int)).Offset((page - 1) * pageSize.(int)).Find(&lists)
 
 	// 解析列表
 	result := p.performsList(ctx, lists)
 
 	return map[string]interface{}{
-		"currentPage": page,
-		"perPage":     perPage,
-		"total":       total,
-		"items":       result,
+		"page":            page,
+		"pageSize":        pageSize,
+		"pageSizeOptions": pageSizeOptions,
+		"total":           total,
+		"items":           result,
 	}
 }
 

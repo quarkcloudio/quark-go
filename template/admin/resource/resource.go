@@ -46,7 +46,8 @@ type Template struct {
 	TableActionColumnWidth int                    // 列表页表格行为列的宽度
 	TablePolling           int                    // 列表页表格是否轮询数据
 	TableListToTree        interface{}            // 列表页数据转换为树形结构, true 或者 map[string]interface{}{"pkName": "id",""pidName": "pid","childrenName": "children","rootId":0}
-	PerPage                interface{}            // 列表页分页配置
+	PageSize               interface{}            // 列表页分页配置
+	PageSizeOptions        []int                  // 指定每页可以显示多少条，[10, 20, 50, 100]
 	QueryOrder             string                 // 全局排序规则
 	IndexQueryOrder        string                 // 列表页排序规则
 	ExportQueryOrder       string                 // 导出数据排序规则
@@ -193,8 +194,13 @@ func (p *Template) GetTablePolling() int {
 }
 
 // 获取分页配置
-func (p *Template) GetPerPage() interface{} {
-	return p.PerPage
+func (p *Template) GetPageSize() interface{} {
+	return p.PageSize
+}
+
+// 指定每页可以显示多少条，[10, 20, 50, 100]
+func (p *Template) GetPageSizeOptions() []int {
+	return p.PageSizeOptions
 }
 
 // 列表页列表数据转换为树形结构

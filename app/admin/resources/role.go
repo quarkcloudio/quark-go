@@ -27,7 +27,7 @@ func (p *Role) Init(ctx *quark.Context) interface{} {
 	p.Model = &model.Role{}
 
 	// 分页
-	p.PerPage = 10
+	p.PageSize = 10
 
 	// 默认排序
 	p.IndexQueryOrder = "id asc"

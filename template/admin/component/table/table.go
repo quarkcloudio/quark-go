@@ -243,12 +243,13 @@ func (p *Component) SetDatasource(datasource interface{}) *Component {
 }
 
 // 表格分页
-func (p *Component) SetPagination(current int, pageSize int, total int, defaultCurrent int) *Component {
-	p.Pagination = map[string]int{
-		"current":        current,
-		"pageSize":       pageSize,
-		"total":          total,
-		"defaultCurrent": defaultCurrent,
+func (p *Component) SetPagination(current int, pageSize int, total int, defaultCurrent int, pageSizeOptions []int) *Component {
+	p.Pagination = map[string]interface{}{
+		"current":         current,
+		"pageSize":        pageSize,
+		"total":           total,
+		"defaultCurrent":  defaultCurrent,
+		"pageSizeOptions": pageSizeOptions,
 	}
 
 	return p

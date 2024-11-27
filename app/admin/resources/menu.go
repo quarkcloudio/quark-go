@@ -34,7 +34,7 @@ func (p *Menu) Init(ctx *quark.Context) interface{} {
 	p.QueryOrder = "sort asc"
 
 	// 分页
-	p.PerPage = false
+	p.PageSize = false
 
 	return p
 }

@@ -24,7 +24,7 @@ func (p *Permission) Init(ctx *quark.Context) interface{} {
 	p.Model = &model.Permission{}
 
 	// 分页
-	p.PerPage = 10
+	p.PageSize = 10
 
 	return p
 }

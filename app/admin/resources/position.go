@@ -23,7 +23,7 @@ func (p *Position) Init(ctx *quark.Context) interface{} {
 	p.Model = &model.Position{}
 
 	// 分页
-	p.PerPage = 10
+	p.PageSize = 10
 
 	// 默认排序
 	p.IndexQueryOrder = "sort asc, id asc"
