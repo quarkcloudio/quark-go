@@ -8,6 +8,8 @@ type ModalForm struct {
 	DestroyOnClose bool   `json:"destroyOnClose"` // 关闭时销毁弹出层里的子元素
 	CancelText     string `json:"cancelText"`     // 获取取消按钮文案
 	SubmitText     string `json:"submitText"`     // 获取提交按钮文案
+	ApiType        string `json:"apiType"`        // 表单提交接口的类型，GET 或 POST，默认 POST
+	TargetBlank    bool   `json:"targetBlank"`    // 提交表单的数据是否打开新页面，只有在GET类型的时候有效
 }
 
 // 初始化
@@ -17,6 +19,8 @@ func (p *ModalForm) TemplateInit(ctx *quark.Context) interface{} {
 	p.Reload = "table"
 	p.CancelText = "取消"
 	p.SubmitText = "提交"
+	p.ApiType = "POST"
+	p.TargetBlank = false
 
 	return p
 }
@@ -49,4 +53,14 @@ func (p *ModalForm) GetCancelText() string {
 // 获取提交按钮文案
 func (p *ModalForm) GetSubmitText() string {
 	return p.SubmitText
+}
+
+// 表单提交接口的类型，GET 或 POST，默认 POST
+func (p *ModalForm) GetApiType() string {
+	return p.ApiType
+}
+
+// 提交表单的数据是否打开新页面，只有在GET类型的时候有效
+func (p *ModalForm) GetTargetBlank() bool {
+	return p.TargetBlank
 }

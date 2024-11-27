@@ -367,6 +367,12 @@ func (p *Template) BuildAction(ctx *quark.Context, item interface{}) interface{}
 		// 关闭时销毁 Modal 里的子元素
 		modalFormDestroyOnClose := modalFormerActioner.GetDestroyOnClose()
 
+		// 表单提交接口的类型，GET 或 POST，默认 POST
+		modalFormApiType := modalFormerActioner.GetApiType()
+
+		// 提交表单的数据是否打开新页面，只有在GET类型的时候有效
+		modalFormTargetBlank := modalFormerActioner.GetTargetBlank()
+
 		// 构建表单组件
 		formComponent := form.
 			New().
@@ -376,6 +382,8 @@ func (p *Template) BuildAction(ctx *quark.Context, item interface{}) interface{}
 			}).
 			SetApi(api).
 			SetInitApi(initApi).
+			SetApiType(modalFormApiType).
+			SetTargetBlank(modalFormTargetBlank).
 			SetBody(formFields).
 			SetInitialValues(modalFormData).
 			SetLabelCol(map[string]interface{}{
@@ -440,12 +448,20 @@ func (p *Template) BuildAction(ctx *quark.Context, item interface{}) interface{}
 		// 关闭时销毁 Modal 里的子元素
 		drawerFormDestroyOnClose := drawerFormerActioner.GetDestroyOnClose()
 
+		// 表单提交接口的类型，GET 或 POST，默认 POST
+		drawerFormApiType := drawerFormerActioner.GetApiType()
+
+		// 提交表单的数据是否打开新页面，只有在GET类型的时候有效
+		drawerFormargetBlank := drawerFormerActioner.GetTargetBlank()
+
 		// 构建表单组件
 		formComponent := form.
 			New().
 			SetKey(uriKey, false).
 			SetApi(api).
 			SetInitApi(initApi).
+			SetApiType(drawerFormApiType).
+			SetTargetBlank(drawerFormargetBlank).
 			SetBody(formFields).
 			SetInitialValues(drawerFormData).
 			SetLabelCol(map[string]interface{}{

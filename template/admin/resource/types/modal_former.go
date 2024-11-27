@@ -22,4 +22,10 @@ type ModalFormer interface {
 
 	// 获取提交按钮文案
 	GetSubmitText() string
+
+	// 表单提交接口的类型，GET 或 POST，默认 POST
+	GetApiType() string
+
+	// 提交表单的数据是否打开新页面，只有在GET类型的时候有效
+	GetTargetBlank() bool
 }
