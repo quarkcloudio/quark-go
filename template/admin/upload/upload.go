@@ -3,6 +3,7 @@ package upload
 import (
 	"bytes"
 	"encoding/base64"
+	"errors"
 	"io"
 	"mime/multipart"
 	"strconv"
@@ -11,6 +12,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
+	"gorm.io/gorm"
 )
 
 // 文件上传
@@ -159,7 +161,7 @@ func (p *Template) Handle(ctx *quark.Context) error {
 
 			// 上传前回调
 			getFileSystem, fileInfo, err := template.BeforeHandle(ctx, fileSystem)
-			if err != nil && err.Error() != "record not found" {
+			if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 				return ctx.JSON(200, message.Error(err.Error()))
 			}
 			if fileInfo != nil {
