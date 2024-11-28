@@ -124,10 +124,10 @@ func (p *User) Fields(ctx *quark.Context) []interface{} {
 				rule.Email("邮箱格式错误"),
 			}).
 			SetCreationRules([]rule.Rule{
-				rule.Unique("admins", "email", "邮箱已存在"),
+				rule.Unique("users", "email", "邮箱已存在"),
 			}).
 			SetUpdateRules([]rule.Rule{
-				rule.Unique("admins", "email", "{id}", "邮箱已存在"),
+				rule.Unique("users", "email", "{id}", "邮箱已存在"),
 			}).OnlyOnForms(),
 		field.Text("phone", "手机号").
 			SetRules([]rule.Rule{
@@ -135,10 +135,10 @@ func (p *User) Fields(ctx *quark.Context) []interface{} {
 				rule.Phone("手机号格式错误"),
 			}).
 			SetCreationRules([]rule.Rule{
-				rule.Unique("admins", "phone", "手机号已存在"),
+				rule.Unique("users", "phone", "手机号已存在"),
 			}).
 			SetUpdateRules([]rule.Rule{
-				rule.Unique("admins", "phone", "{id}", "手机号已存在"),
+				rule.Unique("users", "phone", "{id}", "手机号已存在"),
 			}),
 		field.Radio("sex", "性别").
 			SetRules([]rule.Rule{

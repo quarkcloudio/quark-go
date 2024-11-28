@@ -95,6 +95,12 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 		if validator != nil {
 			importResult = false
 			importFailedNum = importFailedNum + 1
+			dataLen := len(fields.([]interface{})) - len(item)
+			if dataLen > 0 {
+				for i := 0; i < dataLen; i++ {
+					item = append(item, nil)
+				}
+			}
 			item = append(item, validator.Error())
 			importFailedData = append(importFailedData, item)
 
@@ -107,6 +113,12 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 		if err != nil {
 			importResult = false
 			importFailedNum = importFailedNum + 1
+			dataLen := len(fields.([]interface{})) - len(item)
+			if dataLen > 0 {
+				for i := 0; i < dataLen; i++ {
+					item = append(item, nil)
+				}
+			}
 			item = append(item, err.Error())
 			importFailedData = append(importFailedData, item)
 
@@ -120,6 +132,12 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 		if result.Error != nil {
 			importResult = false
 			importFailedNum = importFailedNum + 1
+			dataLen := len(fields.([]interface{})) - len(item)
+			if dataLen > 0 {
+				for i := 0; i < dataLen; i++ {
+					item = append(item, nil)
+				}
+			}
 			item = append(item, result.Error.Error())
 			importFailedData = append(importFailedData, item)
 
@@ -135,6 +153,12 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 		if err != nil {
 			importResult = false
 			importFailedNum = importFailedNum + 1
+			dataLen := len(fields.([]interface{})) - len(item)
+			if dataLen > 0 {
+				for i := 0; i < dataLen; i++ {
+					item = append(item, nil)
+				}
+			}
 			item = append(item, err.Error())
 			importFailedData = append(importFailedData, item)
 
@@ -170,10 +194,25 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 			f.SetCellValue("Sheet1", excel.GenerateColumnLabel(i)+"1", importHead[i-1])
 		}
 
+		// 创建样式以设置文字颜色
+		style, err := f.NewStyle(&excelize.Style{
+			Font: &excelize.Font{
+				Color: "#FF0000", // 使用十六进制颜色代码
+			},
+		})
+		if err != nil {
+			return ctx.JSON(200, message.Error(err.Error()))
+		}
+
 		// 创建数据
 		for k, v := range importFailedData {
 			for i := 1; i <= len(v); i++ {
 				f.SetCellValue("Sheet1", excel.GenerateColumnLabel(i)+strconv.Itoa(k+2), v[i-1])
+				if i == len(v) {
+					if err := f.SetCellStyle("Sheet1", excel.GenerateColumnLabel(i)+strconv.Itoa(k+2), excel.GenerateColumnLabel(i)+strconv.Itoa(k+2), style); err != nil {
+						return ctx.JSON(200, message.Error(err.Error()))
+					}
+				}
 			}
 		}
 
@@ -217,15 +256,17 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 // 将表格数据转换成表单数据
 func (p *ImportRequest) transformFormValues(fields interface{}, data []interface{}) map[string]interface{} {
 	result := make(map[string]interface{})
+	dataLen := len(data)
 	for k, v := range fields.([]interface{}) {
-		if data[k] != nil {
-			name := reflect.
-				ValueOf(v).
-				Elem().
-				FieldByName("Name").
-				String()
-
-			result[name] = data[k]
+		name := reflect.
+			ValueOf(v).
+			Elem().
+			FieldByName("Name").
+			String()
+		if k <= dataLen-1 {
+			if data[k] != nil {
+				result[name] = data[k]
+			}
 		}
 	}
 
