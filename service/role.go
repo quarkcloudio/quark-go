@@ -37,7 +37,7 @@ func (p *RoleService) UpdateRoleDataScope(roleId int, dataScope int, departmentI
 // 获取角色列表
 func (p *RoleService) List() (list []checkbox.Option, Error error) {
 	roles := []model.Role{}
-	err := db.Client.Find(&roles).Error
+	err := db.Client.Where("status = ?", 1).Find(&roles).Error
 	if err != nil {
 		return list, err
 	}
