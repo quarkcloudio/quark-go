@@ -159,7 +159,7 @@ func (p *Template) Handle(ctx *quark.Context) error {
 
 			// 上传前回调
 			getFileSystem, fileInfo, err := template.BeforeHandle(ctx, fileSystem)
-			if err != nil {
+			if err != nil && err.Error() != "record not found" {
 				return ctx.JSON(200, message.Error(err.Error()))
 			}
 			if fileInfo != nil {
