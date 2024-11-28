@@ -51,6 +51,14 @@ func (p *Role) Fields(ctx *quark.Context) []interface{} {
 		field.Tree("menu_ids", "权限").
 			SetTreeData(treeData, "pid", "id", "name").
 			OnlyOnForms(),
+		field.Switch("status", "状态").
+			SetRules([]rule.Rule{
+				rule.Required("请选择状态"),
+			}).
+			SetTrueValue("正常").
+			SetFalseValue("禁用").
+			SetEditable(true).
+			SetDefault(true),
 		field.Datetime("created_at", "创建时间").
 			OnlyOnIndex(),
 		field.Datetime("updated_at", "更新时间").

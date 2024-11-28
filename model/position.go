@@ -30,7 +30,7 @@ func (model *Position) Seeder() {
 // 获取角色列表
 func (model *Position) List() (list []checkbox.Option, Error error) {
 	positions := []Position{}
-	err := db.Client.Find(&positions).Error
+	err := db.Client.Where("status = ?", 1).Find(&positions).Error
 	if err != nil {
 		return list, err
 	}
