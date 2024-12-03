@@ -45,6 +45,12 @@ func (p *Role) Fields(ctx *quark.Context) []interface{} {
 		field.Text("name", "名称").
 			SetRules([]rule.Rule{
 				rule.Required("名称必须填写"),
+			}).
+			SetCreationRules([]rule.Rule{
+				rule.Unique("roles", "name", "名称已存在"),
+			}).
+			SetUpdateRules([]rule.Rule{
+				rule.Unique("roles", "name", "{id}", "名称已存在"),
 			}),
 		field.Text("guard_name", "守卫").
 			SetDefault("admin"),
