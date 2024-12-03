@@ -17,7 +17,7 @@ type User struct {
 	Phone         string            `json:"phone" gorm:"size:11;index:admins_phone_unique,unique;not null"`
 	Password      string            `json:"password" gorm:"size:255;not null"`
 	Avatar        string            `json:"avatar" gorm:"size:1000"`
-	DepartmentId  int               `json:"department_id" gorm:"size:11;not null;default:0"`
+	DepartmentId  int               `json:"department_id" gorm:"size:11;not null;default:null"`
 	PositionIds   string            `json:"position_ids" gorm:"size:1000;default:null"`
 	LastLoginIp   string            `json:"last_login_ip" gorm:"size:255"`
 	LastLoginTime datetime.Datetime `json:"last_login_time"`
