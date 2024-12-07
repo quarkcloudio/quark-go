@@ -56,7 +56,16 @@ func (p *Account) Fields(ctx *quark.Context) []interface{} {
 				field.RadioOption("女", 2),
 			}).
 			SetDefault(1),
-		field.Password("password", "密码"),
+		field.
+			Password("password", "密码").
+			SetRules([]rule.Rule{
+				rule.Regexp(`/^.{6,}$/`, "密码不少于六位"),
+				rule.Regexp(`/[A-Z]/`, "至少包含一个大写字母"),
+				rule.Regexp(`/[a-z]/`, "至少包含一个小写字母"),
+				rule.Regexp(`/[0-9]/`, "至少包含一个数字"),
+				rule.Regexp(`/[!@#\$%\^&\*\(\)_\+\-\=\\\|\[\]\{\};':",\.<>\/?]/`, "至少包含一个特殊字符"),
+			}).
+			SetHelp("密码不少于六位，且至少包含一个大写字母、小写字母、数字和特殊字符"),
 	}
 }
 
