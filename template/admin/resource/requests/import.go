@@ -173,7 +173,12 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 	if !importResult {
 		filePath := ctx.Engine.GetConfig().StaticPath + "/app/storage/failImports/"
 		fileName := rand.MakeAlphanumeric(40) + ".xlsx"
-		fileUrl := "//" + ctx.Host() + "/storage/failImports/" + fileName
+		webSiteDomain := ctx.Host()
+		getWebSiteDomain := service.NewConfigService().GetValue("WEB_SITE_DOMAIN")
+		if getWebSiteDomain != "" {
+			webSiteDomain = getWebSiteDomain
+		}
+		fileUrl := "//" + webSiteDomain + "/storage/failImports/" + fileName
 
 		// 不存在路径，则创建
 		if !file.IsExist(filePath) {
