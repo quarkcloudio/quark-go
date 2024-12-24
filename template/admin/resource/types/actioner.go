@@ -14,7 +14,7 @@ type Actioner interface {
 	GetUriKey(action interface{}) string
 
 	// 获取名称
-	GetName() string
+	GetName() interface{}
 
 	// 执行成功后刷新的组件
 	GetReload() string
@@ -41,7 +41,7 @@ type Actioner interface {
 	GetWithLoading() bool
 
 	// 设置按钮的图标组件
-	GetIcon() string
+	GetIcon() interface{}
 
 	// 行为表单字段
 	GetFields() interface{}

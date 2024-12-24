@@ -11,12 +11,12 @@ import (
 )
 
 type Action struct {
-	Name       string   `json:"name"`       // 设置按钮文字；支持js表达式例如：<%= (status==1 ? '禁用' : '启用') %>，行为在表格行时，可以使用当前行的任意字段值，示例中status即为当前行的“状态”字段
-	Reload     string   `json:"reload"`     // 执行成功后刷新的组件
-	ApiParams  []string `json:"apiParams"`  // 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
-	Api        string   `json:"api"`        // 行为接口
-	ActionType string   `json:"actionType"` // 【必填】这是 action 最核心的配置，来指定该 action 的作用类型，支持：ajax、link、url、drawer、dialog、confirm、cancel、prev、next、copy、close。
-	SubmitForm string   `json:"submitForm"` // 当 action 的作用类型为submit的时候，可以指定提交哪个表格，submitForm为提交表单的key值，为空时提交当前表单
+	Name       interface{} `json:"name"`       // 设置按钮文字；支持js表达式例如：<%= (status==1 ? '禁用' : '启用') %>，行为在表格行时，可以使用当前行的任意字段值，示例中status即为当前行的“状态”字段
+	Reload     string      `json:"reload"`     // 执行成功后刷新的组件
+	ApiParams  []string    `json:"apiParams"`  // 行为接口接收的参数，当行为在表格行展示的时候，可以配置当前行的任意字段
+	Api        string      `json:"api"`        // 行为接口
+	ActionType string      `json:"actionType"` // 【必填】这是 action 最核心的配置，来指定该 action 的作用类型，支持：ajax、link、url、drawer、dialog、confirm、cancel、prev、next、copy、close。
+	SubmitForm string      `json:"submitForm"` // 当 action 的作用类型为submit的时候，可以指定提交哪个表格，submitForm为提交表单的key值，为空时提交当前表单
 	// 设置按钮的图标组件：
 	// "icon-database", "icon-sever", "icon-mobile", "icon-tablet", "icon-redenvelope",
 	// "icon-book", "icon-filedone", "icon-reconciliation", "icon-file-exception",
@@ -74,7 +74,7 @@ type Action struct {
 	// "icon-deleteuser", "icon-addteam", "icon-user", "icon-team", "icon-areachart", "icon-linechart",
 	// "icon-barchart", "icon-pointmap", "icon-container", "icon-atom", "icon-zanwutupian", "icon-safetycertificate",
 	// "icon-password", "icon-article", "icon-page", "icon-plugin", "icon-admin", "icon-banner"
-	Icon                  string      `json:"icon"`
+	Icon                  interface{} `json:"icon"`
 	Type                  string      `json:"type"`                  // 设置按钮类型，primary | ghost | dashed | link | text | default
 	Size                  string      `json:"size"`                  // 设置按钮大小,large | middle | small | default
 	WithLoading           bool        `json:"withLoading"`           // 是否具有loading，当action 的作用类型为ajax,submit时有效
@@ -122,7 +122,7 @@ func (p *Action) GetUriKey(action interface{}) string {
 }
 
 // 获取名称
-func (p *Action) GetName() string {
+func (p *Action) GetName() interface{} {
 	return p.Name
 }
 
@@ -167,7 +167,7 @@ func (p *Action) GetWithLoading() bool {
 }
 
 // 设置按钮的图标组件
-func (p *Action) GetIcon() string {
+func (p *Action) GetIcon() interface{} {
 	return p.Icon
 }
 

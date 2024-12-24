@@ -4,12 +4,12 @@ import "github.com/quarkcloudio/quark-go/v3/template/admin/component/component"
 
 type Component struct {
 	component.Element
-	Label              string                 `json:"label"`
+	Label              interface{}            `json:"label"`
 	Block              bool                   `json:"block"`
 	Danger             bool                   `json:"danger"`
 	Disabled           bool                   `json:"disabled"`
 	Ghost              bool                   `json:"ghost"`
-	Icon               string                 `json:"icon"`
+	Icon               interface{}            `json:"icon"`
 	Shape              string                 `json:"shape"`
 	Size               string                 `json:"size"`
 	Type               string                 `json:"type"`
@@ -52,7 +52,7 @@ func (p *Component) SetStyle(style map[string]interface{}) *Component {
 }
 
 // 设置按钮文字
-func (p *Component) SetLabel(label string) *Component {
+func (p *Component) SetLabel(label interface{}) *Component {
 	p.Label = label
 
 	return p
@@ -87,8 +87,13 @@ func (p *Component) SetGhost(ghost bool) *Component {
 }
 
 // 设置按钮图标
-func (p *Component) SetIcon(icon string) *Component {
-	p.Icon = "icon-" + icon
+func (p *Component) SetIcon(icon interface{}) *Component {
+	if value, ok := icon.(string); ok {
+		p.Icon = "icon-" + value
+	}
+	if value, ok := icon.([]string); ok {
+		p.Icon = []string{"icon-" + value[0], "icon-" + value[1]}
+	}
 
 	return p
 }

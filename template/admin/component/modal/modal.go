@@ -4,7 +4,7 @@ import "github.com/quarkcloudio/quark-go/v3/template/admin/component/component"
 
 type Component struct {
 	component.Element
-	Title                  string        `json:"title"`
+	Title                  interface{}   `json:"title"`
 	Centered               bool          `json:"centered"`
 	Closable               bool          `json:"closable"`
 	DestroyOnClose         bool          `json:"destroyOnClose"`
@@ -46,7 +46,7 @@ func (p *Component) SetStyle(style map[string]interface{}) *Component {
 }
 
 // 标题
-func (p *Component) SetTitle(title string) *Component {
+func (p *Component) SetTitle(title interface{}) *Component {
 	p.Title = title
 
 	return p
