@@ -51,22 +51,22 @@ func (p *Image) RouteInit() interface{} {
 	return p
 }
 
-// 获取文件列表
+// 获取文件列表n
 func (p *Image) GetList(ctx *quark.Context) error {
 	page := ctx.Query("page", "1")
-	categoryId := ctx.Query("pictureCategoryId", "")
-	searchName := ctx.Query("pictureSearchName", "")
-	searchDateStart := ctx.Query("pictureSearchDate[0]", "")
-	searchDateEnd := ctx.Query("pictureSearchDate[1]", "")
+	categoryId := ctx.Query("categoryId", "")
+	name := ctx.Query("name", "")
+	startDate := ctx.Query("cteatetime[0]", "")
+	endDate := ctx.Query("cteatetime[1]", "")
 	currentPage, _ := strconv.Atoi(page.(string))
 
 	pictures, total, err := service.NewPictureService().GetListBySearch(
 		ctx.Engine.GetConfig().AppKey,
 		ctx.Token(),
 		categoryId,
-		searchName,
-		searchDateStart,
-		searchDateEnd,
+		name,
+		startDate,
+		endDate,
 		currentPage,
 	)
 	if err != nil {
