@@ -56,8 +56,8 @@ func (p *Image) GetList(ctx *quark.Context) error {
 	page := ctx.Query("page", "1")
 	categoryId := ctx.Query("categoryId", "")
 	name := ctx.Query("name", "")
-	startDate := ctx.Query("cteatetime[0]", "")
-	endDate := ctx.Query("cteatetime[1]", "")
+	startDate := ctx.Query("createtime[0]", "")
+	endDate := ctx.Query("createtime[1]", "")
 	currentPage, _ := strconv.Atoi(page.(string))
 
 	pictures, total, err := service.NewPictureService().GetListBySearch(
