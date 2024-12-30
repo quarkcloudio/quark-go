@@ -78,7 +78,7 @@ type Component struct {
 	AttributesName            string      `json:"attributesName,omitempty"`            // 商品规格表单name，默认：attributes
 	AttributesLabel           string      `json:"attributesLabel,omitempty"`           // 商品规格标签文本，默认：商品规格
 	DataSourceLabel           string      `json:"dataSourceLabel,omitempty"`           // 商品属性标签文本，默认：商品属性
-	AttrNameLabel             string      `json:"attrNameLabel,omitempty"`             // 商品属性规格名称文本，默认：规格名称
+	AttrNameLabel             string      `json:"attrNameLabel,omitempty"`             // 商品属性规格名称文本，默认：规格名
 	AttrValueLabel            string      `json:"attrValueLabel,omitempty"`            // 商品属性规格值文本，默认：规格值
 	CreateAttrButtonText      string      `json:"createAttrButtonText,omitempty"`      // 添加规格项按钮文本，默认：添加规格项
 	CreateAttrValueButtonText string      `json:"createAttrValueButtonText,omitempty"` // 添加规格值按钮文本，默认：新建
@@ -107,6 +107,26 @@ func (p *Component) Init() *Component {
 	p.ShowOnImport = true
 	p.Column = (&table.Column{}).Init()
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+	p.AttrNameLabel = "规格名"
+	p.AttrValueLabel = "规格值"
+	p.CreateAttrButtonText = "添加规格项"
+	p.CreateAttrValueButtonText = "新建"
+	p.PatchChangeButtonText = "批量修改"
+	p.PatchClearButtonText = "清空"
+	p.CheckedItem = OptionItem{
+		Title:     "默认选中规格",
+		DataIndex: "is_default",
+		Width:     120,
+		Fixed:     "right",
+	}
+	p.OptionItem = OptionItem{
+		Title:             "操作",
+		DataIndex:         "is_show",
+		Width:             150,
+		Fixed:             "right",
+		CheckedChildren:   "显示",
+		UnCheckedChildren: "隐藏",
+	}
 
 	return p
 }
