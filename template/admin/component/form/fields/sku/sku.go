@@ -879,7 +879,8 @@ func (p *Component) fieldToItem(field interface{}) Item {
 		})
 	case "imagePickerField":
 		item.SetEditable(map[string]interface{}{
-			"name": "imagePickerField",
+			"name":         "imagePickerField",
+			"defaultValue": defaultValue,
 		})
 	default:
 		item.SetValueType(component)
