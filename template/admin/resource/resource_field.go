@@ -22,6 +22,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/id"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/image"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/imagecaptcha"
+	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/imagepicker"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/list"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/mapfield"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/month"
@@ -32,6 +33,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/search"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/selectfield"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/selects"
+	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/sku"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/smscaptcha"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/space"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/switchfield"
@@ -52,7 +54,6 @@ type Field struct{}
 // 解析字段
 func fieldParser(field interface{}, params []interface{}, placeholder string) interface{} {
 	v := reflect.ValueOf(field).Elem()
-
 	switch len(params) {
 	case 1:
 		v.FieldByName("Name").Set(reflect.ValueOf(params[0].(string)))
@@ -69,11 +70,9 @@ func fieldParser(field interface{}, params []interface{}, placeholder string) in
 			v.FieldByName("Callback").Set(reflect.ValueOf(closure))
 		}
 	}
-
 	if placeholder != "" && len(params) > 1 {
 		v.FieldByName("Placeholder").Set(reflect.ValueOf(placeholder + params[1].(string)))
 	}
-
 	return field
 }
 
@@ -441,4 +440,29 @@ func (p *Field) ImageCaptcha(params ...interface{}) *imagecaptcha.Component {
 // field.SmsCaptcha("code", "输入框") 或 field.SmsCaptcha("code", "输入框", func() interface{} { return p.Field["username"] })
 func (p *Field) SmsCaptcha(params ...interface{}) *smscaptcha.Component {
 	return fieldParser(smscaptcha.New(), params, "请输入").(*smscaptcha.Component)
+}
+
+// 图片选择器组件
+//
+// field.Image("name", "文本") 或 field.Image("name", "文本", func() interface{} { return p.Field["name"] })
+func (p *Field) ImagePicker(params ...interface{}) *imagepicker.Component {
+	return fieldParser(imagepicker.New(), params, "").(*imagepicker.Component)
+}
+
+// 商品Sku组件
+//
+// field.Sku("attributes_name", "datasource_name", "商品规格", "商品属性") 或 field.Sku("attributes_name", "datasource_name", "商品规格", "商品属性", func() interface{} { return p.Field["name"] })
+func (p *Field) Sku(params ...interface{}) *sku.Component {
+	v := &sku.Component{}
+	switch len(params) {
+	case 2:
+		v.SetAttributesName(params[0].(string)).SetName(params[1].(string))
+	case 3:
+		v.SetAttributesName(params[0].(string)).SetName(params[1].(string)).SetAttributesLabel(params[2].(string))
+	case 4:
+		v.SetAttributesName(params[0].(string)).SetName(params[1].(string)).SetAttributesLabel(params[2].(string)).SetDataSourceLabel(params[3].(string))
+	case 5:
+		v.SetAttributesName(params[0].(string)).SetName(params[1].(string)).SetAttributesLabel(params[2].(string)).SetDataSourceLabel(params[3].(string)).SetCallback(params[4].(func() interface{}))
+	}
+	return v
 }
