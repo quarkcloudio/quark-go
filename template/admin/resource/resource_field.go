@@ -453,7 +453,7 @@ func (p *Field) ImagePicker(params ...interface{}) *imagepicker.Component {
 //
 // field.Sku("attributes_name", "datasource_name", "商品规格", "商品属性") 或 field.Sku("attributes_name", "datasource_name", "商品规格", "商品属性", func() interface{} { return p.Field["name"] })
 func (p *Field) Sku(params ...interface{}) *sku.Component {
-	v := &sku.Component{}
+	v := sku.New()
 	switch len(params) {
 	case 2:
 		v.SetAttributesName(params[0].(string)).SetName(params[1].(string))
