@@ -833,6 +833,11 @@ func (p *Component) fieldToItem(field interface{}) Item {
 		FieldByName("ColumnWidth").
 		Int()
 
+	// 默认值。
+	defaultValue := reflectElem.
+		FieldByName("DefaultValue").
+		Interface()
+
 	// 组件类型
 	component := reflectElem.
 		FieldByName("Component").
@@ -848,25 +853,29 @@ func (p *Component) fieldToItem(field interface{}) Item {
 	case "textField":
 		item.
 			SetEditable(map[string]interface{}{
-				"name": "skuTextField",
+				"name":         "textField",
+				"defaultValue": defaultValue,
 			})
 	case "inputNumberField":
 		item.
 			SetEditable(map[string]interface{}{
-				"name": "skuInputNumberField",
+				"name":         "inputNumberField",
+				"defaultValue": defaultValue,
 			})
 	case "selectField":
 		options = field.(interface{ GetOptions() []selectfield.Option }).GetOptions()
 		item.
 			SetEditable(map[string]interface{}{
-				"name":    "selectField",
-				"options": options,
+				"name":         "selectField",
+				"options":      options,
+				"defaultValue": defaultValue,
 			})
 	case "switchField":
 		options = field.(interface{ GetOptions() interface{} }).GetOptions()
 		item.SetEditable(map[string]interface{}{
-			"name":    "switchField",
-			"options": options,
+			"name":         "switchField",
+			"options":      options,
+			"defaultValue": defaultValue,
 		})
 	case "imagePickerField":
 		item.SetEditable(map[string]interface{}{
