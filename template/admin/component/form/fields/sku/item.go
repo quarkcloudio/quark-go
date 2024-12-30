@@ -12,7 +12,9 @@ type Item struct {
 }
 
 func NewItem() *Item {
-	return &Item{}
+	item := &Item{}
+	item.Width = 140
+	return item
 }
 
 func (p *Item) SetTitle(title string) *Item {

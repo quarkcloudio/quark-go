@@ -846,34 +846,34 @@ func (p *Component) fieldToItem(field interface{}) Item {
 
 	switch component {
 	case "textField":
-		item = item.
+		item.
 			SetEditable(map[string]interface{}{
-				"name": "inputField",
+				"name": "skuTextField",
 			})
 	case "inputNumberField":
-		item = item.
+		item.
 			SetEditable(map[string]interface{}{
-				"name": "inputNumberField",
+				"name": "skuInputNumberField",
 			})
 	case "selectField":
 		options = field.(interface{ GetOptions() []selectfield.Option }).GetOptions()
-		item = item.
+		item.
 			SetEditable(map[string]interface{}{
 				"name":    "selectField",
 				"options": options,
 			})
 	case "switchField":
 		options = field.(interface{ GetOptions() interface{} }).GetOptions()
-		item = item.SetEditable(map[string]interface{}{
+		item.SetEditable(map[string]interface{}{
 			"name":    "switchField",
 			"options": options,
 		})
 	case "imagePickerField":
-		item = item.SetEditable(map[string]interface{}{
+		item.SetEditable(map[string]interface{}{
 			"name": "imagePickerField",
 		})
 	default:
-		item = item.SetValueType(component)
+		item.SetValueType(component)
 	}
 
 	return *item
