@@ -22,7 +22,7 @@ var Providers = []interface{}{
 	&resources.ActionLog{},
 	&resources.Config{},
 	&resources.File{},
-	&resources.Picture{},
+	&resources.Image{},
 	&resources.WebConfig{},
 	&resources.Account{},
 	&uploads.File{},

@@ -29,10 +29,8 @@ func Install() {
 		&model.User{},
 		&model.Config{},
 		&model.Menu{},
-		&model.File{},
-		&model.FileCategory{},
-		&model.Picture{},
-		&model.PictureCategory{},
+		&model.Attachment{},
+		&model.AttachmentCategory{},
 		&model.Permission{},
 		&model.Role{},
 		&model.Department{},
@@ -137,10 +135,11 @@ func Middleware(ctx *quark.Context) error {
 
 	// 记录操作日志
 	service.NewActionLogService().InsertGetId(model.ActionLog{
-		ObjectId: adminInfo.Id,
+		Uid:      adminInfo.Id,
+		Username: adminInfo.Username,
 		Url:      ctx.Path(),
 		Ip:       ctx.ClientIP(),
-		Type:     "admin",
+		Type:     "ADMIN",
 	})
 
 	return ctx.Next()

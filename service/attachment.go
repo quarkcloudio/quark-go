@@ -2,37 +2,40 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
 	"github.com/quarkcloudio/quark-go/v3/model"
+	"github.com/xuri/excelize/v2"
 )
 
-type PictureService struct{}
+type AttachmentService struct{}
 
 // 初始化
-func NewPictureService() *PictureService {
-	return &PictureService{}
+func NewAttachmentService() *AttachmentService {
+	return &AttachmentService{}
 }
 
 // 获取列表
-func (p *PictureService) GetListBySearch(appKey string, tokenString string, categoryId interface{}, name interface{}, startDate interface{}, endDate interface{}, page int) (list []model.Picture, total int64, Error error) {
-	pictures := []model.Picture{}
+func (p *AttachmentService) GetListBySearch(appKey string, tokenString string, attachmentType string, categoryId interface{}, name interface{}, startDate interface{}, endDate interface{}, page int) (list []model.Attachment, total int64, Error error) {
+	attachments := []model.Attachment{}
 
 	adminInfo, err := NewUserService().GetAuthUser(appKey, tokenString)
 	if err != nil {
-		return pictures, 0, err
+		return attachments, 0, err
 	}
 
-	query := db.Client.Model(&model.Picture{}).
+	query := db.Client.Model(&model.Attachment{}).
 		Where("status =?", 1).
-		Where("obj_type = ?", "ADMIN").
-		Where("obj_id", adminInfo.Id)
+		Where("source = ?", "ADMIN").
+		Where("uid", adminInfo.Id)
 
 	if categoryId != "" {
-		query.Where("picture_category_id =?", categoryId)
+		query.Where("category_id =?", categoryId)
 	}
 	if name != "" {
 		query.Where("name LIKE %?%", name)
@@ -46,55 +49,64 @@ func (p *PictureService) GetListBySearch(appKey string, tokenString string, cate
 		Order("id desc").
 		Limit(8).
 		Offset((page - 1) * 8).
-		Find(&pictures)
+		Find(&attachments)
 
-	for k, v := range pictures {
+	for k, v := range attachments {
 		v.Url = p.GetPath(v.Url) + "?timestamp=" + strconv.Itoa(int(time.Now().Unix()))
-		pictures[k] = v
+		attachments[k] = v
 	}
 
-	return pictures, total, nil
+	return attachments, total, nil
 }
 
 // 插入数据并返回ID
-func (p *PictureService) InsertGetId(picture model.Picture) (id int, Error error) {
-	err := db.Client.Create(&picture).Error
+func (p *AttachmentService) InsertGetId(attachment model.Attachment) (id int, Error error) {
+	err := db.Client.Create(&attachment).Error
 	if err != nil {
 		return id, err
 	}
 
-	return picture.Id, nil
+	return attachment.Id, nil
 }
 
 // 通过Id删除记录
-func (p *PictureService) DeleteById(id interface{}) error {
+func (p *AttachmentService) DeleteById(id interface{}) error {
 
-	return db.Client.Model(model.Picture{}).Where("id =?", id).Delete("").Error
+	return db.Client.Model(model.Attachment{}).Where("id =?", id).Delete("").Error
 }
 
 // 根据id查询文件信息
-func (p *PictureService) GetInfoById(id interface{}) (picture model.Picture, Error error) {
-	err := db.Client.Where("status = ?", 1).Where("id = ?", id).First(&picture).Error
+func (p *AttachmentService) GetInfoById(id interface{}) (attachment model.Attachment, Error error) {
+	err := db.Client.Where("status = ?", 1).Where("id = ?", id).First(&attachment).Error
 
-	return picture, err
+	return attachment, err
 }
 
 // 根据id更新文件信息
-func (p *PictureService) UpdateById(id interface{}, data model.Picture) (Error error) {
+func (p *AttachmentService) UpdateById(id interface{}, data model.Attachment) (Error error) {
 	err := db.Client.Where("status = ?", 1).Where("id = ?", id).Updates(&data).Error
 
 	return err
 }
 
 // 根据hash查询文件信息
-func (p *PictureService) GetInfoByHash(hash string) (picture model.Picture, Error error) {
-	err := db.Client.Where("status = ?", 1).Where("hash = ?", hash).First(&picture).Error
+func (p *AttachmentService) GetInfoByHash(hash string) (attachment model.Attachment, Error error) {
+	err := db.Client.Where("status = ?", 1).Where("hash = ?", hash).First(&attachment).Error
 
-	return picture, err
+	return attachment, err
 }
 
-// 获取图片路径
-func (p *PictureService) GetPath(id interface{}) string {
+// 获取附件路径，GetPath(1) 或者 GetPath("FILE", 1)
+func (p *AttachmentService) GetPath(params ...interface{}) string {
+	var id, attachmentType interface{}
+	if len(params) == 1 {
+		id = params[0]
+	}
+	if len(params) == 2 {
+		attachmentType = params[0].(string)
+		id = params[1]
+	}
+
 	http, path := "", ""
 	webSiteDomain := NewConfigService().GetValue("WEB_SITE_DOMAIN")
 	WebConfig := NewConfigService().GetValue("SSL_OPEN")
@@ -142,10 +154,10 @@ func (p *PictureService) GetPath(id interface{}) string {
 		}
 	}
 
-	picture := model.Picture{}
-	db.Client.Where("id", id).Where("status", 1).First(&picture)
-	if picture.Id != 0 {
-		path = picture.Url
+	attachment := model.Attachment{}
+	db.Client.Where("id", id).Where("status", 1).First(&attachment)
+	if attachment.Id != 0 {
+		path = attachment.Url
 		if strings.Contains(path, "//") {
 			return path
 		}
@@ -157,12 +169,24 @@ func (p *PictureService) GetPath(id interface{}) string {
 		// 如果设置域名，则加上域名前缀
 		return http + webSiteDomain + path
 	}
-
-	return http + webSiteDomain + "/admin/default.png"
+	if attachmentType == "IMAGE" {
+		return http + webSiteDomain + "/admin/default.png"
+	}
+	return ""
 }
 
-// 获取多图片路径
-func (p *PictureService) GetPaths(id interface{}) []string {
+// 获取文件路径
+func (p *AttachmentService) GetFilePath(id interface{}) string {
+	return p.GetPath("FILE", id)
+}
+
+// 获取图片路径
+func (p *AttachmentService) GetImagePath(id interface{}) string {
+	return p.GetPath("IMAGE", id)
+}
+
+// 获取多文件路径
+func (p *AttachmentService) GetPaths(id interface{}) []string {
 	var paths []string
 	http, path := "", ""
 	webSiteDomain := NewConfigService().GetValue("WEB_SITE_DOMAIN")
@@ -200,4 +224,41 @@ func (p *PictureService) GetPaths(id interface{}) []string {
 	}
 
 	return paths
+}
+
+// 获取Excel文件数据
+func (p *AttachmentService) GetExcelData(fileId int) (data [][]interface{}, Error error) {
+	file := model.Attachment{}
+	err := db.Client.Where("id", fileId).Where("status", 1).First(&file).Error
+	if err != nil {
+		return data, err
+	}
+	if file.Id == 0 {
+		return data, errors.New("参数错误！")
+	}
+
+	f, err := excelize.OpenFile(file.Path)
+	if err != nil {
+		return data, err
+	}
+	defer func() {
+		if err := f.Close(); err != nil {
+			fmt.Println(err)
+		}
+	}()
+
+	rows, err := f.GetRows("Sheet1")
+	if err != nil {
+		return data, err
+	}
+
+	for _, row := range rows {
+		getRows := []interface{}{}
+		for _, colCell := range row {
+			getRows = append(getRows, colCell)
+		}
+		data = append(data, getRows)
+	}
+
+	return data, err
 }

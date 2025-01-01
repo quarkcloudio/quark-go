@@ -7,8 +7,8 @@ import (
 // 字段
 type ActionLog struct {
 	Id        int               `json:"id" gorm:"autoIncrement"`
-	ObjectId  int               `json:"object_id" gorm:"size:11;not null"`
-	Username  string            `json:"username" gorm:"<-:false"`
+	Uid       int               `json:"uid" gorm:"size:11;not null"`
+	Username  string            `json:"username" gorm:"size:20"`
 	Url       string            `json:"url" gorm:"size:500;not null"`
 	Remark    string            `json:"remark" gorm:"size:255;not null"`
 	Ip        string            `json:"ip" gorm:"size:100;not null"`

@@ -60,9 +60,10 @@ func (p *Image) GetList(ctx *quark.Context) error {
 	endDate := ctx.Query("createtime[1]", "")
 	currentPage, _ := strconv.Atoi(page.(string))
 
-	pictures, total, err := service.NewPictureService().GetListBySearch(
+	pictures, total, err := service.NewAttachmentService().GetListBySearch(
 		ctx.Engine.GetConfig().AppKey,
 		ctx.Token(),
+		"IMAGE",
 		categoryId,
 		name,
 		startDate,
@@ -80,7 +81,7 @@ func (p *Image) GetList(ctx *quark.Context) error {
 		"total":          total,
 	}
 
-	categorys, err := service.NewPictureCategoryService().GetAuthList(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	categorys, err := service.NewAttachmentCategoryService().GetAuthList(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
@@ -100,7 +101,7 @@ func (p *Image) Delete(ctx *quark.Context) error {
 		return ctx.JSON(200, message.Error("参数错误！"))
 	}
 
-	err := service.NewPictureService().DeleteById(data["id"])
+	err := service.NewAttachmentService().DeleteById(data["id"])
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
@@ -123,7 +124,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 		return ctx.JSON(200, message.Error("参数错误！"))
 	}
 
-	pictureInfo, err := service.NewPictureService().GetInfoById(data["id"])
+	pictureInfo, err := service.NewAttachmentService().GetInfoById(data["id"])
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
@@ -225,24 +226,32 @@ func (p *Image) Crop(ctx *quark.Context) error {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 	if fileInfo != nil {
+		extra := ""
+		if fileInfo.Extra != nil {
+			extraData, err := json.Marshal(fileInfo.Extra)
+			if err == nil {
+				extra = string(extraData)
+			}
+		}
+
 		// 更新数据库
-		service.NewPictureService().UpdateById(pictureInfo.Id, model.Picture{
-			ObjType: "ADMIN",
-			ObjId:   adminInfo.Id,
-			Name:    fileInfo.Name,
-			Size:    fileInfo.Size,
-			Width:   fileInfo.Width,
-			Height:  fileInfo.Height,
-			Ext:     fileInfo.Ext,
-			Path:    fileInfo.Path,
-			Url:     fileInfo.Url,
-			Hash:    fileInfo.Hash,
-			Status:  1,
+		service.NewAttachmentService().UpdateById(pictureInfo.Id, model.Attachment{
+			Source: "ADMIN",
+			Uid:    adminInfo.Id,
+			Name:   fileInfo.Name,
+			Type:   "IMAGE",
+			Size:   fileInfo.Size,
+			Ext:    fileInfo.Ext,
+			Path:   fileInfo.Path,
+			Url:    fileInfo.Url,
+			Hash:   fileInfo.Hash,
+			Extra:  extra,
+			Status: 1,
 		})
 	}
 
 	result, err = getFileSystem.
-		WithImageWH().
+		WithImageExtra().
 		FileName(pictureInfo.Name).
 		Path(savePath).
 		Save()
@@ -252,22 +261,30 @@ func (p *Image) Crop(ctx *quark.Context) error {
 
 	// 重写url
 	if driver == quark.LocalStorage {
-		result.Url = service.NewPictureService().GetPath(result.Url)
+		result.Url = service.NewAttachmentService().GetImagePath(result.Url)
+	}
+
+	extra := ""
+	if result.Extra != nil {
+		extraData, err := json.Marshal(result.Extra)
+		if err == nil {
+			extra = string(extraData)
+		}
 	}
 
 	// 更新数据库
-	service.NewPictureService().UpdateById(pictureInfo.Id, model.Picture{
-		ObjType: "ADMIN",
-		ObjId:   adminInfo.Id,
-		Name:    result.Name,
-		Size:    result.Size,
-		Width:   result.Width,
-		Height:  result.Height,
-		Ext:     result.Ext,
-		Path:    result.Path,
-		Url:     result.Url,
-		Hash:    result.Hash,
-		Status:  1,
+	service.NewAttachmentService().UpdateById(pictureInfo.Id, model.Attachment{
+		Source: "ADMIN",
+		Uid:    adminInfo.Id,
+		Name:   result.Name,
+		Type:   "IMAGE",
+		Size:   result.Size,
+		Ext:    result.Ext,
+		Path:   result.Path,
+		Url:    result.Url,
+		Hash:   result.Hash,
+		Extra:  extra,
+		Status: 1,
 	})
 
 	return ctx.JSON(200, message.Success("操作成功", "", result))
@@ -280,20 +297,24 @@ func (p *Image) BeforeHandle(ctx *quark.Context, fileSystem *quark.FileSystem) (
 		return fileSystem, nil, err
 	}
 
-	pictureInfo, err := service.NewPictureService().GetInfoByHash(fileHash)
+	imageInfo, err := service.NewAttachmentService().GetInfoByHash(fileHash)
 	if err != nil {
 		return fileSystem, nil, err
 	}
-	if pictureInfo.Id != 0 {
+	if imageInfo.Id != 0 {
+		var extra map[string]interface{}
+		if imageInfo.Extra != "" {
+			_ = json.Unmarshal([]byte(imageInfo.Extra), &extra)
+		}
+
 		fileInfo := &quark.FileInfo{
-			Name:   pictureInfo.Name,
-			Size:   pictureInfo.Size,
-			Width:  pictureInfo.Width,
-			Height: pictureInfo.Height,
-			Ext:    pictureInfo.Ext,
-			Path:   pictureInfo.Path,
-			Url:    pictureInfo.Url,
-			Hash:   pictureInfo.Hash,
+			Name:  imageInfo.Name,
+			Size:  imageInfo.Size,
+			Ext:   imageInfo.Ext,
+			Path:  imageInfo.Path,
+			Url:   imageInfo.Url,
+			Hash:  imageInfo.Hash,
+			Extra: extra,
 		}
 
 		return fileSystem, fileInfo, err
@@ -311,7 +332,7 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 
 	// 重写url
 	if driver == quark.LocalStorage {
-		result.Url = service.NewPictureService().GetPath(result.Url)
+		result.Url = service.NewAttachmentService().GetImagePath(result.Url)
 	}
 
 	adminInfo, err := service.NewUserService().GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
@@ -319,19 +340,27 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
+	extra := ""
+	if result.Extra != nil {
+		extraData, err := json.Marshal(result.Extra)
+		if err == nil {
+			extra = string(extraData)
+		}
+	}
+
 	// 插入数据库
-	id, err := service.NewPictureService().InsertGetId(model.Picture{
-		ObjType: "ADMIN",
-		ObjId:   adminInfo.Id,
-		Name:    result.Name,
-		Size:    result.Size,
-		Width:   result.Width,
-		Height:  result.Height,
-		Ext:     result.Ext,
-		Path:    result.Path,
-		Url:     result.Url,
-		Hash:    result.Hash,
-		Status:  1,
+	id, err := service.NewAttachmentService().InsertGetId(model.Attachment{
+		Source: "ADMIN",
+		Uid:    adminInfo.Id,
+		Name:   result.Name,
+		Type:   "IMAGE",
+		Size:   result.Size,
+		Ext:    result.Ext,
+		Path:   result.Path,
+		Url:    result.Url,
+		Hash:   result.Hash,
+		Extra:  extra,
+		Status: 1,
 	})
 
 	if err != nil {
@@ -347,7 +376,6 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		Path:        result.Path,
 		Size:        result.Size,
 		Url:         result.Url,
-		Height:      result.Height,
-		Width:       result.Width,
+		Extra:       result.Extra,
 	}))
 }

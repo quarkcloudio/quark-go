@@ -5,16 +5,16 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/model"
 )
 
-type PictureCategoryService struct{}
+type AttachmentCategoryService struct{}
 
 // 初始化
-func NewPictureCategoryService() *PictureCategoryService {
-	return &PictureCategoryService{}
+func NewAttachmentCategoryService() *AttachmentCategoryService {
+	return &AttachmentCategoryService{}
 }
 
 // 获取列表
-func (p *PictureCategoryService) GetAuthList(appKey string, tokenString string) (list []model.PictureCategory, Error error) {
-	categorys := []model.PictureCategory{}
+func (p *AttachmentCategoryService) GetAuthList(appKey string, tokenString string) (list []model.AttachmentCategory, Error error) {
+	categorys := []model.AttachmentCategory{}
 
 	adminInfo, err := NewUserService().GetAuthUser(appKey, tokenString)
 	if err != nil {
@@ -22,8 +22,8 @@ func (p *PictureCategoryService) GetAuthList(appKey string, tokenString string) 
 	}
 
 	err = db.Client.
-		Where("obj_type = ?", "ADMIN").
-		Where("obj_id", adminInfo.Id).
+		Where("source = ?", "ADMIN").
+		Where("uid", adminInfo.Id).
 		Find(&categorys).Error
 	if err != nil {
 		return categorys, err

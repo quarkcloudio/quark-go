@@ -62,7 +62,7 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 	model := db.Client.Model(modelInstance)
 
 	// 获取导入数据
-	importData, err := service.NewFileService().GetExcelData(fileId)
+	importData, err := service.NewAttachmentService().GetExcelData(fileId)
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}

@@ -1,6 +1,7 @@
 package upload
 
 import (
+	"encoding/json"
 	"reflect"
 	"time"
 
@@ -40,19 +41,26 @@ func (p *Image) BeforeHandle(ctx *quark.Context, fileSystem *quark.FileSystem) (
 		return fileSystem, nil, err
 	}
 
-	pictureInfo, _ := service.NewPictureService().GetInfoByHash(fileHash)
-	if pictureInfo.Id != 0 {
-		fileInfo := &quark.FileInfo{
-			Name:   pictureInfo.Name,
-			Size:   pictureInfo.Size,
-			Width:  pictureInfo.Width,
-			Height: pictureInfo.Height,
-			Ext:    pictureInfo.Ext,
-			Path:   pictureInfo.Path,
-			Url:    pictureInfo.Url,
-			Hash:   pictureInfo.Hash,
+	imageInfo, err := service.NewAttachmentService().GetInfoByHash(fileHash)
+	if err != nil {
+		return fileSystem, nil, err
+	}
+
+	if imageInfo.Id != 0 {
+		var extra map[string]interface{}
+		if imageInfo.Extra != "" {
+			_ = json.Unmarshal([]byte(imageInfo.Extra), &extra)
 		}
 
+		fileInfo := &quark.FileInfo{
+			Name:  imageInfo.Name,
+			Size:  imageInfo.Size,
+			Ext:   imageInfo.Ext,
+			Path:  imageInfo.Path,
+			Url:   imageInfo.Url,
+			Hash:  imageInfo.Hash,
+			Extra: extra,
+		}
 		return fileSystem, fileInfo, err
 	}
 
@@ -68,19 +76,27 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 
 	// 重写url
 	if driver == quark.LocalStorage {
-		result.Url = service.NewPictureService().GetPath(result.Url)
+		result.Url = service.NewAttachmentService().GetPath(result.Url)
+	}
+
+	extra := ""
+	if result.Extra != nil {
+		extraData, err := json.Marshal(result.Extra)
+		if err == nil {
+			extra = string(extraData)
+		}
 	}
 
 	// 插入数据库
-	id, err := service.NewPictureService().InsertGetId(model.Picture{
+	id, err := service.NewAttachmentService().InsertGetId(model.Attachment{
 		Name:   result.Name,
+		Type:   "IMAGE",
 		Size:   result.Size,
-		Width:  result.Width,
-		Height: result.Height,
 		Ext:    result.Ext,
 		Path:   result.Path,
 		Url:    result.Url,
 		Hash:   result.Hash,
+		Extra:  extra,
 		Status: 1,
 	})
 
@@ -93,11 +109,10 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		"contentType": result.ContentType,
 		"ext":         result.Ext,
 		"hash":        result.Hash,
-		"height":      result.Height,
-		"width":       result.Width,
 		"name":        result.Name,
 		"path":        result.Path,
 		"size":        result.Size,
 		"url":         result.Url,
+		"extra":       result.Extra,
 	})
 }

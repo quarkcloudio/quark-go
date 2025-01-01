@@ -169,21 +169,19 @@ type File struct {
 	ContentType string              // 文件类型
 	Content     []byte              // 文件内容
 	Hash        string              // 文件哈希值
-	Width       int                 // 如果为图片，则返回宽度
-	Height      int                 // 如果为图片，则返回高度
+	Extra       interface{}         // 文件扩展信息
 }
 
 // 文件信息
 type FileInfo struct {
-	Name        string `json:"name"`        // 文件名称
-	Size        int64  `json:"size"`        // 文件大小
-	Ext         string `json:"ext"`         // 文件扩展名
-	ContentType string `json:"contentType"` // 文件类型
-	Path        string `json:"path"`        // 上传路径
-	Url         string `json:"url"`         // Url路径
-	Hash        string `json:"hash"`        // 文件哈希值
-	Width       int    `json:"width"`       // 如果为图片，则返回宽度
-	Height      int    `json:"height"`      // 如果为图片，则返回高度
+	Name        string      `json:"name"`        // 文件名称
+	Size        int64       `json:"size"`        // 文件大小
+	Ext         string      `json:"ext"`         // 文件扩展名
+	ContentType string      `json:"contentType"` // 文件类型
+	Path        string      `json:"path"`        // 上传路径
+	Url         string      `json:"url"`         // Url路径
+	Hash        string      `json:"hash"`        // 文件哈希值
+	Extra       interface{} `json:"extra"`       // 文件扩展信息
 }
 
 // 结构体
@@ -273,7 +271,7 @@ func (p *FileSystem) LimitImageHeight(limitImageHeight int) *FileSystem {
 }
 
 // 读取图片宽高
-func (p *FileSystem) WithImageWH() *FileSystem {
+func (p *FileSystem) WithImageExtra() *FileSystem {
 	byteReader := bytes.NewReader(p.File.Content)
 	imageConfig, _, err := image.DecodeConfig(byteReader)
 	if err != nil {
@@ -281,8 +279,10 @@ func (p *FileSystem) WithImageWH() *FileSystem {
 		return p
 	}
 
-	p.File.Width = imageConfig.Width
-	p.File.Height = imageConfig.Height
+	p.File.Extra = map[string]interface{}{
+		"width":  imageConfig.Width,
+		"height": imageConfig.Height,
+	}
 
 	return p
 }
@@ -662,8 +662,7 @@ func (p *FileSystem) Save() (fileInfo *FileInfo, err error) {
 		p.Config.SavePath + p.Config.SaveName,
 		fileUrl,
 		p.File.Hash,
-		p.File.Width,
-		p.File.Height,
+		p.File.Extra,
 	}
 
 	return fileInfo, err

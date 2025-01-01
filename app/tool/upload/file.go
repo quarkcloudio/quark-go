@@ -1,10 +1,12 @@
 package upload
 
 import (
+	"encoding/json"
 	"reflect"
 	"time"
 
 	"github.com/quarkcloudio/quark-go/v3"
+	"github.com/quarkcloudio/quark-go/v3/dto/response"
 	"github.com/quarkcloudio/quark-go/v3/model"
 	"github.com/quarkcloudio/quark-go/v3/service"
 	"github.com/quarkcloudio/quark-go/v3/template/tool/upload"
@@ -52,17 +54,25 @@ func (p *File) BeforeHandle(ctx *quark.Context, fileSystem *quark.FileSystem) (*
 		return fileSystem, nil, err
 	}
 
-	getFileInfo, _ := service.NewFileService().GetInfoByHash(fileHash)
-	if getFileInfo.Id != 0 {
-		fileInfo := &quark.FileInfo{
-			Name: getFileInfo.Name,
-			Size: getFileInfo.Size,
-			Ext:  getFileInfo.Ext,
-			Path: getFileInfo.Path,
-			Url:  getFileInfo.Url,
-			Hash: getFileInfo.Hash,
-		}
+	fileInfo, err := service.NewAttachmentService().GetInfoByHash(fileHash)
+	if err != nil {
+		return fileSystem, nil, err
+	}
 
+	if fileInfo.Id != 0 {
+		var extra map[string]interface{}
+		if fileInfo.Extra != "" {
+			_ = json.Unmarshal([]byte(fileInfo.Extra), &extra)
+		}
+		fileInfo := &quark.FileInfo{
+			Name:  fileInfo.Name,
+			Size:  fileInfo.Size,
+			Ext:   fileInfo.Ext,
+			Path:  fileInfo.Path,
+			Url:   fileInfo.Url,
+			Hash:  fileInfo.Hash,
+			Extra: extra,
+		}
 		return fileSystem, fileInfo, err
 	}
 
@@ -78,31 +88,42 @@ func (p *File) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 
 	// 重写url
 	if driver == quark.LocalStorage {
-		result.Url = service.NewFileService().GetPath(result.Url)
+		result.Url = service.NewAttachmentService().GetFilePath(result.Url)
+	}
+
+	extra := ""
+	if result.Extra != nil {
+		extraData, err := json.Marshal(result.Extra)
+		if err == nil {
+			extra = string(extraData)
+		}
 	}
 
 	// 插入数据库
-	id, err := service.NewFileService().InsertGetId(model.File{
+	id, err := service.NewAttachmentService().InsertGetId(model.Attachment{
 		Name:   result.Name,
+		Type:   "IMAGE",
 		Size:   result.Size,
 		Ext:    result.Ext,
 		Path:   result.Path,
 		Url:    result.Url,
 		Hash:   result.Hash,
+		Extra:  extra,
 		Status: 1,
 	})
 	if err != nil {
 		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.JSONOk("上传成功", map[string]interface{}{
-		"id":          id,
-		"contentType": result.ContentType,
-		"ext":         result.Ext,
-		"hash":        result.Hash,
-		"name":        result.Name,
-		"path":        result.Path,
-		"size":        result.Size,
-		"url":         result.Url,
+	return ctx.JSONOk("上传成功", response.UploadFileResp{
+		Id:          id,
+		ContentType: result.ContentType,
+		Ext:         result.Ext,
+		Hash:        result.Hash,
+		Name:        result.Name,
+		Path:        result.Path,
+		Size:        result.Size,
+		Url:         result.Url,
+		Extra:       result.Extra,
 	})
 }

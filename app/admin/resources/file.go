@@ -6,6 +6,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/app/admin/searches"
 	"github.com/quarkcloudio/quark-go/v3/model"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
+	"gorm.io/gorm"
 )
 
 type File struct {
@@ -19,12 +20,17 @@ func (p *File) Init(ctx *quark.Context) interface{} {
 	p.Title = "文件"
 
 	// 模型
-	p.Model = &model.File{}
+	p.Model = &model.Attachment{}
 
 	// 分页
 	p.PageSize = 10
 
 	return p
+}
+
+// 列表查询
+func (p *File) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
+	return query.Where("type = ?", "FILE")
 }
 
 // 字段

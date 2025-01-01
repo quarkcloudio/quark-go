@@ -169,7 +169,7 @@ func (p *Template) Handle(ctx *quark.Context) error {
 			}
 
 			result, err = getFileSystem.
-				WithImageWH().
+				WithImageExtra().
 				RandName().
 				Path(savePath).
 				Save()
@@ -261,7 +261,7 @@ func (p *Template) HandleFromBase64(ctx *quark.Context) error {
 	}
 
 	result, err = getFileSystem.
-		WithImageWH().
+		WithImageExtra().
 		RandName().
 		Path(savePath).
 		Save()

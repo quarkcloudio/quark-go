@@ -22,7 +22,7 @@ func (p *Index) Cards(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		&metrics.TotalAdmin{},
 		&metrics.TotalLog{},
-		&metrics.TotalPicture{},
+		&metrics.TotalImage{},
 		&metrics.TotalFile{},
 		&metrics.SystemInfo{},
 		&metrics.TeamInfo{},

@@ -7,12 +7,12 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/template/admin/dashboard/metrics"
 )
 
-type TotalPicture struct {
+type TotalImage struct {
 	metrics.Value
 }
 
 // 初始化
-func (p *TotalPicture) Init() *TotalPicture {
+func (p *TotalImage) Init() *TotalImage {
 	p.Title = "图片数量"
 	p.Col = 6
 
@@ -20,10 +20,10 @@ func (p *TotalPicture) Init() *TotalPicture {
 }
 
 // 计算数值
-func (p *TotalPicture) Calculate() *statistic.Component {
+func (p *TotalImage) Calculate() *statistic.Component {
 
 	return p.
 		Init().
-		Count(db.Client.Model(&model.Picture{})).
+		Count(db.Client.Model(&model.Attachment{}).Where("type = ?", "IMAGE")).
 		SetValueStyle(map[string]string{"color": "#cf1322"})
 }

@@ -97,7 +97,7 @@ func (p *UserService) GetInfoById(id interface{}) (admin model.User, Error error
 func (p *UserService) GetInfoByUsername(username string) (admin model.User, Error error) {
 	err := db.Client.Where("status = ?", 1).Where("username = ?", username).First(&admin).Error
 	if admin.Avatar != "" {
-		admin.Avatar = NewPictureService().GetPath(admin.Avatar) // 获取头像地址
+		admin.Avatar = NewAttachmentService().GetImagePath(admin.Avatar) // 获取头像地址
 	}
 
 	return admin, err
