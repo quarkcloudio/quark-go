@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/quarkcloudio/quark-go/v3"
+	"github.com/quarkcloudio/quark-go/v3/dto/response"
 	"github.com/quarkcloudio/quark-go/v3/model"
 	"github.com/quarkcloudio/quark-go/v3/service"
 	"github.com/quarkcloudio/quark-go/v3/template/tool/upload"
@@ -104,15 +105,15 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.JSONOk("上传成功", map[string]interface{}{
-		"id":          id,
-		"contentType": result.ContentType,
-		"ext":         result.Ext,
-		"hash":        result.Hash,
-		"name":        result.Name,
-		"path":        result.Path,
-		"size":        result.Size,
-		"url":         result.Url,
-		"extra":       result.Extra,
+	return ctx.JSONOk("上传成功", response.UploadResp{
+		Id:          id,
+		ContentType: result.ContentType,
+		Ext:         result.Ext,
+		Hash:        result.Hash,
+		Name:        result.Name,
+		Path:        result.Path,
+		Size:        result.Size,
+		Url:         result.Url,
+		Extra:       result.Extra,
 	})
 }

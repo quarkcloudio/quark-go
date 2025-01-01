@@ -124,7 +124,7 @@ func (p *File) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
-	return ctx.JSON(200, message.Success("上传成功", "", response.UploadFileResp{
+	return ctx.JSON(200, message.Success("上传成功", "", response.UploadResp{
 		Id:          id,
 		ContentType: result.ContentType,
 		Ext:         result.Ext,
