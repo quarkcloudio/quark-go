@@ -102,7 +102,7 @@ func (p *File) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 	// 插入数据库
 	id, err := service.NewAttachmentService().InsertGetId(model.Attachment{
 		Name:   result.Name,
-		Type:   "IMAGE",
+		Type:   "FILE",
 		Size:   result.Size,
 		Ext:    result.Ext,
 		Path:   result.Path,
