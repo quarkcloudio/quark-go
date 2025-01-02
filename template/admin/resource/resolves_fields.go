@@ -284,6 +284,8 @@ func (p *Template) fieldToColumn(ctx *quark.Context, field interface{}) interfac
 		}
 	case "imageField":
 		column = column.SetValueType("image")
+	case "imagePickerField":
+		column = column.SetValueType("image")
 	default:
 		column = column.SetValueType(component)
 	}

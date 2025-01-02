@@ -8,6 +8,7 @@ import (
 
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
+	"github.com/quarkcloudio/quark-go/v3/service"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/types"
 )
 
@@ -181,22 +182,28 @@ func (p *IndexRequest) performsList(ctx *quark.Context, lists []map[string]inter
 					component := reflect.
 						ValueOf(field).
 						Elem().
-						FieldByName("Component").String()
+						FieldByName("Component").
+						String()
 
+					// 单独解析时间和日期组件
 					if component == "datetimeField" || component == "dateField" {
 						format := reflect.
 							ValueOf(field).
 							Elem().
-							FieldByName("Format").String()
-
+							FieldByName("Format").
+							String()
 						format = strings.Replace(format, "YYYY", "2006", -1)
 						format = strings.Replace(format, "MM", "01", -1)
 						format = strings.Replace(format, "DD", "02", -1)
 						format = strings.Replace(format, "HH", "15", -1)
 						format = strings.Replace(format, "mm", "04", -1)
 						format = strings.Replace(format, "ss", "05", -1)
-
 						fieldValue = v[name].(time.Time).Format(format)
+					}
+
+					// 单独解析图片、图片选择器组件
+					if component == "imageField" || component == "imagePickerField" {
+						fieldValue = service.NewAttachmentService().GetImagePath(v[name].(string))
 					}
 
 					fields[name] = fieldValue
