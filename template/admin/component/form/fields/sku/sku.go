@@ -121,7 +121,7 @@ func (p *Component) Init() *Component {
 	}
 	p.OptionItem = OptionItem{
 		Title:             "操作",
-		DataIndex:         "is_show",
+		DataIndex:         "status",
 		Width:             150,
 		Fixed:             "right",
 		CheckedChildren:   "显示",
