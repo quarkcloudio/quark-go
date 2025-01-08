@@ -40,9 +40,6 @@ func (p *EditRequest) FillData(ctx *quark.Context) map[string]interface{} {
 	// 获取字段
 	updateFields := template.UpdateFields(ctx)
 
-	// 给实例的Field属性赋值
-	template.SetField(result)
-
 	// 解析字段值
 	fields := make(map[string]interface{})
 	for _, field := range updateFields.([]interface{}) {

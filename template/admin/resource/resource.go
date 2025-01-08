@@ -32,28 +32,27 @@ const (
 // 增删改查模板
 type Template struct {
 	quark.Template
-	Title                  string                 // 页面标题
-	SubTitle               string                 // 页面子标题
-	BackIcon               bool                   // 页面是否携带返回Icon
-	Form                   *form.Component        // 表单页Form实例
-	Table                  *table.Component       // 列表页Table实例
-	TableSearch            *table.Search          // 列表Table组件中的搜索实例
-	TableColumn            *table.Column          // 列表Table组件中的Column实例
-	TableToolBar           *table.ToolBar         // 列表Table组件中的ToolBar实例
-	TableTreeBar           *table.TreeBar         // 列表Table组件中的TreeBar实例
-	TableTitleSuffix       string                 // 列表页表格标题后缀
-	TableActionColumnTitle string                 // 列表页表格行为列显示文字，既字段的列名
-	TableActionColumnWidth int                    // 列表页表格行为列的宽度
-	TablePolling           int                    // 列表页表格是否轮询数据
-	TableListToTree        interface{}            // 列表页数据转换为树形结构, true 或者 map[string]interface{}{"pkName": "id",""pidName": "pid","childrenName": "children","rootId":0}
-	PageSize               interface{}            // 列表页分页配置
-	PageSizeOptions        []int                  // 指定每页可以显示多少条，[10, 20, 50, 100]
-	QueryOrder             string                 // 全局排序规则
-	IndexQueryOrder        string                 // 列表页排序规则
-	ExportQueryOrder       string                 // 导出数据排序规则
-	Model                  interface{}            // 挂载模型
-	Field                  map[string]interface{} // 注入的字段数据
-	WithExport             bool                   // 是否具有导出功能
+	Title                  string           // 页面标题
+	SubTitle               string           // 页面子标题
+	BackIcon               bool             // 页面是否携带返回Icon
+	Form                   *form.Component  // 表单页Form实例
+	Table                  *table.Component // 列表页Table实例
+	TableSearch            *table.Search    // 列表Table组件中的搜索实例
+	TableColumn            *table.Column    // 列表Table组件中的Column实例
+	TableToolBar           *table.ToolBar   // 列表Table组件中的ToolBar实例
+	TableTreeBar           *table.TreeBar   // 列表Table组件中的TreeBar实例
+	TableTitleSuffix       string           // 列表页表格标题后缀
+	TableActionColumnTitle string           // 列表页表格行为列显示文字，既字段的列名
+	TableActionColumnWidth int              // 列表页表格行为列的宽度
+	TablePolling           int              // 列表页表格是否轮询数据
+	TableListToTree        interface{}      // 列表页数据转换为树形结构, true 或者 map[string]interface{}{"pkName": "id",""pidName": "pid","childrenName": "children","rootId":0}
+	PageSize               interface{}      // 列表页分页配置
+	PageSizeOptions        []int            // 指定每页可以显示多少条，[10, 20, 50, 100]
+	QueryOrder             string           // 全局排序规则
+	IndexQueryOrder        string           // 列表页排序规则
+	ExportQueryOrder       string           // 导出数据排序规则
+	Model                  interface{}      // 挂载模型
+	WithExport             bool             // 是否具有导出功能
 }
 
 // 初始化
@@ -223,21 +222,9 @@ func (p *Template) GetExportQueryOrder() string {
 	return p.ExportQueryOrder
 }
 
-// 获取注入的字段数据
-func (p *Template) GetField() map[string]interface{} {
-	return p.Field
-}
-
 // 获取是否具有导出功能
 func (p *Template) GetWithExport() bool {
 	return p.WithExport
-}
-
-// 设置单列字段
-func (p *Template) SetField(fieldData map[string]interface{}) interface{} {
-	p.Field = fieldData
-
-	return p
 }
 
 // 字段

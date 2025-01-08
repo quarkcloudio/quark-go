@@ -13,17 +13,11 @@ func NewAttachmentCategoryService() *AttachmentCategoryService {
 }
 
 // 获取列表
-func (p *AttachmentCategoryService) GetAuthList(appKey string, tokenString string) (list []model.AttachmentCategory, Error error) {
+func (p *AttachmentCategoryService) GetList(adminId interface{}) (list []model.AttachmentCategory, Error error) {
 	categorys := []model.AttachmentCategory{}
-
-	adminInfo, err := NewUserService().GetAuthUser(appKey, tokenString)
-	if err != nil {
-		return categorys, err
-	}
-
-	err = db.Client.
+	err := db.Client.
 		Where("source = ?", "ADMIN").
-		Where("uid", adminInfo.Id).
+		Where("uid", adminId).
 		Find(&categorys).Error
 	if err != nil {
 		return categorys, err

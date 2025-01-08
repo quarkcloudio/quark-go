@@ -72,14 +72,8 @@ type Resourcer interface {
 	// 获取导出数据排序规则
 	GetExportQueryOrder() string
 
-	// 获取注入的字段数据
-	GetField() map[string]interface{}
-
 	// 获取是否具有导出功能
 	GetWithExport() bool
-
-	// 设置单列字段
-	SetField(fieldData map[string]interface{}) interface{}
 
 	// 数据导出前回调
 	BeforeExporting(ctx *quark.Context, list []map[string]interface{}) []interface{}

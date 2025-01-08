@@ -173,10 +173,6 @@ func (p *ExportRequest) performsList(ctx *quark.Context, lists []map[string]inte
 
 	// 解析字段
 	for _, v := range lists {
-
-		// 给实例的Field属性赋值
-		template.SetField(v)
-
 		fields := make(map[string]interface{})
 		for _, field := range exportFields.([]interface{}) {
 
@@ -189,10 +185,8 @@ func (p *ExportRequest) performsList(ctx *quark.Context, lists []map[string]inte
 
 			// 获取实例的回调函数
 			callback := field.(interface{ GetCallback() interface{} }).GetCallback()
-
 			if callback != nil {
-				getCallback := callback.(func() interface{})
-				fields[name] = getCallback()
+				fields[name] = callback.(func(map[string]interface{}) interface{})(v)
 			} else {
 				if v[name] != nil {
 					var fieldValue interface{}

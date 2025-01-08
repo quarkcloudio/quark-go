@@ -8,7 +8,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/app/admin/logins"
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
-	"github.com/quarkcloudio/quark-go/v3/dto"
 	"github.com/quarkcloudio/quark-go/v3/model"
 	"github.com/quarkcloudio/quark-go/v3/service"
 	"github.com/quarkcloudio/quark-go/v3/utils/file"
@@ -90,23 +89,12 @@ func Middleware(ctx *quark.Context) error {
 		return ctx.Next()
 	}
 
-	// 定义管理员结构体
-	adminInfo := &dto.UserClaims{}
-
-	// 获取登录管理员信息
-	err := ctx.JwtAuthUser(adminInfo)
+	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
 	if err != nil {
 		return ctx.JSON(401, quark.Error(err.Error()))
 	}
 
-	guardName := adminInfo.GuardName
-	if guardName != "admin" {
-		return ctx.JSON(401, quark.Error("401 Unauthozied"))
-	}
-
 	casbinService := service.NewCasbinService()
-
-	// 管理员id
 	if adminInfo.Id != 1 {
 		result1, err := casbinService.Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.FullPath(), "Any")
 		if err != nil {

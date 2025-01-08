@@ -43,16 +43,16 @@ func (p *Image) Fields(ctx *quark.Context) []interface{} {
 
 	return []interface{}{
 		field.ID("id", "ID"),
-		field.Text("path", "显示", func() interface{} {
-			return "<img src='" + service.NewAttachmentService().GetImagePath(p.Field["id"]) + "' width=50 height=50 />"
+		field.Text("path", "显示", func(row map[string]interface{}) interface{} {
+			return "<img src='" + service.NewAttachmentService().GetImagePath(row["id"]) + "' width=50 height=50 />"
 		}),
 		field.Text("name", "名称").SetEllipsis(true),
 		field.Text("size", "大小").SetSorter(true),
-		field.Text("extra", "尺寸", func() interface{} {
+		field.Text("extra", "尺寸", func(row map[string]interface{}) interface{} {
 			var extra map[string]interface{}
 			var extraInfo string
-			if p.Field["extra"] != "" {
-				err := json.Unmarshal([]byte(p.Field["extra"].(string)), &extra)
+			if row["extra"] != "" {
+				err := json.Unmarshal([]byte(row["extra"].(string)), &extra)
 				if err == nil && extra["width"] != nil && extra["height"] != nil {
 					extraInfo = fmt.Sprintf("%d*%d", int(extra["width"].(float64)), int(extra["height"].(float64)))
 				}

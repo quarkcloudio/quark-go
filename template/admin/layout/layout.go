@@ -215,17 +215,13 @@ func (p *Template) GetRightMenus() []interface{} {
 
 // 获取当前登录用户菜单
 func (p *Template) GetMenus(ctx *quark.Context) (list interface{}, err error) {
-	config := ctx.Engine.GetConfig()
-	userService := service.NewUserService()
-
-	// 获取登录管理员信息
-	adminInfo, err := userService.GetAuthUser(config.AppKey, ctx.Token())
+	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
 	if err != nil {
 		return nil, err
 	}
 
 	// 获取管理员菜单
-	return userService.GetMenuListById(adminInfo.Id)
+	return service.NewUserService().GetMenuListById(adminInfo.Id)
 }
 
 // 组件渲染

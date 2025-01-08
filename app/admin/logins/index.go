@@ -10,9 +10,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/login"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
-	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
-	"github.com/quarkcloudio/quark-go/v3/utils/hash"
-	"gorm.io/gorm"
 )
 
 type Index struct {
@@ -98,30 +95,12 @@ func (p *Index) Handle(ctx *quark.Context) error {
 	if loginRequest.Username == "" || loginRequest.Password == "" {
 		return ctx.JSON(200, message.Error("用户名或密码不能为空"))
 	}
-
-	adminInfo, err := service.NewUserService().GetInfoByUsername(loginRequest.Username)
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return ctx.JSON(200, message.Error("用户不存在"))
-		}
-		return ctx.JSON(200, message.Error(err.Error()))
-	}
-
-	// 检验账号和密码
-	if !hash.Check(adminInfo.Password, loginRequest.Password) {
-		return ctx.JSON(200, message.Error("用户名或密码错误"))
-	}
-
-	// 更新登录信息
-	service.NewUserService().UpdateLastLogin(adminInfo.Id, ctx.ClientIP(), datetime.Now())
-
-	// 获取token字符串
-	tokenString, err := ctx.JwtToken(service.NewUserService().GetAdminClaims(adminInfo))
+	token, err := service.NewAuthService(ctx).AdminLogin(loginRequest.Username, loginRequest.Password)
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	return ctx.JSON(200, message.Success("登录成功", "", map[string]string{
-		"token": tokenString,
+		"token": token,
 	}))
 }

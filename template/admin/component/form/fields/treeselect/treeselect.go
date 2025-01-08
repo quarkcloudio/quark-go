@@ -775,7 +775,7 @@ func (p *Component) GetOptions() []TreeData {
 }
 
 // 设置回调函数
-func (p *Component) SetCallback(closure func() interface{}) *Component {
+func (p *Component) SetCallback(closure func(map[string]interface{}) interface{}) *Component {
 	if closure != nil {
 		p.Callback = closure
 	}

@@ -93,7 +93,7 @@ func (p *File) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		result.Url = service.NewAttachmentService().GetFilePath(result.Url)
 	}
 
-	adminInfo, err := service.NewUserService().GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}

@@ -21,18 +21,13 @@ func NewAttachmentService() *AttachmentService {
 }
 
 // 获取列表
-func (p *AttachmentService) GetListBySearch(appKey string, tokenString string, attachmentType string, categoryId interface{}, name interface{}, startDate interface{}, endDate interface{}, page int) (list []model.Attachment, total int64, Error error) {
+func (p *AttachmentService) GetListBySearch(adminId interface{}, attachmentType string, categoryId interface{}, name interface{}, startDate interface{}, endDate interface{}, page int) (list []model.Attachment, total int64, Error error) {
 	attachments := []model.Attachment{}
-
-	adminInfo, err := NewUserService().GetAuthUser(appKey, tokenString)
-	if err != nil {
-		return attachments, 0, err
-	}
 
 	query := db.Client.Model(&model.Attachment{}).
 		Where("status =?", 1).
 		Where("source = ?", "ADMIN").
-		Where("uid", adminInfo.Id)
+		Where("uid", adminId)
 
 	if categoryId != "" {
 		query.Where("category_id =?", categoryId)

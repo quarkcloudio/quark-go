@@ -15,15 +15,10 @@ func Middleware(ctx *quark.Context) error {
 		return ctx.Next()
 	}
 
-	// 获取登录信息
-	userInfo, err := service.NewUserService().GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	// 获取用户信息
+	_, err := service.NewAuthService(ctx).GetUser()
 	if err != nil {
 		return ctx.JSON(401, quark.Error(err.Error()))
-	}
-
-	guardName := userInfo.GuardName
-	if guardName != "user" {
-		return ctx.JSON(401, quark.Error("401 Unauthozied"))
 	}
 
 	return ctx.Next()

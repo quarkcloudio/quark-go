@@ -40,9 +40,6 @@ func (p *DetailRequest) FillData(ctx *quark.Context) map[string]interface{} {
 	// 获取字段
 	detailFields := template.DetailFields(ctx)
 
-	// 给实例的Field属性赋值
-	template.SetField(result)
-
 	// 解析字段值
 	fields := make(map[string]interface{})
 	for _, field := range detailFields.([]interface{}) {
@@ -53,11 +50,9 @@ func (p *DetailRequest) FillData(ctx *quark.Context) map[string]interface{} {
 			Elem().
 			FieldByName("Name").String()
 
-		// 获取实例的回调函数
 		callback := field.(interface{ GetCallback() interface{} }).GetCallback()
 		if callback != nil {
-			getCallback := callback.(func() interface{})
-			fields[name] = getCallback()
+			fields[name] = callback.(func(map[string]interface{}) interface{})(result)
 		} else {
 			if result[name] != nil {
 				var fieldValue interface{}

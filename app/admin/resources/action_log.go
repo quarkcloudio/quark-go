@@ -39,8 +39,8 @@ func (p *ActionLog) Fields(ctx *quark.Context) []interface{} {
 
 	return []interface{}{
 		field.ID("id", "ID"),
-		field.Text("username", "用户信息", func() interface{} {
-			userInfo, err := service.NewUserService().GetInfoById(p.Field["uid"])
+		field.Text("username", "用户信息", func(row map[string]interface{}) interface{} {
+			userInfo, err := service.NewUserService().GetInfoById(row["uid"])
 			if err != nil {
 				return ""
 			}

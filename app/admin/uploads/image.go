@@ -51,7 +51,7 @@ func (p *Image) RouteInit() interface{} {
 	return p
 }
 
-// 获取文件列表n
+// 获取文件列表
 func (p *Image) GetList(ctx *quark.Context) error {
 	page := ctx.Query("page", "1")
 	categoryId := ctx.Query("categoryId", "")
@@ -60,9 +60,9 @@ func (p *Image) GetList(ctx *quark.Context) error {
 	endDate := ctx.Query("createtime[1]", "")
 	currentPage, _ := strconv.Atoi(page.(string))
 
+	adminInfo, _ := service.NewAuthService(ctx).GetAdmin()
 	pictures, total, err := service.NewAttachmentService().GetListBySearch(
-		ctx.Engine.GetConfig().AppKey,
-		ctx.Token(),
+		adminInfo.Id,
 		"IMAGE",
 		categoryId,
 		name,
@@ -81,7 +81,7 @@ func (p *Image) GetList(ctx *quark.Context) error {
 		"total":          total,
 	}
 
-	categorys, err := service.NewAttachmentCategoryService().GetAuthList(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	categorys, err := service.NewAttachmentCategoryService().GetList(adminInfo.Id)
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
@@ -132,7 +132,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 		return ctx.JSON(200, message.Error("文件不存在"))
 	}
 
-	adminInfo, err := service.NewUserService().GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
@@ -335,7 +335,7 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		result.Url = service.NewAttachmentService().GetImagePath(result.Url)
 	}
 
-	adminInfo, err := service.NewUserService().GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}

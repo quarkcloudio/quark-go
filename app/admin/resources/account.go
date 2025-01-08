@@ -82,7 +82,7 @@ func (p *Account) Actions(ctx *quark.Context) []interface{} {
 // 表单显示前回调
 func (p *Account) BeforeFormShowing(ctx *quark.Context) map[string]interface{} {
 	data := map[string]interface{}{}
-	adminInfo, _ := service.NewUserService().GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	adminInfo, _ := service.NewAuthService(ctx).GetAdmin()
 	db.Client.
 		Model(p.Model).
 		Where("id = ?", adminInfo.Id).
@@ -100,7 +100,7 @@ func (p *Account) FormHandle(ctx *quark.Context, query *gorm.DB, data map[string
 		data["password"] = hash.Make(data["password"].(string))
 	}
 	// 获取登录管理员信息
-	adminInfo, err := service.NewUserService().GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
