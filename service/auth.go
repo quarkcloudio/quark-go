@@ -21,7 +21,7 @@ func NewAuthService(ctx *quark.Context) *AuthService {
 }
 
 // 生成用户token
-func (p *AuthService) MakeToken(user model.User, guardName string, expire int) (token string, err error) {
+func (p *AuthService) MakeToken(user model.User, guardName string, expireSecond int) (token string, err error) {
 	userClaims := &dto.UserClaims{
 		Id:        user.Id,
 		Username:  user.Username,
@@ -32,11 +32,11 @@ func (p *AuthService) MakeToken(user model.User, guardName string, expire int) (
 		Avatar:    user.Avatar,
 		GuardName: guardName,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(expire) * time.Second)), // 过期时间，默认24小时
-			IssuedAt:  jwt.NewNumericDate(time.Now()),                                          // 颁发时间
-			NotBefore: jwt.NewNumericDate(time.Now()),                                          // 不早于时间
-			Issuer:    "QuarkCloud",                                                            // 颁发人
-			Subject:   "UserToken",                                                             // 主题信息
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(expireSecond) * time.Second)), // 过期时间，默认24小时
+			IssuedAt:  jwt.NewNumericDate(time.Now()),                                                // 颁发时间
+			NotBefore: jwt.NewNumericDate(time.Now()),                                                // 不早于时间
+			Issuer:    "QuarkCloud",                                                                  // 颁发人
+			Subject:   "UserToken",                                                                   // 主题信息
 		},
 	}
 	return p.ctx.JwtToken(userClaims)
@@ -51,7 +51,7 @@ func (p *AuthService) AdminLogin(username string, password string) (token string
 	if !hash.Check(user.Password, password) {
 		return "", errors.New("用户名或密码错误")
 	}
-	token, err = p.MakeToken(user, "admin", 24*60)
+	token, err = p.MakeToken(user, "admin", 24*60*60)
 	if err != nil {
 		return
 	}
@@ -91,7 +91,7 @@ func (p *AuthService) UserLogin(username string, password string) (token string,
 	if !hash.Check(user.Password, password) {
 		return "", errors.New("用户名或密码错误")
 	}
-	token, err = p.MakeToken(user, "user", 24*60)
+	token, err = p.MakeToken(user, "user", 24*60*60)
 	if err != nil {
 		return
 	}
