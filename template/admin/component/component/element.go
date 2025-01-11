@@ -16,6 +16,18 @@ type Element struct {
 const DEFAULT_KEY = ""
 const DEFAULT_CRYPT = true
 
+// 初始化
+func New() *Element {
+	return &Element{}
+}
+
+// 设置Component
+func (p *Element) SetComponent(component string) *Element {
+	p.Component = component
+	p.SetKey(component, true)
+	return p
+}
+
 // 设置Key
 func (p *Element) SetKey(key string, crypt bool) *Element {
 	if key == "" {
