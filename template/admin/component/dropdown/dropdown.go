@@ -38,7 +38,6 @@ func NewItem() *Item {
 func (p *Component) Init() *Component {
 	p.Component = "dropdown"
 	p.Visible = true
-
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p

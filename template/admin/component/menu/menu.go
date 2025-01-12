@@ -48,7 +48,6 @@ func (p *Component) Init() *Component {
 	p.Component = "menu"
 	p.InlineIndent = 24
 	p.Mode = "vertical"
-	p.Selectable = true
 	p.SubMenuCloseDelay = 0.1
 	p.SubMenuOpenDelay = 0
 	p.Theme = "light"
