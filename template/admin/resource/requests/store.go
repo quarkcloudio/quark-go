@@ -93,5 +93,5 @@ func (p *StoreRequest) Handle(ctx *quark.Context, data map[string]interface{}) e
 	// 保存后回调
 	err = template.AfterSaved(ctx, id, data, model)
 
-	return template.AfterSavedRedirectTo(ctx, err)
+	return template.AfterSavedRedirectTo(ctx, id, data, err)
 }

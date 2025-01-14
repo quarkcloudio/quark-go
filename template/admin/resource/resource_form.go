@@ -151,7 +151,7 @@ func (p *Template) AfterSaved(ctx *quark.Context, id int, data map[string]interf
 }
 
 // 保存数据后跳转回调
-func (p *Template) AfterSavedRedirectTo(ctx *quark.Context, err error) error {
+func (p *Template) AfterSavedRedirectTo(ctx *quark.Context, id int, data map[string]interface{}, err error) error {
 
 	// 返回错误信息
 	if err != nil {

@@ -89,5 +89,5 @@ func (p *UpdateRequest) Handle(ctx *quark.Context) error {
 	// 保存后回调
 	err = template.AfterSaved(ctx, int(data["id"].(float64)), data, query)
 
-	return template.AfterSavedRedirectTo(ctx, err)
+	return template.AfterSavedRedirectTo(ctx, int(data["id"].(float64)), data, err)
 }

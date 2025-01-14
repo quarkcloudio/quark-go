@@ -247,7 +247,7 @@ type Resourcer interface {
 	AfterSaved(ctx *quark.Context, id int, data map[string]interface{}, result *gorm.DB) error
 
 	// 保存数据后跳转回调
-	AfterSavedRedirectTo(ctx *quark.Context, err error) error
+	AfterSavedRedirectTo(ctx *quark.Context, id int, data map[string]interface{}, err error) error
 
 	// 列表页表格主体
 	IndexTableExtraRender(ctx *quark.Context) interface{}
