@@ -234,12 +234,20 @@ func (p *Field) File(params ...interface{}) *file.Component {
 
 // 文本展示组件
 //
-// field.Display("文本")
-func (p *Field) Display(label string) *display.Component {
-	field := display.
-		New().
-		SetLabel(label)
-
+// field.Display("文本内容${name}") 或 field.Display("文本标题" ,"文本内容${name}")
+func (p *Field) Display(params ...string) *display.Component {
+	field := display.New()
+	if len(params) == 1 {
+		field.
+			SetLabel(" ").
+			SetValue(params[0]).
+			SetColon(false)
+	}
+	if len(params) == 2 {
+		field.
+			SetLabel(params[0]).
+			SetValue(params[1])
+	}
 	return field
 }
 

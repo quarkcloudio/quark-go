@@ -19,7 +19,7 @@ type Component struct {
 	RowProps      map[string]interface{} `json:"rowProps,omitempty"`      // 开启 grid 模式时传递给 Row, 仅在ProFormGroup, ProFormList, ProFormFieldSet 中有效，默认：{ gutter: 8 }
 	ColProps      map[string]interface{} `json:"colProps,omitempty"`      // 开启 grid 模式时传递给 Col，默认：{ xs: 24 }
 	Secondary     bool                   `json:"secondary,omitempty"`     // 是否是次要控件，只针对 LightFilter 下有效
-	Colon         bool                   `json:"colon,omitempty"`         // 配合 label 属性使用，表示是否显示 label 后面的冒号
+	Colon         bool                   `json:"colon"`                   // 配合 label 属性使用，表示是否显示 label 后面的冒号
 	Extra         string                 `json:"extra,omitempty"`         // 额外的提示信息，和 help 类似，当需要错误信息和提示文案同时出现时，可以使用这个。
 	HasFeedback   bool                   `json:"hasFeedback,omitempty"`   // 配合 validateStatus 属性使用，展示校验状态图标，建议只配合 Input 组件使用
 	Help          string                 `json:"help,omitempty"`          // 提示信息，如不设置，则会根据校验规则自动生成

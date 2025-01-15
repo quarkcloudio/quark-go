@@ -22,7 +22,7 @@ const (
 	AppName = "QuarkGo"
 
 	// 版本号
-	Version = "3.8.4"
+	Version = "3.8.5"
 
 	// 包名
 	PkgName = "github.com/quarkcloudio/quark-go/v3"
