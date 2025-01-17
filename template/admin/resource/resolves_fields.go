@@ -179,6 +179,8 @@ func (p *Template) fieldToColumn(ctx *quark.Context, field interface{}) interfac
 		column = column.SetValueType("text")
 	case "textAreaField":
 		column = column.SetValueType("text")
+	case "editorField":
+		column = column.SetValueType("text")
 	case "treeSelectField":
 
 		// 获取属性
