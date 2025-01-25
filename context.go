@@ -415,8 +415,6 @@ func (p *Context) Body() []byte {
 	if err != nil {
 		return nil
 	}
-
-	// 重新赋值
 	p.Request.Body = io.NopCloser(bytes.NewBuffer(body))
 
 	return body
@@ -731,11 +729,9 @@ func (p *Context) JSONOk(message ...interface{}) error {
 		content = ""
 		data    interface{}
 	)
-
 	if len(message) == 1 {
 		content = message[0].(string)
 	}
-
 	if len(message) == 2 {
 		content = message[0].(string)
 		data = message[1]
@@ -744,9 +740,40 @@ func (p *Context) JSONOk(message ...interface{}) error {
 	return p.JSON(200, Success(content, data))
 }
 
-// 输出失败状态的JSON数据，JSONError("错误")
-func (p *Context) JSONError(message string) error {
-	return p.JSON(200, Error(message))
+// 输出失败状态的JSON数据，JSONError("错误") | JSONError("错误", map[string]interface{}{"title":"标题"})
+func (p *Context) JSONError(message ...interface{}) error {
+	var (
+		code    = 10001
+		content = ""
+		data    interface{}
+	)
+	if len(message) == 1 {
+		content = message[0].(string)
+	}
+	if len(message) == 2 {
+		content = message[0].(string)
+		data = message[1]
+	}
+
+	return p.JSON(200, Error(code, content, data))
+}
+
+// 根据Code输出失败状态的JSON数据，JSONErrorByCode(10001) | JSONErrorByCode(10001, map[string]interface{}{"title":"标题"})
+func (p *Context) JSONErrorByCode(message ...interface{}) error {
+	var (
+		code    = 10001
+		content = ""
+		data    interface{}
+	)
+	if len(message) == 1 {
+		code = message[0].(int)
+	}
+	if len(message) == 2 {
+		code = message[0].(int)
+		data = message[1]
+	}
+
+	return p.JSON(200, Error(code, content, data))
 }
 
 // 执行下一个Use方法，TODO
