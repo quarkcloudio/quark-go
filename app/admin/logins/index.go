@@ -97,7 +97,7 @@ func (p *Index) Handle(ctx *quark.Context) error {
 	}
 	token, err := service.NewAuthService(ctx).AdminLogin(loginRequest.Username, loginRequest.Password)
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.JSON(200, message.Error("用户名或密码错误"))
 	}
 
 	return ctx.JSON(200, message.Success("登录成功", "", map[string]string{
