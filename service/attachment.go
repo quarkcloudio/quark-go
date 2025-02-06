@@ -229,7 +229,7 @@ func (p *AttachmentService) GetExcelData(fileId int) (data [][]interface{}, Erro
 		return data, err
 	}
 	if file.Id == 0 {
-		return data, errors.New("参数错误！")
+		return data, errors.New("param error")
 	}
 
 	f, err := excelize.OpenFile(file.Path)

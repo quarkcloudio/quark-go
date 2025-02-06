@@ -49,7 +49,7 @@ func (p *AuthService) AdminLogin(username string, password string) (token string
 		return
 	}
 	if !hash.Check(user.Password, password) {
-		return "", errors.New("用户名或密码错误")
+		return "", errors.New("the username or password is incorrect")
 	}
 	token, err = p.MakeToken(user, "admin", 24*60*60)
 	if err != nil {
@@ -89,7 +89,7 @@ func (p *AuthService) UserLogin(username string, password string) (token string,
 		return
 	}
 	if !hash.Check(user.Password, password) {
-		return "", errors.New("用户名或密码错误")
+		return "", errors.New("the username or password is incorrect")
 	}
 	token, err = p.MakeToken(user, "user", 24*60*60)
 	if err != nil {
