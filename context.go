@@ -17,6 +17,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/mitchellh/mapstructure"
+	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/utils/tag"
 )
 
@@ -760,6 +761,61 @@ func (p *Context) JSONError(message ...interface{}) error {
 
 // 根据Code输出失败状态的JSON数据，JSONErrorByCode(10001) | JSONErrorByCode(10001, map[string]interface{}{"title":"标题"})
 func (p *Context) JSONErrorByCode(message ...interface{}) error {
+	var (
+		code    = 10001
+		content = ""
+		data    interface{}
+	)
+	if len(message) == 1 {
+		code = message[0].(int)
+	}
+	if len(message) == 2 {
+		code = message[0].(int)
+		data = message[1]
+	}
+
+	return p.JSON(200, Error(code, content, data))
+}
+
+// 输出模版引擎成功状态的JSON数据，CJSONOk("成功") | CJSONOk("成功", map[string]interface{}{"title":"标题"})
+func (p *Context) CJSONOk(msg ...interface{}) error {
+	var (
+		content = ""
+		data    interface{}
+	)
+	if len(msg) == 1 {
+		content = msg[0].(string)
+	}
+	if len(msg) == 2 {
+		content = msg[0].(string)
+		data = msg[1]
+	}
+
+	message.Success("操作成功")
+
+	return p.JSON(200, Success(content, data))
+}
+
+// 输出模版引擎失败状态的JSON数据，CJSONError("错误") | CJSONError("错误", map[string]interface{}{"title":"标题"})
+func (p *Context) CJSONError(message ...interface{}) error {
+	var (
+		code    = 10001
+		content = ""
+		data    interface{}
+	)
+	if len(message) == 1 {
+		content = message[0].(string)
+	}
+	if len(message) == 2 {
+		content = message[0].(string)
+		data = message[1]
+	}
+
+	return p.JSON(200, Error(code, content, data))
+}
+
+// 根据Code输出模版引擎失败状态的JSON数据，CJSONErrorByCode(10001) | CJSONErrorByCode(10001, map[string]interface{}{"title":"标题"})
+func (p *Context) CJSONErrorByCode(message ...interface{}) error {
 	var (
 		code    = 10001
 		content = ""
