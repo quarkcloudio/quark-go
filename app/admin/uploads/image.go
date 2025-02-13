@@ -65,8 +65,7 @@ func (p *Image) GetList(ctx *quark.Context) error {
 		"IMAGE",
 		imageListReq.CategoryId,
 		imageListReq.Name,
-		imageListReq.Createtime[0],
-		imageListReq.Createtime[1],
+		imageListReq.Createtime,
 		imageListReq.Page,
 	)
 	if err != nil {

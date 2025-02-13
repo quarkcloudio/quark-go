@@ -21,7 +21,7 @@ func NewAttachmentService() *AttachmentService {
 }
 
 // 获取列表
-func (p *AttachmentService) GetListBySearch(adminId interface{}, attachmentType string, categoryId interface{}, name interface{}, startDate interface{}, endDate interface{}, page int) (list []model.Attachment, total int64, Error error) {
+func (p *AttachmentService) GetListBySearch(adminId interface{}, attachmentType string, categoryId interface{}, name interface{}, createtime []string, page int) (list []model.Attachment, total int64, Error error) {
 	attachments := []model.Attachment{}
 
 	query := db.Client.Model(&model.Attachment{}).
@@ -35,8 +35,8 @@ func (p *AttachmentService) GetListBySearch(adminId interface{}, attachmentType 
 	if name != "" {
 		query.Where("name LIKE %?%", name)
 	}
-	if startDate != "" && endDate != "" {
-		query.Where("created_at BETWEEN ? AND ?", startDate, endDate)
+	if createtime != nil && len(createtime) == 2 {
+		query.Where("created_at BETWEEN ? AND ?", createtime[0], createtime[1])
 	}
 
 	query.Count(&total)
