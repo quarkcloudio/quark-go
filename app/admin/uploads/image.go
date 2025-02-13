@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/quarkcloudio/quark-go/v3"
+	"github.com/quarkcloudio/quark-go/v3/dto/request"
 	"github.com/quarkcloudio/quark-go/v3/dto/response"
 	"github.com/quarkcloudio/quark-go/v3/model"
 	"github.com/quarkcloudio/quark-go/v3/service"
@@ -52,32 +53,24 @@ func (p *Image) RouteInit() interface{} {
 
 // 获取文件列表
 func (p *Image) GetList(ctx *quark.Context) error {
-	page := ctx.Query("page", "1")
-	categoryId := ctx.Query("categoryId", "")
-	name := ctx.Query("name", "")
-	startDate := ctx.Query("createtime[0]", "")
-	endDate := ctx.Query("createtime[1]", "")
-	currentPage, _ := strconv.Atoi(page.(string))
+	imageListReq := request.ImageListReq{}
+	err := ctx.Bind(&imageListReq)
+	if err != nil {
+		return ctx.CJSONError("参数错误")
+	}
 
 	adminInfo, _ := service.NewAuthService(ctx).GetAdmin()
 	pictures, total, err := service.NewAttachmentService().GetListBySearch(
 		adminInfo.Id,
 		"IMAGE",
-		categoryId,
-		name,
-		startDate,
-		endDate,
-		currentPage,
+		imageListReq.CategoryId,
+		imageListReq.Name,
+		imageListReq.Createtime[0],
+		imageListReq.Createtime[1],
+		imageListReq.Page,
 	)
 	if err != nil {
 		return ctx.CJSONError(err.Error())
-	}
-
-	pagination := map[string]interface{}{
-		"defaultCurrent": 1,
-		"current":        currentPage,
-		"pageSize":       8,
-		"total":          total,
 	}
 
 	categorys, err := service.NewAttachmentCategoryService().GetList(adminInfo.Id)
@@ -85,17 +78,25 @@ func (p *Image) GetList(ctx *quark.Context) error {
 		return ctx.CJSONError(err.Error())
 	}
 
-	return ctx.CJSONOk("获取成功", map[string]interface{}{
-		"pagination": pagination,
-		"lists":      pictures,
-		"categorys":  categorys,
+	return ctx.CJSONOk("获取成功", response.ImageListResp{
+		Pagination: response.Pagination{
+			Current:        imageListReq.Page,
+			DefaultCurrent: 1,
+			PageSize:       8,
+			Total:          total,
+		},
+		List:      pictures,
+		Categorys: categorys,
 	})
 }
 
 // 图片删除
 func (p *Image) Delete(ctx *quark.Context) error {
 	data := map[string]interface{}{}
-	json.Unmarshal(ctx.Body(), &data)
+	if err := ctx.BodyParser(&data); err != nil {
+		return ctx.CJSONError("参数错误")
+	}
+
 	if data["id"] == "" {
 		return ctx.CJSONError("参数错误")
 	}
@@ -126,9 +127,6 @@ func (p *Image) Crop(ctx *quark.Context) error {
 	pictureInfo, err := service.NewAttachmentService().GetInfoById(data["id"])
 	if err != nil {
 		return ctx.CJSONError(err.Error())
-	}
-	if pictureInfo.Id == 0 {
-		return ctx.CJSONError("文件不存在")
 	}
 
 	adminInfo, err := service.NewAuthService(ctx).GetAdmin()

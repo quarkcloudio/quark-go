@@ -12,3 +12,18 @@ type UploadResp struct {
 	Url         string      `json:"url"`
 	Extra       interface{} `json:"extra"`
 }
+
+// 获取图片列表请求
+type Pagination struct {
+	DefaultCurrent int         `json:"defaultCurrent"`
+	Current        interface{} `json:"current"`
+	PageSize       int         `json:"pageSize"`
+	Total          interface{} `json:"total"`
+}
+
+// 获取图片列表请求
+type ImageListResp struct {
+	Pagination Pagination  `json:"pagination"`
+	List       interface{} `json:"list"`
+	Categorys  interface{} `json:"categorys"`
+}
