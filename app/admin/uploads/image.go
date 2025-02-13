@@ -91,16 +91,12 @@ func (p *Image) GetList(ctx *quark.Context) error {
 
 // 图片删除
 func (p *Image) Delete(ctx *quark.Context) error {
-	data := map[string]interface{}{}
-	if err := ctx.BodyParser(&data); err != nil {
+	imageDeleteReq := request.ImageDeleteReq{}
+	if err := ctx.Bind(&imageDeleteReq); err != nil {
 		return ctx.CJSONError("参数错误")
 	}
 
-	if data["id"] == "" {
-		return ctx.CJSONError("参数错误")
-	}
-
-	err := service.NewAttachmentService().DeleteById(data["id"])
+	err := service.NewAttachmentService().DeleteById(imageDeleteReq.Id)
 	if err != nil {
 		return ctx.CJSONError(err.Error())
 	}
@@ -115,15 +111,12 @@ func (p *Image) Crop(ctx *quark.Context) error {
 		err    error
 	)
 
-	data := map[string]interface{}{}
-	if err := ctx.BodyParser(&data); err != nil {
+	imageCropReq := request.ImageCropReq{}
+	if err := ctx.Bind(&imageCropReq); err != nil {
 		return ctx.CJSONError(err.Error())
 	}
-	if data["id"] == "" || data["file"] == "" {
-		return ctx.CJSONError("参数错误")
-	}
 
-	pictureInfo, err := service.NewAttachmentService().GetInfoById(data["id"])
+	pictureInfo, err := service.NewAttachmentService().GetInfoById(imageCropReq.Id)
 	if err != nil {
 		return ctx.CJSONError(err.Error())
 	}
@@ -136,7 +129,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 	limitW := ctx.Query("limitW", "")
 	limitH := ctx.Query("limitH", "")
 
-	files := strings.Split(data["file"].(string), ",")
+	files := strings.Split(imageCropReq.File, ",")
 	if len(files) != 2 {
 		return ctx.CJSONError("格式错误")
 	}
