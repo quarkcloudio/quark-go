@@ -8,7 +8,6 @@ import (
 	"github.com/gookit/goutil/structs"
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/types"
 )
 
@@ -29,13 +28,13 @@ func (p *StoreRequest) Handle(ctx *quark.Context, data map[string]interface{}) e
 	// 验证数据合法性
 	validator := template.ValidatorForCreation(ctx, data)
 	if validator != nil {
-		return ctx.JSON(200, message.Error(validator.Error()))
+		return ctx.CJSONError(validator.Error())
 	}
 
 	// 保存前回调
 	data, err := template.BeforeSaving(ctx, data)
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
 	// 重组数据
@@ -81,7 +80,7 @@ func (p *StoreRequest) Handle(ctx *quark.Context, data map[string]interface{}) e
 		Elem().
 		FieldByName("Id")
 	if !reflectId.IsValid() {
-		return ctx.JSON(200, message.Error("参数错误"))
+		return ctx.CJSONError("参数错误")
 	}
 
 	id := int(reflectId.Int())

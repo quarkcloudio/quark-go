@@ -6,7 +6,6 @@ import (
 
 	"github.com/gobeam/stringy"
 	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"gorm.io/gorm"
 )
 
@@ -108,8 +107,7 @@ func (p *Action) TemplateInit(ctx *quark.Context) interface{} {
 
 // 执行行为句柄
 func (p *Action) Handle(ctx *quark.Context, query *gorm.DB) error {
-
-	return ctx.JSON(200, message.Error("Method not implemented"))
+	return ctx.CJSONError("method not implemented")
 }
 
 // 行为key

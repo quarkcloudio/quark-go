@@ -10,7 +10,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/service"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/radio"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/rule"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-go/v3/utils/hash"
 	"gorm.io/gorm"
@@ -102,11 +101,11 @@ func (p *Account) FormHandle(ctx *quark.Context, query *gorm.DB, data map[string
 	// 获取登录管理员信息
 	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 	err = query.Where("id", adminInfo.Id).Updates(data).Error
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
-	return ctx.JSON(200, message.Success("操作成功"))
+	return ctx.CJSONOk("操作成功")
 }

@@ -9,7 +9,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
 	"github.com/quarkcloudio/quark-go/v3/model"
 	"github.com/quarkcloudio/quark-go/v3/service"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/tabs"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"gorm.io/gorm"
@@ -175,12 +174,13 @@ func (p *WebConfig) FormHandle(ctx *quark.Context, query *gorm.DB, data map[stri
 	}
 
 	if !result {
-		return ctx.JSON(200, message.Error("操作失败，请重试！"))
+		return ctx.CJSONError("操作失败，请重试")
+
 	}
 
 	// 刷新网站配置
 	service.NewConfigService().Refresh()
 
 	// 返回成功
-	return ctx.JSON(200, message.Success("操作成功"))
+	return ctx.CJSONOk("操作成功")
 }

@@ -8,7 +8,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/card"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/descriptions"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/grid"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/pagecontainer"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/statistic"
 )
@@ -113,7 +112,7 @@ func (p *Template) Render(ctx *quark.Context) error {
 
 	cards := template.Cards(ctx)
 	if cards == nil {
-		return ctx.JSON(200, message.Error("请实现Cards内容"))
+		return ctx.CJSONError("请实现Cards内容")
 	}
 
 	var cols []interface{}

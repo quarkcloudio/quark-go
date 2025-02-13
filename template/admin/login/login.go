@@ -12,7 +12,6 @@ import (
 	redisclient "github.com/quarkcloudio/quark-go/v3/dal/redis"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/divider"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/login"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/tabs"
 )
 
@@ -99,10 +98,9 @@ func (p *Template) GetSubTitle() string {
 
 // 验证码ID
 func (p *Template) CaptchaId(ctx *quark.Context) error {
-
-	return ctx.JSON(200, message.Success("操作成功", "", map[string]string{
+	return ctx.CJSONOk("操作成功", map[string]string{
 		"captchaId": captcha.NewLen(4),
-	}))
+	})
 }
 
 // 生成验证码
@@ -122,12 +120,12 @@ func (p *Template) Fields(ctx *quark.Context) []interface{} {
 
 // 登录方法
 func (p *Template) Handle(ctx *quark.Context) error {
-	return ctx.JSON(200, message.Error("请实现登录方法"))
+	return ctx.CJSONError("请实现登录方法")
 }
 
 // 退出方法
 func (p *Template) Logout(ctx *quark.Context) error {
-	return ctx.JSON(200, message.Success("退出成功", "/"))
+	return ctx.CJSONRedirectTo("退出成功", "/")
 }
 
 // 包裹在组件内的创建页字段

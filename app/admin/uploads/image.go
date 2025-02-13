@@ -12,7 +12,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/dto/response"
 	"github.com/quarkcloudio/quark-go/v3/model"
 	"github.com/quarkcloudio/quark-go/v3/service"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/upload"
 )
 
@@ -71,7 +70,7 @@ func (p *Image) GetList(ctx *quark.Context) error {
 		currentPage,
 	)
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
 	pagination := map[string]interface{}{
@@ -83,14 +82,14 @@ func (p *Image) GetList(ctx *quark.Context) error {
 
 	categorys, err := service.NewAttachmentCategoryService().GetList(adminInfo.Id)
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
-	return ctx.JSON(200, message.Success("获取成功", "", map[string]interface{}{
+	return ctx.CJSONOk("获取成功", map[string]interface{}{
 		"pagination": pagination,
 		"lists":      pictures,
 		"categorys":  categorys,
-	}))
+	})
 }
 
 // 图片删除
@@ -98,15 +97,15 @@ func (p *Image) Delete(ctx *quark.Context) error {
 	data := map[string]interface{}{}
 	json.Unmarshal(ctx.Body(), &data)
 	if data["id"] == "" {
-		return ctx.JSON(200, message.Error("参数错误！"))
+		return ctx.CJSONError("参数错误")
 	}
 
 	err := service.NewAttachmentService().DeleteById(data["id"])
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
-	return ctx.JSON(200, message.Success("操作成功"))
+	return ctx.CJSONOk("操作成功")
 }
 
 // 图片裁剪
@@ -118,23 +117,23 @@ func (p *Image) Crop(ctx *quark.Context) error {
 
 	data := map[string]interface{}{}
 	if err := ctx.BodyParser(&data); err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 	if data["id"] == "" || data["file"] == "" {
-		return ctx.JSON(200, message.Error("参数错误！"))
+		return ctx.CJSONError("参数错误")
 	}
 
 	pictureInfo, err := service.NewAttachmentService().GetInfoById(data["id"])
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 	if pictureInfo.Id == 0 {
-		return ctx.JSON(200, message.Error("文件不存在"))
+		return ctx.CJSONError("文件不存在")
 	}
 
 	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
 	limitW := ctx.Query("limitW", "")
@@ -142,12 +141,12 @@ func (p *Image) Crop(ctx *quark.Context) error {
 
 	files := strings.Split(data["file"].(string), ",")
 	if len(files) != 2 {
-		return ctx.JSON(200, message.Error("格式错误"))
+		return ctx.CJSONError("格式错误")
 	}
 
 	fileData, err := base64.StdEncoding.DecodeString(files[1]) //成图片文件并把文件写入到buffer
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
 	limitSize := reflect.
@@ -223,7 +222,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 		BeforeHandle(ctx *quark.Context, fileSystem *quark.FileSystem) (*quark.FileSystem, *quark.FileInfo, error)
 	}).BeforeHandle(ctx, fileSystem)
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 	if fileInfo != nil {
 		extra := ""
@@ -256,7 +255,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 		Path(savePath).
 		Save()
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
 	// 重写url
@@ -287,7 +286,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 		Status: 1,
 	})
 
-	return ctx.JSON(200, message.Success("操作成功", "", result))
+	return ctx.CJSONOk("操作成功", result)
 }
 
 // 上传前回调
@@ -337,7 +336,7 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 
 	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
 	extra := ""
@@ -364,10 +363,10 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 	})
 
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
-	return ctx.JSON(200, message.Success("上传成功", "", response.UploadResp{
+	return ctx.CJSONOk("上传成功", response.UploadResp{
 		Id:          id,
 		ContentType: result.ContentType,
 		Ext:         result.Ext,
@@ -377,5 +376,5 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		Size:        result.Size,
 		Url:         result.Url,
 		Extra:       result.Extra,
-	}))
+	})
 }

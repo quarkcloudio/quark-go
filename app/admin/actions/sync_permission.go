@@ -7,7 +7,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
 	"github.com/quarkcloudio/quark-go/v3/model"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/actions"
 	"gorm.io/gorm"
 )
@@ -91,13 +90,13 @@ func (p *SyncPermissionAction) Handle(ctx *quark.Context, query *gorm.DB) error 
 		}
 	}
 	if len(data) == 0 {
-		return ctx.JSON(200, message.Error("暂无新增权限！"))
+		return ctx.CJSONError("无新增权限")
 	}
 
 	err := query.Create(data).Error
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
-	return ctx.JSON(200, message.Success("操作成功"))
+	return ctx.CJSONOk("操作成功")
 }

@@ -3,7 +3,6 @@ package actions
 import (
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/rule"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/actions"
 	"gorm.io/gorm"
@@ -66,6 +65,5 @@ func (p *ModalFormAction) Data(ctx *quark.Context) map[string]interface{} {
 
 // 执行行为句柄
 func (p *ModalFormAction) Handle(ctx *quark.Context, query *gorm.DB) error {
-
-	return ctx.JSON(200, message.Error("Method not implemented"))
+	return ctx.CJSONError("method not implemented")
 }

@@ -7,14 +7,12 @@ type Message struct {
 }
 
 type ComponentMessage struct {
-	ClassName string      `json:"className"`
-	Type      string      `json:"type"`
-	Content   interface{} `json:"content"`
-	Duration  int         `json:"duration"`
-	Icon      string      `json:"icon"`
-	Style     interface{} `json:"style"`
-	Data      interface{} `json:"data"`
-	Url       string      `json:"url"`
+	Type     string      `json:"type"`
+	Content  interface{} `json:"content"`
+	Duration int         `json:"duration"`
+	Icon     string      `json:"icon"`
+	Data     interface{} `json:"data"`
+	Url      string      `json:"url"`
 }
 
 type CodeMap struct {
@@ -62,7 +60,7 @@ func Success(message string, data interface{}) *Message {
 	}
 }
 
-// 返回错误信息，Error("内部服务调用异常") | Error("错误", map[string]interface{}{"title":"标题"}) | Error(10001, "错误", map[string]interface{}{"title":"标题"})
+// 返回错误信息，Error("内部服务调用异常") | Error("错误", map[string]interface{}{"title":"标题"})
 func Error(params ...interface{}) *Message {
 	var (
 		code = StatusError
@@ -76,14 +74,6 @@ func Error(params ...interface{}) *Message {
 		msg = params[0].(string)
 		data = params[1]
 	}
-	if len(params) == 3 {
-		code = params[0].(int)
-		msg = params[1].(string)
-		if msg == "" {
-			msg = GetMsgByCode(code)
-		}
-		data = params[2]
-	}
 
 	return &Message{
 		Code: code,
@@ -92,50 +82,116 @@ func Error(params ...interface{}) *Message {
 	}
 }
 
-// 返回组件引擎成功信息，ComponentSuccess("成功") | ComponentSuccess("成功", "/home/index", map[string]interface{}{"title":"标题"})
-func ComponentSuccess(message ...interface{}) *ComponentMessage {
+// 返回错误信息，ErrorByCode(10001) | ErrorByCode(10001, map[string]interface{}{"title":"标题"})
+func ErrorByCode(params ...interface{}) *Message {
+	var (
+		code = StatusError
+		msg  = ""
+		data interface{}
+	)
+	if len(params) == 1 {
+		code = params[0].(int)
+	}
+	if len(params) == 2 {
+		code = params[0].(int)
+		data = params[1]
+	}
+	msg = GetMsgByCode(code)
+
+	return &Message{
+		Code: code,
+		Msg:  msg,
+		Data: data,
+	}
+}
+
+// 返回组件引擎成功信息，ComponentSuccess("成功") | ComponentSuccess("成功", map[string]interface{}{"title":"标题"})
+func ComponentSuccess(params ...interface{}) *ComponentMessage {
 	var (
 		content = ""
-		url     = ""
 		data    interface{}
 	)
-	if len(message) == 1 {
-		content = message[0].(string)
+	if len(params) == 1 {
+		content = params[0].(string)
 	}
-	if len(message) == 2 {
-		content = message[0].(string)
-		url = message[1].(string)
-	}
-	if len(message) >= 3 {
-		content = message[0].(string)
-		url = message[1].(string)
-		data = message[2]
+	if len(params) == 2 {
+		content = params[0].(string)
+		data = params[1]
 	}
 
 	return &ComponentMessage{
-		Type:    "message",
+		Type:    "success",
 		Content: content,
-		Url:     url,
 		Data:    data,
 	}
 }
 
-// 返回组件引擎失败信息，Error("错误") | Error("操作失败", "/home/index")
-func ComponentError(message ...interface{}) *ComponentMessage {
+// 返回组件引擎失败信息，ComponentError("错误") | ComponentError("成功", map[string]interface{}{"title":"标题"})
+func ComponentError(params ...interface{}) *ComponentMessage {
 	var (
 		content = ""
-		url     = ""
+		data    interface{}
 	)
-	if len(message) == 1 {
-		content = message[0].(string)
+	if len(params) == 1 {
+		content = params[0].(string)
 	}
-	if len(message) == 2 {
-		content = message[0].(string)
-		url = message[1].(string)
+	if len(params) == 2 {
+		content = params[0].(string)
+		data = params[1]
 	}
 
 	return &ComponentMessage{
 		Type:    "error",
+		Content: content,
+		Data:    data,
+	}
+}
+
+// 返回错误信息，ComponentErrorByCode(10001) | ComponentErrorByCode(10001, map[string]interface{}{"title":"标题"})
+func ComponentErrorByCode(params ...interface{}) *ComponentMessage {
+	var (
+		code    = StatusError
+		content = ""
+		data    interface{}
+	)
+	if len(params) == 1 {
+		code = params[0].(int)
+	}
+	if len(params) == 2 {
+		code = params[0].(int)
+		data = params[1]
+	}
+	content = GetMsgByCode(code)
+
+	return &ComponentMessage{
+		Type:    "error",
+		Content: content,
+		Data:    data,
+	}
+}
+
+// 输出模版引擎URL跳转，ComponentRedirectTo("/home/index") | ComponentRedirectTo("成功", "/home/index")  | ComponentRedirectTo("成功", "/home/index", "error")
+func ComponentRedirectTo(params ...interface{}) *ComponentMessage {
+	var (
+		content = ""
+		url     = ""
+		msgType = "success"
+	)
+	if len(params) == 1 {
+		url = params[0].(string)
+	}
+	if len(params) == 2 {
+		content = params[0].(string)
+		url = params[1].(string)
+	}
+	if len(params) >= 3 {
+		content = params[0].(string)
+		url = params[1].(string)
+		msgType = params[2].(string)
+	}
+
+	return &ComponentMessage{
+		Type:    msgType,
 		Content: content,
 		Url:     url,
 	}

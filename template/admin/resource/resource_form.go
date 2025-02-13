@@ -6,7 +6,6 @@ import (
 
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/card"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/tabs"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/requests"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/types"
@@ -152,11 +151,8 @@ func (p *Template) AfterSaved(ctx *quark.Context, id int, data map[string]interf
 
 // 保存数据后跳转回调
 func (p *Template) AfterSavedRedirectTo(ctx *quark.Context, id int, data map[string]interface{}, err error) error {
-
-	// 返回错误信息
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
-
-	return ctx.JSON(200, message.Success("操作成功！", strings.Replace("/layout/index?api="+IndexPath, ":resource", ctx.Param("resource"), -1)))
+	return ctx.CJSONRedirectTo("操作成功", strings.Replace("/layout/index?api="+IndexPath, ":resource", ctx.Param("resource"), -1))
 }

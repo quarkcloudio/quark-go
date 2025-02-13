@@ -9,7 +9,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/dto/response"
 	"github.com/quarkcloudio/quark-go/v3/model"
 	"github.com/quarkcloudio/quark-go/v3/service"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/upload"
 )
 
@@ -95,7 +94,7 @@ func (p *File) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 
 	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
 	extra := ""
@@ -121,10 +120,10 @@ func (p *File) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		Status: 1,
 	})
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
-	return ctx.JSON(200, message.Success("上传成功", "", response.UploadResp{
+	return ctx.CJSONOk("上传成功", response.UploadResp{
 		Id:          id,
 		ContentType: result.ContentType,
 		Ext:         result.Ext,
@@ -134,5 +133,5 @@ func (p *File) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		Size:        result.Size,
 		Url:         result.Url,
 		Extra:       result.Extra,
-	}))
+	})
 }

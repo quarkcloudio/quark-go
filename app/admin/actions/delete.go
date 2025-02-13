@@ -2,7 +2,6 @@ package actions
 
 import (
 	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/actions"
 	"gorm.io/gorm"
 )
@@ -53,8 +52,8 @@ func (p *DeleteAction) Init(ctx *quark.Context) interface{} {
 func (p *DeleteAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 	err := query.Delete("").Error
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
-	return ctx.JSON(200, message.Success("操作成功"))
+	return ctx.CJSONOk("操作成功")
 }

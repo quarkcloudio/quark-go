@@ -10,7 +10,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
 	"github.com/quarkcloudio/quark-go/v3/service"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/space"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/tpl"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/types"
@@ -43,13 +42,13 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 
 	// 判断参数
 	if len(requestData.FileId) == 0 {
-		return ctx.JSON(200, message.Error("参数错误！"))
+		return ctx.CJSONError("参数错误")
 	}
 
 	// 判断参数
 	fileId := requestData.FileId[0].Id
 	if fileId == 0 {
-		return ctx.JSON(200, message.Error("参数错误！"))
+		return ctx.CJSONError("参数错误")
 	}
 
 	// 模版实例
@@ -64,7 +63,7 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 	// 获取导入数据
 	importData, err := service.NewAttachmentService().GetExcelData(fileId)
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
 	// 表格头部
@@ -184,7 +183,7 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 		if !file.IsExist(filePath) {
 			err := os.MkdirAll(filePath, 0666)
 			if err != nil {
-				return ctx.JSON(200, message.Error(err.Error()))
+				return ctx.CJSONError(err.Error())
 			}
 		}
 
@@ -206,7 +205,7 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 			},
 		})
 		if err != nil {
-			return ctx.JSON(200, message.Error(err.Error()))
+			return ctx.CJSONError(err.Error())
 		}
 
 		// 创建数据
@@ -215,7 +214,7 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 				f.SetCellValue("Sheet1", excel.GenerateColumnLabel(i)+strconv.Itoa(k+2), v[i-1])
 				if i == len(v) {
 					if err := f.SetCellStyle("Sheet1", excel.GenerateColumnLabel(i)+strconv.Itoa(k+2), excel.GenerateColumnLabel(i)+strconv.Itoa(k+2), style); err != nil {
-						return ctx.JSON(200, message.Error(err.Error()))
+						return ctx.CJSONError(err.Error())
 					}
 				}
 			}
@@ -223,7 +222,7 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 
 		f.SetActiveSheet(index)
 		if err := f.SaveAs(filePath + fileName); err != nil {
-			return ctx.JSON(200, message.Error(err.Error()))
+			return ctx.CJSONError(err.Error())
 		}
 
 		tpl1 := (&tpl.Component{}).
@@ -255,7 +254,7 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 		return ctx.JSON(200, component)
 	}
 
-	return ctx.JSON(200, message.Success("操作成功！", strings.Replace("/layout/index?api="+indexRoute, ":resource", ctx.Param("resource"), -1)))
+	return ctx.CJSONRedirectTo("操作成功", strings.Replace("/layout/index?api="+indexRoute, ":resource", ctx.Param("resource"), -1))
 }
 
 // 将表格数据转换成表单数据

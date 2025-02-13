@@ -7,7 +7,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/service"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/selectfield"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/rule"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/actions"
 	"gorm.io/gorm"
@@ -143,14 +142,14 @@ func (p *DataScopeAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 	var form Form
 	err := ctx.Bind(&form)
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
 	// 更新角色数据权限
 	err = service.NewRoleService().UpdateRoleDataScope(form.Id, form.DataScope, form.DepartmentIds)
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
-	return ctx.JSON(200, message.Success("操作成功"))
+	return ctx.CJSONOk("操作成功")
 }

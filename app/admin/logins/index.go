@@ -7,7 +7,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/service"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/rule"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/icon"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/login"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 )
@@ -80,27 +79,27 @@ func (p *Index) Fields(ctx *quark.Context) []interface{} {
 func (p *Index) Handle(ctx *quark.Context) error {
 	loginRequest := &request.LoginReq{}
 	if err := ctx.Bind(loginRequest); err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 	if loginRequest.Captcha.Id == "" || loginRequest.Captcha.Value == "" {
-		return ctx.JSON(200, message.Error("验证码不能为空"))
+		return ctx.CJSONError("验证码不能为空")
 	}
 
 	verifyResult := captcha.VerifyString(loginRequest.Captcha.Id, loginRequest.Captcha.Value)
 	if !verifyResult {
-		return ctx.JSON(200, message.Error("验证码错误"))
+		return ctx.CJSONError("验证码错误")
 	}
 	captcha.Reload(loginRequest.Captcha.Id)
 
 	if loginRequest.Username == "" || loginRequest.Password == "" {
-		return ctx.JSON(200, message.Error("用户名或密码不能为空"))
+		return ctx.CJSONError("用户名或密码不能为空")
 	}
 	token, err := service.NewAuthService(ctx).AdminLogin(loginRequest.Username, loginRequest.Password)
 	if err != nil {
-		return ctx.JSON(200, message.Error("用户名或密码错误"))
+		return ctx.CJSONError("用户名或密码错误")
 	}
 
-	return ctx.JSON(200, message.Success("登录成功", "", map[string]string{
+	return ctx.CJSONOk("登录成功", map[string]string{
 		"token": token,
-	}))
+	})
 }

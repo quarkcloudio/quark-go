@@ -9,7 +9,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/action"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/footer"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/layout"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 )
 
 // 后台登录模板
@@ -267,7 +266,7 @@ func (p *Template) Render(ctx *quark.Context) error {
 	// 获取管理员菜单
 	getMenus, err := template.GetMenus(ctx)
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
 
 	// 网站版权 time.Now().Format("2006") + " QuarkGo"

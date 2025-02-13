@@ -2,7 +2,6 @@ package actions
 
 import (
 	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/actions"
 	"gorm.io/gorm"
 )
@@ -55,8 +54,7 @@ func (p *BatchEnableAction) GetApiParams() []string {
 func (p *BatchEnableAction) Handle(ctx *quark.Context, model *gorm.DB) error {
 	err := model.Update("status", 1).Error
 	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
-
-	return ctx.JSON(200, message.Success("操作成功"))
+	return ctx.CJSONOk("操作成功")
 }

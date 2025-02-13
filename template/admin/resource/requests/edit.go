@@ -8,7 +8,6 @@ import (
 
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/types"
 )
 
@@ -143,5 +142,5 @@ func (p *EditRequest) Values(ctx *quark.Context) error {
 		data[k] = v
 	}
 
-	return ctx.JSON(200, message.Success("获取成功", "", data))
+	return ctx.CJSONOk("获取成功", data)
 }
