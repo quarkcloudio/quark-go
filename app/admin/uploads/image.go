@@ -317,7 +317,8 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 	driver := reflect.
 		ValueOf(ctx.Template).
 		Elem().
-		FieldByName("Driver").String()
+		FieldByName("Driver").
+		String()
 
 	// 重写url
 	if driver == quark.LocalStorage {
