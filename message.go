@@ -7,12 +7,13 @@ type Message struct {
 }
 
 type ComponentMessage struct {
-	Type     string      `json:"type"`
-	Content  interface{} `json:"content"`
-	Duration int         `json:"duration"`
-	Icon     string      `json:"icon"`
-	Data     interface{} `json:"data"`
-	Url      string      `json:"url"`
+	Component string      `json:"component"`
+	Type      string      `json:"type"`
+	Content   interface{} `json:"content"`
+	Duration  int         `json:"duration"`
+	Icon      string      `json:"icon"`
+	Data      interface{} `json:"data"`
+	Url       string      `json:"url"`
 }
 
 type CodeMap struct {
@@ -120,9 +121,10 @@ func ComponentSuccess(params ...interface{}) *ComponentMessage {
 	}
 
 	return &ComponentMessage{
-		Type:    "success",
-		Content: content,
-		Data:    data,
+		Component: "message",
+		Type:      "success",
+		Content:   content,
+		Data:      data,
 	}
 }
 
@@ -141,9 +143,10 @@ func ComponentError(params ...interface{}) *ComponentMessage {
 	}
 
 	return &ComponentMessage{
-		Type:    "error",
-		Content: content,
-		Data:    data,
+		Component: "message",
+		Type:      "error",
+		Content:   content,
+		Data:      data,
 	}
 }
 
@@ -164,9 +167,10 @@ func ComponentErrorByCode(params ...interface{}) *ComponentMessage {
 	content = GetMsgByCode(code)
 
 	return &ComponentMessage{
-		Type:    "error",
-		Content: content,
-		Data:    data,
+		Component: "message",
+		Type:      "error",
+		Content:   content,
+		Data:      data,
 	}
 }
 
@@ -191,8 +195,9 @@ func ComponentRedirectTo(params ...interface{}) *ComponentMessage {
 	}
 
 	return &ComponentMessage{
-		Type:    msgType,
-		Content: content,
-		Url:     url,
+		Component: "message",
+		Type:      msgType,
+		Content:   content,
+		Url:       url,
 	}
 }
