@@ -10,11 +10,21 @@ import (
 	"gorm.io/gorm"
 )
 
-type MenuService struct{}
+type MenuService struct {
+	GuardName string
+}
 
 // 初始化
 func NewMenuService() *MenuService {
-	return &MenuService{}
+	return &MenuService{
+		GuardName: "admin",
+	}
+}
+
+// 设置守卫名称
+func (p *MenuService) SetGuardName(guardName string) *MenuService {
+	p.GuardName = guardName
+	return p
 }
 
 // 获取菜单列表
@@ -22,7 +32,7 @@ func (p *MenuService) GetList() (menus []model.Menu, Error error) {
 	list := []model.Menu{}
 
 	err := db.Client.
-		Where("guard_name = ?", "admin").
+		Where("guard_name = ?", p.GuardName).
 		Where("status = ?", 1).
 		Order("sort asc,id asc").
 		Select("name", "id", "pid").
@@ -47,7 +57,7 @@ func (p *MenuService) GetListWithRoot() (menus []model.Menu, Error error) {
 func (p *MenuService) FindParentTreeNode(chrildPid int) (list []model.Menu) {
 	menus := []model.Menu{}
 	db.Client.
-		Where("guard_name = ?", "admin").
+		Where("guard_name = ?", p.GuardName).
 		Where("id = ?", chrildPid).
 		Where("status = ?", 1).
 		Where("type IN ?", []int{1, 2, 3}).
@@ -69,13 +79,13 @@ func (p *MenuService) FindParentTreeNode(chrildPid int) (list []model.Menu) {
 	return menus
 }
 
-// 通过管理员ID权限菜单
-func (p *MenuService) GetListByAdminId(adminId int) (menuList interface{}, err error) {
+// 通过用户ID获取菜单
+func (p *MenuService) GetListByUserId(userId int) (menuList interface{}, err error) {
 	menus := []model.Menu{}
 
-	if adminId == 1 {
+	if userId == 1 {
 		db.Client.
-			Where("guard_name", "admin").
+			Where("guard_name", p.GuardName).
 			Where("status = ?", 1).
 			Where("type IN ?", []int{1, 2, 3}).
 			Order("sort asc").
@@ -85,7 +95,7 @@ func (p *MenuService) GetListByAdminId(adminId int) (menuList interface{}, err e
 	}
 
 	var menuIds []int
-	roleHasMenus, err := NewCasbinService().GetUserMenus(adminId)
+	roleHasMenus, err := NewCasbinService().GetUserMenus(userId)
 	if err != nil {
 		return menuList, err
 	}
@@ -99,7 +109,7 @@ func (p *MenuService) GetListByAdminId(adminId int) (menuList interface{}, err e
 
 	// 最底层列表
 	db.Client.
-		Where("guard_name = ?", "admin").
+		Where("guard_name = ?", p.GuardName).
 		Where("status = ?", 1).
 		Where("id in ?", menuIds).
 		Where("type IN ?", []int{1, 2, 3}).
@@ -115,7 +125,7 @@ func (p *MenuService) GetListByAdminId(adminId int) (menuList interface{}, err e
 
 	// 所有列表
 	db.Client.
-		Where("guard_name = ?", "admin").
+		Where("guard_name = ?", p.GuardName).
 		Where("status = ?", 1).
 		Where("id in ?", menuIds).
 		Order("sort asc").

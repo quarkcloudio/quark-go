@@ -30,7 +30,7 @@ func (p *UserService) GetInfoByUsername(username string) (user model.User, Error
 
 // 通过ID获取管理员拥有的菜单列表
 func (p *UserService) GetMenuListById(id interface{}) (menuList interface{}, Error error) {
-	return NewMenuService().GetListByAdminId(id.(int))
+	return NewMenuService().GetListByUserId(id.(int))
 }
 
 // 更新最后一次登录数据
