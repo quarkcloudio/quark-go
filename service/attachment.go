@@ -35,7 +35,7 @@ func (p *AttachmentService) GetListBySearch(adminId interface{}, attachmentType 
 	if name != "" {
 		query.Where("name LIKE %?%", name)
 	}
-	if createtime != nil && len(createtime) == 2 {
+	if len(createtime) == 2 {
 		query.Where("created_at BETWEEN ? AND ?", createtime[0], createtime[1])
 	}
 
