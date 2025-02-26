@@ -1,6 +1,7 @@
 package quark
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"reflect"
@@ -22,7 +23,7 @@ const (
 	AppName = "QuarkGo"
 
 	// 版本号
-	Version = "3.8.13"
+	Version = "3.8.14"
 
 	// 包名
 	PkgName = "github.com/quarkcloudio/quark-go/v3"
@@ -228,10 +229,8 @@ func (p *Engine) initPaths() {
 				// 处理行为
 				if strings.Contains(url, ":uriKey") {
 
-					// 获取行为
-					actions := provider.(interface {
-						Actions(ctx *Context) []interface{}
-					}).Actions(&Context{})
+					// 解析行为
+					actions := p.ParseAction(provider, &Context{}, url)
 
 					// 解析行为
 					for _, av := range actions {
@@ -287,6 +286,21 @@ func (p *Engine) initPaths() {
 
 	p.urlPaths = urlPaths
 	p.routePaths = routePaths
+}
+
+// 解析行为
+func (p *Engine) ParseAction(provider interface{}, ctx *Context, url string) []interface{} {
+	// 处理上下文可能为空的情况
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Action parsing failed. Please manually grant permissions for " + url + ".")
+		}
+	}()
+
+	// 获取行为
+	return provider.(interface {
+		Actions(ctx *Context) []interface{}
+	}).Actions(ctx)
 }
 
 // 判断是否存在RoutePath
