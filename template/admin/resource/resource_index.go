@@ -79,7 +79,7 @@ func (p *Template) IndexComponentRender(ctx *quark.Context, data interface{}) in
 	tablePolling := template.GetTablePolling()
 
 	// 列表页表格主体
-	tableExtraRender := p.IndexTableExtraRender(ctx)
+	tableExtraRender := template.IndexTableExtraRender(ctx)
 
 	// 列表页工具栏
 	tableToolBar := p.IndexTableToolBar(ctx)
