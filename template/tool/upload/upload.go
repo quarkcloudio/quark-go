@@ -3,6 +3,7 @@ package upload
 import (
 	"bytes"
 	"encoding/base64"
+	"errors"
 	"io"
 	"mime/multipart"
 	"reflect"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
+	"gorm.io/gorm"
 )
 
 // 文件上传
@@ -150,7 +152,7 @@ func (p *Template) Handle(ctx *quark.Context) error {
 			getFileSystem, fileInfo, err := ctx.Template.(interface {
 				BeforeHandle(ctx *quark.Context, fileSystem *quark.FileSystem) (*quark.FileSystem, *quark.FileInfo, error)
 			}).BeforeHandle(ctx, fileSystem)
-			if err != nil {
+			if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 				return ctx.JSONError(err.Error())
 			}
 			if fileInfo != nil {
@@ -276,7 +278,7 @@ func (p *Template) HandleFromBase64(ctx *quark.Context) error {
 	getFileSystem, fileInfo, err := ctx.Template.(interface {
 		BeforeHandle(ctx *quark.Context, fileSystem *quark.FileSystem) (*quark.FileSystem, *quark.FileInfo, error)
 	}).BeforeHandle(ctx, fileSystem)
-	if err != nil {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return ctx.JSONError(err.Error())
 	}
 	if fileInfo != nil {

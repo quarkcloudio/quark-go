@@ -253,7 +253,7 @@ func (p *Template) HandleFromBase64(ctx *quark.Context) error {
 
 	// 上传前回调
 	getFileSystem, fileInfo, err := template.BeforeHandle(ctx, fileSystem)
-	if err != nil {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return ctx.CJSONError(err.Error())
 	}
 	if fileInfo != nil {
