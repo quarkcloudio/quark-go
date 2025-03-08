@@ -78,21 +78,21 @@ func fieldParser(field interface{}, params []interface{}, placeholder string) in
 
 // ID组件
 //
-// field.ID("id", "ID") 或 field.ID("id", "ID", func(row map[string]interface{}) interface{} { return p.Field["username"] })
+// field.ID("id", "ID") 或 field.ID("id", "ID", func(row map[string]interface{}) interface{} { return row["name"] })
 func (p *Field) ID(params ...interface{}) *id.Component {
 	return fieldParser(id.New(), params, "").(*id.Component)
 }
 
 // Hidden组件
 //
-// field.Hidden("id", "ID") 或 field.Hidden("id", "ID", func(row map[string]interface{}) interface{} { return p.Field["username"] })
+// field.Hidden("id", "ID") 或 field.Hidden("id", "ID", func(row map[string]interface{}) interface{} { return row["name"] })
 func (p *Field) Hidden(params ...interface{}) *hidden.Component {
 	return fieldParser(hidden.New(), params, "").(*hidden.Component)
 }
 
 // 输入框组件
 //
-// field.Text("username", "输入框") 或 field.Text("username", "输入框", func(row map[string]interface{}) interface{} { return p.Field["username"] })
+// field.Text("username", "输入框") 或 field.Text("username", "输入框", func(row map[string]interface{}) interface{} { return row["name"] })
 func (p *Field) Text(params ...interface{}) *text.Component {
 	return fieldParser(text.New(), params, "请输入").(*text.Component)
 }
@@ -438,14 +438,14 @@ func (p *Field) Transfer(params ...interface{}) *transfer.Component {
 
 // 图形验证码组件
 //
-// field.ImageCaptcha("captcha", "验证码") 或 field.ImageCaptcha("captcha", "验证码", func(row map[string]interface{}) interface{} { return p.Field["username"] })
+// field.ImageCaptcha("captcha", "验证码") 或 field.ImageCaptcha("captcha", "验证码", func(row map[string]interface{}) interface{} { return row["name"] })
 func (p *Field) ImageCaptcha(params ...interface{}) *imagecaptcha.Component {
 	return fieldParser(imagecaptcha.New(), params, "请输入").(*imagecaptcha.Component)
 }
 
 // 短信验证码组件
 //
-// field.SmsCaptcha("code", "输入框") 或 field.SmsCaptcha("code", "输入框", func(row map[string]interface{}) interface{} { return p.Field["username"] })
+// field.SmsCaptcha("code", "输入框") 或 field.SmsCaptcha("code", "输入框", func(row map[string]interface{}) interface{} { return row["name"] })
 func (p *Field) SmsCaptcha(params ...interface{}) *smscaptcha.Component {
 	return fieldParser(smscaptcha.New(), params, "请输入").(*smscaptcha.Component)
 }
