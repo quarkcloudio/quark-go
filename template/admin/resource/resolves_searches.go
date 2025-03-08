@@ -25,10 +25,11 @@ func (p *Template) IndexSearches(ctx *quark.Context) interface{} {
 	search := template.GetTableSearch(ctx)
 
 	// 是否携带导出功能
-	withExport := template.GetWithExport()
-	if withExport {
+	export := template.GetExport()
+	if export {
+		exportText := template.GetExportText() // 导出按钮文字内容
 		search = search.
-			SetExportText("导出").
+			SetExportText(exportText).
 			SetExportApi(strings.Replace(ExportPath, ":resource", ctx.Param("resource"), -1))
 	}
 

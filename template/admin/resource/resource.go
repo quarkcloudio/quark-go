@@ -46,13 +46,14 @@ type Template struct {
 	TableActionColumnWidth int              // 列表页表格行为列的宽度
 	TablePolling           int              // 列表页表格是否轮询数据
 	TableListToTree        interface{}      // 列表页数据转换为树形结构, true 或者 map[string]interface{}{"pkName": "id",""pidName": "pid","childrenName": "children","rootId":0}
+	Export                 bool             // 列表是否具有导出功能
+	ExportText             string           // 列表导出按钮文字内容
 	PageSize               interface{}      // 列表页分页配置
 	PageSizeOptions        []int            // 指定每页可以显示多少条，[10, 20, 50, 100]
 	QueryOrder             string           // 全局排序规则
 	IndexQueryOrder        string           // 列表页排序规则
 	ExportQueryOrder       string           // 导出数据排序规则
 	Model                  interface{}      // 挂载模型
-	WithExport             bool             // 是否具有导出功能
 }
 
 // 初始化
@@ -89,6 +90,9 @@ func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
 
 	// 列表页表格标题后缀
 	p.TableTitleSuffix = "列表"
+
+	// 列表导出按钮文字内容
+	p.ExportText = "导出"
 
 	// 页面是否携带返回Icon
 	p.BackIcon = true
@@ -223,8 +227,13 @@ func (p *Template) GetExportQueryOrder() string {
 }
 
 // 获取是否具有导出功能
-func (p *Template) GetWithExport() bool {
-	return p.WithExport
+func (p *Template) GetExport() bool {
+	return p.Export
+}
+
+// 获取导出按钮文字内容
+func (p *Template) GetExportText() string {
+	return p.ExportText
 }
 
 // 字段

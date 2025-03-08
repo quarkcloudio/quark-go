@@ -273,6 +273,14 @@ func (p *Template) EditableQuery(ctx *quark.Context, query *gorm.DB) *gorm.DB {
 
 // 导出查询
 func (p *Template) ExportQuery(ctx *quark.Context, query *gorm.DB) *gorm.DB {
+	id := ctx.Query("id", "")
+	if id != "" {
+		if strings.Contains(id.(string), ",") {
+			query.Where("id IN ?", strings.Split(id.(string), ","))
+		} else {
+			query.Where("id = ?", id)
+		}
+	}
 
 	return query
 }

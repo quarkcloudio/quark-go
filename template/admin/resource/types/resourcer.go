@@ -57,6 +57,12 @@ type Resourcer interface {
 	// 列表页列表数据转换为树形结构
 	GetTableListToTree() interface{}
 
+	// 获取是否具有导出功能
+	GetExport() bool
+
+	// 获取导出按钮文字内容
+	GetExportText() string
+
 	// 获取分页配置
 	GetPageSize() interface{}
 
@@ -71,9 +77,6 @@ type Resourcer interface {
 
 	// 获取导出数据排序规则
 	GetExportQueryOrder() string
-
-	// 获取是否具有导出功能
-	GetWithExport() bool
 
 	// 数据导出前回调
 	BeforeExporting(ctx *quark.Context, list []map[string]interface{}) []interface{}

@@ -41,7 +41,7 @@ func (p *User) Init(ctx *quark.Context) interface{} {
 	p.PageSize = 10
 
 	// 是否具有导出功能
-	p.WithExport = true
+	p.Export = true
 
 	return p
 }
