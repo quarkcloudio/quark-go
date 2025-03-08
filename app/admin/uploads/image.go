@@ -250,7 +250,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 
 	// 重写url
 	if driver == quark.LocalStorage {
-		result.Url = service.NewAttachmentService().GetImagePath(result.Url)
+		result.Url = service.NewAttachmentService().GetImageUrl(result.Url)
 	}
 
 	extra := ""
@@ -322,7 +322,7 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 
 	// 重写url
 	if driver == quark.LocalStorage {
-		result.Url = service.NewAttachmentService().GetImagePath(result.Url)
+		result.Url = service.NewAttachmentService().GetImageUrl(result.Url)
 	}
 
 	adminInfo, err := service.NewAuthService(ctx).GetAdmin()

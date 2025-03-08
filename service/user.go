@@ -23,7 +23,7 @@ func (p *UserService) GetInfoById(id interface{}) (user model.User, Error error)
 func (p *UserService) GetInfoByUsername(username string) (user model.User, Error error) {
 	err := db.Client.Where("status = ?", 1).Where("username = ?", username).First(&user).Error
 	if user.Avatar != "" {
-		user.Avatar = NewAttachmentService().GetImagePath(user.Avatar) // 获取头像地址
+		user.Avatar = NewAttachmentService().GetImageUrl(user.Avatar) // 获取头像地址
 	}
 	return user, err
 }

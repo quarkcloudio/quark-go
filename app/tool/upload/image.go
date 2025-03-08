@@ -77,7 +77,7 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 
 	// 重写url
 	if driver == quark.LocalStorage {
-		result.Url = service.NewAttachmentService().GetPath(result.Url)
+		result.Url = service.NewAttachmentService().GetUrl(result.Url)
 	}
 
 	extra := ""

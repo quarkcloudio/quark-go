@@ -47,7 +47,7 @@ func (p *AttachmentService) GetListBySearch(adminId interface{}, attachmentType 
 		Find(&attachments)
 
 	for k, v := range attachments {
-		v.Url = p.GetPath(v.Url) + "?timestamp=" + strconv.Itoa(int(time.Now().Unix()))
+		v.Url = p.GetUrl(v.Url) + "?timestamp=" + strconv.Itoa(int(time.Now().Unix()))
 		attachments[k] = v
 	}
 
@@ -91,8 +91,8 @@ func (p *AttachmentService) GetInfoByHash(hash string) (attachment model.Attachm
 	return attachment, err
 }
 
-// 获取附件路径，GetPath(1) 或者 GetPath("FILE", 1)
-func (p *AttachmentService) GetPath(params ...interface{}) string {
+// 获取附件访问Url，GetUrl(1) 或者 GetUrl("FILE", 1)
+func (p *AttachmentService) GetUrl(params ...interface{}) string {
 	var id, attachmentType interface{}
 	if len(params) == 1 {
 		id = params[0]
@@ -170,18 +170,18 @@ func (p *AttachmentService) GetPath(params ...interface{}) string {
 	return ""
 }
 
-// 获取文件路径
-func (p *AttachmentService) GetFilePath(id interface{}) string {
-	return p.GetPath("FILE", id)
+// 获取文件访问Url
+func (p *AttachmentService) GetFileUrl(id interface{}) string {
+	return p.GetUrl("FILE", id)
 }
 
-// 获取图片路径
-func (p *AttachmentService) GetImagePath(id interface{}) string {
-	return p.GetPath("IMAGE", id)
+// 获取图片访问Url
+func (p *AttachmentService) GetImageUrl(id interface{}) string {
+	return p.GetUrl("IMAGE", id)
 }
 
-// 获取多文件路径
-func (p *AttachmentService) GetPaths(id interface{}) []string {
+// 获取多文件访问Url
+func (p *AttachmentService) GetUrls(id interface{}) []string {
 	var paths []string
 	http, path := "", ""
 	webSiteDomain := NewConfigService().GetValue("WEB_SITE_DOMAIN")
@@ -213,6 +213,75 @@ func (p *AttachmentService) GetPaths(id interface{}) []string {
 						}
 						paths = append(paths, path)
 					}
+				}
+			}
+		}
+	}
+
+	return paths
+}
+
+// 获取附件存储路径，GetPath(1) 或者 GetPath(1)
+func (p *AttachmentService) GetPath(id interface{}) string {
+	path := ""
+	if getId, ok := id.(string); ok {
+		if strings.Contains(getId, "//") && !strings.Contains(getId, "{") {
+			return getId
+		}
+		if strings.Contains(getId, "./") && !strings.Contains(getId, "{") {
+			return getId
+		}
+		if strings.Contains(getId, "/") && !strings.Contains(getId, "{") {
+			return getId
+		}
+
+		// json字符串
+		if strings.Contains(getId, "{") {
+			var jsonData interface{}
+			json.Unmarshal([]byte(getId), &jsonData)
+			if mapData, ok := jsonData.(map[string]interface{}); ok {
+				id = mapData["id"].(string)
+			}
+
+			// 如果为数组，返回第一个key的path
+			if arrayData, ok := jsonData.([]map[string]interface{}); ok {
+				id = arrayData[0]["id"].(string)
+			}
+		}
+		if strings.Contains(path, "//") {
+			return path
+		}
+		if strings.Contains(path, "./") {
+			return path
+		}
+	}
+
+	attachment := model.Attachment{}
+	db.Client.Where("id", id).Where("status", 1).First(&attachment)
+
+	return attachment.Path
+}
+
+// 获取文件存储路径
+func (p *AttachmentService) GetFilePath(id interface{}) string {
+	return p.GetPath(id)
+}
+
+// 获取图片存储路径
+func (p *AttachmentService) GetImagePath(id interface{}) string {
+	return p.GetPath(id)
+}
+
+// 获取多文件存储路径
+func (p *AttachmentService) GetPaths(id interface{}) []string {
+	var paths []string
+	if getId, ok := id.(string); ok {
+		if strings.Contains(getId, "{") {
+			var jsonData []map[string]interface{}
+			err := json.Unmarshal([]byte(getId), &jsonData)
+			if err == nil {
+				for _, v := range jsonData {
+					paths = append(paths, p.GetPath(v["id"]))
 				}
 			}
 		}

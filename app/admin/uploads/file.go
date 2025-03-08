@@ -89,7 +89,7 @@ func (p *File) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 
 	// 重写url
 	if driver == quark.LocalStorage {
-		result.Url = service.NewAttachmentService().GetFilePath(result.Url)
+		result.Url = service.NewAttachmentService().GetFileUrl(result.Url)
 	}
 
 	adminInfo, err := service.NewAuthService(ctx).GetAdmin()

@@ -197,7 +197,7 @@ func (p *IndexRequest) performsList(ctx *quark.Context, lists []map[string]inter
 
 					// 单独解析图片、图片选择器组件
 					if component == "imageField" || component == "imagePickerField" {
-						fieldValue = service.NewAttachmentService().GetImagePath(v[name].(string))
+						fieldValue = service.NewAttachmentService().GetImageUrl(v[name].(string))
 					}
 
 					fields[name] = fieldValue
