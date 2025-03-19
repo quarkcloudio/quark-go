@@ -1,6 +1,8 @@
 package service
 
 import (
+	"sync"
+
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
 	"github.com/quarkcloudio/quark-go/v3/model"
 )
@@ -9,6 +11,7 @@ type ConfigService struct{}
 
 // 存储配置
 var webConfig = make(map[string]string)
+var mu sync.Mutex
 
 // 初始化
 func NewConfigService() *ConfigService {
@@ -19,6 +22,9 @@ func NewConfigService() *ConfigService {
 func (p *ConfigService) Refresh() {
 	configs := []model.Config{}
 	db.Client.Where("status", 1).Find(&configs)
+	// 确保对 webConfig map 的写入操作是互斥的，防止并发写入导致的数据竞争
+	mu.Lock()
+	defer mu.Unlock()
 	for _, config := range configs {
 		webConfig[config.Name] = config.Value
 	}
