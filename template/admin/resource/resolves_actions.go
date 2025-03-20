@@ -29,7 +29,7 @@ func (p *Template) IndexTableActions(ctx *quark.Context) interface{} {
 		actionInstance := v.(types.Actioner)
 
 		// 初始化模版
-		actionInstance.LoadInitData(ctx)
+		actionInstance.New(ctx)
 
 		// 初始化
 		actionInstance.Init(ctx)
@@ -61,7 +61,7 @@ func (p *Template) IndexTableRowActions(ctx *quark.Context) interface{} {
 		actionInstance := v.(types.Actioner)
 
 		// 初始化模版
-		actionInstance.LoadInitData(ctx)
+		actionInstance.New(ctx)
 
 		// 初始化
 		actionInstance.Init(ctx)
@@ -91,7 +91,7 @@ func (p *Template) IndexTableAlertActions(ctx *quark.Context) interface{} {
 		actionInstance := v.(types.Actioner)
 
 		// 初始化模版
-		actionInstance.LoadInitData(ctx)
+		actionInstance.New(ctx)
 
 		// 初始化
 		actionInstance.Init(ctx)
@@ -121,7 +121,7 @@ func (p *Template) FormActions(ctx *quark.Context) []interface{} {
 		actionInstance := v.(types.Actioner)
 
 		// 初始化模版
-		actionInstance.LoadInitData(ctx)
+		actionInstance.New(ctx)
 
 		// 初始化
 		actionInstance.Init(ctx)
@@ -151,7 +151,7 @@ func (p *Template) FormExtraActions(ctx *quark.Context) interface{} {
 		actionInstance := v.(types.Actioner)
 
 		// 初始化模版
-		actionInstance.LoadInitData(ctx)
+		actionInstance.New(ctx)
 
 		// 初始化
 		actionInstance.Init(ctx)
@@ -181,7 +181,7 @@ func (p *Template) DetailActions(ctx *quark.Context) []interface{} {
 		actionInstance := v.(types.Actioner)
 
 		// 初始化模版
-		actionInstance.LoadInitData(ctx)
+		actionInstance.New(ctx)
 
 		// 初始化
 		actionInstance.Init(ctx)
@@ -211,7 +211,7 @@ func (p *Template) DetailExtraActions(ctx *quark.Context) interface{} {
 		actionInstance := v.(types.Actioner)
 
 		// 初始化模版
-		actionInstance.LoadInitData(ctx)
+		actionInstance.New(ctx)
 
 		// 初始化
 		actionInstance.Init(ctx)

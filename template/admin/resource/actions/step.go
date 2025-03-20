@@ -7,7 +7,7 @@ type Step struct {
 }
 
 // 初始化
-func (p *Step) LoadInitData(ctx *quark.Context) interface{} {
+func (p *Step) New(ctx *quark.Context) interface{} {
 	p.ActionType = "step"
 	p.Name = []string{"上一步", "下一步"}
 	return p

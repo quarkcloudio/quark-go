@@ -11,7 +11,7 @@ type TreeSelect struct {
 }
 
 // 加载初始化数据
-func (p *TreeSelect) LoadInitData(ctx *quark.Context) interface{} {
+func (p *TreeSelect) New(ctx *quark.Context) interface{} {
 	p.Component = "treeSelectField"
 
 	return p

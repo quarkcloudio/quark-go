@@ -9,7 +9,7 @@ type Drawer struct {
 }
 
 // 初始化
-func (p *Drawer) LoadInitData(ctx *quark.Context) interface{} {
+func (p *Drawer) New(ctx *quark.Context) interface{} {
 	p.ActionType = "drawer"
 	p.Width = 520
 

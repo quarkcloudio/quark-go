@@ -17,7 +17,7 @@ type Search struct {
 }
 
 // 加载初始化数据
-func (p *Search) LoadInitData(ctx *quark.Context) interface{} {
+func (p *Search) New(ctx *quark.Context) interface{} {
 	p.Component = "textField"
 
 	return p

@@ -44,7 +44,7 @@ func (p *Template) IndexSearches(ctx *quark.Context) interface{} {
 		searchInstance := v.(types.Searcher)
 
 		// 初始化模版
-		searchInstance.LoadInitData(ctx)
+		searchInstance.New(ctx)
 
 		// 初始化
 		searchInstance.Init(ctx)

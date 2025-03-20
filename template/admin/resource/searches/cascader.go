@@ -11,7 +11,7 @@ type Cascader struct {
 }
 
 // 加载初始化数据
-func (p *Cascader) LoadInitData(ctx *quark.Context) interface{} {
+func (p *Cascader) New(ctx *quark.Context) interface{} {
 	p.Component = "cascaderField"
 
 	return p

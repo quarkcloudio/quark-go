@@ -13,7 +13,7 @@ type ModalForm struct {
 }
 
 // 初始化
-func (p *ModalForm) LoadInitData(ctx *quark.Context) interface{} {
+func (p *ModalForm) New(ctx *quark.Context) interface{} {
 	p.ActionType = "modalForm"
 	p.Width = 520
 	p.Reload = "table"

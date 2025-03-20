@@ -11,7 +11,7 @@ type Radio struct {
 }
 
 // 加载初始化数据
-func (p *Radio) LoadInitData(ctx *quark.Context) interface{} {
+func (p *Radio) New(ctx *quark.Context) interface{} {
 	p.Component = "radioField"
 	return p
 }

@@ -242,8 +242,8 @@ func (p *Engine) initPaths() {
 
 						// 加载初始化数据
 						av.(interface {
-							LoadInitData(ctx *Context) interface{}
-						}).LoadInitData(&Context{})
+							New(ctx *Context) interface{}
+						}).New(&Context{})
 
 						// uri唯一标识
 						uriKey := av.(interface {

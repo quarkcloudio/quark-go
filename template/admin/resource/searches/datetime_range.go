@@ -7,7 +7,7 @@ type DatetimeRange struct {
 }
 
 // 加载初始化数据
-func (p *DatetimeRange) LoadInitData(ctx *quark.Context) interface{} {
+func (p *DatetimeRange) New(ctx *quark.Context) interface{} {
 	p.Component = "datetimeRangeField"
 
 	return p

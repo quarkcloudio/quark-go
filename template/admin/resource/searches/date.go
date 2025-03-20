@@ -7,7 +7,7 @@ type Date struct {
 }
 
 // 加载初始化数据
-func (p *Date) LoadInitData(ctx *quark.Context) interface{} {
+func (p *Date) New(ctx *quark.Context) interface{} {
 	p.Component = "dateField"
 
 	return p

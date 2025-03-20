@@ -30,7 +30,7 @@ func (p *ActionRequest) Handle(ctx *quark.Context) error {
 		actionInstance := v.(types.Actioner)
 
 		// 初始化模版
-		actionInstance.LoadInitData(ctx)
+		actionInstance.New(ctx)
 
 		// 初始化
 		actionInstance.Init(ctx)
@@ -93,7 +93,7 @@ func (p *ActionRequest) Values(ctx *quark.Context) error {
 		actionInstance := v.(types.Actioner)
 
 		// 初始化模版
-		actionInstance.LoadInitData(ctx)
+		actionInstance.New(ctx)
 
 		// 初始化
 		actionInstance.Init(ctx)

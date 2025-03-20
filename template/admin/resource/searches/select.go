@@ -11,7 +11,7 @@ type Select struct {
 }
 
 // 加载初始化数据
-func (p *Select) LoadInitData(ctx *quark.Context) interface{} {
+func (p *Select) New(ctx *quark.Context) interface{} {
 	p.Component = "selectField"
 	return p
 }

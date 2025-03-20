@@ -94,7 +94,7 @@ type Action struct {
 }
 
 // 加载初始化数据
-func (p *Action) LoadInitData(ctx *quark.Context) interface{} {
+func (p *Action) New(ctx *quark.Context) interface{} {
 	p.ActionType = "ajax"
 
 	return p

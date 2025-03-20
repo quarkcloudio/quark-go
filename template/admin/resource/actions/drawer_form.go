@@ -13,7 +13,7 @@ type DrawerForm struct {
 }
 
 // 初始化
-func (p *DrawerForm) LoadInitData(ctx *quark.Context) interface{} {
+func (p *DrawerForm) New(ctx *quark.Context) interface{} {
 	p.ActionType = "drawerForm"
 	p.Width = 520
 	p.Reload = "table"

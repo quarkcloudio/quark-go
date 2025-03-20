@@ -16,7 +16,7 @@ type Dropdown struct {
 }
 
 // 初始化
-func (p *Dropdown) LoadInitData(ctx *quark.Context) interface{} {
+func (p *Dropdown) New(ctx *quark.Context) interface{} {
 	p.ActionType = "dropdown"
 	p.Placement = "bottomLeft"
 	p.Trigger = append(p.Trigger, "hover")
@@ -60,7 +60,7 @@ func (p *Dropdown) GetMenu(ctx *quark.Context) interface{} {
 		actionInstance := v.(types.Actioner)
 
 		// 初始化模版
-		actionInstance.LoadInitData(ctx)
+		actionInstance.New(ctx)
 
 		// 初始化
 		actionInstance.Init(ctx)
