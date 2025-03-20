@@ -203,10 +203,15 @@ func (p *Engine) initPaths() {
 	}
 	for _, provider := range p.providers {
 
-		// 初始化路由
+		// 启动模版
 		provider.(interface {
-			RouteInit() interface{}
-		}).RouteInit()
+			Bootstrap() interface{}
+		}).Bootstrap()
+
+		// 加载初始化路由
+		provider.(interface {
+			LoadInitRoute() interface{}
+		}).LoadInitRoute()
 
 		// 加载自定义路由
 		provider.(interface {
@@ -235,10 +240,10 @@ func (p *Engine) initPaths() {
 					// 解析行为
 					for _, av := range actions {
 
-						// 模版初始化
+						// 加载初始化数据
 						av.(interface {
-							TemplateInit(ctx *Context) interface{}
-						}).TemplateInit(&Context{})
+							LoadInitData(ctx *Context) interface{}
+						}).LoadInitData(&Context{})
 
 						// uri唯一标识
 						uriKey := av.(interface {

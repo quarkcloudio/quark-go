@@ -18,6 +18,31 @@ import (
 
 type Image struct {
 	upload.Template
+	GetListPath string // 获取文件列表路由路径
+	DeletePath  string // 文件删除路由路径
+	CropPath    string // 图片裁剪路由路径
+}
+
+// 启动模版
+func (p *Image) Bootstrap() interface{} {
+	p.GetListPath = "/api/admin/upload/:resource/getList"           // 获取文件列表路由路径
+	p.DeletePath = "/api/admin/upload/:resource/delete"             // 文件删除路由路径
+	p.CropPath = "/api/admin/upload/:resource/crop"                 // 图片裁剪路由路径
+	p.HandlePath = "/api/admin/upload/:resource/handle"             // 文件上传路由路径
+	p.Base64HandlePath = "/api/admin/upload/:resource/base64Handle" // Base64文件上传路由路径
+
+	return p
+}
+
+// 加载初始化路由
+func (p *Image) LoadInitRoute() interface{} {
+	p.GET(p.GetListPath, p.GetList)
+	p.Any(p.DeletePath, p.Delete)
+	p.POST(p.CropPath, p.Crop)
+	p.POST(p.HandlePath, p.Handle)
+	p.POST(p.Base64HandlePath, p.HandleFromBase64)
+
+	return p
 }
 
 // 初始化
@@ -36,17 +61,6 @@ func (p *Image) Init(ctx *quark.Context) interface{} {
 
 	// 设置文件上传路径
 	p.SavePath = "./web/app/storage/images/" + time.Now().Format("20060102") + "/"
-
-	return p
-}
-
-// 初始化路由映射
-func (p *Image) RouteInit() interface{} {
-	p.GET("/api/admin/upload/:resource/getList", p.GetList)
-	p.Any("/api/admin/upload/:resource/delete", p.Delete)
-	p.POST("/api/admin/upload/:resource/crop", p.Crop)
-	p.POST("/api/admin/upload/:resource/handle", p.Handle)
-	p.POST("/api/admin/upload/:resource/base64Handle", p.HandleFromBase64)
 
 	return p
 }

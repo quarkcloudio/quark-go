@@ -63,8 +63,11 @@ func Middleware(ctx *quark.Context) error {
 	// 获取登录实例
 	loginInstance := &logins.Index{}
 
+	// 启动模版
+	loginInstance.Bootstrap()
+
 	// 初始化路由
-	loginInstance.RouteInit()
+	loginInstance.LoadInitRoute()
 
 	// 加载自定义路由
 	loginInstance.Route()

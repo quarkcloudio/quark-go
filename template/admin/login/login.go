@@ -18,21 +18,42 @@ import (
 // 后台登录模板
 type Template struct {
 	quark.Template
-	Api      string      // 登录接口
-	Redirect string      // 登录后跳转地址
-	Logo     interface{} // 登录页面Logo
-	Title    string      // 标题
-	SubTitle string      // 子标题
-	Body     interface{} `json:"body,omitempty"` // 表单内容
+	IndexPath     string      // 登录页面路由
+	HandlePath    string      // 登录执行路由
+	CaptchaIdPath string      // 登录获取验证码ID路由
+	CaptchaPath   string      // 登录验证码路由
+	LogoutPath    string      // 退出执行路由
+	Api           string      // 登录接口
+	Redirect      string      // 登录后跳转地址
+	Logo          interface{} // 登录页面Logo
+	Title         string      // 标题
+	SubTitle      string      // 子标题
+	Body          interface{} `json:"body,omitempty"` // 表单内容
 }
 
-// 初始化
-func (p *Template) Init(ctx *quark.Context) interface{} {
+// 启动模版
+func (p *Template) Bootstrap() interface{} {
+	p.IndexPath = "/api/admin/login/:resource/index"         // 登录页面路由
+	p.HandlePath = "/api/admin/login/:resource/handle"       // 登录执行路由
+	p.CaptchaIdPath = "/api/admin/login/:resource/captchaId" // 登录获取验证码ID路由
+	p.CaptchaPath = "/api/admin/login/:resource/captcha/:id" // 登录验证码路由
+	p.LogoutPath = "/api/admin/logout/:resource/handle"      // 退出执行路由
+	return p
+}
+
+// 初始化路由映射
+func (p *Template) LoadInitRoute() interface{} {
+	p.GET(p.IndexPath, p.Render)        // 登录页面路由
+	p.POST(p.HandlePath, p.Handle)      // 登录执行路由
+	p.GET(p.CaptchaIdPath, p.CaptchaId) // 登录获取验证码ID路由
+	p.GET(p.CaptchaPath, p.Captcha)     // 登录验证码路由
+	p.GET(p.LogoutPath, p.Logout)       // 退出执行路由
+
 	return p
 }
 
 // 初始化模板
-func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
+func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
 
 	// 初始化数据对象
 	p.DB = db.Client
@@ -60,14 +81,8 @@ func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
 	return p
 }
 
-// 初始化路由映射
-func (p *Template) RouteInit() interface{} {
-	p.GET("/api/admin/login/:resource/index", p.Render)        // 渲染登录页面路由
-	p.POST("/api/admin/login/:resource/handle", p.Handle)      // 后台登录执行路由
-	p.GET("/api/admin/login/:resource/captchaId", p.CaptchaId) // 后台登录获取验证码ID路由
-	p.GET("/api/admin/login/:resource/captcha/:id", p.Captcha) // 后台登录验证码路由
-	p.GET("/api/admin/logout/:resource/handle", p.Logout)      // 后台退出执行路由
-
+// 初始化
+func (p *Template) Init(ctx *quark.Context) interface{} {
 	return p
 }
 

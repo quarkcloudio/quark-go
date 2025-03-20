@@ -11,7 +11,7 @@ type TreeSelect struct {
 }
 
 // 初始化模板
-func (p *TreeSelect) TemplateInit(ctx *quark.Context) interface{} {
+func (p *TreeSelect) LoadInitData(ctx *quark.Context) interface{} {
 	p.Component = "treeSelectField"
 
 	return p

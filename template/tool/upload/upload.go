@@ -18,23 +18,42 @@ import (
 // 文件上传
 type Template struct {
 	quark.Template
-	LimitSize        int64              // 限制文件大小
-	LimitType        interface{}        // 限制文件类型
-	LimitImageWidth  int64              // 限制图片宽度
-	LimitImageHeight int64              // 限制图片高度
-	Driver           string             // 存储驱动
-	SavePath         string             // 保存路径
-	OSSConfig        *quark.OSSConfig   // OSS配置
-	MinioConfig      *quark.MinioConfig // Minio配置
+	HandlePath           string             // 文件上传路由路径
+	Base64HandlePath     string             // Base64文件上传路由路径
+	ToolHandlePath       string             // 文件上传路由路径
+	ToolBase64HandlePath string             // Base64文件上传路由路径
+	LimitSize            int64              // 限制文件大小
+	LimitType            interface{}        // 限制文件类型
+	LimitImageWidth      int64              // 限制图片宽度
+	LimitImageHeight     int64              // 限制图片高度
+	Driver               string             // 存储驱动
+	SavePath             string             // 保存路径
+	OSSConfig            *quark.OSSConfig   // OSS配置
+	MinioConfig          *quark.MinioConfig // Minio配置
 }
 
-// 初始化
-func (p *Template) Init(ctx *quark.Context) interface{} {
+// 启动模版
+func (p *Template) Bootstrap() interface{} {
+	p.HandlePath = "/api/upload/:resource/handle"                      // 文件上传路由路径
+	p.Base64HandlePath = "/api/upload/:resource/base64Handle"          // Base64文件上传路由路径
+	p.ToolHandlePath = "/api/tool/upload/:resource/handle"             // 文件上传路由路径
+	p.ToolBase64HandlePath = "/api/tool/upload/:resource/base64Handle" // Base64文件上传路由路径
+
+	return p
+}
+
+// 初始化路由映射
+func (p *Template) LoadInitRoute() interface{} {
+	p.POST(p.HandlePath, p.Handle)
+	p.POST(p.Base64HandlePath, p.HandleFromBase64)
+	p.POST(p.ToolHandlePath, p.Handle)
+	p.POST(p.ToolBase64HandlePath, p.HandleFromBase64)
+
 	return p
 }
 
 // 初始化模板
-func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
+func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
 
 	// 初始化数据对象
 	p.DB = db.Client
@@ -45,13 +64,8 @@ func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
 	return p
 }
 
-// 初始化路由映射
-func (p *Template) RouteInit() interface{} {
-	p.POST("/api/tool/upload/:resource/handle", p.Handle)
-	p.POST("/api/tool/upload/:resource/base64Handle", p.HandleFromBase64)
-	p.POST("/api/upload/:resource/handle", p.Handle)
-	p.POST("/api/upload/:resource/base64Handle", p.HandleFromBase64)
-
+// 初始化
+func (p *Template) Init(ctx *quark.Context) interface{} {
 	return p
 }
 

@@ -17,6 +17,8 @@ import (
 // 文件上传
 type Template struct {
 	quark.Template
+	HandlePath       string             // 文件上传路由路径
+	Base64HandlePath string             // Base64文件上传路由路径
 	LimitSize        int64              // 限制文件大小
 	LimitType        []string           // 限制文件类型
 	LimitImageWidth  int                // 限制图片宽度
@@ -27,13 +29,24 @@ type Template struct {
 	MinioConfig      *quark.MinioConfig // Minio配置
 }
 
-// 初始化
-func (p *Template) Init(ctx *quark.Context) interface{} {
+// 启动模版
+func (p *Template) Bootstrap() interface{} {
+	p.HandlePath = "/api/admin/upload/:resource/handle"             // 文件上传路由路径
+	p.Base64HandlePath = "/api/admin/upload/:resource/base64Handle" // Base64文件上传路由路径
+
 	return p
 }
 
-// 初始化模板
-func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
+// 加载初始化路由
+func (p *Template) LoadInitRoute() interface{} {
+	p.POST(p.HandlePath, p.Handle)
+	p.POST(p.Base64HandlePath, p.HandleFromBase64)
+
+	return p
+}
+
+// 加载初始化数据
+func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
 
 	// 初始化数据对象
 	p.DB = db.Client
@@ -44,11 +57,8 @@ func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
 	return p
 }
 
-// 初始化路由映射
-func (p *Template) RouteInit() interface{} {
-	p.POST("/api/admin/upload/:resource/handle", p.Handle)
-	p.POST("/api/admin/upload/:resource/base64Handle", p.HandleFromBase64)
-
+// 初始化
+func (p *Template) Init(ctx *quark.Context) interface{} {
 	return p
 }
 

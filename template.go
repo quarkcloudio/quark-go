@@ -9,14 +9,17 @@ import (
 // 模版接口
 type Templater interface {
 
-	// 初始化
+	// 启动模版
+	Bootstrap() interface{}
+
+	// 加载初始化路由
+	LoadInitRoute() interface{}
+
+	// 加载初始化数据
+	LoadInitData(ctx *Context) interface{}
+
+	// 模版初始化
 	Init(ctx *Context) interface{}
-
-	// 初始化模板
-	TemplateInit(ctx *Context) interface{}
-
-	// 初始化路由
-	RouteInit() interface{}
 
 	// 自定义路由
 	Route() interface{}

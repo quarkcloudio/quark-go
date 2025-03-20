@@ -14,6 +14,7 @@ import (
 // 后台登录模板
 type Template struct {
 	quark.Template
+	IndexPath    string                   // 路由路径
 	Title        string                   // layout 的左上角 的 title
 	Logo         interface{}              // layout 的左上角 的 logo
 	Actions      interface{}              // layout 的头部行为
@@ -31,13 +32,21 @@ type Template struct {
 	RightMenus   []interface{}            // 右上角菜单
 }
 
-// 初始化
-func (p *Template) Init(ctx *quark.Context) interface{} {
+// 启动模版
+func (p *Template) Bootstrap() interface{} {
+	p.IndexPath = "/api/admin/layout/:resource/index" // 路由路径
 	return p
 }
 
-// 初始化模板
-func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
+// 加载初始化路由
+func (p *Template) LoadInitRoute() interface{} {
+	p.GET(p.IndexPath, p.Render) // 获取布局配置
+
+	return p
+}
+
+// 加载初始化数据
+func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
 
 	// 初始化数据对象
 	p.DB = db.Client
@@ -130,10 +139,8 @@ func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
 	return p
 }
 
-// 初始化路由映射
-func (p *Template) RouteInit() interface{} {
-	p.GET("/api/admin/layout/:resource/index", p.Render) // 获取布局配置
-
+// 初始化
+func (p *Template) Init(ctx *quark.Context) interface{} {
 	return p
 }
 

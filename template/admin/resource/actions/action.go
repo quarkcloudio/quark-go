@@ -99,7 +99,7 @@ func (p *Action) Init(ctx *quark.Context) interface{} {
 }
 
 // 初始化模板
-func (p *Action) TemplateInit(ctx *quark.Context) interface{} {
+func (p *Action) LoadInitData(ctx *quark.Context) interface{} {
 	p.ActionType = "ajax"
 
 	return p

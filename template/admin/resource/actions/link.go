@@ -9,7 +9,7 @@ type Link struct {
 }
 
 // 初始化
-func (p *Link) TemplateInit(ctx *quark.Context) interface{} {
+func (p *Link) LoadInitData(ctx *quark.Context) interface{} {
 	p.ActionType = "link"
 	p.Target = "_self"
 

@@ -9,7 +9,7 @@ type Modal struct {
 }
 
 // 初始化
-func (p *Modal) TemplateInit(ctx *quark.Context) interface{} {
+func (p *Modal) LoadInitData(ctx *quark.Context) interface{} {
 	p.ActionType = "modal"
 	p.Width = 520
 

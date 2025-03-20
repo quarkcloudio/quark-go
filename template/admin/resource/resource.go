@@ -11,27 +11,23 @@ import (
 	"gorm.io/gorm"
 )
 
-// 路由路径常量
-const (
-	IndexPath          = "/api/admin/:resource/index"                 // 列表路径
-	EditablePath       = "/api/admin/:resource/editable"              // 表格行内编辑路径
-	ActionPath         = "/api/admin/:resource/action/:uriKey"        // 执行行为路径
-	ActionValuesPath   = "/api/admin/:resource/action/:uriKey/values" // 行为表单值路径
-	CreatePath         = "/api/admin/:resource/create"                // 创建页面路径
-	StorePath          = "/api/admin/:resource/store"                 // 创建方法路径
-	EditPath           = "/api/admin/:resource/edit"                  // 编辑页面路径
-	EditValuesPath     = "/api/admin/:resource/edit/values"           // 获取编辑表单值路径
-	SavePath           = "/api/admin/:resource/save"                  // 保存编辑值路径
-	ImportPath         = "/api/admin/:resource/import"                // 详情页面路径
-	ExportPath         = "/api/admin/:resource/export"                // 导出数据路径
-	DetailPath         = "/api/admin/:resource/detail"                // 导入数据路径
-	ImportTemplatePath = "/api/admin/:resource/import/template"       // 导入模板路径
-	FormPath           = "/api/admin/:resource/form"                  // 设置表单路径
-)
-
 // 增删改查模板
 type Template struct {
 	quark.Template
+	IndexPath              string           // 列表路径
+	EditablePath           string           // 表格行内编辑路径
+	ActionPath             string           // 执行行为路径
+	ActionValuesPath       string           // 行为表单值路径
+	CreatePath             string           // 创建页面路径
+	StorePath              string           // 创建方法路径
+	EditPath               string           // 编辑页面路径
+	EditValuesPath         string           // 获取编辑表单值路径
+	SavePath               string           // 保存编辑值路径
+	ImportPath             string           // 详情页面路径
+	ExportPath             string           // 导出数据路径
+	DetailPath             string           // 导入数据路径
+	ImportTemplatePath     string           // 导入模板路径
+	FormPath               string           // 设置表单路径
 	Title                  string           // 页面标题
 	SubTitle               string           // 页面子标题
 	BackIcon               bool             // 页面是否携带返回Icon
@@ -56,13 +52,48 @@ type Template struct {
 	Model                  interface{}      // 挂载模型
 }
 
-// 初始化
-func (p *Template) Init(ctx *quark.Context) interface{} {
+// 启动模版
+func (p *Template) Bootstrap() interface{} {
+	p.IndexPath = "/api/admin/:resource/index"                        // 列表路径
+	p.EditablePath = "/api/admin/:resource/editable"                  // 表格行内编辑路径
+	p.ActionPath = "/api/admin/:resource/action/:uriKey"              // 执行行为路径
+	p.ActionValuesPath = "/api/admin/:resource/action/:uriKey/values" // 行为表单值路径
+	p.CreatePath = "/api/admin/:resource/create"                      // 创建页面路径
+	p.StorePath = "/api/admin/:resource/store"                        // 创建方法路径
+	p.EditPath = "/api/admin/:resource/edit"                          // 编辑页面路径
+	p.EditValuesPath = "/api/admin/:resource/edit/values"             // 获取编辑表单值路径
+	p.SavePath = "/api/admin/:resource/save"                          // 保存编辑值路径
+	p.ImportPath = "/api/admin/:resource/import"                      // 详情页面路径
+	p.ExportPath = "/api/admin/:resource/export"                      // 导出数据路径
+	p.DetailPath = "/api/admin/:resource/detail"                      // 导入数据路径
+	p.ImportTemplatePath = "/api/admin/:resource/import/template"     // 导入模板路径
+	p.FormPath = "/api/admin/:resource/form"                          // 设置表单路径
+
 	return p
 }
 
-// 初始化模板
-func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
+// 加载初始化路由
+func (p *Template) LoadInitRoute() interface{} {
+	p.GET(p.IndexPath, p.IndexRender)                   // 列表
+	p.GET(p.EditablePath, p.EditableRender)             // 表格行内编辑
+	p.Any(p.ActionPath, p.ActionRender)                 // 执行行为
+	p.Any(p.ActionValuesPath, p.ActionValuesRender)     // 获取行为表单值
+	p.GET(p.CreatePath, p.CreationRender)               // 创建页面
+	p.POST(p.StorePath, p.StoreRender)                  // 创建方法
+	p.GET(p.EditPath, p.EditRender)                     // 编辑页面
+	p.GET(p.EditValuesPath, p.EditValuesRender)         // 获取编辑表单值
+	p.POST(p.SavePath, p.SaveRender)                    // 保存编辑值
+	p.GET(p.DetailPath, p.DetailRender)                 // 详情页面
+	p.GET(p.ExportPath, p.ExportRender)                 // 导出数据
+	p.POST(p.ImportPath, p.ImportRender)                // 导入数据
+	p.GET(p.ImportTemplatePath, p.ImportTemplateRender) // 导入模板
+	p.GET(p.FormPath, p.FormRender)                     // 通用表单资源
+
+	return p
+}
+
+// 加载初始化数据
+func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
 
 	// 初始化数据对象
 	p.DB = db.Client
@@ -100,23 +131,8 @@ func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
 	return p
 }
 
-// 初始化路由映射
-func (p *Template) RouteInit() interface{} {
-	p.GET(IndexPath, p.IndexRender)                   // 列表
-	p.GET(EditablePath, p.EditableRender)             // 表格行内编辑
-	p.Any(ActionPath, p.ActionRender)                 // 执行行为
-	p.Any(ActionValuesPath, p.ActionValuesRender)     // 获取行为表单值
-	p.GET(CreatePath, p.CreationRender)               // 创建页面
-	p.POST(StorePath, p.StoreRender)                  // 创建方法
-	p.GET(EditPath, p.EditRender)                     // 编辑页面
-	p.GET(EditValuesPath, p.EditValuesRender)         // 获取编辑表单值
-	p.POST(SavePath, p.SaveRender)                    // 保存编辑值
-	p.GET(DetailPath, p.DetailRender)                 // 详情页面
-	p.GET(ExportPath, p.ExportRender)                 // 导出数据
-	p.POST(ImportPath, p.ImportRender)                // 导入数据
-	p.GET(ImportTemplatePath, p.ImportTemplateRender) // 导入模板
-	p.GET(FormPath, p.FormRender)                     // 通用表单资源
-
+// 模版初始化
+func (p *Template) Init(ctx *quark.Context) interface{} {
 	return p
 }
 
@@ -399,7 +415,7 @@ func (p *Template) ExportRender(ctx *quark.Context) error {
 
 // 导入数据
 func (p *Template) ImportRender(ctx *quark.Context) error {
-	return (&requests.ImportRequest{}).Handle(ctx, IndexPath)
+	return (&requests.ImportRequest{}).Handle(ctx, p.IndexPath)
 }
 
 // 导入数据模板

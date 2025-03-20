@@ -7,21 +7,28 @@ import (
 // 布局模板
 type Template struct {
 	quark.Template
+	IndexPath string // 渲染页面路由
 }
 
-// 初始化
-func (p *Template) Init(ctx *quark.Context) interface{} {
-	return p
-}
-
-// 初始化模板
-func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
+// 启动模版
+func (p *Template) Bootstrap() interface{} {
+	p.IndexPath = "/api/miniapp/layout/:resource/index" // 渲染页面路由
 	return p
 }
 
 // 初始化路由映射
-func (p *Template) RouteInit() interface{} {
-	p.GET("/api/miniapp/layout/:resource/index", p.Render) // 渲染页面路由
+func (p *Template) LoadInitRoute() interface{} {
+	p.GET(p.IndexPath, p.Render) // 渲染页面路由
+	return p
+}
+
+// 初始化模板
+func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
+	return p
+}
+
+// 初始化
+func (p *Template) Init(ctx *quark.Context) interface{} {
 	return p
 }
 

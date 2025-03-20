@@ -13,16 +13,35 @@ import (
 // 文件上传
 type Template struct {
 	quark.Template
-	Length int // 验证码长度
+	GetIdPath        string // 登录获取验证码ID路由
+	GetImagePath     string // 登录验证码路由
+	ToolGetIdPath    string // 登录获取验证码ID路由
+	ToolGetImagePath string // 登录验证码路由
+	Length           int    // 验证码长度
 }
 
-// 初始化
-func (p *Template) Init(ctx *quark.Context) interface{} {
+// 启动模版
+func (p *Template) Bootstrap() interface{} {
+	p.GetIdPath = "/api/captcha/:resource/getId"                    // 登录获取验证码ID路由
+	p.GetImagePath = "/api/captcha/:resource/getImage/:id"          // 登录验证码路由
+	p.ToolGetIdPath = "/api/tool/captcha/:resource/getId"           // 登录获取验证码ID路由
+	p.ToolGetImagePath = "/api/tool/captcha/:resource/getImage/:id" // 登录验证码路由
+
+	return p
+}
+
+// 初始化路由映射
+func (p *Template) LoadInitRoute() interface{} {
+	p.GET(p.GetIdPath, p.CaptchaId)      // 登录获取验证码ID路由
+	p.GET(p.GetImagePath, p.Captcha)     // 登录验证码路由
+	p.GET(p.ToolGetIdPath, p.CaptchaId)  // 登录获取验证码ID路由
+	p.GET(p.ToolGetImagePath, p.Captcha) // 登录验证码路由
+
 	return p
 }
 
 // 初始化模板
-func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
+func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
 
 	// 如果启动了redis缓存，验证码使用redis缓存
 	if redisclient.Client != nil {
@@ -35,13 +54,8 @@ func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
 	return p
 }
 
-// 初始化路由映射
-func (p *Template) RouteInit() interface{} {
-	p.GET("/api/tool/captcha/:resource/getId", p.CaptchaId)      // 登录获取验证码ID路由
-	p.GET("/api/tool/captcha/:resource/getImage/:id", p.Captcha) // 登录验证码路由
-	p.GET("/api/captcha/:resource/getId", p.CaptchaId)           // 登录获取验证码ID路由
-	p.GET("/api/captcha/:resource/getImage/:id", p.Captcha)      // 登录验证码路由
-
+// 初始化
+func (p *Template) Init(ctx *quark.Context) interface{} {
 	return p
 }
 

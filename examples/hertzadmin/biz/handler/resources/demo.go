@@ -13,7 +13,7 @@ type Demo struct {
 func (p *Demo) Init(ctx *quark.Context) interface{} {
 
 	// 初始化模板
-	p.TemplateInit(ctx)
+	p.LoadInitData(ctx)
 
 	return p
 }

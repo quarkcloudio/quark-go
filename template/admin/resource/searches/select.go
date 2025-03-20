@@ -11,7 +11,7 @@ type Select struct {
 }
 
 // 初始化模板
-func (p *Select) TemplateInit(ctx *quark.Context) interface{} {
+func (p *Select) LoadInitData(ctx *quark.Context) interface{} {
 	p.Component = "selectField"
 	return p
 }

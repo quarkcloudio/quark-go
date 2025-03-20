@@ -22,7 +22,7 @@ func (p *Search) Init(ctx *quark.Context) interface{} {
 }
 
 // 初始化模板
-func (p *Search) TemplateInit(ctx *quark.Context) interface{} {
+func (p *Search) LoadInitData(ctx *quark.Context) interface{} {
 	p.Component = "textField"
 
 	return p

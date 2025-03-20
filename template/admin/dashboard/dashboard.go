@@ -15,20 +15,27 @@ import (
 // 后台登录模板
 type Template struct {
 	quark.Template
-	Title    string // 页面标题
-	SubTitle string // 页面子标题
-	BackIcon bool   // 页面是否携带返回Icon
+	IndexPath string // 路由路径
+	Title     string // 页面标题
+	SubTitle  string // 页面子标题
+	BackIcon  bool   // 页面是否携带返回Icon
 }
 
-// 初始化
-func (p *Template) Init(ctx *quark.Context) interface{} {
-	p.TemplateInit(ctx)
+// 启动模版
+func (p *Template) Bootstrap() interface{} {
+	p.IndexPath = "/api/admin/dashboard/:resource/index" // 路由路径
+	return p
+}
+
+// 加载初始化路由
+func (p *Template) LoadInitRoute() interface{} {
+	p.GET(p.IndexPath, p.Render) // 后台仪表盘路由
 
 	return p
 }
 
-// 初始化模板
-func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
+// 加载初始化数据
+func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
 
 	// 初始化数据对象
 	p.DB = db.Client
@@ -42,10 +49,8 @@ func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
 	return p
 }
 
-// 初始化路由映射
-func (p *Template) RouteInit() interface{} {
-	p.GET("/api/admin/dashboard/:resource/index", p.Render) // 后台仪表盘路由
-
+// 初始化
+func (p *Template) Init(ctx *quark.Context) interface{} {
 	return p
 }
 

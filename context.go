@@ -635,8 +635,8 @@ func (p *Context) getTemplate(ctx *Context) (interface{}, error) {
 
 		// 模版参数初始化
 		provider.(interface {
-			TemplateInit(ctx *Context) interface{}
-		}).TemplateInit(ctx)
+			LoadInitData(ctx *Context) interface{}
+		}).LoadInitData(ctx)
 
 		// 实例初始化
 		provider.(interface {
@@ -645,8 +645,8 @@ func (p *Context) getTemplate(ctx *Context) (interface{}, error) {
 
 		// 初始化路由
 		provider.(interface {
-			RouteInit() interface{}
-		}).RouteInit()
+			LoadInitRoute() interface{}
+		}).LoadInitRoute()
 
 		// 加载自定义路由
 		provider.(interface {

@@ -7,7 +7,7 @@ type DateRange struct {
 }
 
 // 初始化模板
-func (p *DateRange) TemplateInit(ctx *quark.Context) interface{} {
+func (p *DateRange) LoadInitData(ctx *quark.Context) interface{} {
 	p.Component = "dateRangeField"
 
 	return p

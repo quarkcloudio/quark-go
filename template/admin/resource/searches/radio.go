@@ -11,7 +11,7 @@ type Radio struct {
 }
 
 // 初始化模板
-func (p *Radio) TemplateInit(ctx *quark.Context) interface{} {
+func (p *Radio) LoadInitData(ctx *quark.Context) interface{} {
 	p.Component = "radioField"
 	return p
 }

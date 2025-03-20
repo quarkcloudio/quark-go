@@ -18,17 +18,26 @@ import (
 // MiniApp模板
 type Template struct {
 	quark.Template
-	Title string
-	Style string
+	IndexPath string // 渲染页面路由
+	Title     string
+	Style     string
 }
 
-// 初始化
-func (p *Template) Init(ctx *quark.Context) interface{} {
+// 启动模版
+func (p *Template) Bootstrap() interface{} {
+	p.IndexPath = "/api/miniapp/page/:resource/index" // 渲染页面路由
+	return p
+}
+
+// 初始化路由映射
+func (p *Template) LoadInitRoute() interface{} {
+	p.GET(p.IndexPath, p.Render) // 渲染页面路由
+
 	return p
 }
 
 // 初始化模板
-func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
+func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
 
 	// 初始化数据对象
 	p.DB = db.Client
@@ -39,10 +48,8 @@ func (p *Template) TemplateInit(ctx *quark.Context) interface{} {
 	return p
 }
 
-// 初始化路由映射
-func (p *Template) RouteInit() interface{} {
-	p.GET("/api/miniapp/page/:resource/index", p.Render) // 渲染页面路由
-
+// 初始化
+func (p *Template) Init(ctx *quark.Context) interface{} {
 	return p
 }
 

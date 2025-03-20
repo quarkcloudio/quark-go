@@ -30,7 +30,7 @@ func (p *Template) IndexSearches(ctx *quark.Context) interface{} {
 		exportText := template.GetExportText() // 导出按钮文字内容
 		search = search.
 			SetExportText(exportText).
-			SetExportApi(strings.Replace(ExportPath, ":resource", ctx.Param("resource"), -1))
+			SetExportApi(strings.Replace(p.ExportPath, ":resource", ctx.Param("resource"), -1))
 	}
 
 	// 解析搜索项
@@ -44,7 +44,7 @@ func (p *Template) IndexSearches(ctx *quark.Context) interface{} {
 		searchInstance := v.(types.Searcher)
 
 		// 初始化模版
-		searchInstance.TemplateInit(ctx)
+		searchInstance.LoadInitData(ctx)
 
 		// 初始化
 		searchInstance.Init(ctx)

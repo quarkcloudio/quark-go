@@ -11,7 +11,7 @@ type Searcher interface {
 	Init(ctx *quark.Context) interface{}
 
 	// 初始化模板
-	TemplateInit(ctx *quark.Context) interface{}
+	LoadInitData(ctx *quark.Context) interface{}
 
 	// 获取字段名
 	GetColumn(search interface{}) string
