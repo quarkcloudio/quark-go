@@ -16,7 +16,7 @@ type Search struct {
 	Api       string `json:"api"`
 }
 
-// 初始化模板
+// 加载初始化数据
 func (p *Search) LoadInitData(ctx *quark.Context) interface{} {
 	p.Component = "textField"
 

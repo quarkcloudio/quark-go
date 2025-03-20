@@ -609,7 +609,7 @@ func (p *Context) useHandlerParser() error {
 	return err
 }
 
-// 初始化模板实例
+// 初始化模板
 func (p *Context) InitTemplate(ctx *Context) error {
 	var (
 		err              error

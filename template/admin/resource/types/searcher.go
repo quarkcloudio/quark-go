@@ -10,7 +10,7 @@ type Searcher interface {
 	// 初始化
 	Init(ctx *quark.Context) interface{}
 
-	// 初始化模板
+	// 加载初始化数据
 	LoadInitData(ctx *quark.Context) interface{}
 
 	// 获取字段名

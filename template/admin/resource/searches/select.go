@@ -10,7 +10,7 @@ type Select struct {
 	SelectOptions []selectfield.Option
 }
 
-// 初始化模板
+// 加载初始化数据
 func (p *Select) LoadInitData(ctx *quark.Context) interface{} {
 	p.Component = "selectField"
 	return p

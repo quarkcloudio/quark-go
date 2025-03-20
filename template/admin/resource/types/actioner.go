@@ -4,7 +4,7 @@ import "github.com/quarkcloudio/quark-go/v3"
 
 type Actioner interface {
 
-	// 初始化模板
+	// 加载初始化数据
 	LoadInitData(ctx *quark.Context) interface{}
 
 	// 初始化

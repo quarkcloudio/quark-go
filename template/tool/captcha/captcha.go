@@ -30,7 +30,7 @@ func (p *Template) Bootstrap() interface{} {
 	return p
 }
 
-// 初始化路由映射
+// 加载初始化路由
 func (p *Template) LoadInitRoute() interface{} {
 	p.GET(p.GetIdPath, p.CaptchaId)      // 登录获取验证码ID路由
 	p.GET(p.GetImagePath, p.Captcha)     // 登录验证码路由
@@ -40,7 +40,7 @@ func (p *Template) LoadInitRoute() interface{} {
 	return p
 }
 
-// 初始化模板
+// 加载初始化数据
 func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
 
 	// 如果启动了redis缓存，验证码使用redis缓存

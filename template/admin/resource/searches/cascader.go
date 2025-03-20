@@ -10,7 +10,7 @@ type Cascader struct {
 	CascaderOptions []cascader.Option
 }
 
-// 初始化模板
+// 加载初始化数据
 func (p *Cascader) LoadInitData(ctx *quark.Context) interface{} {
 	p.Component = "cascaderField"
 

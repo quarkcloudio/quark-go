@@ -10,7 +10,7 @@ type Radio struct {
 	RadioOptions []radio.Option
 }
 
-// 初始化模板
+// 加载初始化数据
 func (p *Radio) LoadInitData(ctx *quark.Context) interface{} {
 	p.Component = "radioField"
 	return p

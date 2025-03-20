@@ -10,7 +10,7 @@ type TreeSelect struct {
 	TreeSelectOptions []treeselect.TreeData
 }
 
-// 初始化模板
+// 加载初始化数据
 func (p *TreeSelect) LoadInitData(ctx *quark.Context) interface{} {
 	p.Component = "treeSelectField"
 

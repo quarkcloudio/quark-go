@@ -41,7 +41,7 @@ func (p *Template) Bootstrap() interface{} {
 	return p
 }
 
-// 初始化路由映射
+// 加载初始化路由
 func (p *Template) LoadInitRoute() interface{} {
 	p.GET(p.IndexPath, p.Render)        // 登录页面路由
 	p.POST(p.HandlePath, p.Handle)      // 登录执行路由
@@ -52,7 +52,7 @@ func (p *Template) LoadInitRoute() interface{} {
 	return p
 }
 
-// 初始化模板
+// 加载初始化数据
 func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
 
 	// 初始化数据对象
