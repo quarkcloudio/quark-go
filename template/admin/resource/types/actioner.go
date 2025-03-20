@@ -4,11 +4,11 @@ import "github.com/quarkcloudio/quark-go/v3"
 
 type Actioner interface {
 
-	// 初始化
-	Init(ctx *quark.Context) interface{}
-
 	// 初始化模板
 	LoadInitData(ctx *quark.Context) interface{}
+
+	// 初始化
+	Init(ctx *quark.Context) interface{}
 
 	// 行为key
 	GetUriKey(action interface{}) string

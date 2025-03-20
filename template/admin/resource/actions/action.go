@@ -93,15 +93,15 @@ type Action struct {
 	ShowOnDetailExtra     bool        `json:"showOnDetailExtra"`     // 在详情页扩展栏展示
 }
 
-// 初始化
-func (p *Action) Init(ctx *quark.Context) interface{} {
-	return p
-}
-
 // 初始化模板
 func (p *Action) LoadInitData(ctx *quark.Context) interface{} {
 	p.ActionType = "ajax"
 
+	return p
+}
+
+// 初始化
+func (p *Action) Init(ctx *quark.Context) interface{} {
 	return p
 }
 

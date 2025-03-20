@@ -16,15 +16,15 @@ type Search struct {
 	Api       string `json:"api"`
 }
 
-// 初始化
-func (p *Search) Init(ctx *quark.Context) interface{} {
-	return p
-}
-
 // 初始化模板
 func (p *Search) LoadInitData(ctx *quark.Context) interface{} {
 	p.Component = "textField"
 
+	return p
+}
+
+// 初始化
+func (p *Search) Init(ctx *quark.Context) interface{} {
 	return p
 }
 
