@@ -11,10 +11,6 @@ type Demo struct {
 
 // 初始化
 func (p *Demo) Init(ctx *quark.Context) interface{} {
-
-	// 初始化模板
-	p.LoadInitData(ctx)
-
 	return p
 }
 

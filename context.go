@@ -632,6 +632,10 @@ func (p *Context) InitTemplate(ctx *Context) error {
 func (p *Context) getTemplate(ctx *Context) (interface{}, error) {
 	var templateInstance interface{}
 	for _, provider := range p.Engine.providers {
+		// 启动模版
+		provider.(interface {
+			Bootstrap() interface{}
+		}).Bootstrap()
 
 		// 模版参数初始化
 		provider.(interface {
