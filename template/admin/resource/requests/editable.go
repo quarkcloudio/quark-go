@@ -50,33 +50,29 @@ func (p *EditableRequest) Handle(ctx *quark.Context) error {
 		}
 	}
 
-	if field == "" {
-		return ctx.CJSONError("参数错误")
-	}
-
-	if value == nil {
+	if field == "" || value == nil {
 		return ctx.CJSONError("参数错误")
 	}
 
 	// 表格行内编辑执行完之前回调
-	result := template.BeforeEditable(ctx, id, field, value)
-	if result != nil {
-		return result
+	err := template.BeforeEditable(ctx, id, field, value)
+	if err != nil {
+		return ctx.CJSONError(err.Error())
 	}
 
 	// 创建表格行内编辑查询
 	query := template.BuildEditableQuery(ctx, model)
 
 	// 更新数据
-	err := query.Update(field, value).Error
+	err = query.Update(field, value).Error
 	if err != nil {
 		return ctx.CJSONError(err.Error())
 	}
 
 	// 行为执行后回调
-	result = template.AfterEditable(ctx, id, field, value)
-	if result != nil {
-		return result
+	err = template.AfterEditable(ctx, id, field, value)
+	if err != nil {
+		return ctx.CJSONError(err.Error())
 	}
 
 	return ctx.CJSONOk("操作成功")
