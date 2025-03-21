@@ -154,5 +154,12 @@ func (p *Template) AfterSavedRedirectTo(ctx *quark.Context, id int, data map[str
 	if err != nil {
 		return ctx.CJSONError(err.Error())
 	}
-	return ctx.CJSONRedirectTo("操作成功", strings.Replace("/layout/index?api="+p.IndexPath, ":resource", ctx.Param("resource"), -1))
+
+	indexPath := reflect.
+		ValueOf(ctx.Template).
+		Elem().
+		FieldByName("IndexPath").
+		String()
+
+	return ctx.CJSONRedirectTo("操作成功", strings.Replace("/layout/index?api="+indexPath, ":resource", ctx.Param("resource"), -1))
 }

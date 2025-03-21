@@ -1,6 +1,8 @@
 package resource
 
 import (
+	"reflect"
+
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form"
@@ -415,7 +417,13 @@ func (p *Template) ExportRender(ctx *quark.Context) error {
 
 // 导入数据
 func (p *Template) ImportRender(ctx *quark.Context) error {
-	return (&requests.ImportRequest{}).Handle(ctx, p.IndexPath)
+	indexPath := reflect.
+		ValueOf(ctx.Template).
+		Elem().
+		FieldByName("IndexPath").
+		String()
+
+	return (&requests.ImportRequest{}).Handle(ctx, indexPath)
 }
 
 // 导入数据模板

@@ -1,6 +1,7 @@
 package resource
 
 import (
+	"reflect"
 	"strings"
 
 	"github.com/quarkcloudio/quark-go/v3"
@@ -28,9 +29,14 @@ func (p *Template) IndexSearches(ctx *quark.Context) interface{} {
 	export := template.GetExport()
 	if export {
 		exportText := template.GetExportText() // 导出按钮文字内容
+		exportPath := reflect.
+			ValueOf(ctx.Template).
+			Elem().
+			FieldByName("ExportPath").
+			String()
 		search = search.
 			SetExportText(exportText).
-			SetExportApi(strings.Replace(p.ExportPath, ":resource", ctx.Param("resource"), -1))
+			SetExportApi(strings.Replace(exportPath, ":resource", ctx.Param("resource"), -1))
 	}
 
 	// 解析搜索项
