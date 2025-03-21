@@ -58,6 +58,12 @@ func (p *EditableRequest) Handle(ctx *quark.Context) error {
 		return ctx.CJSONError("参数错误")
 	}
 
+	// 表格行内编辑执行完之前回调
+	result := template.BeforeEditable(ctx, id, field, value)
+	if result != nil {
+		return result
+	}
+
 	// 创建表格行内编辑查询
 	query := template.BuildEditableQuery(ctx, model)
 
@@ -68,7 +74,7 @@ func (p *EditableRequest) Handle(ctx *quark.Context) error {
 	}
 
 	// 行为执行后回调
-	result := template.AfterEditable(ctx, id, field, value)
+	result = template.AfterEditable(ctx, id, field, value)
 	if result != nil {
 		return result
 	}

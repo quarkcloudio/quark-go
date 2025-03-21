@@ -46,12 +46,18 @@ func (p *ActionRequest) Handle(ctx *quark.Context) error {
 			for _, dropdownAction := range dropdownActioner.GetActions() {
 				uriKey := dropdownActioner.GetUriKey(dropdownAction)
 				if ctx.Param("uriKey") == uriKey {
+					// 行为执行完之前回调
+					err := template.BeforeAction(ctx, uriKey, model)
+					if err != nil {
+						return err
+					}
+
 					result = dropdownAction.(interface {
 						Handle(*quark.Context, *gorm.DB) error
 					}).Handle(ctx, model)
 
 					// 执行完后回调
-					err := template.AfterAction(ctx, uriKey, model)
+					err = template.AfterAction(ctx, uriKey, model)
 					if err != nil {
 						return err
 					}
@@ -61,12 +67,18 @@ func (p *ActionRequest) Handle(ctx *quark.Context) error {
 			}
 		} else {
 			if ctx.Param("uriKey") == uriKey {
+				// 行为执行完之前回调
+				err := template.BeforeAction(ctx, uriKey, model)
+				if err != nil {
+					return err
+				}
+
 				result = v.(interface {
 					Handle(*quark.Context, *gorm.DB) error
 				}).Handle(ctx, model)
 
 				// 执行完后回调
-				err := template.AfterAction(ctx, uriKey, model)
+				err = template.AfterAction(ctx, uriKey, model)
 				if err != nil {
 					return err
 				}

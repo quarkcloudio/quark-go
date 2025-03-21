@@ -289,8 +289,18 @@ func (p *Template) BeforeImporting(ctx *quark.Context, list [][]interface{}) [][
 	return list
 }
 
-// 表格行内编辑执行完之后回调
+// 行内编辑执行完之前回调
+func (p *Template) BeforeEditable(ctx *quark.Context, id interface{}, field string, value interface{}) error {
+	return nil
+}
+
+// 行内编辑执行完之后回调
 func (p *Template) AfterEditable(ctx *quark.Context, id interface{}, field string, value interface{}) error {
+	return nil
+}
+
+// 行为执行完之前回调
+func (p *Template) BeforeAction(ctx *quark.Context, uriKey string, query *gorm.DB) error {
 	return nil
 }
 

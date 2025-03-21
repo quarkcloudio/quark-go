@@ -84,8 +84,14 @@ type Resourcer interface {
 	// 数据导入前回调
 	BeforeImporting(ctx *quark.Context, list [][]interface{}) [][]interface{}
 
+	// 表格行内编辑执行完之前回调
+	BeforeEditable(ctx *quark.Context, id interface{}, field string, value interface{}) error
+
 	// 表格行内编辑执行完之后回调
 	AfterEditable(ctx *quark.Context, id interface{}, field string, value interface{}) error
+
+	// 行为执行完之前回调
+	BeforeAction(ctx *quark.Context, uriKey string, query *gorm.DB) error
 
 	// 行为执行完之后回调
 	AfterAction(ctx *quark.Context, uriKey string, query *gorm.DB) error
