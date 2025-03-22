@@ -123,6 +123,9 @@ type Resourcer interface {
 	// 详情页渲染
 	DetailRender(ctx *quark.Context) error
 
+	// 获取详情页数据
+	DetailValuesRender(ctx *quark.Context) error
+
 	// 导出数据
 	ExportRender(ctx *quark.Context) error
 
@@ -248,6 +251,9 @@ type Resourcer interface {
 	// 编辑页面显示前回调
 	BeforeEditing(request *quark.Context, data map[string]interface{}) map[string]interface{}
 
+	// 详情页面获取表单数据接口
+	DetailValueApi(request *quark.Context) string
+
 	// 表单接口
 	FormApi(ctx *quark.Context) string
 
@@ -330,6 +336,9 @@ type Resourcer interface {
 
 	// 详情页字段
 	DetailFields(ctx *quark.Context) interface{}
+
+	// 包裹在组件内的详情页字段
+	DetailFieldsWithinComponents(ctx *quark.Context, initApi interface{}, data map[string]interface{}) interface{}
 
 	// 导出字段
 	ExportFields(ctx *quark.Context) interface{}

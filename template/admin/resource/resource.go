@@ -25,9 +25,10 @@ type Template struct {
 	EditPath               string           // 编辑页面路径
 	EditValuesPath         string           // 获取编辑表单值路径
 	SavePath               string           // 保存编辑值路径
-	ImportPath             string           // 详情页面路径
+	ImportPath             string           // 导入页面路径
 	ExportPath             string           // 导出数据路径
-	DetailPath             string           // 导入数据路径
+	DetailPath             string           // 详情页面路径
+	DetailValuesPath       string           // 详情页面值路径
 	ImportTemplatePath     string           // 导入模板路径
 	FormPath               string           // 设置表单路径
 	Title                  string           // 页面标题
@@ -67,7 +68,8 @@ func (p *Template) Bootstrap() interface{} {
 	p.SavePath = "/api/admin/:resource/save"                          // 保存编辑值路径
 	p.ImportPath = "/api/admin/:resource/import"                      // 详情页面路径
 	p.ExportPath = "/api/admin/:resource/export"                      // 导出数据路径
-	p.DetailPath = "/api/admin/:resource/detail"                      // 导入数据路径
+	p.DetailPath = "/api/admin/:resource/detail"                      // 详情页路径
+	p.DetailValuesPath = "/api/admin/:resource/detail/values"         // 获取详情页值路径
 	p.ImportTemplatePath = "/api/admin/:resource/import/template"     // 导入模板路径
 	p.FormPath = "/api/admin/:resource/form"                          // 设置表单路径
 
@@ -86,6 +88,7 @@ func (p *Template) LoadInitRoute() interface{} {
 	p.GET(p.EditValuesPath, p.EditValuesRender)         // 获取编辑表单值
 	p.POST(p.SavePath, p.SaveRender)                    // 保存编辑值
 	p.GET(p.DetailPath, p.DetailRender)                 // 详情页面
+	p.GET(p.DetailValuesPath, p.DetailValuesRender)     // 获取详情页值
 	p.GET(p.ExportPath, p.ExportRender)                 // 导出数据
 	p.POST(p.ImportPath, p.ImportRender)                // 导入数据
 	p.GET(p.ImportTemplatePath, p.ImportTemplateRender) // 导入模板
@@ -429,6 +432,11 @@ func (p *Template) DetailRender(ctx *quark.Context) error {
 	result := template.PageComponentRender(ctx, body)
 
 	return ctx.JSON(200, result)
+}
+
+// 获取详情页值
+func (p *Template) DetailValuesRender(ctx *quark.Context) error {
+	return (&requests.DetailRequest{}).Values(ctx)
 }
 
 // 导出数据

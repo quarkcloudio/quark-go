@@ -301,6 +301,9 @@ func (p *Template) BuildAction(ctx *quark.Context, item interface{}) interface{}
 	case "modal":
 		modalActioner := item.(types.Modaler)
 
+		// 表单数据接口
+		initApi := p.BuildInitApi(ctx, params, uriKey)
+
 		// 宽度
 		modalWidth := modalActioner.GetWidth()
 
@@ -317,6 +320,7 @@ func (p *Template) BuildAction(ctx *quark.Context, item interface{}) interface{}
 		getAction = getAction.SetModal(func(modal *modal.Component) interface{} {
 			return modal.
 				SetTitle(name).
+				SetInitApi(initApi).
 				SetWidth(modalWidth).
 				SetBody(modalBody).
 				SetActions(modalActions).
@@ -324,6 +328,9 @@ func (p *Template) BuildAction(ctx *quark.Context, item interface{}) interface{}
 		})
 	case "drawer":
 		drawerActioner := item.(types.Drawer)
+
+		// 表单数据接口
+		initApi := p.BuildInitApi(ctx, params, uriKey)
 
 		// 宽度
 		drawerWidth := drawerActioner.GetWidth()
@@ -341,6 +348,7 @@ func (p *Template) BuildAction(ctx *quark.Context, item interface{}) interface{}
 		getAction = getAction.SetDrawer(func(drawer *drawer.Component) interface{} {
 			return drawer.
 				SetTitle(name).
+				SetInitApi(initApi).
 				SetWidth(drawerWidth).
 				SetBody(drawerBody).
 				SetActions(drawerActions).
@@ -350,7 +358,7 @@ func (p *Template) BuildAction(ctx *quark.Context, item interface{}) interface{}
 		modalFormerActioner := item.(types.ModalFormer)
 
 		// 表单数据接口
-		initApi := p.BuildFormInitApi(ctx, params, uriKey)
+		initApi := p.BuildInitApi(ctx, params, uriKey)
 
 		// 字段
 		modalFormFields := modalFormerActioner.Fields(ctx)
@@ -431,7 +439,7 @@ func (p *Template) BuildAction(ctx *quark.Context, item interface{}) interface{}
 		drawerFormerActioner := item.(types.DrawerFormer)
 
 		// 表单数据接口
-		initApi := p.BuildFormInitApi(ctx, params, uriKey)
+		initApi := p.BuildInitApi(ctx, params, uriKey)
 
 		// 字段
 		drawerFormFields := drawerFormerActioner.Fields(ctx)
@@ -596,8 +604,8 @@ func (p *Template) BuildActionApi(ctx *quark.Context, params []string, uriKey st
 	return api
 }
 
-// 创建表单初始化数据接口
-func (p *Template) BuildFormInitApi(ctx *quark.Context, params []string, uriKey string) string {
+// 创建初始化数据接口
+func (p *Template) BuildInitApi(ctx *quark.Context, params []string, uriKey string) string {
 	var (
 		paramsUri = ""
 		api       = ctx.Path()

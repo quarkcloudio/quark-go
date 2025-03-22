@@ -704,62 +704,74 @@ func (p *Template) DetailFields(ctx *quark.Context) interface{} {
 }
 
 // 包裹在组件内的详情页字段
-func (p *Template) DetailFieldsWithinComponents(ctx *quark.Context, data map[string]interface{}) interface{} {
-	var (
-		items         []interface{}
-		componentType = "description"
-	)
+func (p *Template) DetailFieldsWithinComponents(ctx *quark.Context, initApi interface{}, data map[string]interface{}) interface{} {
 
 	// 资源实例
 	template := ctx.Template.(types.Resourcer)
 
-	// 解析字段
+	// 获取字段
 	fields := template.Fields(ctx)
-	for _, v := range fields {
 
-		hasBody := reflect.
-			ValueOf(v).
-			Elem().
-			FieldByName("Body").
-			IsValid()
+	// 解析编辑页表单组件内的字段
+	items := p.DetailFieldsParser(ctx, initApi, fields, data)
 
-		// 解析body数据
-		if hasBody {
-			body := reflect.
+	return items
+}
+
+// 解析编辑页表单组件内的字段
+func (p *Template) DetailFieldsParser(ctx *quark.Context, initApi interface{}, fields interface{}, data map[string]interface{}) interface{} {
+	var (
+		items         []interface{}
+		componentType = "description"
+	)
+	if fields, ok := fields.([]interface{}); ok {
+		for _, v := range fields {
+
+			hasBody := reflect.
 				ValueOf(v).
 				Elem().
 				FieldByName("Body").
-				Interface()
+				IsValid()
 
-			var subItems []interface{}
-			for _, sv := range body.([]interface{}) {
-				if sv, ok := sv.(interface{ IsShownOnDetail() bool }); ok {
-					if sv.IsShownOnDetail() {
-						getColumn := p.fieldToColumn(ctx, sv)
-						subItems = append(subItems, getColumn)
+			// 解析body数据
+			if hasBody {
+				body := reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Body").
+					Interface()
+
+				var subItems []interface{}
+				for _, sv := range body.([]interface{}) {
+					if sv, ok := sv.(interface{ IsShownOnDetail() bool }); ok {
+						if sv.IsShownOnDetail() {
+							getColumn := p.fieldToColumn(ctx, sv)
+							subItems = append(subItems, getColumn)
+						}
 					}
 				}
-			}
 
-			descriptions := (&descriptions.Component{}).
-				Init().
-				SetStyle(map[string]interface{}{
-					"padding": "24px",
-				}).
-				SetTitle("").
-				SetColumn(2).
-				SetColumns(subItems).
-				SetDataSource(data).
-				SetActions(p.DetailActions(ctx))
+				descriptions := (&descriptions.Component{}).
+					Init().
+					SetStyle(map[string]interface{}{
+						"padding": "24px",
+					}).
+					SetInitApi(initApi).
+					SetTitle("").
+					SetColumn(2).
+					SetColumns(subItems).
+					SetDataSource(data).
+					SetActions(p.DetailActions(ctx))
 
-			v.(interface{ SetBody(interface{}) interface{} }).SetBody(descriptions)
-			items = append(items, v)
-		} else {
-			if v, ok := v.(interface{ IsShownOnDetail() bool }); ok {
-				if v.IsShownOnDetail() {
-					getColumn := p.fieldToColumn(ctx, v)
-					if getColumn != nil {
-						items = append(items, getColumn)
+				v.(interface{ SetBody(interface{}) interface{} }).SetBody(descriptions)
+				items = append(items, v)
+			} else {
+				if v, ok := v.(interface{ IsShownOnDetail() bool }); ok {
+					if v.IsShownOnDetail() {
+						getColumn := p.fieldToColumn(ctx, v)
+						if getColumn != nil {
+							items = append(items, getColumn)
+						}
 					}
 				}
 			}
@@ -772,6 +784,7 @@ func (p *Template) DetailFieldsWithinComponents(ctx *quark.Context, data map[str
 			SetStyle(map[string]interface{}{
 				"padding": "24px",
 			}).
+			SetInitApi(initApi).
 			SetTitle("").
 			SetColumn(2).
 			SetColumns(items).

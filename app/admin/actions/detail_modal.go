@@ -2,8 +2,6 @@ package actions
 
 import (
 	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/action"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/actions"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/types"
 )
@@ -40,6 +38,9 @@ func (p *DetailModalAction) Init(ctx *quark.Context) interface{} {
 	// 执行成功后刷新的组件
 	p.Reload = "table"
 
+	// 宽度
+	p.Width = 750
+
 	// 设置展示位置
 	p.SetOnlyOnIndexTableRow(true)
 
@@ -50,49 +51,12 @@ func (p *DetailModalAction) Init(ctx *quark.Context) interface{} {
 func (p *DetailModalAction) GetBody(ctx *quark.Context) interface{} {
 	template := ctx.Template.(types.Resourcer)
 
-	// 更新表单的接口
-	api := template.UpdateApi(ctx)
-
-	// 编辑页面获取表单数据接口
-	initApi := template.EditValueApi(ctx)
+	// 详情页面获取表单数据接口
+	initApi := template.DetailValueApi(ctx)
 
 	// 包裹在组件内的编辑页字段
-	fields := template.UpdateFieldsWithinComponents(ctx)
+	component := template.DetailFieldsWithinComponents(ctx, initApi, nil)
 
 	// 返回数据
-	return (&form.Component{}).
-		Init().
-		SetStyle(map[string]interface{}{
-			"paddingTop": "24px",
-		}).
-		SetKey("editModalForm", false).
-		SetApi(api).
-		SetInitApi(initApi).
-		SetBody(fields).
-		SetLabelCol(map[string]interface{}{
-			"span": 6,
-		}).
-		SetWrapperCol(map[string]interface{}{
-			"span": 18,
-		})
-}
-
-// 弹窗行为
-func (p *DetailModalAction) GetActions(ctx *quark.Context) []interface{} {
-
-	return []interface{}{
-		(&action.Component{}).
-			Init().
-			SetLabel("取消").
-			SetActionType("cancel"),
-
-		(&action.Component{}).
-			Init().
-			SetLabel("提交").
-			SetWithLoading(true).
-			SetReload("table").
-			SetActionType("submit").
-			SetType("primary", false).
-			SetSubmitForm("editModalForm"),
-	}
+	return component
 }

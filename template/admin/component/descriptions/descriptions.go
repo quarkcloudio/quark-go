@@ -14,6 +14,7 @@ type Component struct {
 	Colon      bool        `json:"colon"`
 	Columns    interface{} `json:"columns"`
 	DataSource interface{} `json:"dataSource"`
+	InitApi    interface{} `json:"initApi,omitempty"`
 	Items      interface{} `json:"items"`
 	Actions    interface{} `json:"actions"`
 }
@@ -105,6 +106,12 @@ func (p *Component) SetSize(size string) *Component {
 // 配置 ProDescriptions.Item 的 colon 的默认值
 func (p *Component) SetColon(colon bool) *Component {
 	p.Colon = colon
+	return p
+}
+
+// 数据初始化接口
+func (p *Component) SetInitApi(api interface{}) *Component {
+	p.InitApi = api
 	return p
 }
 

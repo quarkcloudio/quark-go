@@ -16,6 +16,16 @@ func (p *Drawer) New(ctx *quark.Context) interface{} {
 	return p
 }
 
+// 内容
+func (p *Drawer) Content(ctx *quark.Context) interface{} {
+	return nil
+}
+
+// 数据（异步获取）
+func (p *Drawer) Data(ctx *quark.Context) map[string]interface{} {
+	return map[string]interface{}{}
+}
+
 // 宽度
 func (p *Drawer) GetWidth() int {
 	return p.Width
@@ -28,7 +38,7 @@ func (p *Drawer) GetDestroyOnClose() bool {
 
 // 内容
 func (p *Drawer) GetBody(ctx *quark.Context) interface{} {
-	return nil
+	return p.Content(ctx)
 }
 
 // 弹窗行为

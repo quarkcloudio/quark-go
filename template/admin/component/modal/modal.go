@@ -16,6 +16,7 @@ type Component struct {
 	Width                  int           `json:"width"`
 	ZIndex                 int           `json:"zIndex"`
 	Actions                []interface{} `json:"actions"`
+	InitApi                interface{}   `json:"initApi,omitempty"`
 	Body                   interface{}   `json:"body"`
 }
 
@@ -133,5 +134,11 @@ func (p *Component) SetZIndex(zIndex int) *Component {
 func (p *Component) SetActions(actions []interface{}) *Component {
 	p.Actions = actions
 
+	return p
+}
+
+// 数据初始化接口
+func (p *Component) SetInitApi(api interface{}) *Component {
+	p.InitApi = api
 	return p
 }
