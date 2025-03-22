@@ -5,13 +5,46 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/types"
 )
 
-// 列表工具栏
-func (p *Template) IndexTableMenus(ctx *quark.Context) interface{} {
+// 列表工具栏菜单项，示例如下：
+//
+//	[]map[string]string{
+//		{
+//			"key":   "day",
+//			"label": "日账单",
+//		},
+//		{
+//			"key":   "week",
+//			"label": "周账单",
+//		},
+//	}
+func (p *Template) IndexTableMenuItems(ctx *quark.Context) []map[string]string {
+	return []map[string]string{}
+}
 
-	// 模版实例
+// 列表工具栏菜单，示例如下：
+//
+//	map[string]interface{}{
+//		"type": "tab",
+//		"items": []map[string]string{
+//			{
+//				"key":   "day",
+//				"label": "日账单",
+//			},
+//			{
+//				"key":   "week",
+//				"label": "周账单",
+//			},
+//		},
+//	}
+func (p *Template) IndexTableMenu(ctx *quark.Context) interface{} {
 	template := ctx.Template.(types.Resourcer)
+	items := template.IndexTableMenuItems(ctx)
+	if items == nil {
+		return map[string]interface{}{}
+	}
 
-	menus := template.Menus(ctx)
-
-	return menus
+	return map[string]interface{}{
+		"type":  "tab",
+		"items": items,
+	}
 }

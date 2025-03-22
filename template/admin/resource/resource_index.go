@@ -47,7 +47,7 @@ func (p *Template) IndexTableToolBar(ctx *quark.Context) interface{} {
 	return template.GetTableToolBar(ctx).
 		SetTitle(p.IndexTableTitle(ctx)).
 		SetActions(p.IndexTableActions(ctx)).
-		SetMenu(p.IndexTableMenus(ctx))
+		SetMenu(p.IndexTableMenu(ctx))
 }
 
 // 列表页树形表格

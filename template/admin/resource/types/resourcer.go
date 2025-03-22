@@ -177,9 +177,6 @@ type Resourcer interface {
 	// 行为
 	Actions(ctx *quark.Context) []interface{}
 
-	// 菜单
-	Menus(ctx *quark.Context) interface{}
-
 	// 创建行为组件
 	BuildAction(ctx *quark.Context, item interface{}) interface{}
 
@@ -263,6 +260,23 @@ type Resourcer interface {
 
 	// 列表页工具栏
 	IndexTableToolBar(ctx *quark.Context) interface{}
+
+	// 列表工具栏菜单
+	IndexTableMenu(ctx *quark.Context) interface{}
+
+	// 列表工具栏菜单项，示例如下：
+	//
+	//	[]map[string]string{
+	//		{
+	//			"key":   "day",
+	//			"label": "日账单",
+	//		},
+	//		{
+	//			"key":   "week",
+	//			"label": "周账单",
+	//		},
+	//	}
+	IndexTableMenuItems(ctx *quark.Context) []map[string]string
 
 	// 列表页树形表格
 	IndexTableTreeBar(ctx *quark.Context) interface{}

@@ -269,11 +269,6 @@ func (p *Template) Actions(ctx *quark.Context) []interface{} {
 	return []interface{}{}
 }
 
-// 菜单
-func (p *Template) Menus(ctx *quark.Context) interface{} {
-	return map[string]interface{}{}
-}
-
 // 数据导出前回调
 func (p *Template) BeforeExporting(ctx *quark.Context, list []map[string]interface{}) []interface{} {
 	result := []interface{}{}
