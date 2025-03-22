@@ -269,6 +269,22 @@ func (p *Template) Actions(ctx *quark.Context) []interface{} {
 	return []interface{}{}
 }
 
+// 列表工具栏菜单项，示例如下：
+//
+//	[]map[string]string{
+//		{
+//			"key":   "day",
+//			"label": "日账单",
+//		},
+//		{
+//			"key":   "week",
+//			"label": "周账单",
+//		},
+//	}
+func (p *Template) MenuItems(ctx *quark.Context) []map[string]string {
+	return []map[string]string{}
+}
+
 // 数据导出前回调
 func (p *Template) BeforeExporting(ctx *quark.Context, list []map[string]interface{}) []interface{} {
 	result := []interface{}{}

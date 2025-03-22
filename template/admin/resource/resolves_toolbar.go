@@ -18,7 +18,8 @@ import (
 //		},
 //	}
 func (p *Template) IndexTableMenuItems(ctx *quark.Context) []map[string]string {
-	return []map[string]string{}
+	template := ctx.Template.(types.Resourcer)
+	return template.MenuItems(ctx)
 }
 
 // 列表工具栏菜单，示例如下：
