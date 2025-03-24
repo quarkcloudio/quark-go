@@ -1,6 +1,8 @@
 package requests
 
 import (
+	"reflect"
+
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/types"
@@ -8,6 +10,40 @@ import (
 )
 
 type ActionRequest struct{}
+
+// 获取行为
+func (p *ActionRequest) GetActions(ctx *quark.Context) []interface{} {
+	actions := []interface{}{}
+	template := ctx.Template.(types.Resourcer)
+
+	// 资源上的行为
+	getActions := template.Actions(ctx)
+	if getActions != nil {
+		actions = getActions
+	}
+
+	// 字段上的行为
+	fields := template.Fields(ctx)
+	for _, v := range fields {
+		component := reflect.
+			ValueOf(v).
+			Elem().
+			FieldByName("Component").
+			String()
+		if component == "actionField" {
+			actionItems := reflect.
+				ValueOf(v).
+				Elem().
+				FieldByName("Items").
+				Interface()
+			for _, action := range actionItems.([]interface{}) {
+				actions = append(actions, action)
+			}
+		}
+	}
+
+	return actions
+}
 
 // 执行行为
 func (p *ActionRequest) Handle(ctx *quark.Context) error {
@@ -25,7 +61,7 @@ func (p *ActionRequest) Handle(ctx *quark.Context) error {
 	// 查询条件
 	model = template.BuildActionQuery(ctx, model)
 
-	actions := template.Actions(ctx)
+	actions := p.GetActions(ctx)
 	for _, v := range actions {
 		actionInstance := v.(types.Actioner)
 
@@ -89,11 +125,8 @@ func (p *ActionRequest) Handle(ctx *quark.Context) error {
 func (p *ActionRequest) Values(ctx *quark.Context) error {
 	var data map[string]interface{}
 
-	// 模版实例
-	template := ctx.Template.(types.Resourcer)
-
 	// 解析行为
-	actions := template.Actions(ctx)
+	actions := p.GetActions(ctx)
 	for _, v := range actions {
 
 		actionInstance := v.(types.Actioner)

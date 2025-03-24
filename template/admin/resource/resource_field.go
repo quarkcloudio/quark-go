@@ -3,6 +3,7 @@ package resource
 import (
 	"reflect"
 
+	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/action"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/cascader"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/checkbox"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/compact"
@@ -473,4 +474,26 @@ func (p *Field) Sku(params ...interface{}) *sku.Component {
 		v.SetAttributesName(params[0].(string)).SetName(params[1].(string)).SetAttributesLabel(params[2].(string)).SetDataSourceLabel(params[3].(string)).SetCallback(params[4].(func(map[string]interface{}) interface{}))
 	}
 	return v
+}
+
+// 行为组件
+//
+//	field.Action("action", "行为").
+//	SetItems([]interface{}{
+//		actions.ChangeStatus(),
+//	})
+//
+// 或者
+//
+//	field.Action("action2", "行为2"
+//
+//	, func(row map[string]interface{}) interface{} {
+//
+// return []interface{}{ actions.ChangeStatus()}
+//
+//	}).SetItems([]interface{}{
+//			actions.ChangeStatus(),
+//		})
+func (p *Field) Action(params ...interface{}) *action.Component {
+	return fieldParser(action.New(), params, "").(*action.Component)
 }

@@ -182,10 +182,8 @@ func (p *Template) fieldToColumn(ctx *quark.Context, field interface{}) interfac
 	case "editorField":
 		column = column.SetValueType("text")
 	case "treeSelectField":
-
 		// 获取属性
 		options = field.(interface{ GetOptions() []treeselect.TreeData }).GetOptions()
-
 		// 设置表格列
 		column = column.
 			SetValueType("treeSelect").
@@ -195,7 +193,6 @@ func (p *Template) fieldToColumn(ctx *quark.Context, field interface{}) interfac
 	case "cascaderField":
 		// 获取属性
 		options = field.(interface{ GetOptions() []cascader.Option }).GetOptions()
-
 		// 设置表格列
 		column = column.
 			SetValueType("cascader").
@@ -205,7 +202,6 @@ func (p *Template) fieldToColumn(ctx *quark.Context, field interface{}) interfac
 	case "selectField":
 		// 获取属性
 		options = field.(interface{ GetOptions() []selectfield.Option }).GetOptions()
-
 		// 设置表格列
 		column = column.
 			SetValueType("select").
@@ -226,7 +222,6 @@ func (p *Template) fieldToColumn(ctx *quark.Context, field interface{}) interfac
 	case "checkboxField":
 		// 获取属性
 		options = field.(interface{ GetOptions() []checkbox.Option }).GetOptions()
-
 		// 设置表格列
 		column = column.
 			SetValueType("checkbox").
@@ -247,14 +242,12 @@ func (p *Template) fieldToColumn(ctx *quark.Context, field interface{}) interfac
 	case "radioField":
 		// 获取属性
 		options = field.(interface{ GetOptions() []radio.Option }).GetOptions()
-
 		// 设置表格列
 		column = column.
 			SetValueType("radio").
 			SetFieldProps(map[string]interface{}{
 				"options": options,
 			})
-
 		// 是否设置了过滤项
 		if getfilters, ok := filters.(bool); ok {
 			if getfilters {
@@ -268,12 +261,10 @@ func (p *Template) fieldToColumn(ctx *quark.Context, field interface{}) interfac
 	case "switchField":
 		// 获取属性
 		options = field.(interface{ GetOptions() interface{} }).GetOptions()
-
 		// 设置表格列
 		column = column.
 			SetValueType("select").
 			SetValueEnum(options)
-
 		// 是否设置了过滤项
 		if getfilters, ok := filters.(bool); ok {
 			if getfilters {
@@ -288,6 +279,8 @@ func (p *Template) fieldToColumn(ctx *quark.Context, field interface{}) interfac
 		column = column.SetValueType("image")
 	case "imagePickerField":
 		column = column.SetValueType("image")
+	case "actionField":
+		column = column.SetValueType("action")
 	default:
 		column = column.SetValueType(component)
 	}

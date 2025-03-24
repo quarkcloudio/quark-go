@@ -135,23 +135,70 @@ func (p *IndexRequest) performsList(ctx *quark.Context, lists []map[string]inter
 			name := reflect.
 				ValueOf(field).
 				Elem().
-				FieldByName("Name").String()
+				FieldByName("Name").
+				String()
 
-			// 获取实例的回调函数
-			callback := field.(interface{ GetCallback() interface{} }).GetCallback()
-			if callback != nil {
-				fields[name] = callback.(func(map[string]interface{}) interface{})(v)
+			// 组件名称
+			component := reflect.
+				ValueOf(field).
+				Elem().
+				FieldByName("Component").
+				String()
+
+			if component == "actionField" {
+				// 行为项
+				actionItems := reflect.
+					ValueOf(field).
+					Elem().
+					FieldByName("Items").
+					Interface()
+
+				callback := field.(interface{ GetCallback() interface{} }).GetCallback()
+				if callback != nil {
+					actionItems = callback.(func(map[string]interface{}) interface{})(v)
+				}
+
+				var items []interface{}
+
+				// 解析行为
+				for _, action := range actionItems.([]interface{}) {
+
+					actionInstance := action.(types.Actioner)
+
+					// 初始化模版
+					actionInstance.New(ctx)
+
+					// 初始化
+					actionInstance.Init(ctx)
+
+					items = append(items, template.BuildAction(ctx, actionInstance))
+				}
+
+				fields[name] = items
 			} else {
-				if v[name] != nil {
-					var fieldValue interface{}
-					fieldValue = v[name]
-					getV, ok := v[name].(string)
-					if ok {
-						if strings.Contains(getV, "[") {
-							var m []interface{}
-							err := json.Unmarshal([]byte(getV), &m)
-							if err == nil {
-								fieldValue = m
+				callback := field.(interface{ GetCallback() interface{} }).GetCallback()
+				if callback != nil {
+					fields[name] = callback.(func(map[string]interface{}) interface{})(v)
+				} else {
+					if v[name] != nil {
+						var fieldValue interface{}
+						fieldValue = v[name]
+						getV, ok := v[name].(string)
+						if ok {
+							if strings.Contains(getV, "[") {
+								var m []interface{}
+								err := json.Unmarshal([]byte(getV), &m)
+								if err == nil {
+									fieldValue = m
+								} else {
+									if strings.Contains(getV, "{") {
+										var m map[string]interface{}
+										err := json.Unmarshal([]byte(getV), &m)
+										if err == nil {
+											fieldValue = m
+										}
+									}
+								}
 							} else {
 								if strings.Contains(getV, "{") {
 									var m map[string]interface{}
@@ -161,46 +208,31 @@ func (p *IndexRequest) performsList(ctx *quark.Context, lists []map[string]inter
 									}
 								}
 							}
-						} else {
-							if strings.Contains(getV, "{") {
-								var m map[string]interface{}
-								err := json.Unmarshal([]byte(getV), &m)
-								if err == nil {
-									fieldValue = m
-								}
-							}
 						}
+
+						// 单独解析时间和日期组件
+						if component == "datetimeField" || component == "dateField" {
+							format := reflect.
+								ValueOf(field).
+								Elem().
+								FieldByName("Format").
+								String()
+							format = strings.Replace(format, "YYYY", "2006", -1)
+							format = strings.Replace(format, "MM", "01", -1)
+							format = strings.Replace(format, "DD", "02", -1)
+							format = strings.Replace(format, "HH", "15", -1)
+							format = strings.Replace(format, "mm", "04", -1)
+							format = strings.Replace(format, "ss", "05", -1)
+							fieldValue = v[name].(time.Time).Format(format)
+						}
+
+						// 单独解析图片、图片选择器组件
+						if component == "imageField" || component == "imagePickerField" {
+							fieldValue = service.NewAttachmentService().GetImageUrl(v[name].(string))
+						}
+
+						fields[name] = fieldValue
 					}
-
-					// 组件名称
-					component := reflect.
-						ValueOf(field).
-						Elem().
-						FieldByName("Component").
-						String()
-
-					// 单独解析时间和日期组件
-					if component == "datetimeField" || component == "dateField" {
-						format := reflect.
-							ValueOf(field).
-							Elem().
-							FieldByName("Format").
-							String()
-						format = strings.Replace(format, "YYYY", "2006", -1)
-						format = strings.Replace(format, "MM", "01", -1)
-						format = strings.Replace(format, "DD", "02", -1)
-						format = strings.Replace(format, "HH", "15", -1)
-						format = strings.Replace(format, "mm", "04", -1)
-						format = strings.Replace(format, "ss", "05", -1)
-						fieldValue = v[name].(time.Time).Format(format)
-					}
-
-					// 单独解析图片、图片选择器组件
-					if component == "imageField" || component == "imagePickerField" {
-						fieldValue = service.NewAttachmentService().GetImageUrl(v[name].(string))
-					}
-
-					fields[name] = fieldValue
 				}
 			}
 		}
