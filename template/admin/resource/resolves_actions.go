@@ -548,6 +548,28 @@ func (p *Template) BuildAction(ctx *quark.Context, item interface{}) interface{}
 		}
 
 		return getAction
+
+	case "switch":
+		switchActioner := item.(types.Switcher)
+
+		// 选中时的内容
+		checkedChildren := switchActioner.GetCheckedChildren()
+
+		// 自定义的选择框后缀图标
+		unCheckedChildren := switchActioner.GetUnCheckedChildren()
+
+		// 获取字段名称
+		fieldName := switchActioner.GetFieldName()
+
+		// 获取字段值
+		fieldValue := switchActioner.GetFieldValue()
+
+		// 设置跳转链接
+		getAction = getAction.
+			SetCheckedChildren(checkedChildren).
+			SetUnCheckedChildren(unCheckedChildren).
+			SetFieldName(fieldName).
+			SetFieldValue(fieldValue)
 	}
 
 	if confirmTitle != "" {

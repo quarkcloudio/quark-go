@@ -8,27 +8,31 @@ import (
 
 type Component struct {
 	component.Element
-	Label        interface{} `json:"label"`
-	Block        bool        `json:"block"`
-	Danger       bool        `json:"danger"`
-	Disabled     bool        `json:"disabled"`
-	Ghost        bool        `json:"ghost"`
-	Icon         interface{} `json:"icon"`
-	Shape        string      `json:"shape"`
-	Size         string      `json:"size"`
-	Type         string      `json:"type"`
-	ActionType   string      `json:"actionType"`
-	SubmitForm   any         `json:"submitForm"`
-	Href         string      `json:"href"`
-	Target       string      `json:"target"`
-	Modal        interface{} `json:"modal"`
-	Drawer       interface{} `json:"drawer"`
-	ConfirmTitle string      `json:"confirmTitle"`
-	ConfirmText  string      `json:"confirmText"`
-	ConfirmType  string      `json:"confirmType"`
-	Api          string      `json:"api"`
-	Reload       string      `json:"reload"`
-	WithLoading  bool        `json:"withLoading"`
+	Label             interface{} `json:"label"`
+	Block             bool        `json:"block"`
+	Danger            bool        `json:"danger"`
+	Disabled          bool        `json:"disabled"`
+	Ghost             bool        `json:"ghost"`
+	Icon              interface{} `json:"icon"`
+	Shape             string      `json:"shape"`
+	Size              string      `json:"size"`
+	Type              string      `json:"type"`
+	ActionType        string      `json:"actionType"`
+	SubmitForm        any         `json:"submitForm"`
+	Href              string      `json:"href"`
+	Target            string      `json:"target"`
+	Modal             interface{} `json:"modal"`
+	Drawer            interface{} `json:"drawer"`
+	CheckedChildren   interface{} `json:"checkedChildren,omitempty"`   // 选中时的内容
+	UnCheckedChildren interface{} `json:"unCheckedChildren,omitempty"` // 自定义的选择框后缀图标
+	FieldName         interface{} `json:"fieldName,omitempty"`         // 字段名称
+	FieldValue        interface{} `json:"fieldValue,omitempty"`        // 字段值
+	ConfirmTitle      string      `json:"confirmTitle"`
+	ConfirmText       string      `json:"confirmText"`
+	ConfirmType       string      `json:"confirmType"`
+	Api               string      `json:"api"`
+	Reload            string      `json:"reload"`
+	WithLoading       bool        `json:"withLoading"`
 }
 
 // 初始化组件
@@ -237,6 +241,34 @@ func (p *Component) SetDrawer(callback interface{}) *Component {
 	return p
 }
 
+// 选中时的内容
+func (p *Component) SetCheckedChildren(checkedChildren interface{}) *Component {
+	p.CheckedChildren = checkedChildren
+
+	return p
+}
+
+// 未选中时的内容
+func (p *Component) SetUnCheckedChildren(unCheckedChildren interface{}) *Component {
+	p.UnCheckedChildren = unCheckedChildren
+
+	return p
+}
+
+// 获取字段名称
+func (p *Component) SetFieldName(fieldName interface{}) *Component {
+	p.FieldName = fieldName
+
+	return p
+}
+
+// 获取字段值
+func (p *Component) SetFieldValue(fieldValue interface{}) *Component {
+	p.FieldValue = fieldValue
+
+	return p
+}
+
 // 设置行为前的确认操作
 func (p *Component) SetWithConfirm(title string, text string, confirmType string) *Component {
 	p.ConfirmTitle = title
@@ -264,13 +296,6 @@ func (p *Component) SetReload(reload string) *Component {
 // 是否具有loading
 func (p *Component) SetWithLoading(loading bool) *Component {
 	p.WithLoading = loading
-
-	return p
-}
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "action"
 
 	return p
 }
