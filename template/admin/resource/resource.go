@@ -73,7 +73,6 @@ func (p *Template) Bootstrap() interface{} {
 	p.DetailValuesPath = "/api/admin/:resource/detail/values"         // 获取详情页值路径
 	p.ImportTemplatePath = "/api/admin/:resource/import/template"     // 导入模板路径
 	p.FormPath = "/api/admin/:resource/form"                          // 表单页路径
-	p.ContentPath = "/api/admin/:resource/content"                    // 自定义内容页路径
 
 	return p
 }
@@ -95,7 +94,6 @@ func (p *Template) LoadInitRoute() interface{} {
 	p.POST(p.ImportPath, p.ImportRender)                // 导入数据
 	p.GET(p.ImportTemplatePath, p.ImportTemplateRender) // 导入模板
 	p.GET(p.FormPath, p.FormRender)                     // 通用表单资源
-	p.GET(p.ContentPath, p.ContentRender)               // 通用表单资源
 
 	return p
 }
@@ -472,24 +470,6 @@ func (p *Template) FormRender(ctx *quark.Context) error {
 
 	// 组件渲染
 	body := template.CreationComponentRender(ctx, data)
-
-	// 页面渲染
-	result := template.PageComponentRender(ctx, body)
-
-	return ctx.JSON(200, result)
-}
-
-// 自定义内容页内容
-func (p *Template) Content(ctx *quark.Context) interface{} {
-	return "please implement the component content."
-}
-
-// 自定义内容页渲染
-func (p *Template) ContentRender(ctx *quark.Context) error {
-	template := ctx.Template.(types.Resourcer)
-
-	// 组件渲染
-	body := template.ContentComponentRender(ctx)
 
 	// 页面渲染
 	result := template.PageComponentRender(ctx, body)
