@@ -131,18 +131,18 @@ func (p *IndexRequest) performsList(ctx *quark.Context, lists []map[string]inter
 		fields := make(map[string]interface{})
 		for _, field := range indexFields.([]interface{}) {
 
-			// 字段名
-			name := reflect.
-				ValueOf(field).
-				Elem().
-				FieldByName("Name").
-				String()
-
 			// 组件名称
 			component := reflect.
 				ValueOf(field).
 				Elem().
 				FieldByName("Component").
+				String()
+
+			// 字段名
+			name := reflect.
+				ValueOf(field).
+				Elem().
+				FieldByName("Name").
 				String()
 
 			if component == "actionField" {

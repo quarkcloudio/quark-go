@@ -476,7 +476,7 @@ func (p *Field) Sku(params ...interface{}) *sku.Component {
 	return v
 }
 
-// 行为组件
+// 行为组件，目前只支持在列表页、详情页展示
 //
 //	field.Action("action", "行为").
 //	SetItems([]interface{}{

@@ -43,26 +43,74 @@ func (p *DetailRequest) FillData(ctx *quark.Context) map[string]interface{} {
 	fields := make(map[string]interface{})
 	for _, field := range detailFields.([]interface{}) {
 
+		// 组件名称
+		component := reflect.
+			ValueOf(field).
+			Elem().
+			FieldByName("Component").
+			String()
+
 		// 字段名
 		name := reflect.
 			ValueOf(field).
 			Elem().
-			FieldByName("Name").String()
+			FieldByName("Name").
+			String()
 
-		callback := field.(interface{ GetCallback() interface{} }).GetCallback()
-		if callback != nil {
-			fields[name] = callback.(func(map[string]interface{}) interface{})(result)
+		if component == "actionField" {
+			// 行为项
+			actionItems := reflect.
+				ValueOf(field).
+				Elem().
+				FieldByName("Items").
+				Interface()
+
+			callback := field.(interface{ GetCallback() interface{} }).GetCallback()
+			if callback != nil {
+				actionItems = callback.(func(map[string]interface{}) interface{})(result)
+			}
+
+			var items []interface{}
+
+			// 解析行为
+			for _, action := range actionItems.([]interface{}) {
+
+				actionInstance := action.(types.Actioner)
+
+				// 初始化模版
+				actionInstance.New(ctx)
+
+				// 初始化
+				actionInstance.Init(ctx)
+
+				items = append(items, template.BuildAction(ctx, actionInstance))
+			}
+
+			fields[name] = items
 		} else {
-			if result[name] != nil {
-				var fieldValue interface{}
-				fieldValue = result[name]
-				getV, ok := result[name].(string)
-				if ok {
-					if strings.Contains(getV, "[") {
-						var m []interface{}
-						err := json.Unmarshal([]byte(getV), &m)
-						if err == nil {
-							fieldValue = m
+			callback := field.(interface{ GetCallback() interface{} }).GetCallback()
+			if callback != nil {
+				fields[name] = callback.(func(map[string]interface{}) interface{})(result)
+			} else {
+				if result[name] != nil {
+					var fieldValue interface{}
+					fieldValue = result[name]
+					getV, ok := result[name].(string)
+					if ok {
+						if strings.Contains(getV, "[") {
+							var m []interface{}
+							err := json.Unmarshal([]byte(getV), &m)
+							if err == nil {
+								fieldValue = m
+							} else {
+								if strings.Contains(getV, "{") {
+									var m map[string]interface{}
+									err := json.Unmarshal([]byte(getV), &m)
+									if err == nil {
+										fieldValue = m
+									}
+								}
+							}
 						} else {
 							if strings.Contains(getV, "{") {
 								var m map[string]interface{}
@@ -72,41 +120,27 @@ func (p *DetailRequest) FillData(ctx *quark.Context) map[string]interface{} {
 								}
 							}
 						}
-					} else {
-						if strings.Contains(getV, "{") {
-							var m map[string]interface{}
-							err := json.Unmarshal([]byte(getV), &m)
-							if err == nil {
-								fieldValue = m
-							}
-						}
 					}
+
+					if component == "datetimeField" || component == "dateField" {
+						format := reflect.
+							ValueOf(field).
+							Elem().
+							FieldByName("Format").
+							String()
+
+						format = strings.Replace(format, "YYYY", "2006", -1)
+						format = strings.Replace(format, "MM", "01", -1)
+						format = strings.Replace(format, "DD", "02", -1)
+						format = strings.Replace(format, "HH", "15", -1)
+						format = strings.Replace(format, "mm", "04", -1)
+						format = strings.Replace(format, "ss", "05", -1)
+
+						fieldValue = result[name].(time.Time).Format(format)
+					}
+
+					fields[name] = fieldValue
 				}
-
-				// 组件名称
-				component := reflect.
-					ValueOf(field).
-					Elem().
-					FieldByName("Component").
-					String()
-				if component == "datetimeField" || component == "dateField" {
-					format := reflect.
-						ValueOf(field).
-						Elem().
-						FieldByName("Format").
-						String()
-
-					format = strings.Replace(format, "YYYY", "2006", -1)
-					format = strings.Replace(format, "MM", "01", -1)
-					format = strings.Replace(format, "DD", "02", -1)
-					format = strings.Replace(format, "HH", "15", -1)
-					format = strings.Replace(format, "mm", "04", -1)
-					format = strings.Replace(format, "ss", "05", -1)
-
-					fieldValue = result[name].(time.Time).Format(format)
-				}
-
-				fields[name] = fieldValue
 			}
 		}
 	}

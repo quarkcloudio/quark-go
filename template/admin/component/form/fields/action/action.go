@@ -79,10 +79,10 @@ func (p *Component) Init() *Component {
 	p.LabelAlign = "right"
 	p.ShowOnIndex = true
 	p.ShowOnDetail = true
-	p.ShowOnCreation = true
-	p.ShowOnUpdate = true
-	p.ShowOnExport = true
-	p.ShowOnImport = true
+	p.ShowOnCreation = false
+	p.ShowOnUpdate = false
+	p.ShowOnExport = false
+	p.ShowOnImport = false
 	p.Column = (&table.Column{}).Init()
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
