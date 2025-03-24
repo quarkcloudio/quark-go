@@ -236,6 +236,18 @@ type Resourcer interface {
 	// 渲染详情页组件
 	DetailComponentRender(ctx *quark.Context, data map[string]interface{}) interface{}
 
+	// 自定义内容页标题
+	ContentTitle(ctx *quark.Context) string
+
+	// 自定义内容页内容
+	Content(ctx *quark.Context) interface{}
+
+	// 渲染自定义内容页组件
+	ContentComponentRender(ctx *quark.Context) interface{}
+
+	// 自定义内容页资源
+	ContentRender(ctx *quark.Context) error
+
 	// 详情页页面显示前回调
 	BeforeDetailShowing(ctx *quark.Context, data map[string]interface{}) map[string]interface{}
 
