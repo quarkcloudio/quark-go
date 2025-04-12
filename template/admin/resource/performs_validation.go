@@ -39,7 +39,7 @@ func (p *Template) Validator(rules []rule.Rule, data map[string]interface{}) err
 		fieldValue := data[rule.Name]
 		switch rule.RuleType {
 		case "required":
-			if fieldValue == nil {
+			if fieldValue == nil || fieldValue == "" {
 				errMsg := rule.Message
 				if errMsg != "" {
 					result = errors.New(errMsg)
