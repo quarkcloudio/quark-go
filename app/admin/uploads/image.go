@@ -3,6 +3,7 @@ package uploads
 import (
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"reflect"
 	"strconv"
 	"strings"
@@ -14,6 +15,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/model"
 	"github.com/quarkcloudio/quark-go/v3/service"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/upload"
+	"gorm.io/gorm"
 )
 
 type Image struct {
@@ -225,7 +227,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 	getFileSystem, fileInfo, err := ctx.Template.(interface {
 		BeforeHandle(ctx *quark.Context, fileSystem *quark.FileSystem) (*quark.FileSystem, *quark.FileInfo, error)
 	}).BeforeHandle(ctx, fileSystem)
-	if err != nil {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return ctx.CJSONError(err.Error())
 	}
 	if fileInfo != nil {
