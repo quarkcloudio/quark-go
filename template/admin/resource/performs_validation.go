@@ -3,6 +3,7 @@ package resource
 import (
 	"encoding/json"
 	"errors"
+	"regexp"
 	"strings"
 	"unicode/utf8"
 
@@ -59,6 +60,16 @@ func (p *Template) Validator(rules []rule.Rule, data map[string]interface{}) err
 			if fieldValue, ok := fieldValue.(string); ok {
 				strNum := utf8.RuneCountInString(fieldValue)
 				if strNum > rule.Max {
+					errMsg := rule.Message
+					if errMsg != "" {
+						result = errors.New(errMsg)
+					}
+				}
+			}
+		case "regexp":
+			if fieldValue, ok := fieldValue.(string); ok {
+				re := regexp.MustCompile(rule.Pattern)
+				if !re.MatchString(fieldValue) {
 					errMsg := rule.Message
 					if errMsg != "" {
 						result = errors.New(errMsg)
