@@ -9,13 +9,14 @@ import (
 	"strings"
 	"time"
 
+	"gorm.io/gorm"
+
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/dto/request"
 	"github.com/quarkcloudio/quark-go/v3/dto/response"
 	"github.com/quarkcloudio/quark-go/v3/model"
 	"github.com/quarkcloudio/quark-go/v3/service"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/upload"
-	"gorm.io/gorm"
 )
 
 type Image struct {
@@ -224,40 +225,18 @@ func (p *Image) Crop(ctx *quark.Context) error {
 		})
 
 	// 上传前回调
-	getFileSystem, fileInfo, err := ctx.Template.(interface {
+	getFileSystem, _, err := ctx.Template.(interface {
 		BeforeHandle(ctx *quark.Context, fileSystem *quark.FileSystem) (*quark.FileSystem, *quark.FileInfo, error)
 	}).BeforeHandle(ctx, fileSystem)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return ctx.CJSONError(err.Error())
 	}
-	if fileInfo != nil {
-		extra := ""
-		if fileInfo.Extra != nil {
-			extraData, err := json.Marshal(fileInfo.Extra)
-			if err == nil {
-				extra = string(extraData)
-			}
-		}
 
-		// 更新数据库
-		service.NewAttachmentService().UpdateById(pictureInfo.Id, model.Attachment{
-			Source: "ADMIN",
-			Uid:    adminInfo.Id,
-			Name:   fileInfo.Name,
-			Type:   "IMAGE",
-			Size:   fileInfo.Size,
-			Ext:    fileInfo.Ext,
-			Path:   fileInfo.Path,
-			Url:    fileInfo.Url,
-			Hash:   fileInfo.Hash,
-			Extra:  extra,
-			Status: 1,
-		})
-	}
-
+	filePaths := strings.Split(pictureInfo.Path, "/")
+	fileName := filePaths[len(filePaths)-1]
 	result, err = getFileSystem.
 		WithImageExtra().
-		FileName(pictureInfo.Name).
+		FileName(fileName).
 		Path(savePath).
 		Save()
 	if err != nil {
@@ -278,7 +257,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 	}
 
 	// 更新数据库
-	service.NewAttachmentService().UpdateById(pictureInfo.Id, model.Attachment{
+	err = service.NewAttachmentService().UpdateById(pictureInfo.Id, model.Attachment{
 		Source: "ADMIN",
 		Uid:    adminInfo.Id,
 		Name:   result.Name,
@@ -291,6 +270,9 @@ func (p *Image) Crop(ctx *quark.Context) error {
 		Extra:  extra,
 		Status: 1,
 	})
+	if err != nil {
+		return ctx.CJSONError(err.Error())
+	}
 
 	return ctx.CJSONOk("操作成功", result)
 }
