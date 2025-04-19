@@ -10,11 +10,11 @@ import (
 // 字段
 type User struct {
 	Id            int               `json:"id" gorm:"autoIncrement"`
-	Username      string            `json:"username" gorm:"size:20;index:admins_username_unique,unique;not null"`
+	Username      string            `json:"username" gorm:"size:20;index:username_unique,unique;not null"`
 	Nickname      string            `json:"nickname" gorm:"size:200;not null"`
 	Sex           int               `json:"sex" gorm:"size:4;not null;default:1"`
-	Email         string            `json:"email" gorm:"size:50;index:admins_email_unique,unique;not null"`
-	Phone         string            `json:"phone" gorm:"size:11;index:admins_phone_unique,unique;not null"`
+	Email         string            `json:"email" gorm:"size:50;index:email_unique,unique;not null"`
+	Phone         string            `json:"phone" gorm:"size:11;index:phone_unique,unique;not null"`
 	Password      string            `json:"password" gorm:"size:255;not null"`
 	Avatar        string            `json:"avatar" gorm:"size:1000"`
 	DepartmentId  int               `json:"department_id" gorm:"size:11;default:null"`
