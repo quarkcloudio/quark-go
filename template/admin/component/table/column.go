@@ -240,10 +240,3 @@ func (p *Column) SetFieldProps(fieldProps interface{}) *Column {
 	p.FieldProps = fieldProps
 	return p
 }
-
-// 组件json序列化
-func (p *Column) JsonSerialize() *Column {
-	p.Component = "column"
-
-	return p
-}

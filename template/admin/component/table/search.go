@@ -120,10 +120,3 @@ func (p *Search) SetItems(item interface{}) *Search {
 
 	return p
 }
-
-// 组件json序列化
-func (p *Search) JsonSerialize() *Search {
-	p.Component = "search"
-
-	return p
-}

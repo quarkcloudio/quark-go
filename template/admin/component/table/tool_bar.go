@@ -98,10 +98,3 @@ func (p *ToolBar) SetTabs(tabs interface{}) *ToolBar {
 
 	return p
 }
-
-// 组件json序列化
-func (p *ToolBar) JsonSerialize() *ToolBar {
-	p.Component = "toolBar"
-
-	return p
-}
