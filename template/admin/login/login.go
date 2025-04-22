@@ -113,7 +113,7 @@ func (p *Template) GetSubTitle() string {
 
 // 验证码ID
 func (p *Template) CaptchaId(ctx *quark.Context) error {
-	return ctx.CJSONOk("操作成功", map[string]string{
+	return ctx.CJSONOk("获取成功", map[string]string{
 		"captchaId": captcha.NewLen(4),
 	})
 }
