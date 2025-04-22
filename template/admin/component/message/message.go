@@ -130,10 +130,3 @@ func (p *Component) SetUrl(url string) *Component {
 	p.Url = url
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "message"
-
-	return p
-}
