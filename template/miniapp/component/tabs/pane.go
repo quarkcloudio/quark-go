@@ -46,10 +46,3 @@ func (p *Pane) SetBody(body interface{}) *Pane {
 	p.Body = body
 	return p
 }
-
-// 组件json序列化
-func (p *Pane) JsonSerialize() *Pane {
-	p.Component = "tabPane"
-
-	return p
-}

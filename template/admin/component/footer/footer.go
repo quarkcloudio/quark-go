@@ -40,10 +40,3 @@ func (p *Component) SetLinks(links []map[string]interface{}) *Component {
 	p.Links = links
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "footer"
-
-	return p
-}

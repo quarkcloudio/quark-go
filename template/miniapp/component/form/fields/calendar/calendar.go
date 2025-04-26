@@ -236,10 +236,3 @@ func (p *Component) SetFirstDayOfWeek(firstDayOfWeek int) *Component {
 
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "calendarField"
-
-	return p
-}

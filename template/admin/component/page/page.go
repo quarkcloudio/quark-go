@@ -40,10 +40,3 @@ func (p *Component) SetBody(body interface{}) *Component {
 	p.Body = body
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "page"
-
-	return p
-}

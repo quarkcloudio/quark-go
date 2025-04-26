@@ -134,10 +134,3 @@ func (p *Component) SetPanes(panes []*Pane) *Component {
 
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "tabs"
-
-	return p
-}

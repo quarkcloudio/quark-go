@@ -53,10 +53,3 @@ func (p *Component) SetTag(tag string) *Component {
 	p.Tag = tag
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "icon"
-
-	return p
-}

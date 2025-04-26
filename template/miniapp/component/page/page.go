@@ -53,10 +53,3 @@ func (p *Component) SetTabbar(tabbar interface{}) *Component {
 	p.Tabbar = tabbar
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "page"
-
-	return p
-}

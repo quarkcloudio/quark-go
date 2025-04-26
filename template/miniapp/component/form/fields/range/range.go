@@ -228,10 +228,3 @@ func (p *Component) SetMarks(marks map[int]int) *Component {
 
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "radioField"
-
-	return p
-}

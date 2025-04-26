@@ -67,10 +67,3 @@ func (p *Component) SetTitleHeight(titleHeight int) *Component {
 	p.TitleHeight = titleHeight
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "elevator"
-
-	return p
-}

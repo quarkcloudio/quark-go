@@ -75,10 +75,3 @@ func (p *Row) SetBody(body interface{}) *Row {
 
 	return p
 }
-
-// 组件json序列化
-func (p *Row) JsonSerialize() *Row {
-	p.Component = "row"
-
-	return p
-}

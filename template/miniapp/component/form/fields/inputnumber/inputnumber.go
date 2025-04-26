@@ -188,10 +188,3 @@ func (p *Component) SetPopClass(popClass string) *Component {
 
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "numberKeyboardField"
-
-	return p
-}

@@ -236,10 +236,3 @@ func (p *Component) SetInputAlign(inputAlign string) *Component {
 
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "searchbarField"
-
-	return p
-}

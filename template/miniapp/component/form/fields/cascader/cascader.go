@@ -211,10 +211,3 @@ func (p *Component) SetPoppable(poppable bool) *Component {
 
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "cascaderField"
-
-	return p
-}

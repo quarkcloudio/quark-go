@@ -39,10 +39,3 @@ func (p *Item) SetBody(body interface{}) *Item {
 	p.Body = body
 	return p
 }
-
-// 组件json序列化
-func (p *Item) JsonSerialize() *Item {
-	p.Component = "gridItem"
-
-	return p
-}

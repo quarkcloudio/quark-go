@@ -148,10 +148,3 @@ func (p *Component) SetBody(body interface{}) *Component {
 
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "card"
-
-	return p
-}

@@ -91,10 +91,3 @@ func (p *PageHeader) SetTitle(title string) *PageHeader {
 	p.Title = title
 	return p
 }
-
-// 组件json序列化
-func (p *PageHeader) JsonSerialize() *PageHeader {
-	p.Component = "pageHeader"
-
-	return p
-}

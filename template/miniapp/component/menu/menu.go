@@ -60,10 +60,3 @@ func (p *Component) SetBody(body []*Item) *Component {
 	p.Body = body
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "menu"
-
-	return p
-}

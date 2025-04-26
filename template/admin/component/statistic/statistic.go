@@ -84,12 +84,3 @@ func (p *Component) SetValueStyle(valueStyle map[string]string) *Component {
 	p.ValueStyle = valueStyle
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "statistic"
-	p.DecimalSeparator = "."
-	p.GroupSeparator = ","
-
-	return p
-}

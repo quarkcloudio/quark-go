@@ -78,10 +78,3 @@ func (p *Component) SetItems(items []*Item) *Component {
 
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "tabbar"
-
-	return p
-}

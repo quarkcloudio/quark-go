@@ -204,10 +204,3 @@ func (p *Component) SetCustomIcon(customIcon string) *Component {
 
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "radioField"
-
-	return p
-}

@@ -102,10 +102,3 @@ func (p *Component) SetAriaLabel(ariaLabel string) *Component {
 	p.AriaLabel = ariaLabel
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "image"
-
-	return p
-}

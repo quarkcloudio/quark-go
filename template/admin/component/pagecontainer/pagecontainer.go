@@ -123,10 +123,3 @@ func (p *Component) SetTabProps(tabProps interface{}) *Component {
 	p.TabProps = tabProps
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "pageContainer"
-
-	return p
-}

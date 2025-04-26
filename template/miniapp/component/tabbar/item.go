@@ -60,10 +60,3 @@ func (p *Item) SetTo(to string) *Item {
 
 	return p
 }
-
-// 组件json序列化
-func (p *Item) JsonSerialize() *Item {
-	p.Component = "tabbarItem"
-
-	return p
-}

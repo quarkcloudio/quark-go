@@ -182,8 +182,7 @@ func (p *Template) Render(ctx *quark.Context) error {
 		SetTitle(title).
 		SetNavbar(navbar).
 		SetStyle(style).
-		SetContent(components).
-		JsonSerialize()
+		SetContent(components)
 
 	return ctx.JSON(200, component)
 }

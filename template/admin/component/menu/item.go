@@ -208,10 +208,3 @@ func (p *Item) SetWithLoading(loading bool) *Item {
 
 	return p
 }
-
-// 组件json序列化
-func (p *Item) JsonSerialize() *Item {
-	p.Component = "menuItem"
-
-	return p
-}

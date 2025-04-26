@@ -95,10 +95,3 @@ func (p *Component) SetSize(size string) *Component {
 	p.Size = size
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "cell"
-
-	return p
-}

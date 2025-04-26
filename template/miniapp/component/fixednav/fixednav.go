@@ -86,10 +86,3 @@ func (p *Component) SetPosition(position *Position) *Component {
 	p.Position = position
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "fixedNav"
-
-	return p
-}

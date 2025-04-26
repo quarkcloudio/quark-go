@@ -65,10 +65,3 @@ func (p *Item) SetDirection(direction string) *Item {
 	p.Direction = direction
 	return p
 }
-
-// 组件json序列化
-func (p *Item) JsonSerialize() *Item {
-	p.Component = "menuItem"
-
-	return p
-}

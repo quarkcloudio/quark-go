@@ -141,10 +141,3 @@ func (p *Col) SetBody(body interface{}) *Col {
 
 	return p
 }
-
-// 组件json序列化
-func (p *Col) JsonSerialize() *Col {
-	p.Component = "col"
-
-	return p
-}

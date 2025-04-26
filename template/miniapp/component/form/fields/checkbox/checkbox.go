@@ -179,10 +179,3 @@ func (p *Option) SetShape(shape string) *Option {
 
 	return p
 }
-
-// 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "checkboxField"
-
-	return p
-}
