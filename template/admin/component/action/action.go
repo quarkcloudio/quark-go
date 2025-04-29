@@ -46,7 +46,6 @@ func (p *Component) Init() *Component {
 	p.Component = "action"
 	p.Size = "default"
 	p.Type = "default"
-
 	p.SetKey("action", component.DEFAULT_CRYPT)
 
 	return p
