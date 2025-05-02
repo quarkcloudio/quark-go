@@ -67,7 +67,7 @@ func (p *Template) Bootstrap() interface{} {
 	p.EditPath = "/api/admin/:resource/edit"                          // 编辑页面路径
 	p.EditValuesPath = "/api/admin/:resource/edit/values"             // 获取编辑表单值路径
 	p.SavePath = "/api/admin/:resource/save"                          // 保存编辑值路径
-	p.ImportPath = "/api/admin/:resource/import"                      // 详情页面路径
+	p.ImportPath = "/api/admin/:resource/import"                      // 导入数据路径
 	p.ExportPath = "/api/admin/:resource/export"                      // 导出数据路径
 	p.DetailPath = "/api/admin/:resource/detail"                      // 详情页路径
 	p.DetailValuesPath = "/api/admin/:resource/detail/values"         // 获取详情页值路径
