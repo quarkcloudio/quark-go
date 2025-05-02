@@ -123,7 +123,7 @@ func (p *Component) SetTableLayout(tableLayout string) *Component {
 	return p
 }
 
-//  表头标题
+// 表头标题
 func (p *Component) SetTitle(title string) *Component {
 	p.HeaderTitle = title
 
@@ -135,13 +135,6 @@ func (p *Component) SetHeaderTitle(headerTitle string) *Component {
 	p.HeaderTitle = headerTitle
 
 	return p
-}
-
-// 是否显示搜索表单，传入对象时为搜索表单的配置
-func (p *Component) SetSearch(callback interface{}) interface{} {
-	// callback(p.Search)
-
-	return p.Search
 }
 
 // 搜索表单的配置
