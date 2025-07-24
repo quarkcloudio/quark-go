@@ -38,9 +38,10 @@ func (p *EditableRequest) Handle(ctx *quark.Context) error {
 
 	// 解析数据
 	for k, v := range data {
-		if v == "true" {
+		switch v {
+		case "true":
 			v = 1
-		} else if v == "false" {
+		case "false":
 			v = 0
 		}
 
