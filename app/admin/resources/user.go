@@ -82,7 +82,7 @@ func (p *User) Fields(ctx *quark.Context) []interface{} {
 	departments, _ := service.NewDepartmentService().GetList()
 
 	// 职位列表
-	positions, _ := (&model.Position{}).List()
+	positions, _ := service.NewPositionService().List()
 
 	return []interface{}{
 		field.ID("id", "ID"),

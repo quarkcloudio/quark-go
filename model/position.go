@@ -2,7 +2,6 @@ package model
 
 import (
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/checkbox"
 	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
 )
 
@@ -25,20 +24,4 @@ func (model *Position) Seeder() {
 		{Name: "普通员工", Sort: 0, Status: 1},
 	}
 	db.Client.Create(&seeders)
-}
-
-// 获取角色列表
-func (model *Position) List() (list []checkbox.Option, Error error) {
-	positions := []Position{}
-	err := db.Client.Where("status = ?", 1).Find(&positions).Error
-	if err != nil {
-		return list, err
-	}
-	for _, v := range positions {
-		list = append(list, checkbox.Option{
-			Label: v.Name,
-			Value: v.Id,
-		})
-	}
-	return list, nil
 }
