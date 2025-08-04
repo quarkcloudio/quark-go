@@ -135,9 +135,9 @@ func (p *Template) Handle(ctx *quark.Context) error {
 
 	limitImageHeight := template.GetLimitImageHeight()
 	if limitH.(string) != "" {
-		getLimitImageWidth, err := strconv.Atoi(limitH.(string))
+		getLimitImageHeight, err := strconv.Atoi(limitH.(string))
 		if err == nil {
-			limitImageWidth = getLimitImageWidth
+			limitImageHeight = getLimitImageHeight
 		}
 	}
 
@@ -235,9 +235,9 @@ func (p *Template) HandleFromBase64(ctx *quark.Context) error {
 
 	limitImageHeight := template.GetLimitImageHeight()
 	if limitH.(string) != "" {
-		getLimitImageWidth, err := strconv.Atoi(limitH.(string))
+		getLimitImageHeight, err := strconv.Atoi(limitH.(string))
 		if err == nil {
-			limitImageWidth = getLimitImageWidth
+			limitImageHeight = getLimitImageHeight
 		}
 	}
 
@@ -275,7 +275,6 @@ func (p *Template) HandleFromBase64(ctx *quark.Context) error {
 		RandName().
 		Path(savePath).
 		Save()
-
 	if err != nil {
 		return ctx.CJSONError(err.Error())
 	}
