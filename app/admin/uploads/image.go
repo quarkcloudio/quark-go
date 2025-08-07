@@ -133,7 +133,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 		return ctx.CJSONError(err.Error())
 	}
 
-	pictureInfo, err := service.NewAttachmentService().GetInfoById(imageCropReq.Id)
+	imageInfo, err := service.NewAttachmentService().GetInfoById(imageCropReq.Id)
 	if err != nil {
 		return ctx.CJSONError(err.Error())
 	}
@@ -232,7 +232,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 		return ctx.CJSONError(err.Error())
 	}
 
-	filePaths := strings.Split(pictureInfo.Path, "/")
+	filePaths := strings.Split(imageInfo.Path, "/")
 	fileName := filePaths[len(filePaths)-1]
 	result, err = getFileSystem.
 		WithImageExtra().
@@ -257,7 +257,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 	}
 
 	// 更新数据库
-	err = service.NewAttachmentService().UpdateById(pictureInfo.Id, model.Attachment{
+	err = service.NewAttachmentService().UpdateById(imageInfo.Id, model.Attachment{
 		Source: "ADMIN",
 		Uid:    adminInfo.Id,
 		Name:   result.Name,
