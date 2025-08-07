@@ -77,7 +77,7 @@ func (p *Image) GetList(ctx *quark.Context) error {
 	}
 
 	adminInfo, _ := service.NewAuthService(ctx).GetAdmin()
-	pictures, total, err := service.NewAttachmentService().GetListBySearch(
+	images, total, err := service.NewAttachmentService().GetListBySearch(
 		adminInfo.Id,
 		"IMAGE",
 		imageListReq.CategoryId,
@@ -101,7 +101,7 @@ func (p *Image) GetList(ctx *quark.Context) error {
 			PageSize:       8,
 			Total:          total,
 		},
-		List:      pictures,
+		List:      images,
 		Categorys: categorys,
 	})
 }
