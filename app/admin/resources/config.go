@@ -98,9 +98,5 @@ func (p *Config) Actions(ctx *quark.Context) []interface{} {
 		actions.ChangeStatus(),
 		actions.EditDrawer(),
 		actions.Delete(),
-		actions.FormSubmit(),
-		actions.FormReset(),
-		actions.FormBack(),
-		actions.FormExtraBack(),
 	}
 }

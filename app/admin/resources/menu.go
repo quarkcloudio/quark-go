@@ -164,10 +164,6 @@ func (p *Menu) Actions(ctx *quark.Context) []interface{} {
 		actions.ChangeStatus(),
 		actions.MenuEditDrawer(),
 		actions.Delete(),
-		actions.FormSubmit(),
-		actions.FormReset(),
-		actions.FormBack(),
-		actions.FormExtraBack(),
 	}
 }
 
