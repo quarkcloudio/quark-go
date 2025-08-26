@@ -25,37 +25,20 @@ package main
 import (
 	"github.com/quarkcloudio/quark-go/v4"
 	"github.com/quarkcloudio/quark-go/v4/app"
-	"github.com/quarkcloudio/quark-go/v4/template"
-	"github.com/glebarez/sqlite"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 func main() {
 
-	// 配置资源
-	config := &quark.Config{
-		// JWT加密密串
-		AppKey:    "123456",
-		// 加载服务
-		Providers: app.Providers,
-		// 数据库配置
-		DBConfig: &quark.DBConfig{
+	// 实例化对象
+	b := app.New(&app.Config{
+		AppKey: "123456",
+		DBConfig: &app.DBConfig{
 			Dialector: sqlite.Open("./data.db"),
 			Opts:      &gorm.Config{},
 		},
-	}
-
-	// 实例化对象
-	b := quark.New(config)
-
-	// WEB根目录
-	b.Static("/", "./web/app")
-
-	// 初始化安装
-	template.Install()
-
-	// 中间件
-	b.Use(template.Middleware)
+	})
 
 	// 响应Get请求
 	b.GET("/", func(ctx *quark.Context) error {
