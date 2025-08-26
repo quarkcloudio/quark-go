@@ -4,7 +4,7 @@ import (
 	"bytes"
 
 	"github.com/gogf/gf/v2/net/ghttp"
-	"github.com/quarkcloudio/quark-go/v3"
+	"github.com/quarkcloudio/quark-go/v4"
 )
 
 // 适配goframe框架路由

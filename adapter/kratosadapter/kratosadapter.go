@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"github.com/quarkcloudio/quark-go/v3"
+	"github.com/quarkcloudio/quark-go/v4"
 )
 
 // 适配kratos框架路由

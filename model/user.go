@@ -1,9 +1,9 @@
 package model
 
 import (
-	"github.com/quarkcloudio/quark-go/v3/dal/db"
-	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
-	"github.com/quarkcloudio/quark-go/v3/utils/hash"
+	"github.com/quarkcloudio/quark-go/v4/dal/db"
+	"github.com/quarkcloudio/quark-go/v4/utils/datetime"
+	"github.com/quarkcloudio/quark-go/v4/utils/hash"
 	"gorm.io/gorm"
 )
 

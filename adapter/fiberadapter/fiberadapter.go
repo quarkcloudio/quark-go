@@ -4,7 +4,7 @@ import (
 	"bytes"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/quarkcloudio/quark-go/v3"
+	"github.com/quarkcloudio/quark-go/v4"
 )
 
 // 适配gofiber框架路由

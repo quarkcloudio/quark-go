@@ -5,10 +5,10 @@ import (
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/adapter/kratosadapter"
-	"github.com/quarkcloudio/quark-go/v3/app/admin"
-	adminmodule "github.com/quarkcloudio/quark-go/v3/template/admin"
+	"github.com/quarkcloudio/quark-go/v4"
+	"github.com/quarkcloudio/quark-go/v4/adapter/kratosadapter"
+	"github.com/quarkcloudio/quark-go/v4/app"
+	"github.com/quarkcloudio/quark-go/v4/template"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -24,7 +24,7 @@ func main() {
 	// 配置资源
 	config := &quark.Config{
 		AppKey:    "123456",
-		Providers: admin.Providers,
+		Providers: app.Providers,
 		DBConfig: &quark.DBConfig{
 			Dialector: mysql.Open(dsn),
 			Opts:      &gorm.Config{},
@@ -35,10 +35,10 @@ func main() {
 	b := quark.New(config)
 
 	// 初始化安装
-	adminmodule.Install()
+	template.Install()
 
 	// 中间件
-	b.Use(adminmodule.Middleware)
+	b.Use(template.Middleware)
 
 	// 适配kratos
 	kratosadapter.Adapter(b, hs)

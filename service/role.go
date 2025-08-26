@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/quarkcloudio/quark-go/v3/dal/db"
-	"github.com/quarkcloudio/quark-go/v3/model"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/checkbox"
+	"github.com/quarkcloudio/quark-go/v4/component/form/fields/checkbox"
+	"github.com/quarkcloudio/quark-go/v4/dal/db"
+	"github.com/quarkcloudio/quark-go/v4/model"
 )
 
 type RoleService struct{}

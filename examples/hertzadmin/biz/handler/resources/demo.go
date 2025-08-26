@@ -1,8 +1,8 @@
 package resources
 
 import (
-	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
+	"github.com/quarkcloudio/quark-go/v4"
+	"github.com/quarkcloudio/quark-go/v4/template/resource"
 )
 
 type Demo struct {

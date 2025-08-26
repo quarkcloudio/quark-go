@@ -10,9 +10,9 @@ import (
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
-	"github.com/quarkcloudio/quark-go/v3/dal"
-	"github.com/quarkcloudio/quark-go/v3/utils/file"
-	"github.com/quarkcloudio/quark-go/v3/utils/gopkg"
+	"github.com/quarkcloudio/quark-go/v4/dal"
+	"github.com/quarkcloudio/quark-go/v4/utils/file"
+	"github.com/quarkcloudio/quark-go/v4/utils/gopkg"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
@@ -26,7 +26,7 @@ const (
 	Version = "3.9.16"
 
 	// 包名
-	PkgName = "github.com/quarkcloudio/quark-go/v3"
+	PkgName = "github.com/quarkcloudio/quark-go/v4"
 )
 
 type Engine struct {

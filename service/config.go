@@ -3,8 +3,8 @@ package service
 import (
 	"sync"
 
-	"github.com/quarkcloudio/quark-go/v3/dal/db"
-	"github.com/quarkcloudio/quark-go/v3/model"
+	"github.com/quarkcloudio/quark-go/v4/dal/db"
+	"github.com/quarkcloudio/quark-go/v4/model"
 )
 
 type ConfigService struct{}

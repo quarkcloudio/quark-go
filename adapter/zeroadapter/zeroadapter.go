@@ -3,7 +3,7 @@ package zeroadapter
 import (
 	"net/http"
 
-	"github.com/quarkcloudio/quark-go/v3"
+	"github.com/quarkcloudio/quark-go/v4"
 	"github.com/zeromicro/go-zero/rest"
 )
 

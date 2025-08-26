@@ -23,9 +23,9 @@ go mod init demo/hello
 package main
 
 import (
-	"github.com/quarkcloudio/quark-go/v3"
-	adminservice "github.com/quarkcloudio/quark-go/v3/app/admin"
-	adminmodule "github.com/quarkcloudio/quark-go/v3/template/admin"
+	"github.com/quarkcloudio/quark-go/v4"
+	"github.com/quarkcloudio/quark-go/v4/app"
+	"github.com/quarkcloudio/quark-go/v4/template"
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 )
@@ -37,7 +37,7 @@ func main() {
 		// JWT加密密串
 		AppKey:    "123456",
 		// 加载服务
-		Providers: adminservice.Providers,
+		Providers: app.Providers,
 		// 数据库配置
 		DBConfig: &quark.DBConfig{
 			Dialector: sqlite.Open("./data.db"),
@@ -52,10 +52,10 @@ func main() {
 	b.Static("/", "./web/app")
 
 	// 初始化安装
-	adminmodule.Install()
+	template.Install()
 
 	// 中间件
-	b.Use(adminmodule.Middleware)
+	b.Use(template.Middleware)
 
 	// 响应Get请求
 	b.GET("/", func(ctx *quark.Context) error {

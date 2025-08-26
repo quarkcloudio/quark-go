@@ -1,12 +1,9 @@
 package main
 
 import (
-	"github.com/quarkcloudio/quark-go/v3"
-	adminservice "github.com/quarkcloudio/quark-go/v3/app/admin"
-	miniappservice "github.com/quarkcloudio/quark-go/v3/app/miniapp"
-	toolservice "github.com/quarkcloudio/quark-go/v3/app/tool"
-	adminmodule "github.com/quarkcloudio/quark-go/v3/template/admin"
-	miniappmodule "github.com/quarkcloudio/quark-go/v3/template/miniapp"
+	"github.com/quarkcloudio/quark-go/v4"
+	"github.com/quarkcloudio/quark-go/v4/app"
+	"github.com/quarkcloudio/quark-go/v4/template"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -20,13 +17,7 @@ func main() {
 	dsn := "root:fK7xPGJi1gJfIief@tcp(localhost:3306)/quarkgo?charset=utf8&parseTime=True&loc=Local"
 
 	// 加载后台服务
-	providers = append(providers, adminservice.Providers...)
-
-	// 加载MiniApp服务
-	providers = append(providers, miniappservice.Providers...)
-
-	// 加载工具服务
-	providers = append(providers, toolservice.Providers...)
+	providers = append(providers, app.Providers...)
 
 	// 配置资源
 	config := &quark.Config{
@@ -51,13 +42,10 @@ func main() {
 	b.Static("/", "./web/app")
 
 	// 初始化安装
-	adminmodule.Install()
+	template.Install()
 
 	// 中间件
-	b.Use(adminmodule.Middleware)
-
-	// MiniApp中间件
-	b.Use(miniappmodule.Middleware)
+	b.Use(template.Middleware)
 
 	// 响应Get请求
 	b.GET("/", func(ctx *quark.Context) error {

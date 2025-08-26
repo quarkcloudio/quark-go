@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/dto"
-	"github.com/quarkcloudio/quark-go/v3/model"
-	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
-	"github.com/quarkcloudio/quark-go/v3/utils/hash"
+	"github.com/quarkcloudio/quark-go/v4"
+	"github.com/quarkcloudio/quark-go/v4/dto"
+	"github.com/quarkcloudio/quark-go/v4/model"
+	"github.com/quarkcloudio/quark-go/v4/utils/datetime"
+	"github.com/quarkcloudio/quark-go/v4/utils/hash"
 )
 
 type AuthService struct {

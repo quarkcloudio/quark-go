@@ -1,7 +1,7 @@
 package svc
 
 import (
-	"github.com/quarkcloudio/quark-go/v3/examples/zeroadmin/internal/config"
+	"github.com/quarkcloudio/quark-go/v4/examples/zeroadmin/internal/config"
 )
 
 type ServiceContext struct {

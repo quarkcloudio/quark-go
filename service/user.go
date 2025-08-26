@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/quarkcloudio/quark-go/v3/dal/db"
-	"github.com/quarkcloudio/quark-go/v3/model"
-	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
+	"github.com/quarkcloudio/quark-go/v4/dal/db"
+	"github.com/quarkcloudio/quark-go/v4/model"
+	"github.com/quarkcloudio/quark-go/v4/utils/datetime"
 )
 
 type UserService struct{}

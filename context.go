@@ -17,7 +17,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/mitchellh/mapstructure"
-	"github.com/quarkcloudio/quark-go/v3/utils/tag"
+	"github.com/quarkcloudio/quark-go/v4/utils/tag"
 )
 
 // Context is the most important part of gin. It allows us to pass variables between middleware,

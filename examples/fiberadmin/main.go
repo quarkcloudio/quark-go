@@ -5,19 +5,19 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/adapter/fiberadapter"
-	"github.com/quarkcloudio/quark-go/v3/app/admin"
-	adminmodule "github.com/quarkcloudio/quark-go/v3/template/admin"
+	"github.com/quarkcloudio/quark-go/v4"
+	"github.com/quarkcloudio/quark-go/v4/adapter/fiberadapter"
+	"github.com/quarkcloudio/quark-go/v4/app"
+	"github.com/quarkcloudio/quark-go/v4/template"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func main() {
-	app := fiber.New()
+	f := fiber.New()
 
 	// 将/admin重定向到/admin/
-	app.Use("/admin", func(c *fiber.Ctx) error {
+	f.Use("/admin", func(c *fiber.Ctx) error {
 		originalUrl := c.OriginalURL()
 
 		if !strings.HasSuffix(originalUrl, "/") && !strings.Contains("originalUrl", ".") {
@@ -28,7 +28,7 @@ func main() {
 	})
 
 	// WEB根目录
-	app.Static("/", "./web/app", fiber.Static{
+	f.Static("/", "./web/app", fiber.Static{
 		Compress:      true,
 		ByteRange:     true,
 		Browse:        false,
@@ -43,7 +43,7 @@ func main() {
 	// 配置资源
 	config := &quark.Config{
 		AppKey:    "123456",
-		Providers: admin.Providers,
+		Providers: app.Providers,
 		DBConfig: &quark.DBConfig{
 			Dialector: mysql.Open(dsn),
 			Opts:      &gorm.Config{},
@@ -54,13 +54,13 @@ func main() {
 	b := quark.New(config)
 
 	// 初始化安装
-	adminmodule.Install()
+	template.Install()
 
 	// 中间件
-	b.Use(adminmodule.Middleware)
+	b.Use(template.Middleware)
 
 	// 适配fiber
-	fiberadapter.Adapter(b, app)
+	fiberadapter.Adapter(b, f)
 
-	app.Listen(":3000")
+	f.Listen(":3000")
 }

@@ -8,9 +8,9 @@ import (
 	casbinmodel "github.com/casbin/casbin/v2/model"
 	gormadapter "github.com/casbin/gorm-adapter/v3"
 	rediswatcher "github.com/casbin/redis-watcher/v2"
-	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/dal/db"
-	"github.com/quarkcloudio/quark-go/v3/model"
+	"github.com/quarkcloudio/quark-go/v4"
+	"github.com/quarkcloudio/quark-go/v4/dal/db"
+	"github.com/quarkcloudio/quark-go/v4/model"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -36,16 +36,16 @@ func (p *CasbinService) Enforcer() (enforcer *casbin.Enforcer, err error) {
 	m, err := casbinmodel.NewModelFromString(`
 		[request_definition]
 		r = sub, obj, act
-		
+
 		[policy_definition]
 		p = sub, obj, act
-		
+
 		[role_definition]
 		g = _, _
-		
+
 		[policy_effect]
 		e = some(where (p.eft == allow))
-		
+
 		[matchers]
 		m = g(r.sub, p.sub) && r.obj == p.obj && r.act == p.act
 	`)

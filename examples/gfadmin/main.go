@@ -7,10 +7,10 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 
 	"github.com/glebarez/sqlite"
-	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/adapter/gfadapter"
-	"github.com/quarkcloudio/quark-go/v3/app/admin"
-	adminmodule "github.com/quarkcloudio/quark-go/v3/template/admin"
+	"github.com/quarkcloudio/quark-go/v4"
+	"github.com/quarkcloudio/quark-go/v4/adapter/gfadapter"
+	"github.com/quarkcloudio/quark-go/v4/app"
+	"github.com/quarkcloudio/quark-go/v4/template"
 	"gorm.io/gorm"
 )
 
@@ -25,7 +25,7 @@ func main() {
 		AppKey: "123456",
 
 		// 加载服务
-		Providers: admin.Providers,
+		Providers: app.Providers,
 
 		// 数据库配置
 		DBConfig: &quark.DBConfig{
@@ -38,10 +38,10 @@ func main() {
 	b := quark.New(config)
 
 	// 初始化安装
-	adminmodule.Install()
+	template.Install()
 
 	// 中间件
-	b.Use(adminmodule.Middleware)
+	b.Use(template.Middleware)
 
 	// WEB根目录
 	s.SetServerRoot("./web/app")

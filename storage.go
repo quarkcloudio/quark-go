@@ -20,8 +20,8 @@ import (
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-	"github.com/quarkcloudio/quark-go/v3/utils/file"
-	"github.com/quarkcloudio/quark-go/v3/utils/rand"
+	"github.com/quarkcloudio/quark-go/v4/utils/file"
+	"github.com/quarkcloudio/quark-go/v4/utils/rand"
 )
 
 var (
