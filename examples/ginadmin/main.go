@@ -6,7 +6,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v4"
 	"github.com/quarkcloudio/quark-go/v4/adapter/ginadapter"
 	"github.com/quarkcloudio/quark-go/v4/app"
-	"github.com/quarkcloudio/quark-go/v4/template"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -34,10 +33,10 @@ func main() {
 	b := quark.New(config)
 
 	// 初始化安装
-	template.Install()
+	app.Install()
 
 	// 中间件
-	b.Use(template.Middleware)
+	b.Use(app.Middleware)
 
 	// 适配gin
 	ginadapter.Adapter(b, r)

@@ -1,18 +1,108 @@
-package template
+package app
 
 import (
 	"os"
 	"strconv"
 	"strings"
 
+	"github.com/gorilla/sessions"
 	"github.com/quarkcloudio/quark-go/v4"
+	"github.com/quarkcloudio/quark-go/v4/app/dashboards"
+	"github.com/quarkcloudio/quark-go/v4/app/layouts"
 	"github.com/quarkcloudio/quark-go/v4/app/logins"
+	"github.com/quarkcloudio/quark-go/v4/app/pages"
+	"github.com/quarkcloudio/quark-go/v4/app/resources"
+	"github.com/quarkcloudio/quark-go/v4/app/uploads"
 	"github.com/quarkcloudio/quark-go/v4/dal/db"
 	"github.com/quarkcloudio/quark-go/v4/model"
 	"github.com/quarkcloudio/quark-go/v4/service"
 	"github.com/quarkcloudio/quark-go/v4/utils/file"
 	"gorm.io/gorm"
 )
+
+// 注册服务
+var Providers = []interface{}{
+	&logins.Index{},
+	&layouts.Index{},
+	&dashboards.Index{},
+	&resources.User{},
+	&resources.Role{},
+	&resources.Permission{},
+	&resources.Department{},
+	&resources.Position{},
+	&resources.Menu{},
+	&resources.ActionLog{},
+	&resources.Config{},
+	&resources.File{},
+	&resources.Image{},
+	&resources.WebConfig{},
+	&resources.Account{},
+	&pages.Index{},
+	&uploads.File{},
+	&uploads.Image{},
+}
+
+type DBConfig struct {
+	Dialector gorm.Dialector
+	Opts      gorm.Option
+}
+
+type RedisConfig struct {
+	Host     string // 地址
+	Password string // 密码
+	Port     string // 端口
+	Database int    // 数据库
+}
+
+type Config struct {
+	AppKey      string                // 应用加密Key，用于JWT认证
+	DBConfig    *DBConfig             // 数据库配置
+	RedisConfig *RedisConfig          // Redis配置
+	CookieStore *sessions.CookieStore // Cookie存储，用于保存Session
+	StaticPath  string                // 静态文件目录
+	Providers   []interface{}         // 服务列表
+}
+
+func New(config *Config) *quark.Engine {
+	providers := append(config.Providers, Providers...)
+
+	quarkConfig := &quark.Config{
+		AppKey:      config.AppKey,
+		CookieStore: config.CookieStore,
+		StaticPath:  config.StaticPath,
+		Providers:   providers,
+	}
+
+	if config.DBConfig != nil {
+		quarkConfig.DBConfig = &quark.DBConfig{
+			Dialector: config.DBConfig.Dialector,
+			Opts:      config.DBConfig.Opts,
+		}
+	}
+
+	if config.RedisConfig != nil {
+		quarkConfig.RedisConfig = &quark.RedisConfig{
+			Host:     config.RedisConfig.Host,
+			Password: config.RedisConfig.Password,
+			Port:     config.RedisConfig.Port,
+			Database: config.RedisConfig.Database,
+		}
+	}
+
+	// 实例化对象
+	b := quark.New(quarkConfig)
+
+	// WEB根目录
+	b.Static("/", "./web/app")
+
+	// 初始化安装
+	Install()
+
+	// 中间件
+	b.Use(Middleware)
+
+	return b
+}
 
 // 执行安装操作
 func Install() {

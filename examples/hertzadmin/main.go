@@ -3,12 +3,11 @@
 package main
 
 import (
-	"github.com/cloudwego/hertz/pkg/app"
+	hertz "github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/quarkcloudio/quark-go/v4"
 	"github.com/quarkcloudio/quark-go/v4/adapter/hertzadapter"
-	provider "github.com/quarkcloudio/quark-go/v4/app"
-	"github.com/quarkcloudio/quark-go/v4/template"
+	"github.com/quarkcloudio/quark-go/v4/app"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -23,7 +22,7 @@ func main() {
 	h.StaticFile("/admin/", "./web/app/admin/index.html")
 
 	// WEB根目录
-	fs := &app.FS{Root: "./web/app", IndexNames: []string{"index.html"}}
+	fs := &hertz.FS{Root: "./web/app", IndexNames: []string{"index.html"}}
 	h.StaticFS("/", fs)
 
 	// 数据库配置信息
@@ -32,7 +31,7 @@ func main() {
 	// 配置资源
 	config := &quark.Config{
 		AppKey:    "123456",
-		Providers: provider.Providers,
+		Providers: app.Providers,
 		DBConfig: &quark.DBConfig{
 			Dialector: mysql.Open(dsn),
 			Opts:      &gorm.Config{},
@@ -43,10 +42,10 @@ func main() {
 	b := quark.New(config)
 
 	// 初始化安装
-	template.Install()
+	app.Install()
 
 	// 中间件
-	b.Use(template.Middleware)
+	b.Use(app.Middleware)
 
 	// 适配hertz
 	hertzadapter.Adapter(b, h)

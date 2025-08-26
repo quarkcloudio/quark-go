@@ -12,7 +12,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v4/examples/zeroadmin/internal/config"
 	"github.com/quarkcloudio/quark-go/v4/examples/zeroadmin/internal/handler"
 	"github.com/quarkcloudio/quark-go/v4/examples/zeroadmin/internal/svc"
-	"github.com/quarkcloudio/quark-go/v4/template"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
@@ -54,10 +53,10 @@ func main() {
 	b := quark.New(config)
 
 	// 初始化安装
-	template.Install()
+	app.Install()
 
 	// 中间件
-	b.Use(template.Middleware)
+	b.Use(app.Middleware)
 
 	// 适配gozero
 	zeroadapter.Adapter(b, server)

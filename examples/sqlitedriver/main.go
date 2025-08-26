@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/quarkcloudio/quark-go/v4"
 	"github.com/quarkcloudio/quark-go/v4/app"
-	"github.com/quarkcloudio/quark-go/v4/template"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -36,10 +35,10 @@ func main() {
 	b.Static("/", "./web/app")
 
 	// 初始化安装
-	template.Install()
+	app.Install()
 
 	// 中间件
-	b.Use(template.Middleware)
+	b.Use(app.Middleware)
 
 	// 响应Get请求
 	b.GET("/", func(ctx *quark.Context) error {
