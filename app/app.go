@@ -7,9 +7,9 @@ import (
 
 	"github.com/gorilla/sessions"
 	"github.com/quarkcloudio/quark-go/v4"
+	"github.com/quarkcloudio/quark-go/v4/app/auths"
 	"github.com/quarkcloudio/quark-go/v4/app/dashboards"
 	"github.com/quarkcloudio/quark-go/v4/app/layouts"
-	"github.com/quarkcloudio/quark-go/v4/app/logins"
 	"github.com/quarkcloudio/quark-go/v4/app/pages"
 	"github.com/quarkcloudio/quark-go/v4/app/resources"
 	"github.com/quarkcloudio/quark-go/v4/app/uploads"
@@ -22,7 +22,7 @@ import (
 
 // 注册服务
 var Providers = []interface{}{
-	&logins.Index{},
+	&auths.Index{},
 	&layouts.Index{},
 	&dashboards.Index{},
 	&resources.User{},
@@ -151,7 +151,7 @@ func Install() {
 func Middleware(ctx *quark.Context) error {
 
 	// 获取登录实例
-	loginInstance := &logins.Index{}
+	loginInstance := &auths.Index{}
 
 	// 启动模版
 	loginInstance.Bootstrap()

@@ -1,10 +1,10 @@
-package login
+package auth
 
 import (
 	"github.com/quarkcloudio/quark-go/v4"
 )
 
-type Loginer interface {
+type Auther interface {
 
 	// 模版接口
 	quark.Templater

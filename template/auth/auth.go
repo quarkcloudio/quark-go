@@ -1,7 +1,8 @@
-package login
+package auth
 
 import (
 	"bytes"
+	"context"
 	"reflect"
 	"strings"
 	"time"
@@ -13,41 +14,52 @@ import (
 	"github.com/quarkcloudio/quark-go/v4/component/tabs"
 	"github.com/quarkcloudio/quark-go/v4/dal/db"
 	redisclient "github.com/quarkcloudio/quark-go/v4/dal/redis"
+	"github.com/redis/go-redis/v9"
 )
 
 // 后台登录模板
 type Template struct {
 	quark.Template
-	IndexPath     string      // 登录页面路由
-	HandlePath    string      // 登录执行路由
-	CaptchaIdPath string      // 登录获取验证码ID路由
-	CaptchaPath   string      // 登录验证码路由
-	LogoutPath    string      // 退出执行路由
-	Api           string      // 登录接口
-	Redirect      string      // 登录后跳转地址
-	Logo          interface{} // 登录页面Logo
-	Title         string      // 标题
-	SubTitle      string      // 子标题
-	Body          interface{} `json:"body,omitempty"` // 表单内容
+	IndexPath   string      // 登录页面路由
+	LoginPath   string      // 登录执行路由
+	CaptchaPath string      // 登录验证码路由
+	LogoutPath  string      // 退出执行路由
+	Api         string      // 登录接口
+	Redirect    string      // 登录后跳转地址
+	Logo        interface{} // 登录页面Logo
+	Title       string      // 标题
+	Body        interface{} `json:"body,omitempty"` // 表单内容
+}
+
+type CaptchaStore struct {
+	RedisClient *redis.Client
+	Expiration  time.Duration
+}
+
+func (store *CaptchaStore) Set(id string, digits []byte) {
+	store.RedisClient.Set(context.Background(), id, string(digits), store.Expiration)
+}
+
+func (store *CaptchaStore) Get(id string, clear bool) (digits []byte) {
+	bytes, _ := store.RedisClient.Get(context.Background(), id).Bytes()
+	return bytes
 }
 
 // 启动模版
 func (p *Template) Bootstrap() interface{} {
-	p.IndexPath = "/api/admin/login/:resource/index"         // 登录页面路由
-	p.HandlePath = "/api/admin/login/:resource/handle"       // 登录执行路由
-	p.CaptchaIdPath = "/api/admin/login/:resource/captchaId" // 登录获取验证码ID路由
-	p.CaptchaPath = "/api/admin/login/:resource/captcha/:id" // 登录验证码路由
-	p.LogoutPath = "/api/admin/logout/:resource/handle"      // 退出执行路由
+	p.IndexPath = "/api/admin/auth/:resource/index"     // 登录页面路由
+	p.LoginPath = "/api/admin/auth/:resource/login"     // 登录执行路由
+	p.CaptchaPath = "/api/admin/auth/:resource/captcha" // 登录获取验证码ID路由
+	p.LogoutPath = "/api/admin/auth/:resource/logout"   // 退出执行路由
 	return p
 }
 
 // 加载初始化路由
 func (p *Template) LoadInitRoute() interface{} {
-	p.GET(p.IndexPath, p.Render)        // 登录页面路由
-	p.POST(p.HandlePath, p.Handle)      // 登录执行路由
-	p.GET(p.CaptchaIdPath, p.CaptchaId) // 登录获取验证码ID路由
-	p.GET(p.CaptchaPath, p.Captcha)     // 登录验证码路由
-	p.GET(p.LogoutPath, p.Logout)       // 退出执行路由
+	p.GET(p.IndexPath, p.Render)    // 登录页面路由
+	p.POST(p.LoginPath, p.Login)    // 登录执行路由
+	p.GET(p.CaptchaPath, p.Captcha) // 登录验证码路由
+	p.GET(p.LogoutPath, p.Logout)   // 退出执行路由
 
 	return p
 }
@@ -59,16 +71,13 @@ func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
 	p.DB = db.Client
 
 	// 登录接口
-	p.Api = ctx.RouterPathToUrl("/api/admin/login/:resource/handle")
+	p.Api = ctx.RouterPathToUrl("/api/admin/auth/:resource/login")
 
 	// 标题
 	p.Title = "QuarkGo"
 
 	// 跳转地址
 	p.Redirect = "/layout/index?api=/api/admin/dashboard/index/index"
-
-	// 子标题
-	p.SubTitle = "信息丰富的世界里，唯一稀缺的就是人类的注意力"
 
 	// 如果启动了redis缓存，验证码使用redis缓存
 	if redisclient.Client != nil {
@@ -106,11 +115,6 @@ func (p *Template) GetTitle() string {
 	return p.Title
 }
 
-// 获取登录页面子标题
-func (p *Template) GetSubTitle() string {
-	return p.SubTitle
-}
-
 // 验证码ID
 func (p *Template) CaptchaId(ctx *quark.Context) error {
 	return ctx.CJSONOk("获取成功", map[string]string{
@@ -134,7 +138,7 @@ func (p *Template) Fields(ctx *quark.Context) []interface{} {
 }
 
 // 登录方法
-func (p *Template) Handle(ctx *quark.Context) error {
+func (p *Template) Login(ctx *quark.Context) error {
 	return ctx.CJSONError("请实现登录方法")
 }
 
@@ -147,7 +151,7 @@ func (p *Template) Logout(ctx *quark.Context) error {
 func (p *Template) FieldsWithinComponents(ctx *quark.Context) interface{} {
 
 	// 资源实例
-	template := ctx.Template.(Loginer)
+	template := ctx.Template.(Auther)
 
 	// 获取字段
 	fields := template.Fields(ctx)
@@ -223,7 +227,7 @@ func (p *Template) FormFieldsParser(ctx *quark.Context, fields interface{}) inte
 func (p *Template) Render(ctx *quark.Context) error {
 	var component interface{}
 
-	template := ctx.Template.(Loginer)
+	template := ctx.Template.(Auther)
 
 	// 登录接口
 	loginApi := template.GetApi()

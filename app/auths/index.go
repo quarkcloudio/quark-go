@@ -1,4 +1,4 @@
-package logins
+package auths
 
 import (
 	"github.com/dchest/captcha"
@@ -7,12 +7,12 @@ import (
 	"github.com/quarkcloudio/quark-go/v4/component/icon"
 	"github.com/quarkcloudio/quark-go/v4/dto/request"
 	"github.com/quarkcloudio/quark-go/v4/service"
-	"github.com/quarkcloudio/quark-go/v4/template/login"
+	"github.com/quarkcloudio/quark-go/v4/template/auth"
 	"github.com/quarkcloudio/quark-go/v4/template/resource"
 )
 
 type Index struct {
-	login.Template
+	auth.Template
 }
 
 // 初始化
@@ -24,11 +24,8 @@ func (p *Index) Init(ctx *quark.Context) interface{} {
 	// 登录页面标题
 	p.Title = "QuarkGo"
 
-	// 登录页面子标题
-	p.SubTitle = "信息丰富的世界里，唯一稀缺的就是人类的注意力"
-
 	// 登录后跳转地址
-	p.Redirect = "/layout/index?api=/api/admin/dashboard/index/index"
+	p.Redirect = "/engine?api=/api/admin/dashboard/index/index"
 
 	return p
 }
@@ -76,7 +73,7 @@ func (p *Index) Fields(ctx *quark.Context) []interface{} {
 }
 
 // 登录方法
-func (p *Index) Handle(ctx *quark.Context) error {
+func (p *Index) Login(ctx *quark.Context) error {
 	loginRequest := &request.LoginReq{}
 	if err := ctx.Bind(loginRequest); err != nil {
 		return ctx.CJSONError(err.Error())
