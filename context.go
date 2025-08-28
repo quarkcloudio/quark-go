@@ -730,35 +730,35 @@ func (p *Context) IsImport() bool {
 // 输出成功状态的JSON数据，JSONOk("成功") | JSONOk("成功", map[string]interface{}{"title":"标题"})
 func (p *Context) JSONOk(message ...interface{}) error {
 	var (
-		content = ""
-		data    interface{}
+		msg  = ""
+		data interface{}
 	)
 	if len(message) == 1 {
-		content = message[0].(string)
+		msg = message[0].(string)
 	}
 	if len(message) == 2 {
-		content = message[0].(string)
+		msg = message[0].(string)
 		data = message[1]
 	}
 
-	return p.JSON(200, Success(content, data))
+	return p.JSON(200, Success(msg, data))
 }
 
 // 输出失败状态的JSON数据，JSONError("错误") | JSONError("错误", map[string]interface{}{"title":"标题"})
 func (p *Context) JSONError(message ...interface{}) error {
 	var (
-		content = ""
-		data    interface{}
+		msg  = ""
+		data interface{}
 	)
 	if len(message) == 1 {
-		content = message[0].(string)
+		msg = message[0].(string)
 	}
 	if len(message) == 2 {
-		content = message[0].(string)
+		msg = message[0].(string)
 		data = message[1]
 	}
 
-	return p.JSON(200, Error(content, data))
+	return p.JSON(200, Error(msg, data))
 }
 
 // 根据Code输出失败状态的JSON数据，JSONErrorByCode(10001) | JSONErrorByCode(10001, map[string]interface{}{"title":"标题"})
@@ -778,18 +778,41 @@ func (p *Context) JSONErrorByCode(message ...interface{}) error {
 	return p.JSON(200, ErrorByCode(code, data))
 }
 
+// 输出URL跳转，JSONRedirectTo("/home/index") | JSONRedirectTo("成功", "/home/index") | JSONRedirectTo("错误", "/home/index", 10001)
+func (p *Context) JSONRedirectTo(message ...interface{}) error {
+	var (
+		msg  = ""
+		url  = ""
+		code = 200
+	)
+	if len(message) == 1 {
+		msg = message[0].(string)
+	}
+	if len(message) == 2 {
+		msg = message[0].(string)
+		url = message[1].(string)
+	}
+	if len(message) == 3 {
+		msg = message[0].(string)
+		url = message[1].(string)
+		code = message[2].(int)
+	}
+
+	return p.JSON(200, RedirectTo(msg, url, code))
+}
+
 // 输出模版引擎成功状态的JSON数据，CJSONOk("成功") | CJSONOk("成功", map[string]interface{}{"title":"标题"})
-func (p *Context) CJSONOk(msg ...interface{}) error {
+func (p *Context) CJSONOk(message ...interface{}) error {
 	var (
 		content = ""
 		data    interface{}
 	)
-	if len(msg) == 1 {
-		content = msg[0].(string)
+	if len(message) == 1 {
+		content = message[0].(string)
 	}
-	if len(msg) == 2 {
-		content = msg[0].(string)
-		data = msg[1]
+	if len(message) == 2 {
+		content = message[0].(string)
+		data = message[1]
 	}
 
 	return p.JSON(200, ComponentSuccess(content, data))

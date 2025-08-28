@@ -9,13 +9,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v4/component/form/fields/when"
 )
 
-type ActivityConfig struct {
-	Title    string                 `json:"title,omitempty"`
-	SubTitle string                 `json:"subTitle,omitempty"`
-	Action   interface{}            `json:"action,omitempty"`
-	Style    map[string]interface{} `json:"style,omitempty"`
-}
-
 type Component struct {
 	component.Element
 	Component          string                 `json:"component"`
@@ -23,9 +16,7 @@ type Component struct {
 	Redirect           string                 `json:"redirect,omitempty"`
 	Logo               interface{}            `json:"logo,omitempty"`
 	Title              string                 `json:"title,omitempty"`
-	SubTitle           string                 `json:"subTitle,omitempty"`
 	BackgroundImageUrl string                 `json:"backgroundImageUrl,omitempty"`
-	ActivityConfig     *ActivityConfig        `json:"activityConfig,omitempty"`
 	Values             map[string]interface{} `json:"values,omitempty"`
 	InitialValues      map[string]interface{} `json:"initialValues,omitempty"`
 	Body               interface{}            `json:"body,omitempty"`
@@ -76,21 +67,9 @@ func (p *Component) SetTitle(title string) *Component {
 	return p
 }
 
-// 子标题
-func (p *Component) SetSubTitle(subTitle string) *Component {
-	p.SubTitle = subTitle
-	return p
-}
-
 // 整个区域的背景图片配置，手机端不会展示
 func (p *Component) SeBackgroundImageUrl(backgroundImageUrl string) *Component {
 	p.BackgroundImageUrl = backgroundImageUrl
-	return p
-}
-
-// 活动的配置，包含 title，subTitle，action，分别代表标题，次标题和行动按钮，也可配置 style 来控制区域的样式
-func (p *Component) SetActivityConfig(activityConfig *ActivityConfig) *Component {
-	p.ActivityConfig = activityConfig
 	return p
 }
 

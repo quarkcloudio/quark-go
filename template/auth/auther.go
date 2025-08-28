@@ -21,9 +21,6 @@ type Auther interface {
 	// 获取登录页面标题
 	GetTitle() string
 
-	// 获取登录页面子标题
-	GetSubTitle() string
-
 	// 验证码ID
 	CaptchaId(ctx *quark.Context) error
 
@@ -34,7 +31,7 @@ type Auther interface {
 	Fields(ctx *quark.Context) []interface{}
 
 	// 登录方法
-	Handle(ctx *quark.Context) error
+	Login(ctx *quark.Context) error
 
 	// 退出方法
 	Logout(ctx *quark.Context) error

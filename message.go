@@ -4,6 +4,7 @@ type Message struct {
 	Code int         `json:"code"`
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data,omitempty"`
+	Url  string      `json:"url,omitempty"`
 }
 
 type ComponentMessage struct {
@@ -103,6 +104,33 @@ func ErrorByCode(params ...interface{}) *Message {
 		Code: code,
 		Msg:  msg,
 		Data: data,
+	}
+}
+
+// 输出模版引擎URL跳转，RedirectTo("/home/index") | RedirectTo("成功", "/home/index")  | RedirectTo("失败", "/home/index", 10001)
+func RedirectTo(params ...interface{}) *Message {
+	var (
+		msg  = ""
+		url  = ""
+		code = 200
+	)
+	if len(params) == 1 {
+		url = params[0].(string)
+	}
+	if len(params) == 2 {
+		msg = params[0].(string)
+		url = params[1].(string)
+	}
+	if len(params) >= 3 {
+		msg = params[0].(string)
+		url = params[1].(string)
+		code = params[2].(int)
+	}
+
+	return &Message{
+		Code: code,
+		Msg:  msg,
+		Url:  url,
 	}
 }
 

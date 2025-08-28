@@ -9,9 +9,7 @@ import (
 
 	"github.com/dchest/captcha"
 	"github.com/quarkcloudio/quark-go/v4"
-	"github.com/quarkcloudio/quark-go/v4/component/divider"
 	"github.com/quarkcloudio/quark-go/v4/component/login"
-	"github.com/quarkcloudio/quark-go/v4/component/tabs"
 	"github.com/quarkcloudio/quark-go/v4/dal/db"
 	redisclient "github.com/quarkcloudio/quark-go/v4/dal/redis"
 	"github.com/redis/go-redis/v9"
@@ -47,7 +45,7 @@ func (store *CaptchaStore) Get(id string, clear bool) (digits []byte) {
 
 // 启动模版
 func (p *Template) Bootstrap() interface{} {
-	p.IndexPath = "/api/admin/auth/:resource/index"     // 登录页面路由
+	p.IndexPath = "/api/admin/auth/:resource/index"     // 登录组件路由
 	p.LoginPath = "/api/admin/auth/:resource/login"     // 登录执行路由
 	p.CaptchaPath = "/api/admin/auth/:resource/captcha" // 登录获取验证码ID路由
 	p.LogoutPath = "/api/admin/auth/:resource/logout"   // 退出执行路由
@@ -77,7 +75,7 @@ func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
 	p.Title = "QuarkGo"
 
 	// 跳转地址
-	p.Redirect = "/layout/index?api=/api/admin/dashboard/index/index"
+	p.Redirect = "/engine?api=/api/admin/dashboard/index/index"
 
 	// 如果启动了redis缓存，验证码使用redis缓存
 	if redisclient.Client != nil {
@@ -241,61 +239,17 @@ func (p *Template) Render(ctx *quark.Context) error {
 	// 标题
 	title := template.GetTitle()
 
-	// 子标题
-	subTitle := template.GetSubTitle()
-
 	// 包裹在组件内的字段
 	fields := p.FieldsWithinComponents(ctx)
 
-	// 解析tabPane组件
-	if _, ok := fields.([]interface{}); ok {
-		componentName := reflect.
-			ValueOf(fields.([]interface{})[0]).
-			Elem().
-			FieldByName("Component").
-			String()
+	// 组件
+	component = (&login.Component{}).
+		Init().
+		SetApi(loginApi).
+		SetRedirect(redirect).
+		SetLogo(logo).
+		SetTitle(title).
+		SetBody(fields)
 
-		if componentName == "tabPane" {
-			tabComponent := (&tabs.Component{}).
-				Init().
-				SetTabPanes(fields).
-				SetCentered(true)
-
-			// 组件
-			component = (&login.Component{}).
-				Init().
-				SetApi(loginApi).
-				SetRedirect(redirect).
-				SetLogo(logo).
-				SetTitle(title).
-				SetSubTitle(subTitle).
-				SetBody(tabComponent)
-		} else {
-			fields := append([]interface{}{divider.New().SetStyle(map[string]interface{}{"marginTop": "-15px"})}, fields.([]interface{})...)
-
-			// 组件
-			component = (&login.Component{}).
-				Init().
-				SetApi(loginApi).
-				SetRedirect(redirect).
-				SetLogo(logo).
-				SetTitle(title).
-				SetSubTitle(subTitle).
-				SetBody(fields)
-		}
-	} else {
-		fields := append([]interface{}{divider.New().SetStyle(map[string]interface{}{"marginTop": "-15px"})}, fields.([]interface{})...)
-
-		// 组件
-		component = (&login.Component{}).
-			Init().
-			SetApi(loginApi).
-			SetRedirect(redirect).
-			SetLogo(logo).
-			SetTitle(title).
-			SetSubTitle(subTitle).
-			SetBody(fields)
-	}
-
-	return ctx.JSON(200, component)
+	return ctx.JSONOk("ok", component)
 }
