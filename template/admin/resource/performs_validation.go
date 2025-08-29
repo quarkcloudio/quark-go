@@ -68,7 +68,7 @@ func (p *Template) Validator(rules []rule.Rule, data map[string]interface{}) err
 			}
 		case "regexp":
 			if fieldValue, ok := fieldValue.(string); ok {
-				re := regexp.MustCompile(rule.Pattern)
+				re := regexp.MustCompile(strings.Trim(rule.Pattern, "/"))
 				if !re.MatchString(fieldValue) {
 					errMsg := rule.Message
 					if errMsg != "" {
