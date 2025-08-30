@@ -3,13 +3,14 @@ package auth
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"reflect"
 	"strings"
 	"time"
 
 	"github.com/dchest/captcha"
 	"github.com/quarkcloudio/quark-go/v4"
-	"github.com/quarkcloudio/quark-go/v4/component/login"
+	"github.com/quarkcloudio/quark-go/v4/component/auth"
 	"github.com/quarkcloudio/quark-go/v4/dal/db"
 	redisclient "github.com/quarkcloudio/quark-go/v4/dal/redis"
 	"github.com/redis/go-redis/v9"
@@ -18,15 +19,19 @@ import (
 // 后台登录模板
 type Template struct {
 	quark.Template
-	IndexPath   string      // 登录页面路由
-	LoginPath   string      // 登录执行路由
-	CaptchaPath string      // 登录验证码路由
-	LogoutPath  string      // 退出执行路由
-	Api         string      // 登录接口
-	Redirect    string      // 登录后跳转地址
-	Logo        interface{} // 登录页面Logo
-	Title       string      // 标题
-	Body        interface{} `json:"body,omitempty"` // 表单内容
+	IndexPath      string      // 登录页面路由
+	CaptchaPath    string      // 登录验证码路由
+	LoginPath      string      // 登录执行路由
+	LogoutPath     string      // 退出执行路由
+	UserInfoPath   string      // 获取用户信息路由
+	UserRoutesPath string      // 获取用户路由
+	LoginApi       string      // 登录接口
+	UserInfoApi    string      // 获取用户信息接口
+	UserRoutesApi  string      // 获取用户路由接口
+	Redirect       string      // 登录后跳转地址
+	Logo           interface{} // 登录页面Logo
+	Title          string      // 标题
+	Body           interface{} `json:"body,omitempty"` // 表单内容
 }
 
 type CaptchaStore struct {
@@ -45,19 +50,23 @@ func (store *CaptchaStore) Get(id string, clear bool) (digits []byte) {
 
 // 启动模版
 func (p *Template) Bootstrap() interface{} {
-	p.IndexPath = "/api/admin/auth/:resource/index"     // 登录组件路由
-	p.LoginPath = "/api/admin/auth/:resource/login"     // 登录执行路由
-	p.CaptchaPath = "/api/admin/auth/:resource/captcha" // 登录获取验证码ID路由
-	p.LogoutPath = "/api/admin/auth/:resource/logout"   // 退出执行路由
+	p.IndexPath = "/api/admin/auth/:resource/index"           // 登录组件路由
+	p.CaptchaPath = "/api/admin/auth/:resource/captcha"       // 登录获取验证码ID路由
+	p.LoginPath = "/api/admin/auth/:resource/login"           // 登录执行路由
+	p.LogoutPath = "/api/admin/auth/:resource/logout"         // 退出执行路由
+	p.UserInfoPath = "/api/admin/auth/:resource/userInfo"     // 获取用户信息路由
+	p.UserRoutesPath = "/api/admin/auth/:resource/userRoutes" // 获取用户路由
 	return p
 }
 
 // 加载初始化路由
 func (p *Template) LoadInitRoute() interface{} {
-	p.GET(p.IndexPath, p.Render)    // 登录页面路由
-	p.POST(p.LoginPath, p.Login)    // 登录执行路由
-	p.GET(p.CaptchaPath, p.Captcha) // 登录验证码路由
-	p.GET(p.LogoutPath, p.Logout)   // 退出执行路由
+	p.GET(p.IndexPath, p.Render)          // 登录页面路由
+	p.GET(p.CaptchaPath, p.Captcha)       // 登录验证码路由
+	p.POST(p.LoginPath, p.Login)          // 登录执行路由
+	p.GET(p.LogoutPath, p.Logout)         // 退出执行路由
+	p.GET(p.UserInfoPath, p.UserInfo)     // 获取用户信息路由
+	p.GET(p.UserRoutesPath, p.UserRoutes) // 获取用户路由
 
 	return p
 }
@@ -69,7 +78,13 @@ func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
 	p.DB = db.Client
 
 	// 登录接口
-	p.Api = ctx.RouterPathToUrl("/api/admin/auth/:resource/login")
+	p.LoginApi = ctx.RouterPathToUrl(p.LoginPath)
+
+	// 获取用户信息接口
+	p.UserInfoApi = ctx.RouterPathToUrl(p.UserInfoPath)
+
+	// 获取用户路由接口
+	p.UserRoutesApi = ctx.RouterPathToUrl(p.UserRoutesPath)
 
 	// 标题
 	p.Title = "QuarkGo"
@@ -94,8 +109,18 @@ func (p *Template) Init(ctx *quark.Context) interface{} {
 }
 
 // 获取Api
-func (p *Template) GetApi() string {
-	return p.Api
+func (p *Template) GetLoginApi() string {
+	return p.LoginApi
+}
+
+// 获取获取用户信息接口
+func (p *Template) GetUserInfoApi() string {
+	return p.UserInfoApi
+}
+
+// 获取获取用户路由接口
+func (p *Template) GetUserRoutesApi() string {
+	return p.UserRoutesApi
 }
 
 // 获取登录成功后跳转地址
@@ -113,21 +138,17 @@ func (p *Template) GetTitle() string {
 	return p.Title
 }
 
-// 验证码ID
-func (p *Template) CaptchaId(ctx *quark.Context) error {
-	return ctx.CJSONOk("获取成功", map[string]string{
-		"captchaId": captcha.NewLen(4),
-	})
-}
-
 // 生成验证码
 func (p *Template) Captcha(ctx *quark.Context) error {
-	id := ctx.Param("id")
+	uuid := captcha.NewLen(4)
 	writer := bytes.Buffer{}
-	captcha.WriteImage(&writer, id, 110, 38)
-	ctx.Write(writer.Bytes())
+	captcha.WriteImage(&writer, uuid, 110, 38)
 
-	return nil
+	return ctx.JSONOk("请求成功", map[string]interface{}{
+		"captchaEnabled": true,
+		"img":            base64.StdEncoding.EncodeToString(writer.Bytes()),
+		"uuid":           uuid,
+	})
 }
 
 // 字段
@@ -137,12 +158,31 @@ func (p *Template) Fields(ctx *quark.Context) []interface{} {
 
 // 登录方法
 func (p *Template) Login(ctx *quark.Context) error {
-	return ctx.CJSONError("请实现登录方法")
+	return ctx.JSONError("请实现登录方法")
+}
+
+// 获取用户信息
+func (p *Template) UserInfo(ctx *quark.Context) error {
+	return ctx.JSONOk("请求成功", map[string]interface{}{
+		"id":       1,
+		"username": "QuarkGo",
+		"email":    "admin@quarkgo.com",
+		"avatar":   "https://img2.baidu.com/it/u=3422282222,2328894238&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500",
+	})
+}
+
+// 获取用户路由
+func (p *Template) UserRoutes(ctx *quark.Context) error {
+	return ctx.JSONOk("请求成功", map[string]interface{}{
+		"routes": []string{
+			"/api/admin/dashboard/index/index",
+		},
+	})
 }
 
 // 退出方法
 func (p *Template) Logout(ctx *quark.Context) error {
-	return ctx.CJSONRedirectTo("退出成功", "/")
+	return ctx.JSONRedirectTo("退出成功", "/")
 }
 
 // 包裹在组件内的创建页字段
@@ -228,7 +268,13 @@ func (p *Template) Render(ctx *quark.Context) error {
 	template := ctx.Template.(Auther)
 
 	// 登录接口
-	loginApi := template.GetApi()
+	loginApi := template.GetLoginApi()
+
+	// 获取用户信息接口
+	userInfoApi := template.GetUserInfoApi()
+
+	// 获取用户路由接口
+	UserRoutesApi := template.GetUserRoutesApi()
 
 	// 登录后跳转地址
 	redirect := template.GetRedirect()
@@ -243,9 +289,10 @@ func (p *Template) Render(ctx *quark.Context) error {
 	fields := p.FieldsWithinComponents(ctx)
 
 	// 组件
-	component = (&login.Component{}).
-		Init().
-		SetApi(loginApi).
+	component = auth.New().
+		SetLoginApi(loginApi).
+		SetUserInfoApi(userInfoApi).
+		SetUserRoutesApi(UserRoutesApi).
 		SetRedirect(redirect).
 		SetLogo(logo).
 		SetTitle(title).

@@ -34,41 +34,37 @@ func (p *Index) Init(ctx *quark.Context) interface{} {
 func (p *Index) Fields(ctx *quark.Context) []interface{} {
 	field := &resource.Field{}
 
-	// 获取验证码ID链接
-	captchaIdUrl := ctx.RouterPathToUrl("/api/admin/login/index/captchaId")
-
 	// 验证码链接
-	captchaUrl := ctx.RouterPathToUrl("/api/admin/login/index/captcha/:id")
+	captchaUrl := ctx.RouterPathToUrl("/api/admin/auth/index/captcha")
 
 	return []interface{}{
 		field.Text("username").
 			SetRules([]rule.Rule{
 				rule.Required("请输入用户名"),
 			}).
-			SetPlaceholder("用户名").
+			SetPlaceholder("请输入用户名").
 			SetWidth("100%").
 			SetSize("large").
-			SetPrefix(icon.New().SetType("icon-user")),
+			SetPrefix(icon.New().SetType("ant-design:user-outlined")),
 
 		field.Password("password").
 			SetRules([]rule.Rule{
 				rule.Required("请输入密码"),
 			}).
-			SetPlaceholder("密码").
+			SetPlaceholder("请输入密码").
 			SetWidth("100%").
 			SetSize("large").
-			SetPrefix(icon.New().SetType("icon-lock")),
+			SetPrefix(icon.New().SetType("ant-design:lock-outlined")),
 
 		field.ImageCaptcha("captcha").
-			SetCaptchaIdUrl(captchaIdUrl).
 			SetCaptchaUrl(captchaUrl).
 			SetRules([]rule.Rule{
 				rule.Required("请输入验证码"),
 			}).
-			SetPlaceholder("验证码").
+			SetPlaceholder("请输入验证码").
 			SetWidth("100%").
 			SetSize("large").
-			SetPrefix(icon.New().SetType("icon-safetycertificate")),
+			SetPrefix(icon.New().SetType("ant-design:safety-certificate-outlined")),
 	}
 }
 
@@ -76,27 +72,27 @@ func (p *Index) Fields(ctx *quark.Context) []interface{} {
 func (p *Index) Login(ctx *quark.Context) error {
 	loginRequest := &request.LoginReq{}
 	if err := ctx.Bind(loginRequest); err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
-	if loginRequest.Captcha.Id == "" || loginRequest.Captcha.Value == "" {
-		return ctx.CJSONError("验证码不能为空")
+	if loginRequest.Captcha.Uuid == "" || loginRequest.Captcha.Value == "" {
+		return ctx.JSONError("验证码不能为空")
 	}
 
-	verifyResult := captcha.VerifyString(loginRequest.Captcha.Id, loginRequest.Captcha.Value)
+	verifyResult := captcha.VerifyString(loginRequest.Captcha.Uuid, loginRequest.Captcha.Value)
 	if !verifyResult {
-		return ctx.CJSONError("验证码错误")
+		return ctx.JSONError("验证码错误")
 	}
-	captcha.Reload(loginRequest.Captcha.Id)
+	captcha.Reload(loginRequest.Captcha.Uuid)
 
 	if loginRequest.Username == "" || loginRequest.Password == "" {
-		return ctx.CJSONError("用户名或密码不能为空")
+		return ctx.JSONError("用户名或密码不能为空")
 	}
 	token, err := service.NewAuthService(ctx).AdminLogin(loginRequest.Username, loginRequest.Password)
 	if err != nil {
-		return ctx.CJSONError("用户名或密码错误")
+		return ctx.JSONError("用户名或密码错误")
 	}
 
-	return ctx.CJSONOk("登录成功", map[string]string{
+	return ctx.JSONOk("登录成功", map[string]string{
 		"token": token,
 	})
 }

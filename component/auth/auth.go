@@ -1,4 +1,4 @@
-package login
+package auth
 
 import (
 	"encoding/json"
@@ -12,7 +12,9 @@ import (
 type Component struct {
 	component.Element
 	Component          string                 `json:"component"`
-	Api                string                 `json:"api,omitempty"`
+	LoginApi           string                 `json:"loginApi,omitempty"`
+	UserInfoApi        string                 `json:"userInfoApi,omitempty"`
+	UserRoutesApi      string                 `json:"userRoutesApi,omitempty"`
 	Redirect           string                 `json:"redirect,omitempty"`
 	Logo               interface{}            `json:"logo,omitempty"`
 	Title              string                 `json:"title,omitempty"`
@@ -30,7 +32,7 @@ func New() *Component {
 
 // 初始化
 func (p *Component) Init() *Component {
-	p.Component = "login"
+	p.Component = "auth"
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
@@ -44,8 +46,20 @@ func (p *Component) SetStyle(style map[string]interface{}) *Component {
 }
 
 // 登录接口
-func (p *Component) SetApi(api string) *Component {
-	p.Api = api
+func (p *Component) SetLoginApi(api string) *Component {
+	p.LoginApi = api
+	return p
+}
+
+// 获取用户信息接口
+func (p *Component) SetUserInfoApi(api string) *Component {
+	p.UserInfoApi = api
+	return p
+}
+
+// 获取用户路由接口
+func (p *Component) SetUserRoutesApi(api string) *Component {
+	p.UserRoutesApi = api
 	return p
 }
 

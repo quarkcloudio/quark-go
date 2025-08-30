@@ -81,8 +81,7 @@ type Component struct {
 	Placeholder  string                 `json:"placeholder,omitempty"`  // 占位符
 	Style        map[string]interface{} `json:"style,omitempty"`        // 自定义样式
 
-	CaptchaIdUrl string `json:"captchaIdUrl,omitempty"` // 获取验证码ID的URL
-	CaptchaUrl   string `json:"captchaUrl,omitempty"`   // 获取验证码URL
+	CaptchaUrl string `json:"captchaUrl,omitempty"` // 获取验证码URL
 }
 
 // 初始化组件
@@ -857,13 +856,6 @@ func (p *Component) SetSuffix(suffix interface{}) *Component {
 // 声明 input 类型，同原生 input 标签的 type 属性，见：MDN(请直接使用 Input.TextArea 代替 type="textarea")
 func (p *Component) SetType(Type string) *Component {
 	p.Type = Type
-
-	return p
-}
-
-// 设置获取验证码ID的URL
-func (p *Component) SetCaptchaIdUrl(captchaIdUrl string) *Component {
-	p.CaptchaIdUrl = captchaIdUrl
 
 	return p
 }

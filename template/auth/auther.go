@@ -10,7 +10,13 @@ type Auther interface {
 	quark.Templater
 
 	// 获取登录接口
-	GetApi() string
+	GetLoginApi() string
+
+	// 获取获取用户信息接口
+	GetUserInfoApi() string
+
+	// 获取获取用户路由接口
+	GetUserRoutesApi() string
 
 	// 获取登录成功后跳转地址
 	GetRedirect() string
@@ -20,9 +26,6 @@ type Auther interface {
 
 	// 获取登录页面标题
 	GetTitle() string
-
-	// 验证码ID
-	CaptchaId(ctx *quark.Context) error
 
 	// 生成验证码
 	Captcha(ctx *quark.Context) error
@@ -35,6 +38,12 @@ type Auther interface {
 
 	// 退出方法
 	Logout(ctx *quark.Context) error
+
+	// 获取用户信息
+	UserInfo(ctx *quark.Context) error
+
+	// 获取用户路由
+	UserRoutes(ctx *quark.Context) error
 
 	// 包裹在组件内的创建页字段
 	FieldsWithinComponents(ctx *quark.Context) interface{}

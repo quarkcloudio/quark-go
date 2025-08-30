@@ -2,7 +2,7 @@ package request
 
 // 验证码
 type Captcha struct {
-	Id    string `json:"id" form:"id"`
+	Uuid  string `json:"uuid" form:"uuid"`
 	Value string `json:"value" form:"value"`
 }
 
