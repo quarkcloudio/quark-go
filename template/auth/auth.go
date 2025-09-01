@@ -181,6 +181,8 @@ func (p *Template) UserInfo(ctx *quark.Context) error {
 
 // 获取用户路由
 func (p *Template) UserRoutes(ctx *quark.Context) error {
+	getType := ctx.Query("type")
+
 	data := map[string]interface{}{
 		"routes": []map[string]interface{}{
 			{
@@ -498,6 +500,57 @@ func (p *Template) UserRoutes(ctx *quark.Context) error {
 			},
 		},
 		"home": "home",
+	}
+
+	datareact := map[string]interface{}{
+		"home": "/home",
+		"routes": []string{
+			"/about",
+			"/function",
+			"/function/event-bus",
+			"/function/hide-child",
+			"/function/hide-child/one",
+			"/function/hide-child/three",
+			"/function/hide-child/two",
+			"/function/multi-tab",
+			"/function/request",
+			"/function/super-page",
+			"/function/tab",
+			"/function/toggle-auth",
+			"/home",
+			"/manage",
+			"/manage/role",
+			"/manage/role/*",
+			"/manage/user",
+			"/manage/user/:id",
+			"/multi-menu",
+			"/multi-menu/first",
+			"/multi-menu/first/child",
+			"/multi-menu/second",
+			"/multi-menu/second/child",
+			"/multi-menu/second/child/home",
+			"/projects",
+			"/projects/:pid",
+			"/projects/:pid/edit",
+			"/projects/:pid/edit/:id",
+			"/user-center",
+			"/exception",
+			"/exception/403",
+			"/exception/404",
+			"/exception/500",
+			"/document",
+			"/document/antd",
+			"/document/procomponents",
+			"/document/project",
+			"/document/project-link",
+			"/document/unocss",
+			"/document/vite",
+			"/document/react",
+		},
+	}
+
+	if getType == "react" {
+		return ctx.JSONOk("请求成功", datareact)
 	}
 
 	return ctx.JSONOk("请求成功", data)
