@@ -13,6 +13,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v4/component/auth"
 	"github.com/quarkcloudio/quark-go/v4/dal/db"
 	redisclient "github.com/quarkcloudio/quark-go/v4/dal/redis"
+	"github.com/quarkcloudio/quark-go/v4/service"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -163,20 +164,12 @@ func (p *Template) Login(ctx *quark.Context) error {
 
 // 获取用户信息
 func (p *Template) UserInfo(ctx *quark.Context) error {
-	data := map[string]interface{}{
-		"id":       "0",
-		"username": "quark",
-		"roles": []string{
-			"R_SUPER",
-		},
-		"buttons": []string{
-			"B_CODE1",
-			"B_CODE2",
-			"B_CODE3",
-		},
+	userInfo, err := service.NewAuthService(ctx).GetAdmin()
+	if err != nil {
+		return ctx.JSONError("获取用户信息失败")
 	}
 
-	return ctx.JSONOk("请求成功", data)
+	return ctx.JSONOk("请求成功", userInfo)
 }
 
 // 获取用户路由

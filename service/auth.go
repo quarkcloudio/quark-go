@@ -7,6 +7,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/quarkcloudio/quark-go/v4"
 	"github.com/quarkcloudio/quark-go/v4/dto"
+	"github.com/quarkcloudio/quark-go/v4/dto/response"
 	"github.com/quarkcloudio/quark-go/v4/model"
 	"github.com/quarkcloudio/quark-go/v4/utils/datetime"
 	"github.com/quarkcloudio/quark-go/v4/utils/hash"
@@ -92,8 +93,26 @@ func (p *AuthService) AdminLogin(username string, password string) (token string
 }
 
 // 获取登录管理员信息
-func (p *AuthService) GetAdmin() (user model.User, err error) {
-	return p.GetInfo("admin")
+func (p *AuthService) GetAdmin() (user response.UserInfoResp, err error) {
+	userInfo, err := p.GetInfo("admin")
+	if err != nil {
+		return
+	}
+	var roles []string
+	if userInfo.Id == 1 {
+		roles = []string{"R_SUPER"}
+	}
+	user = response.UserInfoResp{
+		Id:       userInfo.Id,
+		Username: userInfo.Username,
+		Nickname: userInfo.Nickname,
+		Email:    userInfo.Email,
+		Phone:    userInfo.Phone,
+		Avatar:   userInfo.Avatar,
+		Roles:    roles,
+		Buttons:  []string{},
+	}
+	return user, err
 }
 
 // 获取登录管理员ID
