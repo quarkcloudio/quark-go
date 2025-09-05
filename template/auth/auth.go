@@ -174,51 +174,19 @@ func (p *Template) UserInfo(ctx *quark.Context) error {
 
 // 获取用户路由
 func (p *Template) UserRoutes(ctx *quark.Context) error {
-	getType := ctx.Query("type")
+	routeType := ctx.Query("type")
 
-	data := map[string]interface{}{
+	vueRoutes := map[string]interface{}{
 		"routes": []map[string]interface{}{
 			{
-				"name":      "exception",
-				"path":      "/exception",
-				"component": "layout.base",
+				"name":      "home",
+				"path":      "/home",
+				"component": "layout.base$view.home",
 				"meta": map[string]interface{}{
-					"title":   "exception",
-					"i18nKey": "route.exception",
-					"icon":    "ant-design:exception-outlined",
-					"order":   7,
-				},
-				"children": []map[string]interface{}{
-					{
-						"name":      "exception_403",
-						"path":      "/exception/403",
-						"component": "view.403",
-						"meta": map[string]interface{}{
-							"title":   "exception_403",
-							"i18nKey": "route.exception_403",
-							"icon":    "ic:baseline-block",
-						},
-					},
-					{
-						"name":      "exception_404",
-						"path":      "/exception/404",
-						"component": "view.404",
-						"meta": map[string]interface{}{
-							"title":   "exception_404",
-							"i18nKey": "route.exception_404",
-							"icon":    "ic:baseline-web-asset-off",
-						},
-					},
-					{
-						"name":      "exception_500",
-						"path":      "/exception/500",
-						"component": "view.500",
-						"meta": map[string]interface{}{
-							"title":   "exception_500",
-							"i18nKey": "route.exception_500",
-							"icon":    "ic:baseline-wifi-off",
-						},
-					},
+					"title":   "home",
+					"i18nKey": "route.home",
+					"icon":    "mdi:monitor-dashboard",
+					"order":   1,
 				},
 			},
 			{
@@ -232,38 +200,43 @@ func (p *Template) UserRoutes(ctx *quark.Context) error {
 					"order":   10,
 				},
 			},
+		},
+		"home": "home",
+	}
+
+	reactRoutes := map[string]interface{}{
+		"routes": []map[string]interface{}{
 			{
-				"name":      "home",
-				"path":      "/home",
-				"component": "layout.base$view.home",
-				"meta": map[string]interface{}{
-					"title":   "home",
-					"i18nKey": "route.home",
+				"matchedFiles": []string{"", "/src/pages/(base)/home/index.tsx", "", ""},
+				"name":         "(base)_home",
+				"path":         "/home",
+				"handle": map[string]interface{}{
+					"i18nKey": "route.(base)_home",
 					"icon":    "mdi:monitor-dashboard",
 					"order":   1,
+					"title":   "home",
+				},
+			},
+			{
+				"matchedFiles": []string{"", "/src/pages/(base)/about/index.tsx", "", ""},
+				"name":         "(base)_about",
+				"path":         "/about",
+				"handle": map[string]interface{}{
+					"title":   "route.(base)_about",
+					"i18nKey": "route.(base)_about",
+					"icon":    "fluent:book-information-24-regular",
+					"order":   10,
 				},
 			},
 		},
 		"home": "home",
 	}
 
-	datareact := map[string]interface{}{
-		"home": "/home",
-		"routes": []string{
-			"/about",
-			"/home",
-			"/exception",
-			"/exception/403",
-			"/exception/404",
-			"/exception/500",
-		},
+	if routeType == "react" {
+		return ctx.JSONOk("请求成功", reactRoutes)
 	}
 
-	if getType == "react" {
-		return ctx.JSONOk("请求成功", datareact)
-	}
-
-	return ctx.JSONOk("请求成功", data)
+	return ctx.JSONOk("请求成功", vueRoutes)
 }
 
 // 退出方法
