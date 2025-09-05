@@ -13,6 +13,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v4/component/auth"
 	"github.com/quarkcloudio/quark-go/v4/dal/db"
 	redisclient "github.com/quarkcloudio/quark-go/v4/dal/redis"
+	"github.com/quarkcloudio/quark-go/v4/dto/response"
 	"github.com/quarkcloudio/quark-go/v4/service"
 	"github.com/redis/go-redis/v9"
 )
@@ -176,67 +177,15 @@ func (p *Template) UserInfo(ctx *quark.Context) error {
 func (p *Template) UserRoutes(ctx *quark.Context) error {
 	routeType := ctx.Query("type")
 
-	vueRoutes := map[string]interface{}{
-		"routes": []map[string]interface{}{
-			{
-				"name":      "home",
-				"path":      "/home",
-				"component": "layout.base$view.home",
-				"meta": map[string]interface{}{
-					"title":   "home",
-					"i18nKey": "route.home",
-					"icon":    "mdi:monitor-dashboard",
-					"order":   1,
-				},
-			},
-			{
-				"name":      "about",
-				"path":      "/about",
-				"component": "layout.base$view.about",
-				"meta": map[string]interface{}{
-					"title":   "about",
-					"i18nKey": "route.about",
-					"icon":    "fluent:book-information-24-regular",
-					"order":   10,
-				},
-			},
-		},
-		"home": "home",
+	authRoutes, err := service.NewAuthService(ctx).GetUserRoutes(routeType.(string))
+	if err != nil {
+		return ctx.JSONError(err.Error())
 	}
 
-	reactRoutes := map[string]interface{}{
-		"routes": []map[string]interface{}{
-			{
-				"matchedFiles": []string{"", "/src/pages/(base)/home/index.tsx", "", ""},
-				"name":         "(base)_home",
-				"path":         "/home",
-				"handle": map[string]interface{}{
-					"i18nKey": "route.(base)_home",
-					"icon":    "mdi:monitor-dashboard",
-					"order":   1,
-					"title":   "home",
-				},
-			},
-			{
-				"matchedFiles": []string{"", "/src/pages/(base)/about/index.tsx", "", ""},
-				"name":         "(base)_about",
-				"path":         "/about",
-				"handle": map[string]interface{}{
-					"title":   "route.(base)_about",
-					"i18nKey": "route.(base)_about",
-					"icon":    "fluent:book-information-24-regular",
-					"order":   10,
-				},
-			},
-		},
-		"home": "home",
-	}
-
-	if routeType == "react" {
-		return ctx.JSONOk("请求成功", reactRoutes)
-	}
-
-	return ctx.JSONOk("请求成功", vueRoutes)
+	return ctx.JSONOk("请求成功", response.UserRoutesResp{
+		Routes: authRoutes,
+		Home:   "home",
+	})
 }
 
 // 退出方法

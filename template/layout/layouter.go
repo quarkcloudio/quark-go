@@ -54,9 +54,6 @@ type Layouter interface {
 	// 右上角菜单
 	GetRightMenus() []interface{}
 
-	// 获取当前登录管理员菜单
-	GetMenus(ctx *quark.Context) (list interface{}, err error)
-
 	// 组件渲染
 	Render(ctx *quark.Context) error
 }

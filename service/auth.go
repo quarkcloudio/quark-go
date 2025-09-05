@@ -138,3 +138,15 @@ func (p *AuthService) GetUser() (user model.User, err error) {
 func (p *AuthService) GetUid() (userId int, err error) {
 	return p.GetId("user")
 }
+
+func (p *AuthService) GetUserRoutes(routeType string) (routes interface{}, err error) {
+	userId, err := p.GetAdminId()
+	if err != nil {
+		return
+	}
+	routes, err = NewMenuService().GetRoutesByUserId(routeType, userId)
+	if err != nil {
+		return
+	}
+	return
+}

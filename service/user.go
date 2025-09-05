@@ -28,11 +28,6 @@ func (p *UserService) GetInfoByUsername(username string) (user model.User, Error
 	return user, err
 }
 
-// 通过ID获取管理员拥有的菜单列表
-func (p *UserService) GetMenuListById(id interface{}) (menuList interface{}, Error error) {
-	return NewMenuService().GetListByUserId(id.(int))
-}
-
 // 更新最后一次登录数据
 func (p *UserService) UpdateLastLogin(uid int, lastLoginIp string, lastLoginTime datetime.Datetime) error {
 	data := model.User{

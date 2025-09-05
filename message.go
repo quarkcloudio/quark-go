@@ -23,9 +23,11 @@ type CodeMap struct {
 }
 
 var (
-	StatusOk         = 200   // 执行成功
-	StatusError      = 10001 // 自定义错误信息
-	StatusParamError = 10002 // 参数错误
+	StatusOk           = 200   // 执行成功
+	StatusError        = 10001 // 自定义错误信息
+	StatusParamError   = 10002 // 参数错误
+	StatusUnauthorized = 10401 // 未授权
+	StatusForbidden    = 10403 // 无权限
 )
 
 var CodeMaps = []*CodeMap{
@@ -40,6 +42,14 @@ var CodeMaps = []*CodeMap{
 	{
 		Code: StatusParamError,
 		Msg:  "Param Error",
+	},
+	{
+		Code: StatusUnauthorized,
+		Msg:  "Unauthorized",
+	},
+	{
+		Code: StatusForbidden,
+		Msg:  "Forbidden",
 	},
 }
 

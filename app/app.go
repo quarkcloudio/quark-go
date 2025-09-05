@@ -184,33 +184,33 @@ func Middleware(ctx *quark.Context) error {
 
 	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
 	if err != nil {
-		return ctx.JSON(401, quark.Error(err.Error()))
+		return ctx.JSON(200, quark.ErrorByCode(quark.StatusUnauthorized))
 	}
 
 	casbinService := service.NewCasbinService()
 	if adminInfo.Id != 1 {
 		result1, err := casbinService.Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.FullPath(), "Any")
 		if err != nil {
-			return ctx.JSON(500, quark.Error(err.Error()))
+			return ctx.JSON(200, quark.ErrorByCode(quark.StatusForbidden))
 		}
 
 		result2, err := casbinService.Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.FullPath(), ctx.Method())
 		if err != nil {
-			return ctx.JSON(500, quark.Error(err.Error()))
+			return ctx.JSON(200, quark.ErrorByCode(quark.StatusForbidden))
 		}
 
 		result3, err := casbinService.Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.Path(), "Any")
 		if err != nil {
-			return ctx.JSON(500, quark.Error(err.Error()))
+			return ctx.JSON(200, quark.ErrorByCode(quark.StatusForbidden))
 		}
 
 		result4, err := casbinService.Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.Path(), ctx.Method())
 		if err != nil {
-			return ctx.JSON(500, quark.Error(err.Error()))
+			return ctx.JSON(200, quark.ErrorByCode(quark.StatusForbidden))
 		}
 
 		if !(result1 || result2 || result3 || result4) {
-			return ctx.JSON(403, quark.Error("403 Forbidden"))
+			return ctx.JSON(200, quark.ErrorByCode(quark.StatusForbidden))
 		}
 	}
 

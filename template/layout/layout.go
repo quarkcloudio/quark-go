@@ -8,7 +8,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v4/component/footer"
 	"github.com/quarkcloudio/quark-go/v4/component/layout"
 	"github.com/quarkcloudio/quark-go/v4/dal/db"
-	"github.com/quarkcloudio/quark-go/v4/service"
 )
 
 // 后台登录模板
@@ -219,17 +218,6 @@ func (p *Template) GetRightMenus() []interface{} {
 	return p.RightMenus
 }
 
-// 获取当前登录用户菜单
-func (p *Template) GetMenus(ctx *quark.Context) (list interface{}, err error) {
-	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
-	if err != nil {
-		return nil, err
-	}
-
-	// 获取管理员菜单
-	return service.NewUserService().GetMenuListById(adminInfo.Id)
-}
-
 // 组件渲染
 func (p *Template) Render(ctx *quark.Context) error {
 	template := ctx.Template.(Layouter)
@@ -270,12 +258,6 @@ func (p *Template) Render(ctx *quark.Context) error {
 	// 侧边菜单宽度
 	siderWidth := template.GetSiderWidth()
 
-	// 获取管理员菜单
-	getMenus, err := template.GetMenus(ctx)
-	if err != nil {
-		return ctx.CJSONError(err.Error())
-	}
-
 	// 网站版权 time.Now().Format("2006") + " QuarkGo"
 	copyright := template.GetCopyright()
 
@@ -295,7 +277,6 @@ func (p *Template) Render(ctx *quark.Context) error {
 		Init().
 		SetTitle(title).
 		SetLogo(logo).
-		SetMenu(getMenus).
 		SetActions(actions).
 		SetLayout(layoutMode).
 		SetSplitMenus(splitMenus).

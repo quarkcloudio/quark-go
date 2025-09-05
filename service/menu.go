@@ -1,10 +1,8 @@
 package service
 
 import (
-	"strings"
-
-	"github.com/go-basic/uuid"
 	"github.com/quarkcloudio/quark-go/v4/dal/db"
+	"github.com/quarkcloudio/quark-go/v4/dto/response"
 	"github.com/quarkcloudio/quark-go/v4/model"
 	"github.com/quarkcloudio/quark-go/v4/utils/lister"
 	"gorm.io/gorm"
@@ -79,8 +77,8 @@ func (p *MenuService) FindParentTreeNode(chrildPid int) (list []model.Menu) {
 	return menus
 }
 
-// 通过用户ID获取菜单
-func (p *MenuService) GetListByUserId(userId int) (menuList interface{}, err error) {
+// 通过用户ID获取用户路由
+func (p *MenuService) GetRoutesByUserId(routeType string, userId int) (menuList interface{}, err error) {
 	menus := []model.Menu{}
 
 	if userId == 1 {
@@ -91,7 +89,7 @@ func (p *MenuService) GetListByUserId(userId int) (menuList interface{}, err err
 			Order("sort asc").
 			Find(&menus)
 
-		return p.MenuParser(menus)
+		return p.BuildRoutes(routeType, menus)
 	}
 
 	var menuIds []int
@@ -131,16 +129,42 @@ func (p *MenuService) GetListByUserId(userId int) (menuList interface{}, err err
 		Order("sort asc").
 		Find(&menus)
 
-	return p.MenuParser(menus)
+	return p.BuildRoutes(routeType, menus)
 }
 
 // 解析菜单
-func (p *MenuService) MenuParser(menus []model.Menu) (menuList interface{}, Error error) {
-	newMenus := []model.Menu{}
+//
+//	vueRoutes:= []map[string]interface{}{
+//		{
+//			"name":      "home",
+//			"path":      "/home",
+//			"component": "layout.base$view.home",
+//			"meta": map[string]interface{}{
+//				"title":   "home",
+//				"i18nKey": "route.home",
+//				"icon":    "mdi:monitor-dashboard",
+//				"order":   1,
+//			},
+//		},
+//	}
+//
+//	reactRoutes := []map[string]interface{}{
+//		{
+//			"matchedFiles": []string{"", "/src/pages/(base)/home/index.tsx", "", ""},
+//			"name":         "(base)_home",
+//			"path":         "/home",
+//			"handle": map[string]interface{}{
+//				"i18nKey": "route.(base)_home",
+//				"icon":    "mdi:monitor-dashboard",
+//				"order":   1,
+//				"title":   "home",
+//			},
+//		},
+//	}
+func (p *MenuService) BuildRoutes(routeType string, menus []model.Menu) (menuList interface{}, Error error) {
+	userRoutes := []response.UserRoute{}
 
 	for _, v := range menus {
-		v.Key = uuid.New()
-		v.Locale = "menu" + strings.Replace(v.Path, "/", ".", -1)
 
 		if v.Show == 1 {
 			v.HideInMenu = false
@@ -149,19 +173,42 @@ func (p *MenuService) MenuParser(menus []model.Menu) (menuList interface{}, Erro
 		}
 
 		if v.Type == 2 && v.IsEngine == 1 {
-			v.Path = "/layout/index?api=" + v.Path
+			v.Path = "/engine/index?api=" + v.Path
 		}
 
-		if !p.HasMenu(newMenus, v.Id) && v.Type != 3 {
-			newMenus = append(newMenus, v)
+		if !p.HasMenu(userRoutes, v.Id) && v.Type != 3 {
+			userRoutes = append(userRoutes, response.UserRoute{
+				Id:        v.Id,
+				Pid:       v.Pid,
+				Name:      v.Name,
+				Path:      v.Path,
+				Component: "",
+				Meta: response.RouteMeta{
+					Title:      v.Name,
+					Icon:       v.Icon,
+					Order:      v.Sort,
+					KeepAlive:  true,
+					HideInMenu: v.HideInMenu,
+					ActiveMenu: "",
+				},
+				Handle: response.RouteMeta{
+					Title:      v.Name,
+					Icon:       v.Icon,
+					Order:      v.Sort,
+					KeepAlive:  true,
+					HideInMenu: v.HideInMenu,
+					ActiveMenu: "",
+				},
+				MatchedFiles: []string{},
+			})
 		}
 	}
 
-	return lister.ListToTree(newMenus, "id", "pid", "routes", 0)
+	return lister.ListToTree(userRoutes, "id", "pid", "children", 0)
 }
 
 // 判断菜单是否已经存在
-func (p *MenuService) HasMenu(menus []model.Menu, id int) (result bool) {
+func (p *MenuService) HasMenu(menus []response.UserRoute, id int) (result bool) {
 	for _, v := range menus {
 		if v.Id == id {
 			result = true
