@@ -175,7 +175,7 @@ func (p *Template) UserInfo(ctx *quark.Context) error {
 
 // 获取用户路由
 func (p *Template) UserRoutes(ctx *quark.Context) error {
-	routeType := ctx.Query("type")
+	routeType := ctx.Query("type", "vue")
 
 	authRoutes, err := service.NewAuthService(ctx).GetUserRoutes(routeType.(string))
 	if err != nil {
