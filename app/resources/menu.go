@@ -66,7 +66,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 			field.Icon("icon", "图标").OnlyOnForms(),
 		}),
 		field.Group([]interface{}{
-			field.Number("order", "排序").
+			field.Number("sort", "排序").
 				SetEditable(true).
 				SetDefault(0),
 			field.TreeSelect("pid", "父节点").

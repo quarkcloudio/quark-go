@@ -86,7 +86,7 @@ func (p *MenuService) GetRoutesByUserId(routeType string, userId int) (menuList 
 			Where("guard_name", p.GuardName).
 			Where("status = ?", 1).
 			Where("type IN ?", []int{1, 2, 3}).
-			Order("`order` asc").
+			Order("sort asc").
 			Find(&menus)
 
 		return p.BuildRoutes(routeType, menus)
@@ -171,37 +171,19 @@ func (p *MenuService) BuildRoutes(routeType string, menus []model.Menu) (menuLis
 			v.HideInMenu = true
 		}
 
-		title := v.Name
-		name := ""
-		if routeType == "react" {
-			name = "(base)_" + v.Path
-		}
-
-		path := "/" + v.Path
-
 		if !p.HasMenu(userRoutes, v.Id) && v.Type != 3 {
 			userRoutes = append(userRoutes, response.UserRoute{
-				Id:           v.Id,
-				Pid:          v.Pid,
-				Name:         name,
-				Path:         path,
-				Component:    v.Component,
-				MatchedFiles: []string{"", "component", "", ""},
+				Id:        v.Id,
+				Pid:       v.Pid,
+				Name:      v.Path,
+				Type:      v.Type,
+				Path:      v.Path,
+				Component: v.Component,
 				Meta: response.RouteMeta{
-					Title:      title,
-					Icon:       v.Icon,
-					Order:      v.Order,
-					KeepAlive:  true,
-					HideInMenu: v.HideInMenu,
-					ActiveMenu: "",
-				},
-				Handle: response.RouteMeta{
 					Title:      v.Name,
 					Icon:       v.Icon,
-					Order:      v.Order,
-					KeepAlive:  true,
+					Order:      v.Sort,
 					HideInMenu: v.HideInMenu,
-					ActiveMenu: "",
 				},
 			})
 		}

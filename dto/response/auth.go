@@ -15,24 +15,24 @@ type UserInfoResp struct {
 // 路由元信息
 type RouteMeta struct {
 	Title      string `json:"title"`
-	I18nKey    string `json:"i18nKey"`
-	Icon       string `json:"icon"`
+	I18nKey    string `json:"i18nKey,omitempty"`
+	Icon       string `json:"icon,omitempty"`
 	Order      int    `json:"order"`
-	KeepAlive  bool   `json:"keepAlive"`
-	HideInMenu bool   `json:"hideInMenu"`
-	ActiveMenu string `json:"activeMenu"`
+	KeepAlive  bool   `json:"keepAlive,omitempty"`
+	HideInMenu bool   `json:"hideInMenu,omitempty"`
+	ActiveMenu string `json:"activeMenu,omitempty"`
 }
 
 // 用户路由
 type UserRoute struct {
-	Id           int       `json:"id"`
-	Pid          int       `json:"pid"`
-	Name         string    `json:"name"`
-	Path         string    `json:"path"`
-	Component    string    `json:"component"`
-	Meta         RouteMeta `json:"meta"`
-	Handle       RouteMeta `json:"handle"`
-	MatchedFiles []string  `json:"matchedFiles"`
+	Id        int       `json:"id"`
+	Pid       int       `json:"pid"`
+	Name      string    `json:"name"`
+	Type      int       `json:"type"`
+	Path      string    `json:"path"`
+	Component string    `json:"component"`
+	Meta      RouteMeta `json:"meta"`
+	Query     string    `json:"query,omitempty"`
 }
 
 // 用户路由列表
