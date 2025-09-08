@@ -172,8 +172,10 @@ func Middleware(ctx *quark.Context) error {
 		}
 	}
 
+	paths := strings.Split(ctx.FullPath(), "/")
+	lastPath := paths[len(paths)-1]
 	// 排除登录路由
-	if inLoginRoute {
+	if inLoginRoute && lastPath != "userInfo" && lastPath != "userRoutes" {
 		return ctx.Next()
 	}
 
