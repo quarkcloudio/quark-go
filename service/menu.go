@@ -185,6 +185,7 @@ func (p *MenuService) BuildRoutes(routeType string, menus []model.Menu) (menuLis
 					Order:      v.Sort,
 					HideInMenu: v.HideInMenu,
 				},
+				Query: v.Query,
 			})
 		}
 	}
