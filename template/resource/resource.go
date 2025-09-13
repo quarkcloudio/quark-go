@@ -337,7 +337,7 @@ func (p *Template) IndexRender(ctx *quark.Context) error {
 	// 页面渲染
 	result := template.PageComponentRender(ctx, body)
 
-	return ctx.JSON(200, result)
+	return ctx.JSONOk("操作成功", result)
 }
 
 // 表格行内编辑
@@ -368,7 +368,7 @@ func (p *Template) CreationRender(ctx *quark.Context) error {
 	// 页面渲染
 	result := template.PageComponentRender(ctx, body)
 
-	return ctx.JSON(200, result)
+	return ctx.JSONOk("操作成功", result)
 }
 
 // 创建方法
@@ -403,7 +403,7 @@ func (p *Template) EditRender(ctx *quark.Context) error {
 	// 页面渲染
 	result := template.PageComponentRender(ctx, body)
 
-	return ctx.JSON(200, result)
+	return ctx.JSONOk("操作成功", result)
 }
 
 // 获取编辑表单值
@@ -432,7 +432,7 @@ func (p *Template) DetailRender(ctx *quark.Context) error {
 	// 页面渲染
 	result := template.PageComponentRender(ctx, body)
 
-	return ctx.JSON(200, result)
+	return ctx.JSONOk("操作成功", result)
 }
 
 // 获取详情页值
@@ -474,7 +474,7 @@ func (p *Template) FormRender(ctx *quark.Context) error {
 	// 页面渲染
 	result := template.PageComponentRender(ctx, body)
 
-	return ctx.JSON(200, result)
+	return ctx.JSONOk("操作成功", result)
 }
 
 // 页面组件渲染

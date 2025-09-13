@@ -101,11 +101,11 @@ func (p *Account) FormHandle(ctx *quark.Context, query *gorm.DB, data map[string
 	// 获取登录管理员信息
 	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 	err = query.Where("id", adminInfo.Id).Updates(data).Error
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
-	return ctx.CJSONOk("操作成功")
+	return ctx.JSONOk("操作成功")
 }
