@@ -334,10 +334,7 @@ func (p *Template) IndexRender(ctx *quark.Context) error {
 	// 组件渲染
 	body := template.IndexComponentRender(ctx, data)
 
-	// 页面渲染
-	result := template.PageComponentRender(ctx, body)
-
-	return ctx.JSONOk("操作成功", result)
+	return ctx.JSONOk("操作成功", body)
 }
 
 // 表格行内编辑
