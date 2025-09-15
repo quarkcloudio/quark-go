@@ -32,7 +32,7 @@ type Menu struct {
 func (p *Menu) Seeder() {
 	seeders := []Menu{
 		{Id: 1, Name: "首页", GuardName: "admin", Icon: "ant-design:home-outlined", Type: 1, Pid: 0, Sort: 0, Path: "home", Query: "{\"api\":\"/api/admin/dashboard/index/index\"}", Component: "home/index", Show: 1, IsEngine: 0, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
-		{Id: 3, Name: "用户管理", GuardName: "admin", Icon: "ant-design:user-group-add-outlined", Type: 1, Pid: 0, Sort: 100, Path: "user", Query: "", Component: "", Show: 1, IsEngine: 0, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
+		{Id: 3, Name: "用户管理", GuardName: "admin", Icon: "ant-design:usergroup-add-outlined", Type: 1, Pid: 0, Sort: 100, Path: "user", Query: "", Component: "", Show: 1, IsEngine: 0, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
 		{Id: 4, Name: "用户列表", GuardName: "admin", Icon: "ant-design:user-add-outlined", Type: 2, Pid: 3, Sort: 0, Path: "user", Query: "{\"api\":\"/api/admin/user/index\"}", Component: "", Show: 1, IsEngine: 1, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
 		{Id: 5, Name: "权限列表", GuardName: "admin", Icon: "ant-design:profile-outlined", Type: 2, Pid: 3, Sort: 0, Path: "permission", Query: "{\"api\":\"/api/admin/permission/index\"}", Component: "", Show: 1, IsEngine: 1, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
 		{Id: 6, Name: "角色列表", GuardName: "admin", Icon: "ant-design:idcard-outlined", Type: 2, Pid: 3, Sort: 0, Path: "role", Query: "{\"api\":\"/api/admin/role/index\"}", Component: "", Show: 1, IsEngine: 1, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
