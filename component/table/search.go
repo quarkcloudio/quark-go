@@ -23,7 +23,7 @@ func (p *Search) Init() *Search {
 	p.Component = "search"
 	p.DefaultCollapsed = true
 	p.ResetText = "重置"
-	p.SearchText = "查询"
+	p.SearchText = "搜索"
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
