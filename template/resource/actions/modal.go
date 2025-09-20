@@ -13,7 +13,7 @@ func (p *Modal) New(ctx *quark.Context) interface{} {
 	p.ActionType = "modal"
 	p.Width = 520
 	p.Size = "small"
-	p.Ghost = true
+	p.Type = "default"
 
 	return p
 }

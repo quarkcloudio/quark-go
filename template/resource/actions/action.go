@@ -100,6 +100,7 @@ type Action struct {
 // 加载初始化数据
 func (p *Action) New(ctx *quark.Context) interface{} {
 	p.ActionType = "ajax"
+	p.Type = "default"
 
 	return p
 }

@@ -13,7 +13,7 @@ func (p *Link) New(ctx *quark.Context) interface{} {
 	p.ActionType = "link"
 	p.Target = "_self"
 	p.Size = "small"
-	p.Ghost = true
+	p.Type = "default"
 
 	return p
 }

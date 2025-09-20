@@ -19,7 +19,7 @@ func Import(options ...interface{}) *ImportAction {
 	action := &ImportAction{}
 
 	// 文字
-	action.Name = "导入数据"
+	action.Name = "导入"
 	if len(options) == 1 {
 		action.Name = options[0].(string)
 	}
@@ -29,6 +29,9 @@ func Import(options ...interface{}) *ImportAction {
 
 // 初始化
 func (p *ImportAction) Init(ctx *quark.Context) interface{} {
+
+	// 图标
+	p.Icon = "ant-design:upload-outlined"
 
 	// 关闭时销毁 Modal 里的子元素
 	p.DestroyOnClose = true

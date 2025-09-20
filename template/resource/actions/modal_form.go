@@ -22,7 +22,7 @@ func (p *ModalForm) New(ctx *quark.Context) interface{} {
 	p.ApiType = "POST"
 	p.TargetBlank = false
 	p.Size = "small"
-	p.Ghost = true
+	p.Type = "default"
 
 	return p
 }

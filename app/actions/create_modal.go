@@ -19,16 +19,18 @@ func CreateModal() *CreateModalAction {
 
 // 初始化
 func (p *CreateModalAction) Init(ctx *quark.Context) interface{} {
-	template := ctx.Template.(types.Resourcer)
 
 	// 文字
-	p.Name = "创建" + template.GetTitle()
+	p.Name = "新增"
 
 	// 类型
 	p.Type = "primary"
 
+	// 透明
+	p.Ghost = true
+
 	// 图标
-	p.Icon = "plus-circle"
+	p.Icon = "ant-design:plus-outlined"
 
 	// 关闭时销毁 Modal 里的子元素
 	p.DestroyOnClose = true

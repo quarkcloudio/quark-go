@@ -152,10 +152,10 @@ func (p *Component) SetGhost(ghost bool) *Component {
 // "icon-password", "icon-article", "icon-page", "icon-plugin", "icon-admin", "icon-banner"
 func (p *Component) SetIcon(icon interface{}) *Component {
 	if value, ok := icon.(string); ok {
-		p.Icon = "icon-" + value
+		p.Icon = value
 	}
 	if value, ok := icon.([]string); ok {
-		p.Icon = []string{"icon-" + value[0], "icon-" + value[1]}
+		p.Icon = []string{value[0], value[1]}
 	}
 
 	return p

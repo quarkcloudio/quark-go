@@ -13,7 +13,7 @@ func (p *Drawer) New(ctx *quark.Context) interface{} {
 	p.ActionType = "drawer"
 	p.Width = 520
 	p.Size = "small"
-	p.Ghost = true
+	p.Type = "default"
 
 	return p
 }

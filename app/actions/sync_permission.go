@@ -15,12 +15,12 @@ type SyncPermissionAction struct {
 	actions.Action
 }
 
-// 同步权限，SyncPermission() | SyncPermission("同步权限")
+// 同步权限，SyncPermission() | SyncPermission("同步")
 func SyncPermission(options ...interface{}) *SyncPermissionAction {
 	action := &SyncPermissionAction{}
 
 	// 文字
-	action.Name = "同步权限"
+	action.Name = "同步"
 	if len(options) == 1 {
 		action.Name = options[0].(string)
 	}
@@ -30,6 +30,9 @@ func SyncPermission(options ...interface{}) *SyncPermissionAction {
 
 // 初始化
 func (p *SyncPermissionAction) Init(ctx *quark.Context) interface{} {
+
+	// 图标
+	p.Icon = "ant-design:sync-outlined"
 
 	// 执行成功后刷新的组件
 	p.Reload = "table"

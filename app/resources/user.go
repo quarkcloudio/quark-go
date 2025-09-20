@@ -189,8 +189,8 @@ func (p *User) Searches(ctx *quark.Context) []interface{} {
 // 行为
 func (p *User) Actions(ctx *quark.Context) []interface{} {
 	return []interface{}{
-		actions.Import(),
 		actions.CreateLink(),
+		actions.Import(),
 		actions.BatchDelete(),
 		actions.BatchDisable(),
 		actions.BatchEnable(),
