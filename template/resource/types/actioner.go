@@ -40,6 +40,15 @@ type Actioner interface {
 	// 是否具有loading，当action 的作用类型为ajax,submit时有效
 	GetWithLoading() bool
 
+	// 设置按钮是否为块级元素
+	GetBlock() bool
+
+	// 禁用按钮
+	GetDisabled() bool
+
+	// 幽灵按钮
+	GetGhost() bool
+
 	// 设置按钮的图标组件
 	GetIcon() interface{}
 
@@ -81,6 +90,15 @@ type Actioner interface {
 
 	// 是否具有loading，当action 的作用类型为ajax,submit时有效
 	SetWithLoading(loading bool)
+
+	// 设置按钮是否为块级元素
+	SetBlock(block bool)
+
+	// 禁用按钮
+	SetDisabled(disabled bool)
+
+	// 幽灵按钮
+	SetGhost(ghost bool)
 
 	// 设置按钮的图标组件
 	SetIcon(icon string)

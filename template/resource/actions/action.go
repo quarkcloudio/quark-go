@@ -16,6 +16,10 @@ type Action struct {
 	Api        string      `json:"api"`        // 行为接口
 	ActionType string      `json:"actionType"` // 【必填】这是 action 最核心的配置，来指定该 action 的作用类型，支持：ajax、link、url、drawer、dialog、confirm、cancel、prev、next、copy、close。
 	SubmitForm string      `json:"submitForm"` // 当 action 的作用类型为submit的时候，可以指定提交哪个表格，submitForm为提交表单的key值，为空时提交当前表单
+	Block      bool        `json:"block"`
+	Danger     bool        `json:"danger"`
+	Disabled   bool        `json:"disabled"`
+	Ghost      bool        `json:"ghost"`
 	// 设置按钮的图标组件：
 	// "icon-database", "icon-sever", "icon-mobile", "icon-tablet", "icon-redenvelope",
 	// "icon-book", "icon-filedone", "icon-reconciliation", "icon-file-exception",
@@ -169,6 +173,19 @@ func (p *Action) GetIcon() interface{} {
 	return p.Icon
 }
 
+// 设置按钮是否为块级元素
+func (p *Action) GetBlock() bool {
+	return p.Block
+}
+
+func (p *Action) GetDisabled() bool {
+	return p.Disabled
+}
+
+func (p *Action) GetGhost() bool {
+	return p.Ghost
+}
+
 // 行为表单字段
 func (p *Action) GetFields() interface{} {
 	return p.Fields
@@ -232,6 +249,21 @@ func (p *Action) SetSize(size string) {
 // 是否具有loading，当action 的作用类型为ajax,submit时有效
 func (p *Action) SetWithLoading(loading bool) {
 	p.WithLoading = loading
+}
+
+// 配置按钮是否为块级元素
+func (p *Action) SetBlock(block bool) {
+	p.Block = block
+}
+
+// 配置按钮是否禁用
+func (p *Action) SetDisabled(disabled bool) {
+	p.Disabled = disabled
+}
+
+// 配置按钮是否为幽灵按钮
+func (p *Action) SetGhost(ghost bool) {
+	p.Ghost = ghost
 }
 
 // 设置按钮的图标组件

@@ -9,7 +9,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v4/component/dropdown"
 	"github.com/quarkcloudio/quark-go/v4/component/form"
 	"github.com/quarkcloudio/quark-go/v4/component/modal"
-	"github.com/quarkcloudio/quark-go/v4/component/space"
 	"github.com/quarkcloudio/quark-go/v4/template/resource/types"
 )
 
@@ -40,9 +39,7 @@ func (p *Template) IndexTableActions(ctx *quark.Context) interface{} {
 		}
 	}
 
-	return (&space.Component{}).
-		Init().
-		SetBody(items)
+	return items
 }
 
 // 表格行内行为
@@ -259,6 +256,15 @@ func (p *Template) BuildAction(ctx *quark.Context, item interface{}) interface{}
 	// 按钮大小
 	size := actionInstance.GetSize()
 
+	// 设置按钮是否为块级元素
+	block := actionInstance.GetBlock()
+
+	// 禁用按钮
+	disabled := actionInstance.GetDisabled()
+
+	// 幽灵按钮
+	ghost := actionInstance.GetGhost()
+
 	// 按钮图标
 	icon := actionInstance.GetIcon()
 
@@ -280,7 +286,10 @@ func (p *Template) BuildAction(ctx *quark.Context, item interface{}) interface{}
 		SetApi(api).
 		SetActionType(actionType).
 		SetType(buttonType, false).
-		SetSize(size)
+		SetSize(size).
+		SetBlock(block).
+		SetDisabled(disabled).
+		SetGhost(ghost)
 
 	if icon != "" {
 		getAction = getAction.SetIcon(icon)

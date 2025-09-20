@@ -21,6 +21,8 @@ func (p *ModalForm) New(ctx *quark.Context) interface{} {
 	p.SubmitText = "提交"
 	p.ApiType = "POST"
 	p.TargetBlank = false
+	p.Size = "small"
+	p.Ghost = true
 
 	return p
 }
