@@ -39,5 +39,5 @@ func (p *CreateLinkAction) Init(ctx *quark.Context) interface{} {
 
 // 跳转链接
 func (p *CreateLinkAction) GetHref(ctx *quark.Context) string {
-	return "${enginePath}?api=" + strings.Replace(ctx.Path(), "/index", "/create", -1)
+	return "#${enginePath}?api=" + strings.Replace(ctx.Path(), "/index", "/create", -1)
 }
