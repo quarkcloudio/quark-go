@@ -141,12 +141,6 @@ type Resourcer interface {
 	// 通用表单资源
 	FormRender(ctx *quark.Context) error
 
-	// 页面组件渲染
-	PageComponentRender(ctx *quark.Context, body interface{}) interface{}
-
-	// 页面容器组件渲染
-	PageContainerComponentRender(ctx *quark.Context, body interface{}) interface{}
-
 	// 全局查询
 	Query(ctx *quark.Context, query *gorm.DB) *gorm.DB
 

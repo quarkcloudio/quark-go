@@ -5,7 +5,6 @@ import (
 
 	"github.com/quarkcloudio/quark-go/v4"
 	"github.com/quarkcloudio/quark-go/v4/component/form"
-	"github.com/quarkcloudio/quark-go/v4/component/pagecontainer"
 	"github.com/quarkcloudio/quark-go/v4/component/table"
 	"github.com/quarkcloudio/quark-go/v4/dal/db"
 	"github.com/quarkcloudio/quark-go/v4/template/resource/requests"
@@ -362,10 +361,7 @@ func (p *Template) CreationRender(ctx *quark.Context) error {
 	// 组件渲染
 	body := template.CreationComponentRender(ctx, data)
 
-	// 页面渲染
-	result := template.PageComponentRender(ctx, body)
-
-	return ctx.JSONOk("操作成功", result)
+	return ctx.JSONOk("操作成功", body)
 }
 
 // 创建方法
@@ -397,10 +393,7 @@ func (p *Template) EditRender(ctx *quark.Context) error {
 	// 组件渲染
 	body := template.UpdateComponentRender(ctx, data)
 
-	// 页面渲染
-	result := template.PageComponentRender(ctx, body)
-
-	return ctx.JSONOk("操作成功", result)
+	return ctx.JSONOk("操作成功", body)
 }
 
 // 获取编辑表单值
@@ -426,10 +419,7 @@ func (p *Template) DetailRender(ctx *quark.Context) error {
 	// 组件渲染
 	body := template.DetailComponentRender(ctx, data)
 
-	// 页面渲染
-	result := template.PageComponentRender(ctx, body)
-
-	return ctx.JSONOk("操作成功", result)
+	return ctx.JSONOk("操作成功", body)
 }
 
 // 获取详情页值
@@ -468,45 +458,5 @@ func (p *Template) FormRender(ctx *quark.Context) error {
 	// 组件渲染
 	body := template.CreationComponentRender(ctx, data)
 
-	// 页面渲染
-	result := template.PageComponentRender(ctx, body)
-
-	return ctx.JSONOk("操作成功", result)
-}
-
-// 页面组件渲染
-func (p *Template) PageComponentRender(ctx *quark.Context, body interface{}) interface{} {
-	template := ctx.Template.(types.Resourcer)
-
-	// 页面容器组件渲染
-	return template.PageContainerComponentRender(ctx, body)
-}
-
-// 页面容器组件渲染
-func (p *Template) PageContainerComponentRender(ctx *quark.Context, body interface{}) interface{} {
-	template := ctx.Template.(types.Resourcer)
-
-	// 页面标题
-	title := template.GetTitle()
-
-	// 页面子标题
-	subTitle := template.GetSubTitle()
-
-	// 页面是否携带返回Icon
-	backIcon := template.GetBackIcon()
-
-	// 设置头部
-	header := (&pagecontainer.PageHeader{}).
-		Init().
-		SetTitle(title).
-		SetSubTitle(subTitle)
-
-	if !backIcon {
-		header.SetBackIcon(false)
-	}
-
-	return (&pagecontainer.Component{}).
-		Init().
-		SetHeader(header).
-		SetBody(body)
+	return ctx.JSONOk("操作成功", body)
 }
