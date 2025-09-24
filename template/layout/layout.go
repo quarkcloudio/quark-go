@@ -119,7 +119,7 @@ func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
 			SetStyle(map[string]interface{}{
 				"color": "rgb(0 0 0 / 88%)",
 			}).
-			SetHref("#/layout/index?api=/api/admin/account/form").
+			SetHref("#${enginePath}?api=/api/admin/account/form").
 			SetSize("small"),
 
 		action.

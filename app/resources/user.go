@@ -88,7 +88,7 @@ func (p *User) Fields(ctx *quark.Context) []interface{} {
 		field.ID("id", "ID"),
 		field.Image("avatar", "头像"),
 		field.Text("username", "用户名", func(row map[string]interface{}) interface{} {
-			return "<a href='#/layout/index?api=/api/admin/user/edit&id=" + strconv.Itoa(row["id"].(int)) + "'>" + row["username"].(string) + "</a>"
+			return "<a href='#${enginePath}?api=/api/admin/user/edit&id=" + strconv.Itoa(row["id"].(int)) + "'>" + row["username"].(string) + "</a>"
 		}).
 			SetRules([]rule.Rule{
 				rule.Required("用户名必须填写"),

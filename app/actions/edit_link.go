@@ -41,5 +41,5 @@ func (p *EditLinkAction) Init(ctx *quark.Context) interface{} {
 
 // 跳转链接
 func (p *EditLinkAction) GetHref(ctx *quark.Context) string {
-	return "#/layout/index?api=" + strings.Replace(ctx.Path(), "/index", "/edit&id=${id}", -1)
+	return "#${enginePath}?api=" + strings.Replace(ctx.Path(), "/index", "/edit?id=${id}", -1)
 }

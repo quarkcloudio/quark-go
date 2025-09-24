@@ -41,5 +41,5 @@ func (p *DetailLinkAction) Init(ctx *quark.Context) interface{} {
 
 // 跳转链接
 func (p *DetailLinkAction) GetHref(ctx *quark.Context) string {
-	return "#/layout/index?api=" + strings.Replace(ctx.Path(), "/index", "/detail&id=${id}", -1)
+	return "#${enginePath}?api=" + strings.Replace(ctx.Path(), "/index", "/detail?id=${id}", -1)
 }
