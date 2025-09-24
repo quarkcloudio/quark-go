@@ -105,7 +105,7 @@ func (p *Component) Init() *Component {
 	p.MaxLength = 200
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
-	p.SetWidth(200)
+	p.SetWidth("200px")
 
 	return p
 }

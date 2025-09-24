@@ -133,7 +133,7 @@ func (p *Component) Init() *Component {
 	p.ShowOnExport = true
 	p.ShowOnImport = true
 	p.Column = (&table.Column{}).Init()
-	p.SetWidth(200)
+	p.SetWidth("200px")
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p

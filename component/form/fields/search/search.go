@@ -101,7 +101,7 @@ func (p *Component) Init() *Component {
 	p.Placeholder = "请输入要搜索的内容"
 	p.AllowClear = true
 	p.Column = (&table.Column{}).Init()
-	p.SetWidth(200)
+	p.SetWidth("200px")
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 

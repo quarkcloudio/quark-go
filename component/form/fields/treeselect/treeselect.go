@@ -144,7 +144,7 @@ func (p *Component) Init() *Component {
 	p.TreeDefaultExpandAll = true
 	p.TreeLine = true
 
-	p.SetWidth(200)
+	p.SetWidth("200px")
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p

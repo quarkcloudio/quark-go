@@ -152,7 +152,7 @@ func (p *Component) Init() *Component {
 		"icon-password", "icon-article", "icon-page", "icon-plugin", "icon-admin", "icon-banner",
 	}
 
-	p.SetWidth(200)
+	p.SetWidth("200px")
 	p.SetDefault("")
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
