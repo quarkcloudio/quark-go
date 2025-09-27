@@ -12,8 +12,8 @@ type Modal struct {
 func (p *Modal) New(ctx *quark.Context) interface{} {
 	p.ActionType = "modal"
 	p.Width = 520
-	p.Size = "small"
 	p.Type = "default"
+	p.Size = "small"
 
 	return p
 }

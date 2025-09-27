@@ -21,8 +21,8 @@ func (p *DrawerForm) New(ctx *quark.Context) interface{} {
 	p.SubmitText = "提交"
 	p.ApiType = "POST"
 	p.TargetBlank = false
-	p.Size = "small"
 	p.Type = "default"
+	p.Size = "small"
 
 	return p
 }

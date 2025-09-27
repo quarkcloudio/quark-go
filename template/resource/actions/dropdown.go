@@ -20,8 +20,8 @@ func (p *Dropdown) New(ctx *quark.Context) interface{} {
 	p.ActionType = "dropdown"
 	p.Placement = "bottomLeft"
 	p.Trigger = append(p.Trigger, "hover")
-	p.Size = "small"
 	p.Type = "default"
+	p.Size = "small"
 
 	return p
 }

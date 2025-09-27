@@ -90,9 +90,6 @@ func (p *Template) IndexComponentRender(ctx *quark.Context, data interface{}) in
 	// 列表页表格列
 	tableColumns := p.IndexTableColumns(ctx)
 
-	// 列表页批量操作
-	indexTableAlertActions := p.IndexTableAlertActions(ctx)
-
 	// 列表页搜索栏
 	indexSearches := p.IndexSearches(ctx)
 
@@ -110,7 +107,6 @@ func (p *Template) IndexComponentRender(ctx *quark.Context, data interface{}) in
 		SetToolBar(tableToolBar).
 		SetTreeBar(tableTreeBar).
 		SetColumns(tableColumns).
-		SetBatchActions(indexTableAlertActions).
 		SetSearches(indexSearches)
 
 	// 获取分页

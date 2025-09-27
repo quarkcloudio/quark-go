@@ -190,10 +190,8 @@ func (p *User) Searches(ctx *quark.Context) []interface{} {
 func (p *User) Actions(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		actions.CreateLink(),
-		actions.Import(),
 		actions.BatchDelete(),
-		actions.BatchDisable(),
-		actions.BatchEnable(),
+		actions.Import(),
 		actions.DetailLink(),
 		actions.More().
 			SetActions([]interface{}{

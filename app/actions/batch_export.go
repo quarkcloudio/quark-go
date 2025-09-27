@@ -8,7 +8,7 @@ import (
 )
 
 type BatchExportAction struct {
-	actions.Link
+	actions.Batch
 }
 
 // 批量导出，BatchExport() | BatchExport("批量导出")
@@ -26,12 +26,6 @@ func BatchExport(options ...interface{}) *BatchExportAction {
 // 初始化
 func (p *BatchExportAction) Init(ctx *quark.Context) interface{} {
 
-	// 设置按钮类型,primary | ghost | dashed | link | text | default
-	p.Type = "link"
-
-	// 设置按钮大小,large | middle | small | default
-	p.Size = "small"
-
 	//  执行成功后刷新的组件
 	p.Reload = "table"
 
@@ -41,8 +35,8 @@ func (p *BatchExportAction) Init(ctx *quark.Context) interface{} {
 	// 当行为在表格行展示时，支持js表达式
 	p.WithConfirm("确定要导出数据吗？", "导出数据可能会等待时间较长！", "modal")
 
-	// 在表格多选弹出层展示
-	p.SetOnlyOnIndexTableAlert(true)
+	// 设置展示位置
+	p.SetOnlyOnIndex(true)
 
 	return p
 }

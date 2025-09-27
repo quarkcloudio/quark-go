@@ -11,5 +11,6 @@ func (p *Step) New(ctx *quark.Context) interface{} {
 	p.ActionType = "step"
 	p.Type = "default"
 	p.Name = []string{"上一步", "下一步"}
+	p.Size = "small"
 	return p
 }

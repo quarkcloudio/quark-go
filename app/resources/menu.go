@@ -159,8 +159,6 @@ func (p *Menu) Actions(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		actions.MenuCreateDrawer(),
 		actions.BatchDelete(),
-		actions.BatchDisable(),
-		actions.BatchEnable(),
 		actions.ChangeStatus(),
 		actions.MenuEditDrawer(),
 		actions.Delete(),

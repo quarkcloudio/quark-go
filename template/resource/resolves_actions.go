@@ -72,36 +72,6 @@ func (p *Template) IndexTableRowActions(ctx *quark.Context) interface{} {
 	return items
 }
 
-// 表格多选弹出层行为
-func (p *Template) IndexTableAlertActions(ctx *quark.Context) interface{} {
-	var items []interface{}
-
-	// 模版实例
-	template := ctx.Template.(types.Resourcer)
-
-	// 获取行为
-	actions := template.Actions(ctx)
-
-	// 解析行为
-	for _, v := range actions {
-
-		actionInstance := v.(types.Actioner)
-
-		// 初始化模版
-		actionInstance.New(ctx)
-
-		// 初始化
-		actionInstance.Init(ctx)
-
-		// 判断是否在多选弹出层展示
-		if actionInstance.ShownOnIndexTableAlert() {
-			items = append(items, p.BuildAction(ctx, actionInstance))
-		}
-	}
-
-	return items
-}
-
 // 表单页行为
 func (p *Template) FormActions(ctx *quark.Context) []interface{} {
 	var items []interface{}
@@ -259,6 +229,12 @@ func (p *Template) BuildAction(ctx *quark.Context, item interface{}) interface{}
 	// 设置按钮是否为块级元素
 	block := actionInstance.GetBlock()
 
+	// 批量操作
+	batch := actionInstance.GetBatch()
+
+	// 危险按钮
+	danger := actionInstance.GetDanger()
+
 	// 禁用按钮
 	disabled := actionInstance.GetDisabled()
 
@@ -288,6 +264,8 @@ func (p *Template) BuildAction(ctx *quark.Context, item interface{}) interface{}
 		SetType(buttonType, false).
 		SetSize(size).
 		SetBlock(block).
+		SetBatch(batch).
+		SetDanger(danger).
 		SetDisabled(disabled).
 		SetGhost(ghost)
 

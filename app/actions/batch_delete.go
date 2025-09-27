@@ -7,7 +7,7 @@ import (
 )
 
 type BatchDeleteAction struct {
-	actions.Action
+	actions.Batch
 }
 
 // 批量删除，BatchDelete() | BatchDelete("批量删除")
@@ -25,11 +25,11 @@ func BatchDelete(options ...interface{}) *BatchDeleteAction {
 // 初始化
 func (p *BatchDeleteAction) Init(ctx *quark.Context) interface{} {
 
-	// 设置按钮类型,primary | ghost | dashed | link | text | default
-	p.Type = "link"
+	// 图标
+	p.Icon = "ant-design:delete-outlined"
 
-	// 设置按钮大小,large | middle | small | default
-	p.Size = "small"
+	// 危险按钮
+	p.Danger = true
 
 	//  执行成功后刷新的组件
 	p.Reload = "table"
@@ -37,8 +37,8 @@ func (p *BatchDeleteAction) Init(ctx *quark.Context) interface{} {
 	// 当行为在表格行展示时，支持js表达式
 	p.WithConfirm("确定要删除吗？", "删除后数据将无法恢复，请谨慎操作！", "modal")
 
-	// 在表格多选弹出层展示
-	p.SetOnlyOnIndexTableAlert(true)
+	// 设置展示位置
+	p.SetOnlyOnIndex(true)
 
 	return p
 }

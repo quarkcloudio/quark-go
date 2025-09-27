@@ -99,11 +99,9 @@ func (p *Department) Searches(ctx *quark.Context) []interface{} {
 func (p *Department) Actions(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		actions.CreateModal(),
+		actions.BatchDelete(),
 		actions.Status(),
 		actions.EditModal(),
 		actions.DeleteSpecial(),
-		actions.BatchDelete(),
-		actions.BatchDisable(),
-		actions.BatchEnable(),
 	}
 }

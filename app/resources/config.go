@@ -93,8 +93,6 @@ func (p *Config) Actions(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		actions.CreateDrawer(),
 		actions.BatchDelete(),
-		actions.BatchDisable(),
-		actions.BatchEnable(),
 		actions.ChangeStatus(),
 		actions.EditDrawer(),
 		actions.Delete(),

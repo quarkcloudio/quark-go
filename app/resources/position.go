@@ -69,11 +69,9 @@ func (p *Position) Searches(ctx *quark.Context) []interface{} {
 func (p *Position) Actions(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		actions.CreateModal(),
+		actions.BatchDelete(),
 		actions.ChangeStatus(),
 		actions.EditModal(),
 		actions.Delete(),
-		actions.BatchDelete(),
-		actions.BatchDisable(),
-		actions.BatchEnable(),
 	}
 }

@@ -200,9 +200,6 @@ type Resourcer interface {
 	// 表格行内行为
 	IndexTableRowActions(ctx *quark.Context) interface{}
 
-	// 表格多选弹出层行为
-	IndexTableAlertActions(ctx *quark.Context) interface{}
-
 	// 表单页行为
 	FormActions(ctx *quark.Context) []interface{}
 

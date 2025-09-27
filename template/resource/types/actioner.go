@@ -43,6 +43,12 @@ type Actioner interface {
 	// 设置按钮是否为块级元素
 	GetBlock() bool
 
+	// 是否批量操作
+	GetBatch() bool
+
+	// 危险按钮
+	GetDanger() bool
+
 	// 禁用按钮
 	GetDisabled() bool
 
@@ -93,6 +99,12 @@ type Actioner interface {
 
 	// 设置按钮是否为块级元素
 	SetBlock(block bool)
+
+	// 是否批量操作
+	SetBatch(batch bool)
+
+	// 危险按钮
+	SetDanger(danger bool)
 
 	// 禁用按钮
 	SetDisabled(disabled bool)
@@ -151,12 +163,6 @@ type Actioner interface {
 	// 除了表格行内外展示
 	SetExceptOnIndexTableRow()
 
-	// 在表格多选弹出层展示
-	SetOnlyOnIndexTableAlert(value bool)
-
-	// 除了表格多选弹出层外展示
-	SetExceptOnIndexTableAlert()
-
 	// 在列表页展示
 	SetShowOnIndex()
 
@@ -175,9 +181,6 @@ type Actioner interface {
 	// 在表格行内展示
 	SetShowOnIndexTableRow()
 
-	// 在多选弹出层展示
-	SetShowOnIndexTableAlert()
-
 	// 判断是否在列表页展示
 	ShownOnIndex() bool
 
@@ -189,9 +192,6 @@ type Actioner interface {
 
 	// 判断是否在表格行内展示
 	ShownOnIndexTableRow() bool
-
-	// 判断是否在多选弹出层展示
-	ShownOnIndexTableAlert() bool
 
 	// 判断是否在表单页右上角自定义区域展示
 	ShownOnFormExtra() bool

@@ -17,6 +17,7 @@ type Action struct {
 	ActionType string      `json:"actionType"` // 【必填】这是 action 最核心的配置，来指定该 action 的作用类型，支持：ajax、link、url、drawer、dialog、confirm、cancel、prev、next、copy、close。
 	SubmitForm string      `json:"submitForm"` // 当 action 的作用类型为submit的时候，可以指定提交哪个表格，submitForm为提交表单的key值，为空时提交当前表单
 	Block      bool        `json:"block"`
+	Batch      bool        `json:"batch"`
 	Danger     bool        `json:"danger"`
 	Disabled   bool        `json:"disabled"`
 	Ghost      bool        `json:"ghost"`
@@ -84,30 +85,30 @@ type Action struct {
 	// "ant-design:pointmap-outlined", "ant-design:container-outlined", "ant-design:atom-outlined", "ant-design:zanwutupian-outlined", "ant-design:safetycertificate-outlined",
 	// "ant-design:password-outlined", "ant-design:article-outlined", "ant-design:page-outlined", "ant-design:plugin-outlined", "ant-design:admin-outlined",
 	// "ant-design:banner-outlined"
-	Icon                  interface{} `json:"icon"`
-	Type                  string      `json:"type"`                  // 设置按钮类型，primary | ghost | dashed | link | text | default
-	Size                  string      `json:"size"`                  // 设置按钮大小,large | middle | small | default
-	WithLoading           bool        `json:"withLoading"`           // 是否具有loading，当action 的作用类型为ajax,submit时有效
-	Fields                interface{} `json:"fields"`                // 行为表单字段
-	ConfirmTitle          string      `json:"confirmTitle"`          // 确认标题
-	ConfirmText           string      `json:"confirmText"`           // 确认文字描述
-	ConfirmType           string      `json:"confirmType"`           // 确认类型
-	OnlyOnIndex           bool        `json:"onlyOnIndex"`           // 只在列表页展示
-	OnlyOnForm            bool        `json:"onlyOnForm"`            // 只在表单页展示
-	OnlyOnDetail          bool        `json:"onlyOnDetail"`          // 只在详情页展示
-	ShowOnIndex           bool        `json:"showOnIndex"`           // 在列表页展示
-	ShowOnIndexTableRow   bool        `json:"showOnIndexTableRow"`   // 在列表页行展示
-	ShowOnIndexTableAlert bool        `json:"showOnIndexTableAlert"` // 在列表页弹出层展示
-	ShowOnForm            bool        `json:"showOnForm"`            // 在表单页展示
-	ShowOnFormExtra       bool        `json:"showOnFormExtra"`       // 在表单页扩展栏展示
-	ShowOnDetail          bool        `json:"showOnDetail"`          // 在详情页展示
-	ShowOnDetailExtra     bool        `json:"showOnDetailExtra"`     // 在详情页扩展栏展示
+	Icon                interface{} `json:"icon"`
+	Type                string      `json:"type"`                // 设置按钮类型，primary | ghost | dashed | link | text | default
+	Size                string      `json:"size"`                // 设置按钮大小,large | middle | small | default
+	WithLoading         bool        `json:"withLoading"`         // 是否具有loading，当action 的作用类型为ajax,submit时有效
+	Fields              interface{} `json:"fields"`              // 行为表单字段
+	ConfirmTitle        string      `json:"confirmTitle"`        // 确认标题
+	ConfirmText         string      `json:"confirmText"`         // 确认文字描述
+	ConfirmType         string      `json:"confirmType"`         // 确认类型
+	OnlyOnIndex         bool        `json:"onlyOnIndex"`         // 只在列表页展示
+	OnlyOnForm          bool        `json:"onlyOnForm"`          // 只在表单页展示
+	OnlyOnDetail        bool        `json:"onlyOnDetail"`        // 只在详情页展示
+	ShowOnIndex         bool        `json:"showOnIndex"`         // 在列表页展示
+	ShowOnIndexTableRow bool        `json:"showOnIndexTableRow"` // 在列表页行展示
+	ShowOnForm          bool        `json:"showOnForm"`          // 在表单页展示
+	ShowOnFormExtra     bool        `json:"showOnFormExtra"`     // 在表单页扩展栏展示
+	ShowOnDetail        bool        `json:"showOnDetail"`        // 在详情页展示
+	ShowOnDetailExtra   bool        `json:"showOnDetailExtra"`   // 在详情页扩展栏展示
 }
 
 // 加载初始化数据
 func (p *Action) New(ctx *quark.Context) interface{} {
 	p.ActionType = "ajax"
 	p.Type = "default"
+	p.Size = "small"
 
 	return p
 }
@@ -186,6 +187,17 @@ func (p *Action) GetBlock() bool {
 	return p.Block
 }
 
+// 是否批量操作
+func (p *Action) GetBatch() bool {
+	return p.Batch
+}
+
+// 危险按钮
+func (p *Action) GetDanger() bool {
+	return p.Danger
+}
+
+// 禁用按钮
 func (p *Action) GetDisabled() bool {
 	return p.Disabled
 }
@@ -264,6 +276,16 @@ func (p *Action) SetBlock(block bool) {
 	p.Block = block
 }
 
+// 配置批量操作
+func (p *Action) SetBatch(batch bool) {
+	p.Batch = batch
+}
+
+// 危险按钮
+func (p *Action) SetDanger(danger bool) {
+	p.Danger = danger
+}
+
 // 配置按钮是否禁用
 func (p *Action) SetDisabled(disabled bool) {
 	p.Disabled = disabled
@@ -313,7 +335,6 @@ func (p *Action) SetOnlyOnIndex(value bool) {
 	p.ShowOnIndex = value
 	p.ShowOnDetail = !value
 	p.ShowOnIndexTableRow = !value
-	p.ShowOnIndexTableAlert = !value
 	p.ShowOnForm = !value
 	p.ShowOnFormExtra = !value
 	p.ShowOnDetail = !value
@@ -324,7 +345,6 @@ func (p *Action) SetOnlyOnIndex(value bool) {
 func (p *Action) SetExceptOnIndex() {
 	p.ShowOnDetail = true
 	p.ShowOnIndexTableRow = true
-	p.ShowOnIndexTableAlert = true
 	p.ShowOnForm = true
 	p.ShowOnFormExtra = true
 	p.ShowOnDetail = true
@@ -335,7 +355,6 @@ func (p *Action) SetExceptOnIndex() {
 // 只在表单页展示
 func (p *Action) SetOnlyOnForm(value bool) {
 	p.ShowOnForm = value
-	p.ShowOnIndexTableAlert = !value
 	p.ShowOnIndex = !value
 	p.ShowOnDetail = !value
 	p.ShowOnIndexTableRow = !value
@@ -346,7 +365,6 @@ func (p *Action) SetOnlyOnForm(value bool) {
 
 // 除了表单页外展示
 func (p *Action) SetExceptOnForm() {
-	p.ShowOnIndexTableAlert = true
 	p.ShowOnIndex = true
 	p.ShowOnDetail = true
 	p.ShowOnIndexTableRow = true
@@ -359,7 +377,6 @@ func (p *Action) SetExceptOnForm() {
 // 只在表单页右上角自定义区域展示
 func (p *Action) SetOnlyOnFormExtra(value bool) {
 	p.ShowOnForm = !value
-	p.ShowOnIndexTableAlert = !value
 	p.ShowOnIndex = !value
 	p.ShowOnDetail = !value
 	p.ShowOnIndexTableRow = !value
@@ -370,7 +387,6 @@ func (p *Action) SetOnlyOnFormExtra(value bool) {
 
 // 除了表单页右上角自定义区域外展示
 func (p *Action) SetExceptOnFormExtra() {
-	p.ShowOnIndexTableAlert = true
 	p.ShowOnIndex = true
 	p.ShowOnDetail = true
 	p.ShowOnIndexTableRow = true
@@ -386,7 +402,6 @@ func (p *Action) SetOnlyOnDetail(value bool) {
 	p.ShowOnDetail = value
 	p.ShowOnIndex = !value
 	p.ShowOnIndexTableRow = !value
-	p.ShowOnIndexTableAlert = !value
 	p.ShowOnForm = !value
 	p.ShowOnFormExtra = !value
 	p.ShowOnDetailExtra = !value
@@ -397,7 +412,6 @@ func (p *Action) SetExceptOnDetail() {
 	p.ShowOnIndex = true
 	p.ShowOnDetail = false
 	p.ShowOnIndexTableRow = true
-	p.ShowOnIndexTableAlert = true
 	p.ShowOnForm = true
 	p.ShowOnFormExtra = true
 	p.ShowOnDetailExtra = true
@@ -406,7 +420,6 @@ func (p *Action) SetExceptOnDetail() {
 // 只在详情页右上角自定义区域展示
 func (p *Action) SetOnlyOnDetailExtra(value bool) {
 	p.ShowOnForm = !value
-	p.ShowOnIndexTableAlert = !value
 	p.ShowOnIndex = !value
 	p.ShowOnDetail = !value
 	p.ShowOnIndexTableRow = !value
@@ -417,7 +430,6 @@ func (p *Action) SetOnlyOnDetailExtra(value bool) {
 
 // 除了详情页右上角自定义区域外展示
 func (p *Action) SetExceptOnDetailExtra() {
-	p.ShowOnIndexTableAlert = true
 	p.ShowOnIndex = true
 	p.ShowOnDetail = true
 	p.ShowOnIndexTableRow = true
@@ -432,7 +444,6 @@ func (p *Action) SetOnlyOnIndexTableRow(value bool) {
 	p.ShowOnIndexTableRow = value
 	p.ShowOnIndex = !value
 	p.ShowOnDetail = !value
-	p.ShowOnIndexTableAlert = !value
 	p.ShowOnForm = !value
 	p.ShowOnFormExtra = !value
 	p.ShowOnDetail = !value
@@ -444,31 +455,6 @@ func (p *Action) SetExceptOnIndexTableRow() {
 	p.ShowOnIndexTableRow = false
 	p.ShowOnIndex = true
 	p.ShowOnDetail = true
-	p.ShowOnIndexTableAlert = true
-	p.ShowOnForm = true
-	p.ShowOnFormExtra = true
-	p.ShowOnDetail = true
-	p.ShowOnDetailExtra = true
-}
-
-// 在表格多选弹出层展示
-func (p *Action) SetOnlyOnIndexTableAlert(value bool) {
-	p.ShowOnIndexTableAlert = value
-	p.ShowOnIndex = !value
-	p.ShowOnDetail = !value
-	p.ShowOnIndexTableRow = !value
-	p.ShowOnForm = !value
-	p.ShowOnFormExtra = !value
-	p.ShowOnDetail = !value
-	p.ShowOnDetailExtra = !value
-}
-
-// 除了表格多选弹出层外展示
-func (p *Action) SetExceptOnIndexTableAlert() {
-	p.ShowOnIndexTableAlert = false
-	p.ShowOnIndex = true
-	p.ShowOnDetail = true
-	p.ShowOnIndexTableRow = true
 	p.ShowOnForm = true
 	p.ShowOnFormExtra = true
 	p.ShowOnDetail = true
@@ -503,11 +489,6 @@ func (p *Action) SetShowOnDetailExtra() {
 // 在表格行内展示
 func (p *Action) SetShowOnIndexTableRow() {
 	p.ShowOnIndexTableRow = true
-}
-
-// 在多选弹出层展示
-func (p *Action) SetShowOnIndexTableAlert() {
-	p.ShowOnIndexTableAlert = true
 }
 
 // 判断是否在列表页展示
@@ -564,11 +545,6 @@ func (p *Action) ShownOnDetail() bool {
 // 判断是否在表格行内展示
 func (p *Action) ShownOnIndexTableRow() bool {
 	return p.ShowOnIndexTableRow
-}
-
-// 判断是否在多选弹出层展示
-func (p *Action) ShownOnIndexTableAlert() bool {
-	return p.ShowOnIndexTableAlert
 }
 
 // 判断是否在表单页右上角自定义区域展示

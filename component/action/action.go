@@ -10,6 +10,7 @@ type Component struct {
 	component.Element
 	Label             interface{} `json:"label"`
 	Block             bool        `json:"block"`
+	Batch             bool        `json:"batch"`
 	Danger            bool        `json:"danger"`
 	Disabled          bool        `json:"disabled"`
 	Ghost             bool        `json:"ghost"`
@@ -68,6 +69,13 @@ func (p *Component) SetLabel(label interface{}) *Component {
 // 将按钮宽度调整为其父宽度的选项
 func (p *Component) SetBlock(block bool) *Component {
 	p.Block = block
+
+	return p
+}
+
+// 设置批量操作
+func (p *Component) SetBatch(batch bool) *Component {
+	p.Batch = batch
 
 	return p
 }

@@ -72,8 +72,8 @@ func (p *Permission) Searches(ctx *quark.Context) []interface{} {
 func (p *Permission) Actions(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		actions.CreateModal(),
-		actions.SyncPermission(),
 		actions.BatchDelete(),
+		actions.SyncPermission(),
 		actions.EditModal(),
 		actions.Delete(),
 		actions.FormSubmit(),

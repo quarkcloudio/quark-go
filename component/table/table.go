@@ -29,7 +29,6 @@ type Component struct {
 	RowSelection     interface{}     `json:"rowSelection"`
 	Options          map[string]bool `json:"options"`
 	Search           interface{}     `json:"search"`
-	BatchActions     interface{}     `json:"batchActions"`
 	DateFormatter    string          `json:"dateFormatter"`
 	ColumnEmptyText  string          `json:"columnEmptyText"`
 	ToolBar          interface{}     `json:"toolBar"`
@@ -189,13 +188,6 @@ func (p *Component) SetToolBar(toolBar interface{}) *Component {
 // 树形栏
 func (p *Component) SetTreeBar(treeBar interface{}) *Component {
 	p.TreeBar = treeBar
-
-	return p
-}
-
-// 表格的批量操作
-func (p *Component) SetBatchActions(batchActions interface{}) *Component {
-	p.BatchActions = batchActions
 
 	return p
 }

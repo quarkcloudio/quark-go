@@ -93,13 +93,13 @@ func (p *SyncPermissionAction) Handle(ctx *quark.Context, query *gorm.DB) error 
 		}
 	}
 	if len(data) == 0 {
-		return ctx.CJSONError("无新增权限")
+		return ctx.JSONError("无新增权限")
 	}
 
 	err := query.Create(data).Error
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.CJSONOk("操作成功")
+	return ctx.JSONOk("操作成功")
 }
