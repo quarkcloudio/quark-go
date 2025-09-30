@@ -18,6 +18,14 @@ type Expandable struct {
 	ShowExpandColumn       bool          `json:"showExpandColumn,omitempty"`
 }
 
+type Pagination struct {
+	Current         int   `json:"current,omitempty"`
+	PageSize        int   `json:"pageSize,omitempty"`
+	Total           int   `json:"total,omitempty"`
+	DefaultCurrent  int   `json:"defaultCurrent,omitempty"`
+	PageSizeOptions []int `json:"pageSizeOptions,omitempty"`
+}
+
 type Component struct {
 	component.Element
 	RowKey           string          `json:"rowKey"`
@@ -38,7 +46,7 @@ type Component struct {
 	Scroll           interface{}     `json:"scroll"`
 	Striped          bool            `json:"striped"`
 	Datasource       interface{}     `json:"datasource"`
-	Pagination       interface{}     `json:"pagination"`
+	Pagination       *Pagination     `json:"pagination"`
 	Polling          int             `json:"polling"`
 }
 
@@ -229,12 +237,12 @@ func (p *Component) SetDatasource(datasource interface{}) *Component {
 
 // 表格分页
 func (p *Component) SetPagination(current int, pageSize int, total int, defaultCurrent int, pageSizeOptions []int) *Component {
-	p.Pagination = map[string]interface{}{
-		"current":         current,
-		"pageSize":        pageSize,
-		"total":           total,
-		"defaultCurrent":  defaultCurrent,
-		"pageSizeOptions": pageSizeOptions,
+	p.Pagination = &Pagination{
+		Current:         current,
+		PageSize:        pageSize,
+		Total:           total,
+		DefaultCurrent:  defaultCurrent,
+		PageSizeOptions: pageSizeOptions,
 	}
 
 	return p
