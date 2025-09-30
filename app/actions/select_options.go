@@ -12,5 +12,5 @@ type SelectOptionsAction struct {
 
 // 执行行为句柄
 func (p *SelectOptionsAction) Handle(ctx *quark.Context, query *gorm.DB) error {
-	return ctx.CJSONOk("操作成功")
+	return ctx.JSONOk("操作成功")
 }

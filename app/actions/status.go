@@ -51,7 +51,7 @@ func (p *StatusAction) GetApiParams() []string {
 func (p *StatusAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 	status := ctx.Query("status")
 	if status == "" {
-		return ctx.CJSONError("参数错误")
+		return ctx.JSONError("参数错误")
 	}
 
 	var fieldStatus int
@@ -63,8 +63,8 @@ func (p *StatusAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 
 	err := query.Update("status", fieldStatus).Error
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.CJSONOk("操作成功")
+	return ctx.JSONOk("操作成功")
 }

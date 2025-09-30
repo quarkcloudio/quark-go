@@ -142,14 +142,14 @@ func (p *DataScopeAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 	var form Form
 	err := ctx.Bind(&form)
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	// 更新角色数据权限
 	err = service.NewRoleService().UpdateRoleDataScope(form.Id, form.DataScope, form.DepartmentIds)
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.CJSONOk("操作成功")
+	return ctx.JSONOk("操作成功")
 }

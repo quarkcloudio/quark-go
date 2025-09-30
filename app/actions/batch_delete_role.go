@@ -54,12 +54,12 @@ func (p *BatchDeleteRoleAction) GetApiParams() []string {
 func (p *BatchDeleteRoleAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 	id := ctx.Query("id")
 	if id == "" {
-		return ctx.CJSONError("参数错误")
+		return ctx.JSONError("参数错误")
 	}
 
 	err := query.Delete("").Error
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	ids := strings.Split(id.(string), ",")
@@ -67,7 +67,7 @@ func (p *BatchDeleteRoleAction) Handle(ctx *quark.Context, query *gorm.DB) error
 		for _, v := range ids {
 			idInt, err := strconv.Atoi(v)
 			if err != nil {
-				return ctx.CJSONError(err.Error())
+				return ctx.JSONError(err.Error())
 			}
 			// 清理casbin里的角色
 			service.NewCasbinService().RemoveRoleMenuAndPermissions(idInt)
@@ -75,10 +75,10 @@ func (p *BatchDeleteRoleAction) Handle(ctx *quark.Context, query *gorm.DB) error
 	} else {
 		idInt, err := strconv.Atoi(id.(string))
 		if err != nil {
-			return ctx.CJSONError(err.Error())
+			return ctx.JSONError(err.Error())
 		}
 		// 清理casbin里的角色
 		service.NewCasbinService().RemoveRoleMenuAndPermissions(idInt)
 	}
-	return ctx.CJSONOk("操作成功")
+	return ctx.JSONOk("操作成功")
 }

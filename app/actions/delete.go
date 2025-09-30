@@ -52,8 +52,8 @@ func (p *DeleteAction) Init(ctx *quark.Context) interface{} {
 func (p *DeleteAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 	err := query.Delete("").Error
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.CJSONOk("操作成功")
+	return ctx.JSONOk("操作成功")
 }

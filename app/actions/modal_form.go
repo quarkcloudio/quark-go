@@ -65,5 +65,5 @@ func (p *ModalFormAction) Data(ctx *quark.Context) map[string]interface{} {
 
 // 执行行为句柄
 func (p *ModalFormAction) Handle(ctx *quark.Context, query *gorm.DB) error {
-	return ctx.CJSONError("method not implemented")
+	return ctx.JSONError("method not implemented")
 }

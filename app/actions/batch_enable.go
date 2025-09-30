@@ -48,7 +48,7 @@ func (p *BatchEnableAction) GetApiParams() []string {
 func (p *BatchEnableAction) Handle(ctx *quark.Context, model *gorm.DB) error {
 	err := model.Update("status", 1).Error
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
-	return ctx.CJSONOk("操作成功")
+	return ctx.JSONOk("操作成功")
 }
