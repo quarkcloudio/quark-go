@@ -161,5 +161,5 @@ func (p *ActionRequest) Values(ctx *quark.Context) error {
 		}
 	}
 
-	return ctx.CJSONOk("获取成功", data)
+	return ctx.JSONOk("获取成功", data)
 }

@@ -142,5 +142,5 @@ func (p *EditRequest) Values(ctx *quark.Context) error {
 		data[k] = v
 	}
 
-	return ctx.CJSONOk("获取成功", data)
+	return ctx.JSONOk("获取成功", data)
 }

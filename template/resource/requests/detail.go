@@ -160,5 +160,5 @@ func (p *DetailRequest) Values(ctx *quark.Context) error {
 	// 显示前回调
 	data = template.BeforeDetailShowing(ctx, data)
 
-	return ctx.CJSONOk("获取成功", data)
+	return ctx.JSONOk("获取成功", data)
 }

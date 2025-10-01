@@ -19,12 +19,12 @@ func (p *EditableRequest) Handle(ctx *quark.Context) error {
 	// 获取所有Query数据
 	data := ctx.AllQuerys()
 	if data == nil {
-		return ctx.CJSONError("参数错误")
+		return ctx.JSONError("参数错误")
 	}
 
 	id = data["id"]
 	if id == nil {
-		return ctx.CJSONError("id不能为空")
+		return ctx.JSONError("id不能为空")
 	}
 
 	// 模版实例
@@ -52,13 +52,13 @@ func (p *EditableRequest) Handle(ctx *quark.Context) error {
 	}
 
 	if field == "" || value == nil {
-		return ctx.CJSONError("参数错误")
+		return ctx.JSONError("参数错误")
 	}
 
 	// 表格行内编辑执行完之前回调
 	err := template.BeforeEditable(ctx, id, field, value)
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	// 创建表格行内编辑查询
@@ -67,14 +67,14 @@ func (p *EditableRequest) Handle(ctx *quark.Context) error {
 	// 更新数据
 	err = query.Update(field, value).Error
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	// 行为执行后回调
 	err = template.AfterEditable(ctx, id, field, value)
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.CJSONOk("操作成功")
+	return ctx.JSONOk("操作成功")
 }

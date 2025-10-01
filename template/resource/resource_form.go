@@ -152,7 +152,7 @@ func (p *Template) AfterSaved(ctx *quark.Context, id int, data map[string]interf
 // 保存数据后跳转回调
 func (p *Template) AfterSavedRedirectTo(ctx *quark.Context, id int, data map[string]interface{}, err error) error {
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	indexPath := reflect.
@@ -161,5 +161,5 @@ func (p *Template) AfterSavedRedirectTo(ctx *quark.Context, id int, data map[str
 		FieldByName("IndexPath").
 		String()
 
-	return ctx.CJSONRedirectTo("操作成功", strings.Replace("/layout/index?api="+indexPath, ":resource", ctx.Param("resource"), -1))
+	return ctx.JSONRedirectTo("操作成功", strings.Replace("/layout/index?api="+indexPath, ":resource", ctx.Param("resource"), -1))
 }

@@ -19,12 +19,12 @@ func (p *UpdateRequest) Handle(ctx *quark.Context) error {
 	// 解析数据
 	err := json.Unmarshal(ctx.Body(), &data)
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	// 验证参数合法性
 	if data["id"] == "" {
-		return ctx.CJSONError("参数错误")
+		return ctx.JSONError("参数错误")
 	}
 
 	// 模版实例
@@ -36,13 +36,13 @@ func (p *UpdateRequest) Handle(ctx *quark.Context) error {
 	// 验证数据合法性
 	validator := template.ValidatorForUpdate(ctx, data)
 	if validator != nil {
-		return ctx.CJSONError(validator.Error())
+		return ctx.JSONError(validator.Error())
 	}
 
 	// 保存前回调
 	data, err = template.BeforeSaving(ctx, data)
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	// 重组数据

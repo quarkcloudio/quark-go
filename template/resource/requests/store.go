@@ -28,13 +28,13 @@ func (p *StoreRequest) Handle(ctx *quark.Context, data map[string]interface{}) e
 	// 验证数据合法性
 	validator := template.ValidatorForCreation(ctx, data)
 	if validator != nil {
-		return ctx.CJSONError(validator.Error())
+		return ctx.JSONError(validator.Error())
 	}
 
 	// 保存前回调
 	data, err := template.BeforeSaving(ctx, data)
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	// 重组数据
@@ -80,7 +80,7 @@ func (p *StoreRequest) Handle(ctx *quark.Context, data map[string]interface{}) e
 		Elem().
 		FieldByName("Id")
 	if !reflectId.IsValid() {
-		return ctx.CJSONError("参数错误")
+		return ctx.JSONError("参数错误")
 	}
 
 	id := int(reflectId.Int())

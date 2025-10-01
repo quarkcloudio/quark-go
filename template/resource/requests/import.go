@@ -42,13 +42,13 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 
 	// 判断参数
 	if len(requestData.FileId) == 0 {
-		return ctx.CJSONError("参数错误")
+		return ctx.JSONError("参数错误")
 	}
 
 	// 判断参数
 	fileId := requestData.FileId[0].Id
 	if fileId == 0 {
-		return ctx.CJSONError("参数错误")
+		return ctx.JSONError("参数错误")
 	}
 
 	// 模版实例
@@ -63,7 +63,7 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 	// 获取导入数据
 	importData, err := service.NewAttachmentService().GetExcelData(fileId)
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	// 表格头部
@@ -183,7 +183,7 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 		if !file.IsExist(filePath) {
 			err := os.MkdirAll(filePath, 0666)
 			if err != nil {
-				return ctx.CJSONError(err.Error())
+				return ctx.JSONError(err.Error())
 			}
 		}
 
@@ -205,7 +205,7 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 			},
 		})
 		if err != nil {
-			return ctx.CJSONError(err.Error())
+			return ctx.JSONError(err.Error())
 		}
 
 		// 创建数据
@@ -214,7 +214,7 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 				f.SetCellValue("Sheet1", excel.GenerateColumnLabel(i)+strconv.Itoa(k+2), v[i-1])
 				if i == len(v) {
 					if err := f.SetCellStyle("Sheet1", excel.GenerateColumnLabel(i)+strconv.Itoa(k+2), excel.GenerateColumnLabel(i)+strconv.Itoa(k+2), style); err != nil {
-						return ctx.CJSONError(err.Error())
+						return ctx.JSONError(err.Error())
 					}
 				}
 			}
@@ -222,7 +222,7 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 
 		f.SetActiveSheet(index)
 		if err := f.SaveAs(filePath + fileName); err != nil {
-			return ctx.CJSONError(err.Error())
+			return ctx.JSONError(err.Error())
 		}
 
 		tpl1 := (&tpl.Component{}).
@@ -254,7 +254,7 @@ func (p *ImportRequest) Handle(ctx *quark.Context, indexRoute string) error {
 		return ctx.JSON(200, component)
 	}
 
-	return ctx.CJSONRedirectTo("操作成功", strings.Replace("/layout/index?api="+indexRoute, ":resource", ctx.Param("resource"), -1))
+	return ctx.JSONRedirectTo("操作成功", strings.Replace("/layout/index?api="+indexRoute, ":resource", ctx.Param("resource"), -1))
 }
 
 // 将表格数据转换成表单数据
