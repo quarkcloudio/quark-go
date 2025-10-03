@@ -192,7 +192,7 @@ func (p *User) Actions(ctx *quark.Context) []interface{} {
 		actions.CreateModal(),
 		actions.BatchDelete(),
 		actions.Import(),
-		actions.DetailModal(),
+		actions.DetailDrawer(),
 		actions.More().
 			SetActions([]interface{}{
 				actions.EditModal(),

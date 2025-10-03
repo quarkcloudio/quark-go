@@ -82,10 +82,10 @@ func (p *Role) Searches(ctx *quark.Context) []interface{} {
 // 行为
 func (p *Role) Actions(ctx *quark.Context) []interface{} {
 	return []interface{}{
-		actions.CreateLink(),
+		actions.CreateModal(),
 		actions.BatchDeleteRole(),
 		actions.DataScope(),
-		actions.EditLink(),
+		actions.EditModal(),
 		actions.DeleteRole(),
 		actions.FormSubmit(),
 		actions.FormReset(),
