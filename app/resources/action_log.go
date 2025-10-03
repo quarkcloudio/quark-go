@@ -1,8 +1,6 @@
 package resources
 
 import (
-	"strconv"
-
 	"github.com/quarkcloudio/quark-go/v4"
 	"github.com/quarkcloudio/quark-go/v4/app/actions"
 	"github.com/quarkcloudio/quark-go/v4/app/searches"
@@ -44,7 +42,7 @@ func (p *ActionLog) Fields(ctx *quark.Context) []interface{} {
 			if err != nil {
 				return ""
 			}
-			return "账号：<a href='#${enginePath}?api=/api/admin/user/detail&id=" + strconv.Itoa(userInfo.Id) + "'>" + userInfo.Username + "</a><br/>昵称：" + userInfo.Nickname
+			return "账号：" + userInfo.Username + "<br/>昵称：" + userInfo.Nickname
 		}),
 		field.Text("url", "行为").SetEllipsis(true),
 		field.Text("ip", "IP"),

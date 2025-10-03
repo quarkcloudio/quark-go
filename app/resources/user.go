@@ -2,7 +2,6 @@ package resources
 
 import (
 	"encoding/json"
-	"strconv"
 
 	"github.com/quarkcloudio/quark-go/v4"
 	"github.com/quarkcloudio/quark-go/v4/app/actions"
@@ -87,9 +86,7 @@ func (p *User) Fields(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		field.ID("id", "ID"),
 		field.Image("avatar", "头像"),
-		field.Text("username", "用户名", func(row map[string]interface{}) interface{} {
-			return "<a href='#${enginePath}?api=/api/admin/user/edit&id=" + strconv.Itoa(row["id"].(int)) + "'>" + row["username"].(string) + "</a>"
-		}).
+		field.Text("username", "用户名").
 			SetRules([]rule.Rule{
 				rule.Required("用户名必须填写"),
 				rule.Min(6, "用户名不能少于6个字符"),
@@ -192,12 +189,8 @@ func (p *User) Actions(ctx *quark.Context) []interface{} {
 		actions.CreateModal(),
 		actions.BatchDelete(),
 		actions.Import(),
-		actions.DetailDrawer(),
-		actions.More().
-			SetActions([]interface{}{
-				actions.EditModal(),
-				actions.DeleteSpecial(),
-			}),
+		actions.EditModal(),
+		actions.DeleteSpecial(),
 		actions.FormSubmit(),
 		actions.FormReset(),
 		actions.FormBack(),
