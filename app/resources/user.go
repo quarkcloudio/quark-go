@@ -189,13 +189,13 @@ func (p *User) Searches(ctx *quark.Context) []interface{} {
 // 行为
 func (p *User) Actions(ctx *quark.Context) []interface{} {
 	return []interface{}{
-		actions.CreateLink(),
+		actions.CreateModal(),
 		actions.BatchDelete(),
 		actions.Import(),
-		actions.DetailLink(),
+		actions.DetailModal(),
 		actions.More().
 			SetActions([]interface{}{
-				actions.EditLink(),
+				actions.EditModal(),
 				actions.DeleteSpecial(),
 			}),
 		actions.FormSubmit(),
