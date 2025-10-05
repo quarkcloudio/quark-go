@@ -186,10 +186,10 @@ func (p *User) Searches(ctx *quark.Context) []interface{} {
 // 行为
 func (p *User) Actions(ctx *quark.Context) []interface{} {
 	return []interface{}{
-		actions.CreateModal(),
+		actions.CreateDrawer(),
 		actions.BatchDelete(),
 		actions.Import(),
-		actions.EditModal(),
+		actions.EditDrawer(),
 		actions.DeleteSpecial(),
 		actions.FormSubmit(),
 		actions.FormReset(),
