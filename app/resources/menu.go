@@ -105,7 +105,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 						}).
 						SetEditable(true).
 						SetHelp("前端路由").
-						SetWidth(400),
+						SetWidth("400px"),
 				}
 			}),
 		field.Dependency().
@@ -125,7 +125,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 						}).
 						SetEditable(true).
 						SetHelp("前端路由或后端api").
-						SetWidth(400).
+						SetWidth("400px").
 						OnlyOnForms(),
 				}
 			}),
@@ -135,8 +135,8 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 					field.Transfer("permission_ids", "绑定权限").
 						SetDataSource(permissions).
 						SetListStyle(map[string]interface{}{
-							"width":  320,
-							"height": 300,
+							"width":  "320px",
+							"height": "300px",
 						}).
 						SetShowSearch(true).
 						OnlyOnForms(),
