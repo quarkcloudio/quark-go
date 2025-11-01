@@ -63,23 +63,6 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 				}).
 				SetDefault("admin").
 				OnlyOnForms(),
-			field.Icon("icon", "图标").OnlyOnForms(),
-		}),
-		field.Group([]interface{}{
-			field.Number("sort", "排序").
-				SetEditable(true).
-				SetDefault(0),
-			field.TreeSelect("pid", "父节点").
-				SetTreeData(menus, -1, "pid", "name", "id").
-				SetDefault(0).
-				OnlyOnForms(),
-			field.Switch("status", "状态").
-				SetTrueValue("正常").
-				SetFalseValue("禁用").
-				SetEditable(true).
-				SetDefault(true),
-		}),
-		field.Group([]interface{}{
 			field.Radio("type", "类型").
 				SetOptions([]radio.Option{
 					field.RadioOption("目录", 1),
@@ -90,6 +73,23 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 					rule.Required("类型必须选择"),
 				}).
 				SetDefault(1),
+		}),
+		field.Group([]interface{}{
+			field.Icon("icon", "图标").OnlyOnForms(),
+			field.Number("sort", "排序").
+				SetEditable(true).
+				SetDefault(0),
+			field.TreeSelect("pid", "父节点").
+				SetTreeData(menus, -1, "pid", "name", "id").
+				SetDefault(0).
+				OnlyOnForms(),
+		}),
+		field.Group([]interface{}{
+			field.Switch("status", "状态").
+				SetTrueValue("正常").
+				SetFalseValue("禁用").
+				SetEditable(true).
+				SetDefault(true),
 			field.Switch("show", "显示").
 				SetTrueValue("显示").
 				SetFalseValue("隐藏").
