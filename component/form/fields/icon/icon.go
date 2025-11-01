@@ -94,7 +94,7 @@ func (p *Component) Init() *Component {
 	p.AllowClear = true
 	p.Column = (&table.Column{}).Init()
 	p.Options = []string{
-		"", "ant-design:database-outlined", "ant-design:mobile-outlined", "ant-design:tablet-outlined", "ant-design:red-envelope-outlined",
+		"ant-design:database-outlined", "ant-design:mobile-outlined", "ant-design:tablet-outlined", "ant-design:red-envelope-outlined",
 		"ant-design:book-outlined", "ant-design:file-done-outlined", "ant-design:reconciliation-outlined",
 		"ant-design:file-sync-outlined", "ant-design:file-search-outlined", "ant-design:solution-outlined", "ant-design:file-protect-outlined",
 		"ant-design:file-add-outlined", "ant-design:file-excel-outlined", "ant-design:file-exclamation-outlined", "ant-design:file-pdf-outlined",
@@ -152,7 +152,6 @@ func (p *Component) Init() *Component {
 	}
 
 	p.SetWidth("200px")
-	p.SetDefault("")
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
