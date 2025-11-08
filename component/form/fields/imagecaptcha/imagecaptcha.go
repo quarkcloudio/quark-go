@@ -70,7 +70,7 @@ type Component struct {
 	DefaultValue interface{}            `json:"defaultValue,omitempty"` // 默认的选中项
 	Disabled     interface{}            `json:"disabled,omitempty"`     // 禁用
 	Id           string                 `json:"id,omitempty"`           // 输入框的 id
-	MaxLength    int                    `json:"maxLength,omitempty"`    //最大长度
+	MaxLength    int                    `json:"maxLength,omitempty"`    // 最大长度
 	ShowCount    bool                   `json:"showCount,omitempty"`    // 是否展示字数
 	Status       string                 `json:"status,omitempty"`       // 设置校验状态,'error' | 'warning'
 	Prefix       interface{}            `json:"prefix,omitempty"`       // 带有前缀图标的 input

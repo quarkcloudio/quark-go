@@ -70,7 +70,7 @@ type Component struct {
 	Placeholder  string                 `json:"placeholder,omitempty"`  // 占位符
 	Size         string                 `json:"size"`                   // 大小，large | middle | small
 	AllowClear   bool                   `json:"allowClear"`             // 是否支持清除，默认true
-	AllowSearch  bool                   `json:"allowSearch"`            // 是否支持搜索，默认true
+	ShowSearch   bool                   `json:"showSearch"`             // 是否支持搜索，默认true
 	Options      []string               `json:"options"`                // 可选项数据源
 }
 
@@ -90,7 +90,7 @@ func (p *Component) Init() *Component {
 	p.ShowOnUpdate = true
 	p.ShowOnExport = true
 	p.ShowOnImport = true
-	p.AllowSearch = true
+	p.ShowSearch = true
 	p.AllowClear = true
 	p.Column = (&table.Column{}).Init()
 	p.Options = []string{
@@ -259,13 +259,13 @@ func (p *Component) SetRequired() *Component {
 
 // 是否支持清除，默认true
 func (p *Component) SetAllowClear(val bool) *Component {
-	p.Required = val
+	p.AllowClear = val
 	return p
 }
 
 // 是否支持搜索，默认true
-func (p *Component) SetAllowSearch(val bool) *Component {
-	p.Required = val
+func (p *Component) SetShowSearch(val bool) *Component {
+	p.ShowSearch = val
 	return p
 }
 
