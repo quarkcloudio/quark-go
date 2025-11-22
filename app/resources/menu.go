@@ -84,18 +84,6 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 				SetDefault(0).
 				OnlyOnForms(),
 		}),
-		field.Group([]interface{}{
-			field.Switch("status", "状态").
-				SetTrueValue("正常").
-				SetFalseValue("禁用").
-				SetEditable(true).
-				SetDefault(true),
-			field.Switch("show", "显示").
-				SetTrueValue("显示").
-				SetFalseValue("隐藏").
-				SetEditable(true).
-				SetDefault(true),
-		}),
 		field.Dependency().
 			SetWhen("type", 1, func() interface{} {
 				return []interface{}{
@@ -129,6 +117,18 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 						OnlyOnForms(),
 				}
 			}),
+		field.Group([]interface{}{
+			field.Switch("show", "显示").
+				SetTrueValue("显示").
+				SetFalseValue("隐藏").
+				SetEditable(true).
+				SetDefault(true),
+			field.Switch("status", "状态").
+				SetTrueValue("正常").
+				SetFalseValue("禁用").
+				SetEditable(true).
+				SetDefault(true),
+		}),
 		field.Dependency().
 			SetWhen("type", 3, func() interface{} {
 				return []interface{}{
