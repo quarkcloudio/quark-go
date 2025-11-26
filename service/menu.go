@@ -78,7 +78,7 @@ func (p *MenuService) FindParentTreeNode(chrildPid int) (list []model.Menu) {
 }
 
 // 通过用户ID获取用户路由
-func (p *MenuService) GetRoutesByUserId(routeType string, userId int) (menuList interface{}, err error) {
+func (p *MenuService) GetRoutesByUserId(userId int) (menuList interface{}, err error) {
 	menus := []model.Menu{}
 
 	if userId == 1 {
@@ -89,7 +89,7 @@ func (p *MenuService) GetRoutesByUserId(routeType string, userId int) (menuList 
 			Order("sort asc").
 			Find(&menus)
 
-		return p.BuildRoutes(routeType, menus)
+		return p.BuildRoutes(menus)
 	}
 
 	var menuIds []int
@@ -129,7 +129,7 @@ func (p *MenuService) GetRoutesByUserId(routeType string, userId int) (menuList 
 		Order("sort asc").
 		Find(&menus)
 
-	return p.BuildRoutes(routeType, menus)
+	return p.BuildRoutes(menus)
 }
 
 // 解析菜单
@@ -161,7 +161,7 @@ func (p *MenuService) GetRoutesByUserId(routeType string, userId int) (menuList 
 //			},
 //		},
 //	}
-func (p *MenuService) BuildRoutes(routeType string, menus []model.Menu) (menuList interface{}, Error error) {
+func (p *MenuService) BuildRoutes(menus []model.Menu) (menuList interface{}, Error error) {
 	userRoutes := []response.UserRoute{}
 
 	for _, v := range menus {
@@ -177,6 +177,9 @@ func (p *MenuService) BuildRoutes(routeType string, menus []model.Menu) (menuLis
 				Pid:       v.Pid,
 				Name:      v.Path,
 				Type:      v.Type,
+				IsEngine:  v.IsEngine,
+				IsLink:    v.IsLink,
+				IsFrame:   v.IsFrame,
 				Path:      v.Path,
 				Component: v.Component,
 				Meta: response.RouteMeta{

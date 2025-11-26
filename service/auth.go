@@ -144,7 +144,7 @@ func (p *AuthService) GetUserRoutes(routeType string) (routes interface{}, err e
 	if err != nil {
 		return
 	}
-	routes, err = NewMenuService().GetRoutesByUserId(routeType, userId)
+	routes, err = NewMenuService().GetRoutesByUserId(userId)
 	if err != nil {
 		return
 	}
