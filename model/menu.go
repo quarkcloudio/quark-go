@@ -45,10 +45,12 @@ func (p *Menu) Seeder() {
 		{Id: 13, Name: "附件空间", GuardName: "admin", Icon: "ant-design:folder-outlined", Type: 1, Pid: 0, Sort: 100, Path: "attachment", Query: "", Component: "", Show: 1, IsEngine: 0, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
 		{Id: 14, Name: "文件管理", GuardName: "admin", Icon: "ant-design:file-outlined", Type: 2, Pid: 13, Sort: 0, Path: "file", Query: "{\"api\":\"/api/admin/file/index\"}", Component: "", Show: 1, IsEngine: 1, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
 		{Id: 15, Name: "图片管理", GuardName: "admin", Icon: "ant-design:picture-outlined", Type: 2, Pid: 13, Sort: 0, Path: "image", Query: "{\"api\":\"/api/admin/image/index\"}", Component: "", Show: 1, IsEngine: 1, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
-		{Id: 16, Name: "我的账号", GuardName: "admin", Icon: "ant-design:user-outlined", Type: 1, Pid: 0, Sort: 100, Path: "account", Query: "", Component: "", Show: 1, IsEngine: 0, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
+		{Id: 16, Name: "我的账号", GuardName: "admin", Icon: "ant-design:user-outlined", Type: 1, Pid: 0, Sort: 110, Path: "account", Query: "", Component: "", Show: 1, IsEngine: 0, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
 		{Id: 17, Name: "个人设置", GuardName: "admin", Icon: "ant-design:user-switch-outlined", Type: 2, Pid: 16, Sort: 0, Path: "setting", Query: "{\"api\":\"/api/admin/account/form\"}", Component: "", Show: 1, IsEngine: 1, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
 		{Id: 18, Name: "部门列表", GuardName: "admin", Icon: "ant-design:apartment-outlined", Type: 2, Pid: 3, Sort: 0, Path: "department", Query: "{\"api\":\"/api/admin/department/index\"}", Component: "", Show: 1, IsEngine: 1, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
 		{Id: 19, Name: "职位列表", GuardName: "admin", Icon: "ant-design:bars-outlined", Type: 2, Pid: 3, Sort: 0, Path: "position", Query: "{\"api\":\"/api/admin/position/index\"}", Component: "", Show: 1, IsEngine: 1, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
+		{Id: 20, Name: "组件调试", GuardName: "admin", Icon: "ant-design:appstore-outlined", Type: 1, Pid: 0, Sort: 100, Path: "develop", Query: "", Component: "", Show: 1, IsEngine: 0, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
+		{Id: 21, Name: "组件开发", GuardName: "admin", Icon: "ant-design:experiment-outlined", Type: 2, Pid: 21, Sort: 0, Path: "index", Query: "", Component: "develop/index", Show: 1, IsEngine: 0, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
 	}
 
 	db.Client.Create(&seeders)
