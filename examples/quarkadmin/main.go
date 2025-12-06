@@ -13,7 +13,7 @@ func main() {
 	b := app.New(&app.Config{
 		AppKey: "123456",
 		DBConfig: &app.DBConfig{
-			Dialector: mysql.Open("root:fK7xPGJi1gJfIief@tcp(localhost:3306)/quarkgo?charset=utf8&parseTime=True&loc=Local"),
+			Dialector: mysql.Open("root:fK7xPGJi1gJfIief@tcp(localhost:3306)/quarkcloud?charset=utf8&parseTime=True&loc=Local"),
 			Opts:      &gorm.Config{},
 		},
 	})
