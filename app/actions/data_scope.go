@@ -119,7 +119,7 @@ func (p *DataScopeAction) Data(ctx *quark.Context) map[string]interface{} {
 		return nil
 	}
 
-	departmentIds, err := service.NewCasbinService().GetRoleDepartmentIds(idInt)
+	departmentIds, err := service.NewPermissionService().GetRoleDepartmentIds(idInt)
 	if err != nil {
 		return nil
 	}

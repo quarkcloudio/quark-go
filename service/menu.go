@@ -93,7 +93,7 @@ func (p *MenuService) GetRoutesByUserId(userId int) (menuList interface{}, err e
 	}
 
 	var menuIds []int
-	roleHasMenus, err := NewCasbinService().GetUserMenus(userId)
+	roleHasMenus, err := NewPermissionService().GetUserMenus(userId)
 	if err != nil {
 		return menuList, err
 	}

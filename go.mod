@@ -3,7 +3,6 @@ module github.com/quarkcloudio/quark-go/v4
 go 1.18
 
 require (
-	github.com/casbin/casbin/v2 v2.71.1
 	github.com/cloudwego/hertz v0.6.6
 	github.com/dchest/captcha v1.0.0
 	github.com/derekstavis/go-qs v0.0.0-20180720192143-9eef69e6c4e7

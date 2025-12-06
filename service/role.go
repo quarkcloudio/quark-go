@@ -25,9 +25,9 @@ func (p *RoleService) UpdateRoleDataScope(roleId int, dataScope int, departmentI
 	err = db.Client.Model(&model.Role{}).Where("id = ?", roleId).Update("data_scope", dataScope).Error
 	if err == nil {
 		if dataScope == 2 {
-			NewCasbinService().AddDepartmentToRole(roleId, departmentIds)
+			NewPermissionService().AddDepartmentToRole(roleId, departmentIds)
 		} else {
-			NewCasbinService().RemoveRoleDepartments(roleId)
+			NewPermissionService().RemoveRoleDepartments(roleId)
 		}
 	}
 

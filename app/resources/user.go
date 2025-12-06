@@ -201,7 +201,7 @@ func (p *User) Actions(ctx *quark.Context) []interface{} {
 // 编辑页面显示前回调
 func (p *User) BeforeEditing(ctx *quark.Context, data map[string]interface{}) map[string]interface{} {
 	delete(data, "password")
-	roles, err := service.NewCasbinService().GetUserRoles(data["id"].(int))
+	roles, err := service.NewPermissionService().GetUserRoles(data["id"].(int))
 	if err == nil {
 		roleIds := []int{}
 		for _, role := range roles {
@@ -232,7 +232,7 @@ func (p *User) AfterSaved(ctx *quark.Context, id int, data map[string]interface{
 				roleId := int(v.(float64))
 				ids = append(ids, roleId)
 			}
-			err := service.NewCasbinService().AddUserRole(id, ids)
+			err := service.NewPermissionService().AddUserRole(id, ids)
 			if err != nil {
 				return err
 			}

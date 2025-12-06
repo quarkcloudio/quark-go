@@ -70,8 +70,8 @@ func (p *DeleteRoleAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 				return ctx.JSONError(err.Error())
 			}
 
-			// 清理casbin里的角色
-			service.NewCasbinService().RemoveRoleMenuAndPermissions(idInt)
+			// 清理角色
+			service.NewPermissionService().RemoveRoleMenuAndPermissions(idInt)
 		}
 	} else {
 		idInt, err := strconv.Atoi(id.(string))
@@ -79,8 +79,8 @@ func (p *DeleteRoleAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 			return ctx.JSONError(err.Error())
 		}
 
-		// 清理casbin里的角色
-		service.NewCasbinService().RemoveRoleMenuAndPermissions(idInt)
+		// 清理角色
+		service.NewPermissionService().RemoveRoleMenuAndPermissions(idInt)
 	}
 
 	return ctx.JSONOk("操作成功")

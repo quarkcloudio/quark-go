@@ -99,7 +99,7 @@ func (p *Role) BeforeEditing(ctx *quark.Context, data map[string]interface{}) ma
 	id := ctx.Query("id")
 	idInt, err := strconv.Atoi(id.(string))
 	if err == nil {
-		menus, _ := service.NewCasbinService().GetRoleMenus(idInt)
+		menus, _ := service.NewPermissionService().GetRoleMenus(idInt)
 		ids := []int{}
 		for _, v := range menus {
 			ids = append(ids, v.Id)
@@ -118,7 +118,7 @@ func (p *Role) AfterSaved(ctx *quark.Context, id int, data map[string]interface{
 				menuId := int(v.(float64))
 				ids = append(ids, menuId)
 			}
-			err = service.NewCasbinService().AddMenuAndPermissionToRole(id, ids)
+			err = service.NewPermissionService().AddMenuAndPermissionToRole(id, ids)
 			if err != nil {
 				return err
 			}

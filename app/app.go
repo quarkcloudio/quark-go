@@ -2,7 +2,6 @@ package app
 
 import (
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/gorilla/sessions"
@@ -115,16 +114,20 @@ func Install() {
 	// 迁移数据
 	db.Client.AutoMigrate(
 		&model.ActionLog{},
-		&model.User{},
-		&model.Config{},
-		&model.Menu{},
-		&model.Attachment{},
 		&model.AttachmentCategory{},
-		&model.Permission{},
-		&model.Role{},
+		&model.Attachment{},
+		&model.Config{},
 		&model.Department{},
+		&model.Menu{},
+		&model.MenuPermission{},
+		&model.Permission{},
 		&model.Position{},
-		&model.CasbinRule{},
+		&model.Role{},
+		&model.RoleDepartment{},
+		&model.RoleMenu{},
+		&model.RolePermission{},
+		&model.UserRole{},
+		&model.User{},
 	)
 
 	// 如果超级管理员不存在，初始化数据库数据
@@ -189,25 +192,25 @@ func Middleware(ctx *quark.Context) error {
 		return ctx.JSON(200, quark.ErrorByCode(quark.StatusUnauthorized))
 	}
 
-	casbinService := service.NewCasbinService()
+	permissionService := service.NewPermissionService()
 	if adminInfo.Id != 1 {
-		result1, err := casbinService.Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.FullPath(), "Any")
-		if err != nil {
+		result1 := permissionService.HasAnyPermissions(adminInfo.Id, ctx.FullPath(), "Any")
+		if !result1 {
 			return ctx.JSON(200, quark.ErrorByCode(quark.StatusForbidden))
 		}
 
-		result2, err := casbinService.Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.FullPath(), ctx.Method())
-		if err != nil {
+		result2 := permissionService.HasAnyPermissions(adminInfo.Id, ctx.FullPath(), ctx.Method())
+		if !result2 {
 			return ctx.JSON(200, quark.ErrorByCode(quark.StatusForbidden))
 		}
 
-		result3, err := casbinService.Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.Path(), "Any")
-		if err != nil {
+		result3 := permissionService.HasAnyPermissions(adminInfo.Id, ctx.Path(), "Any")
+		if !result3 {
 			return ctx.JSON(200, quark.ErrorByCode(quark.StatusForbidden))
 		}
 
-		result4, err := casbinService.Enforce("admin|"+strconv.Itoa(adminInfo.Id), ctx.Path(), ctx.Method())
-		if err != nil {
+		result4 := permissionService.HasAnyPermissions(adminInfo.Id, ctx.Path(), ctx.Method())
+		if !result4 {
 			return ctx.JSON(200, quark.ErrorByCode(quark.StatusForbidden))
 		}
 

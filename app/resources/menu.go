@@ -171,7 +171,7 @@ func (p *Menu) BeforeEditing(ctx *quark.Context, data map[string]interface{}) ma
 	idInt, err := strconv.Atoi(id.(string))
 	if id != "" && err == nil {
 		permissionIds := []int{}
-		permissions, err := service.NewCasbinService().GetMenuPermissions(idInt)
+		permissions, err := service.NewPermissionService().GetMenuPermissions(idInt)
 		if err == nil {
 			for _, v := range permissions {
 				permissionIds = append(permissionIds, v.Id)
@@ -185,7 +185,7 @@ func (p *Menu) BeforeEditing(ctx *quark.Context, data map[string]interface{}) ma
 // 保存后回调
 func (p *Menu) AfterSaved(ctx *quark.Context, id int, data map[string]interface{}, result *gorm.DB) error {
 	if data["permission_ids"] != nil {
-		err := service.NewCasbinService().AddMenuPermission(id, data["permission_ids"])
+		err := service.NewPermissionService().AddMenuPermission(id, data["permission_ids"])
 		if err != nil {
 			return err
 		}
