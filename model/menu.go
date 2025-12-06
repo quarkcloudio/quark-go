@@ -50,7 +50,7 @@ func (p *Menu) Seeder() {
 		{Id: 18, Name: "部门列表", GuardName: "admin", Icon: "ant-design:apartment-outlined", Type: 2, Pid: 3, Sort: 0, Path: "department", Query: "{\"api\":\"/api/admin/department/index\"}", Component: "", Show: 1, IsEngine: 1, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
 		{Id: 19, Name: "职位列表", GuardName: "admin", Icon: "ant-design:bars-outlined", Type: 2, Pid: 3, Sort: 0, Path: "position", Query: "{\"api\":\"/api/admin/position/index\"}", Component: "", Show: 1, IsEngine: 1, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
 		{Id: 20, Name: "组件调试", GuardName: "admin", Icon: "ant-design:appstore-outlined", Type: 1, Pid: 0, Sort: 100, Path: "develop", Query: "", Component: "", Show: 0, IsEngine: 0, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
-		{Id: 21, Name: "组件开发", GuardName: "admin", Icon: "ant-design:experiment-outlined", Type: 2, Pid: 21, Sort: 0, Path: "index", Query: "", Component: "develop/index", Show: 1, IsEngine: 0, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
+		{Id: 21, Name: "组件开发", GuardName: "admin", Icon: "ant-design:experiment-outlined", Type: 2, Pid: 20, Sort: 0, Path: "index", Query: "", Component: "develop/index", Show: 1, IsEngine: 0, IsLink: 0, IsFrame: 0, Status: 1, Perms: "", HideInMenu: false},
 	}
 
 	db.Client.Create(&seeders)
