@@ -1,7 +1,10 @@
 package resources
 
 import (
+	"encoding/json"
+	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/quarkcloudio/quark-go/v4"
 	"github.com/quarkcloudio/quark-go/v4/app/actions"
@@ -52,6 +55,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		field.Hidden("id", "ID"),                 // 列表读取且不展示的字段
 		field.Hidden("pid", "PID").OnlyOnIndex(), // 列表读取且不展示的字段
+		field.Hidden("query", "查询参数"),
 		field.Group([]interface{}{
 			field.Text("name", "名称").
 				SetRules([]rule.Rule{
@@ -254,6 +258,18 @@ func (p *Menu) BeforeEditing(ctx *quark.Context, data map[string]interface{}) ma
 		}
 		data["permission_ids"] = permissionIds
 	}
+
+	switch data["page_type"].(int) {
+	case 2:
+		var query map[string]interface{}
+		json.NewDecoder(strings.NewReader(data["query"].(string))).Decode(&query)
+		data["api"] = query["api"]
+	case 4:
+		var query map[string]interface{}
+		json.NewDecoder(strings.NewReader(data["query"].(string))).Decode(&query)
+		data["url"] = query["url"]
+	}
+
 	return data
 }
 
@@ -265,5 +281,12 @@ func (p *Menu) AfterSaved(ctx *quark.Context, id int, data map[string]interface{
 			return err
 		}
 	}
+	if data["type"] == 2 {
+		data["query"] = fmt.Sprintf(`{"api":"%s"}`, data["api"])
+	}
+	if data["type"] == 4 {
+		data["query"] = fmt.Sprintf(`{"url":"%s"}`, data["url"])
+	}
+
 	return result.Error
 }
