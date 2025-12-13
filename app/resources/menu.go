@@ -58,6 +58,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 		field.Hidden("query", "查询参数"),
 		field.Hidden("api", "API接口"),
 		field.Hidden("url", "URL地址"),
+		field.Hidden("component", "组件"),
 		field.Group([]interface{}{
 			field.Text("name", "名称").
 				SetRules([]rule.Rule{
