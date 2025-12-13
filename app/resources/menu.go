@@ -98,7 +98,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 							rule.Required("路由必须填写"),
 						}).
 						SetEditable(true).
-						SetHelp("前端路由").
+						SetHelp("访问的路由地址，如：`user`").
 						SetWidth("400px"),
 				}
 			}),
@@ -125,7 +125,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 										rule.Required("路由地址必须填写"),
 									}).
 									SetEditable(true).
-									SetHelp("访问的路由地址，如：`user`。如需外网地址时，则以 `http(s)://` 开头").
+									SetHelp("访问的路由地址，如：`user`").
 									SetWidth("400px").
 									OnlyOnForms(),
 								field.Text("component", "组件路径").
@@ -145,7 +145,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 										rule.Required("路由地址必须填写"),
 									}).
 									SetEditable(true).
-									SetHelp("访问的路由地址，如：`user`。如需外网地址时，则以 `http(s)://` 开头").
+									SetHelp("访问的路由地址，如：`user`").
 									SetWidth("400px").
 									OnlyOnForms(),
 								field.Text("api", "接口地址").
@@ -177,7 +177,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 										rule.Required("路由地址必须填写"),
 									}).
 									SetEditable(true).
-									SetHelp("访问的路由地址，如：`user`。如需外网地址时，则以 `http(s)://` 开头").
+									SetHelp("访问的路由地址，如：`user`").
 									SetWidth("400px").
 									OnlyOnForms(),
 								field.Text("url", "iframe地址").
