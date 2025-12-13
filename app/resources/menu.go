@@ -111,17 +111,17 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 						}).
 						SetDefault(1).
 						OnlyOnForms(),
-					field.Text("path", "路由地址").
-						SetRules([]rule.Rule{
-							rule.Required("路由地址必须填写"),
-						}).
-						SetEditable(true).
-						SetHelp("前端路由或后端api").
-						SetWidth("400px").
-						OnlyOnForms(),
 					field.Dependency().
 						SetWhen("page_type", 1, func() interface{} {
 							return []interface{}{
+								field.Text("path", "路由地址").
+									SetRules([]rule.Rule{
+										rule.Required("路由地址必须填写"),
+									}).
+									SetEditable(true).
+									SetHelp("访问的路由地址，如：`user`。如需外网地址时，则以 `http(s)://` 开头").
+									SetWidth("400px").
+									OnlyOnForms(),
 								field.Text("component", "组件路径").
 									SetRules([]rule.Rule{
 										rule.Required("组件路径必须填写"),
@@ -134,6 +134,14 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 					field.Dependency().
 						SetWhen("page_type", 2, func() interface{} {
 							return []interface{}{
+								field.Text("path", "路由地址").
+									SetRules([]rule.Rule{
+										rule.Required("路由地址必须填写"),
+									}).
+									SetEditable(true).
+									SetHelp("访问的路由地址，如：`user`。如需外网地址时，则以 `http(s)://` 开头").
+									SetWidth("400px").
+									OnlyOnForms(),
 								field.Text("api", "接口地址").
 									SetRules([]rule.Rule{
 										rule.Required("接口地址必须填写"),
@@ -146,7 +154,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 					field.Dependency().
 						SetWhen("page_type", 3, func() interface{} {
 							return []interface{}{
-								field.Text("url", "外链地址").
+								field.Text("path", "外链地址").
 									SetRules([]rule.Rule{
 										rule.Required("外链地址必须填写"),
 									}).
@@ -158,6 +166,14 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 					field.Dependency().
 						SetWhen("page_type", 4, func() interface{} {
 							return []interface{}{
+								field.Text("path", "路由地址").
+									SetRules([]rule.Rule{
+										rule.Required("路由地址必须填写"),
+									}).
+									SetEditable(true).
+									SetHelp("访问的路由地址，如：`user`。如需外网地址时，则以 `http(s)://` 开头").
+									SetWidth("400px").
+									OnlyOnForms(),
 								field.Text("url", "iframe地址").
 									SetRules([]rule.Rule{
 										rule.Required("iframe地址必须填写"),
