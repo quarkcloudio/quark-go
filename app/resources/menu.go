@@ -56,6 +56,8 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 		field.Hidden("id", "ID"),                 // 列表读取且不展示的字段
 		field.Hidden("pid", "PID").OnlyOnIndex(), // 列表读取且不展示的字段
 		field.Hidden("query", "查询参数"),
+		field.Hidden("api", "API接口"),
+		field.Hidden("url", "URL地址"),
 		field.Group([]interface{}{
 			field.Text("name", "名称").
 				SetRules([]rule.Rule{
@@ -273,6 +275,18 @@ func (p *Menu) BeforeEditing(ctx *quark.Context, data map[string]interface{}) ma
 	return data
 }
 
+// 保存数据前回调
+func (p *Menu) BeforeSaving(ctx *quark.Context, submitData map[string]interface{}) (map[string]interface{}, error) {
+	if submitData["page_type"].(float64) == 2 {
+		submitData["query"] = fmt.Sprintf(`{"api":"%s"}`, submitData["api"])
+	}
+	if submitData["page_type"].(float64) == 4 {
+		submitData["query"] = fmt.Sprintf(`{"url":"%s"}`, submitData["url"])
+	}
+
+	return submitData, nil
+}
+
 // 保存后回调
 func (p *Menu) AfterSaved(ctx *quark.Context, id int, data map[string]interface{}, result *gorm.DB) error {
 	if data["permission_ids"] != nil {
@@ -280,12 +294,6 @@ func (p *Menu) AfterSaved(ctx *quark.Context, id int, data map[string]interface{
 		if err != nil {
 			return err
 		}
-	}
-	if data["type"] == 2 {
-		data["query"] = fmt.Sprintf(`{"api":"%s"}`, data["api"])
-	}
-	if data["type"] == 4 {
-		data["query"] = fmt.Sprintf(`{"url":"%s"}`, data["url"])
 	}
 
 	return result.Error
