@@ -29,9 +29,7 @@ type UserRoute struct {
 	Pid       int       `json:"pid"`
 	Name      string    `json:"name"`
 	Type      int       `json:"type"`
-	IsEngine  int       `json:"is_engine"`
-	IsLink    int       `json:"is_link"`
-	IsFrame   int       `json:"is_frame"`
+	PageType  int       `json:"page_type"`
 	Path      string    `json:"path"`
 	Component string    `json:"component"`
 	Meta      RouteMeta `json:"meta"`

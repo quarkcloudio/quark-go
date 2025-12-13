@@ -176,9 +176,7 @@ func (p *MenuService) BuildRoutes(menus []model.Menu) (menuList interface{}, Err
 				Pid:       v.Pid,
 				Name:      v.Path,
 				Type:      v.Type,
-				IsEngine:  v.IsEngine,
-				IsLink:    v.IsLink,
-				IsFrame:   v.IsFrame,
+				PageType:  v.PageType,
 				Path:      v.Path,
 				Component: v.Component,
 				Meta: response.RouteMeta{

@@ -99,18 +99,18 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 		field.Dependency().
 			SetWhen("type", 2, func() interface{} {
 				return []interface{}{
-					field.Group([]interface{}{
-						field.Switch("is_engine", "引擎组件").
-							SetTrueValue("是").
-							SetFalseValue("否").
-							SetDefault(true).
-							OnlyOnForms(),
-						field.Switch("is_link", "外部链接").
-							SetTrueValue("是").
-							SetFalseValue("否").
-							SetDefault(false).
-							OnlyOnForms(),
-					}),
+					field.Radio("page_type", "页面类型").
+						SetOptions([]radio.Option{
+							field.RadioOption("默认", 1),
+							field.RadioOption("引擎", 2),
+							field.RadioOption("外链", 3),
+							field.RadioOption("iframe", 4),
+						}).
+						SetRules([]rule.Rule{
+							rule.Required("页面类型必须选择"),
+						}).
+						SetDefault(1).
+						OnlyOnForms(),
 					field.Text("path", "路由地址").
 						SetRules([]rule.Rule{
 							rule.Required("路由地址必须填写"),
@@ -119,13 +119,54 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 						SetHelp("前端路由或后端api").
 						SetWidth("400px").
 						OnlyOnForms(),
-					field.Text("component", "组件路径").
-						SetRules([]rule.Rule{
-							rule.Required("组件路径必须填写"),
-						}).
-						SetEditable(true).
-						SetWidth("400px").
-						OnlyOnForms(),
+					field.Dependency().
+						SetWhen("page_type", 1, func() interface{} {
+							return []interface{}{
+								field.Text("component", "组件路径").
+									SetRules([]rule.Rule{
+										rule.Required("组件路径必须填写"),
+									}).
+									SetEditable(true).
+									SetWidth("400px").
+									OnlyOnForms(),
+							}
+						}),
+					field.Dependency().
+						SetWhen("page_type", 2, func() interface{} {
+							return []interface{}{
+								field.Text("api", "接口地址").
+									SetRules([]rule.Rule{
+										rule.Required("接口地址必须填写"),
+									}).
+									SetEditable(true).
+									SetWidth("400px").
+									OnlyOnForms(),
+							}
+						}),
+					field.Dependency().
+						SetWhen("page_type", 3, func() interface{} {
+							return []interface{}{
+								field.Text("url", "外链地址").
+									SetRules([]rule.Rule{
+										rule.Required("外链地址必须填写"),
+									}).
+									SetEditable(true).
+									SetWidth("400px").
+									OnlyOnForms(),
+							}
+						}),
+					field.Dependency().
+						SetWhen("page_type", 4, func() interface{} {
+							return []interface{}{
+								field.Text("url", "iframe地址").
+									SetRules([]rule.Rule{
+										rule.Required("iframe地址必须填写"),
+									}).
+									SetEditable(true).
+									SetWidth("400px").
+									OnlyOnForms(),
+							}
+						}),
 				}
 			}),
 		field.Dependency().
