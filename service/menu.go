@@ -165,10 +165,9 @@ func (p *MenuService) BuildRoutes(menus []model.Menu) (menuList interface{}, Err
 	userRoutes := []response.UserRoute{}
 
 	for _, v := range menus {
-		if v.Show == 1 {
-			v.HideInMenu = false
-		} else {
-			v.HideInMenu = true
+		hideInMenu := true
+		if v.Visible == 1 {
+			hideInMenu = false
 		}
 
 		if !p.HasMenu(userRoutes, v.Id) && v.Type != 3 {
@@ -186,7 +185,7 @@ func (p *MenuService) BuildRoutes(menus []model.Menu) (menuList interface{}, Err
 					Title:      v.Name,
 					Icon:       v.Icon,
 					Order:      v.Sort,
-					HideInMenu: v.HideInMenu,
+					HideInMenu: hideInMenu,
 				},
 				Query: v.Query,
 			})

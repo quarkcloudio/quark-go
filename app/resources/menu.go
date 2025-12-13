@@ -99,26 +99,44 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 		field.Dependency().
 			SetWhen("type", 2, func() interface{} {
 				return []interface{}{
-					field.Switch("is_engine", "引擎组件").
-						SetTrueValue("是").
-						SetFalseValue("否").
-						SetDefault(true),
-					field.Switch("is_link", "外部链接").
-						SetTrueValue("是").
-						SetFalseValue("否").
-						SetDefault(false),
-					field.Text("path", "路由").
+					field.Group([]interface{}{
+						field.Switch("is_engine", "引擎组件").
+							SetTrueValue("是").
+							SetFalseValue("否").
+							SetDefault(true).
+							OnlyOnForms(),
+						field.Switch("is_link", "外部链接").
+							SetTrueValue("是").
+							SetFalseValue("否").
+							SetDefault(false).
+							OnlyOnForms(),
+					}),
+					field.Text("path", "路由地址").
 						SetRules([]rule.Rule{
-							rule.Required("路由必须填写"),
+							rule.Required("路由地址必须填写"),
 						}).
 						SetEditable(true).
 						SetHelp("前端路由或后端api").
 						SetWidth("400px").
 						OnlyOnForms(),
+					field.Text("component", "组件路径").
+						SetRules([]rule.Rule{
+							rule.Required("组件路径必须填写"),
+						}).
+						SetEditable(true).
+						SetWidth("400px").
+						OnlyOnForms(),
+				}
+			}),
+		field.Dependency().
+			SetWhen("type", ">", 1, func() interface{} {
+				return []interface{}{
+					field.Text("permission", "权限标识").
+						SetWidth("400px"),
 				}
 			}),
 		field.Group([]interface{}{
-			field.Switch("show", "显示").
+			field.Switch("visible", "显示").
 				SetTrueValue("显示").
 				SetFalseValue("隐藏").
 				SetEditable(true).
