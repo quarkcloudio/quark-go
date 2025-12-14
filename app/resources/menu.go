@@ -134,6 +134,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 										rule.Required("组件路径必须填写"),
 									}).
 									SetEditable(true).
+									SetHelp("访问的组件路径，如：`user/index`").
 									SetWidth("400px").
 									OnlyOnForms(),
 							}
@@ -154,6 +155,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 										rule.Required("接口地址必须填写"),
 									}).
 									SetEditable(true).
+									SetHelp("引擎接口地址，如：`/api/admin/user/index`").
 									SetWidth("400px").
 									OnlyOnForms(),
 							}
@@ -166,6 +168,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 										rule.Required("外链地址必须填写"),
 									}).
 									SetEditable(true).
+									SetHelp("访问的外链地址，以`http(s)://`开头").
 									SetWidth("400px").
 									OnlyOnForms(),
 							}
@@ -186,6 +189,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 										rule.Required("iframe地址必须填写"),
 									}).
 									SetEditable(true).
+									SetHelp("访问的iframe地址，以`http(s)://`开头").
 									SetWidth("400px").
 									OnlyOnForms(),
 							}
