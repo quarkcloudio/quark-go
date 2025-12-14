@@ -86,7 +86,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 			field.Number("sort", "排序").
 				SetEditable(true).
 				SetDefault(0),
-			field.TreeSelect("pid", "父节点").
+			field.TreeSelect("pid", "上级菜单").
 				SetTreeData(menus, -1, "pid", "name", "id").
 				SetDefault(0).
 				OnlyOnForms(),
@@ -200,6 +200,7 @@ func (p *Menu) Fields(ctx *quark.Context) []interface{} {
 			SetWhen("type", ">", 1, func() interface{} {
 				return []interface{}{
 					field.Text("permission", "权限标识").
+						SetHelp("鉴权标识，如：`user:index`").
 						SetWidth("400px"),
 				}
 			}),

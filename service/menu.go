@@ -46,7 +46,7 @@ func (p *MenuService) GetListWithRoot() (menus []model.Menu, Error error) {
 		return list, err
 	}
 
-	list = append(list, model.Menu{Id: 0, Pid: -1, Name: "根节点"})
+	list = append(list, model.Menu{Id: 0, Pid: -1, Name: "根目录"})
 
 	return list, err
 }
