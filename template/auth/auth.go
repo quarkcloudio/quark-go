@@ -53,7 +53,7 @@ func (store *CaptchaStore) Get(id string, clear bool) (digits []byte) {
 // 启动模版
 func (p *Template) Bootstrap() interface{} {
 	p.IndexPath = "/api/admin/auth/:resource/index"           // 登录组件路由
-	p.CaptchaPath = "/api/admin/auth/:resource/captcha"       // 登录获取验证码ID路由
+	p.CaptchaPath = "/api/admin/auth/:resource/captcha"       // 登录获取验证码路由
 	p.LoginPath = "/api/admin/auth/:resource/login"           // 登录执行路由
 	p.LogoutPath = "/api/admin/auth/:resource/logout"         // 退出执行路由
 	p.UserInfoPath = "/api/admin/auth/:resource/userInfo"     // 获取用户信息路由
