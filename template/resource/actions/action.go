@@ -120,7 +120,7 @@ func (p *Action) Init(ctx *quark.Context) interface{} {
 
 // 执行行为句柄
 func (p *Action) Handle(ctx *quark.Context, query *gorm.DB) error {
-	return ctx.CJSONError("method not implemented")
+	return ctx.JSONError("method not implemented")
 }
 
 // 行为key

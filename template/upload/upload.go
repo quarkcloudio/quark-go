@@ -113,11 +113,11 @@ func (p *Template) Handle(ctx *quark.Context) error {
 
 	contentTypes := strings.Split(ctx.Header("Content-Type"), "; ")
 	if len(contentTypes) != 2 {
-		return ctx.CJSONError("Content-Type error")
+		return ctx.JSONError("Content-Type error")
 
 	}
 	if contentTypes[0] != "multipart/form-data" {
-		return ctx.CJSONError("Content-Type must use multipart/form-data")
+		return ctx.JSONError("Content-Type must use multipart/form-data")
 	}
 
 	template := ctx.Template.(Uploader)
@@ -171,7 +171,7 @@ func (p *Template) Handle(ctx *quark.Context) error {
 			// 上传前回调
 			getFileSystem, fileInfo, err := template.BeforeHandle(ctx, fileSystem)
 			if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-				return ctx.CJSONError(err.Error())
+				return ctx.JSONError(err.Error())
 			}
 			if fileInfo != nil {
 				return template.AfterHandle(ctx, fileInfo)
@@ -183,7 +183,7 @@ func (p *Template) Handle(ctx *quark.Context) error {
 				Path(savePath).
 				Save()
 			if err != nil {
-				return ctx.CJSONError(err.Error())
+				return ctx.JSONError(err.Error())
 			}
 		}
 	}
@@ -203,21 +203,21 @@ func (p *Template) HandleFromBase64(ctx *quark.Context) error {
 
 	data := map[string]interface{}{}
 	if err := ctx.BodyParser(&data); err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 	if data["file"] == nil {
-		return ctx.CJSONError("参数错误")
+		return ctx.JSONError("参数错误")
 
 	}
 
 	files := strings.Split(data["file"].(string), ",")
 	if len(files) != 2 {
-		return ctx.CJSONError("格式错误")
+		return ctx.JSONError("格式错误")
 	}
 
 	fileData, err := base64.StdEncoding.DecodeString(files[1]) // 把文件写入到buffer
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	template := ctx.Template.(Uploader)
@@ -264,7 +264,7 @@ func (p *Template) HandleFromBase64(ctx *quark.Context) error {
 	// 上传前回调
 	getFileSystem, fileInfo, err := template.BeforeHandle(ctx, fileSystem)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 	if fileInfo != nil {
 		return template.AfterHandle(ctx, fileInfo)
@@ -276,7 +276,7 @@ func (p *Template) HandleFromBase64(ctx *quark.Context) error {
 		Path(savePath).
 		Save()
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	return template.AfterHandle(ctx, result)
@@ -289,5 +289,5 @@ func (p *Template) BeforeHandle(ctx *quark.Context, fileSystem *quark.FileSystem
 
 // 上传后回调
 func (p *Template) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
-	return ctx.CJSONOk("上传成功", result)
+	return ctx.JSONOk("上传成功", result)
 }

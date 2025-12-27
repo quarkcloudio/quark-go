@@ -94,7 +94,7 @@ func (p *File) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 
 	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	extra := ""
@@ -120,10 +120,10 @@ func (p *File) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		Status: 1,
 	})
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.CJSONOk("上传成功", response.UploadResp{
+	return ctx.JSONOk("上传成功", response.UploadResp{
 		Id:          id,
 		ContentType: result.ContentType,
 		Ext:         result.Ext,

@@ -7,16 +7,6 @@ type Message struct {
 	Url  string      `json:"url,omitempty"`
 }
 
-type ComponentMessage struct {
-	Component string      `json:"component"`
-	Type      string      `json:"type"`
-	Content   interface{} `json:"content"`
-	Duration  int         `json:"duration"`
-	Icon      string      `json:"icon"`
-	Data      interface{} `json:"data"`
-	Url       string      `json:"url"`
-}
-
 type CodeMap struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
@@ -141,101 +131,5 @@ func RedirectTo(params ...interface{}) *Message {
 		Code: code,
 		Msg:  msg,
 		Url:  url,
-	}
-}
-
-// 返回组件引擎成功信息，ComponentSuccess("成功") | ComponentSuccess("成功", map[string]interface{}{"title":"标题"})
-func ComponentSuccess(params ...interface{}) *ComponentMessage {
-	var (
-		content = ""
-		data    interface{}
-	)
-	if len(params) == 1 {
-		content = params[0].(string)
-	}
-	if len(params) == 2 {
-		content = params[0].(string)
-		data = params[1]
-	}
-
-	return &ComponentMessage{
-		Component: "message",
-		Type:      "success",
-		Content:   content,
-		Data:      data,
-	}
-}
-
-// 返回组件引擎失败信息，ComponentError("错误") | ComponentError("成功", map[string]interface{}{"title":"标题"})
-func ComponentError(params ...interface{}) *ComponentMessage {
-	var (
-		content = ""
-		data    interface{}
-	)
-	if len(params) == 1 {
-		content = params[0].(string)
-	}
-	if len(params) == 2 {
-		content = params[0].(string)
-		data = params[1]
-	}
-
-	return &ComponentMessage{
-		Component: "message",
-		Type:      "error",
-		Content:   content,
-		Data:      data,
-	}
-}
-
-// 返回错误信息，ComponentErrorByCode(10001) | ComponentErrorByCode(10001, map[string]interface{}{"title":"标题"})
-func ComponentErrorByCode(params ...interface{}) *ComponentMessage {
-	var (
-		code    = StatusError
-		content = ""
-		data    interface{}
-	)
-	if len(params) == 1 {
-		code = params[0].(int)
-	}
-	if len(params) == 2 {
-		code = params[0].(int)
-		data = params[1]
-	}
-	content = GetMsgByCode(code)
-
-	return &ComponentMessage{
-		Component: "message",
-		Type:      "error",
-		Content:   content,
-		Data:      data,
-	}
-}
-
-// 输出模版引擎URL跳转，ComponentRedirectTo("/home/index") | ComponentRedirectTo("成功", "/home/index")  | ComponentRedirectTo("成功", "/home/index", "error")
-func ComponentRedirectTo(params ...interface{}) *ComponentMessage {
-	var (
-		content = ""
-		url     = ""
-		msgType = "success"
-	)
-	if len(params) == 1 {
-		url = params[0].(string)
-	}
-	if len(params) == 2 {
-		content = params[0].(string)
-		url = params[1].(string)
-	}
-	if len(params) >= 3 {
-		content = params[0].(string)
-		url = params[1].(string)
-		msgType = params[2].(string)
-	}
-
-	return &ComponentMessage{
-		Component: "message",
-		Type:      msgType,
-		Content:   content,
-		Url:       url,
 	}
 }

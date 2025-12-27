@@ -174,7 +174,7 @@ func (p *WebConfig) FormHandle(ctx *quark.Context, query *gorm.DB, data map[stri
 	}
 
 	if !result {
-		return ctx.CJSONError("操作失败，请重试")
+		return ctx.JSONError("操作失败，请重试")
 
 	}
 
@@ -182,5 +182,5 @@ func (p *WebConfig) FormHandle(ctx *quark.Context, query *gorm.DB, data map[stri
 	service.NewConfigService().Refresh()
 
 	// 返回成功
-	return ctx.CJSONOk("操作成功")
+	return ctx.JSONOk("操作成功")
 }

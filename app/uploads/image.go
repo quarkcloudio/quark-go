@@ -73,7 +73,7 @@ func (p *Image) GetList(ctx *quark.Context) error {
 	imageListReq := request.ImageListReq{}
 	err := ctx.Bind(&imageListReq)
 	if err != nil {
-		return ctx.CJSONError("参数错误")
+		return ctx.JSONError("参数错误")
 	}
 
 	adminInfo, _ := service.NewAuthService(ctx).GetAdmin()
@@ -86,15 +86,15 @@ func (p *Image) GetList(ctx *quark.Context) error {
 		imageListReq.Page,
 	)
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	categorys, err := service.NewAttachmentCategoryService().GetList(adminInfo.Id)
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.CJSONOk("获取成功", response.ImageListResp{
+	return ctx.JSONOk("获取成功", response.ImageListResp{
 		Pagination: response.Pagination{
 			Current:        imageListReq.Page,
 			DefaultCurrent: 1,
@@ -110,15 +110,15 @@ func (p *Image) GetList(ctx *quark.Context) error {
 func (p *Image) Delete(ctx *quark.Context) error {
 	imageDeleteReq := request.ImageDeleteReq{}
 	if err := ctx.Bind(&imageDeleteReq); err != nil {
-		return ctx.CJSONError("参数错误")
+		return ctx.JSONError("参数错误")
 	}
 
 	err := service.NewAttachmentService().DeleteById(imageDeleteReq.Id)
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.CJSONOk("操作成功")
+	return ctx.JSONOk("操作成功")
 }
 
 // 图片裁剪
@@ -130,17 +130,17 @@ func (p *Image) Crop(ctx *quark.Context) error {
 
 	imageCropReq := request.ImageCropReq{}
 	if err := ctx.Bind(&imageCropReq); err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	imageInfo, err := service.NewAttachmentService().GetInfoById(imageCropReq.Id)
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	limitW := ctx.Query("limitW", "")
@@ -148,12 +148,12 @@ func (p *Image) Crop(ctx *quark.Context) error {
 
 	files := strings.Split(imageCropReq.File, ",")
 	if len(files) != 2 {
-		return ctx.CJSONError("格式错误")
+		return ctx.JSONError("格式错误")
 	}
 
 	fileData, err := base64.StdEncoding.DecodeString(files[1]) //成图片文件并把文件写入到buffer
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	limitSize := reflect.
@@ -229,7 +229,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 		BeforeHandle(ctx *quark.Context, fileSystem *quark.FileSystem) (*quark.FileSystem, *quark.FileInfo, error)
 	}).BeforeHandle(ctx, fileSystem)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	filePaths := strings.Split(imageInfo.Path, "/")
@@ -240,7 +240,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 		Path(savePath).
 		Save()
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	// 重写url
@@ -271,10 +271,10 @@ func (p *Image) Crop(ctx *quark.Context) error {
 		Status: 1,
 	})
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.CJSONOk("操作成功", result)
+	return ctx.JSONOk("操作成功", result)
 }
 
 // 上传前回调
@@ -325,7 +325,7 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 
 	adminInfo, err := service.NewAuthService(ctx).GetAdmin()
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
 	extra := ""
@@ -352,10 +352,10 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 	})
 
 	if err != nil {
-		return ctx.CJSONError(err.Error())
+		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.CJSONOk("上传成功", response.UploadResp{
+	return ctx.JSONOk("上传成功", response.UploadResp{
 		Id:          id,
 		ContentType: result.ContentType,
 		Ext:         result.Ext,

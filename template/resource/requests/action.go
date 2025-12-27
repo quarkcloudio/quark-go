@@ -85,7 +85,7 @@ func (p *ActionRequest) Handle(ctx *quark.Context) error {
 					// 执行前回调
 					err := template.BeforeAction(ctx, uriKey, model)
 					if err != nil {
-						return ctx.CJSONError(err.Error())
+						return ctx.JSONError(err.Error())
 					}
 
 					result = dropdownAction.(interface {
@@ -103,7 +103,7 @@ func (p *ActionRequest) Handle(ctx *quark.Context) error {
 				// 执行前回调
 				err := template.BeforeAction(ctx, uriKey, model)
 				if err != nil {
-					return ctx.CJSONError(err.Error())
+					return ctx.JSONError(err.Error())
 				}
 
 				result = v.(interface {

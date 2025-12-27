@@ -117,7 +117,7 @@ func (p *Template) Render(ctx *quark.Context) error {
 
 	cards := template.Cards(ctx)
 	if cards == nil {
-		return ctx.CJSONError("请实现Cards内容")
+		return ctx.JSONError("请实现Cards内容")
 	}
 
 	var cols []interface{}
