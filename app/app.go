@@ -8,7 +8,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v4"
 	"github.com/quarkcloudio/quark-go/v4/app/auths"
 	"github.com/quarkcloudio/quark-go/v4/app/dashboards"
-	"github.com/quarkcloudio/quark-go/v4/app/layouts"
 	"github.com/quarkcloudio/quark-go/v4/app/pages"
 	"github.com/quarkcloudio/quark-go/v4/app/resources"
 	"github.com/quarkcloudio/quark-go/v4/app/uploads"
@@ -22,7 +21,6 @@ import (
 // 注册服务
 var Providers = []interface{}{
 	&auths.Index{},
-	&layouts.Index{},
 	&dashboards.Index{},
 	&resources.User{},
 	&resources.Role{},
