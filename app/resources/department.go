@@ -57,21 +57,13 @@ func (p *Department) Fields(ctx *quark.Context) []interface{} {
 				rule.Min(2, "名称不能少于2个字符"),
 				rule.Max(100, "名称不能超过100个字符"),
 			}),
-		field.TreeSelect("pid", "父节点").
-			SetTreeData(departments, "pid", "name", "id").
-			SetRules([]rule.Rule{
-				rule.Required("请选择父节点"),
-			}).
-			SetDefault(1).
-			OnlyOnCreating(),
 		field.Dependency().SetWhen("id", "!=", 1, func() interface{} {
 			return field.TreeSelect("pid", "父节点").
 				SetTreeData(departments, "pid", "name", "id").
 				SetRules([]rule.Rule{
 					rule.Required("请选择父节点"),
 				}).
-				SetDefault(1).
-				OnlyOnUpdating()
+				SetDefault(1)
 		}),
 		field.Number("sort", "排序").
 			SetEditable(true).
