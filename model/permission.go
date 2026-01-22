@@ -8,7 +8,7 @@ import (
 type Permission struct {
 	Id        int               `json:"id" gorm:"autoIncrement"`
 	Name      string            `json:"name" gorm:"size:500;not null"`
-	GuardName string            `json:"group_name" gorm:"size:100;not null"`
+	GuardName string            `json:"group_name" gorm:"size:100"`
 	Path      string            `json:"path" gorm:"size:500;not null"`
 	Method    string            `json:"method" gorm:"size:500;not null"`
 	Remark    string            `json:"remark" gorm:"size:100"`
