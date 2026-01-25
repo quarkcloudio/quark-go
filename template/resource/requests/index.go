@@ -54,13 +54,13 @@ func (p *IndexRequest) QueryData(ctx *quark.Context) interface{} {
 
 	var total int64
 	var data map[string]interface{}
-	page := 1
+	current := 1
 	querys := ctx.AllQuerys()
-	if querys["search"] != nil {
-		err := json.Unmarshal([]byte(querys["search"].(string)), &data)
+	if querys["pagination"] != nil {
+		err := json.Unmarshal([]byte(querys["pagination"].(string)), &data)
 		if err == nil {
 			if data["current"] != nil {
-				page = int(data["current"].(float64))
+				current = int(data["current"].(float64))
 			}
 			if data["pageSize"] != nil {
 				pageSize = int(data["pageSize"].(float64))
@@ -72,13 +72,13 @@ func (p *IndexRequest) QueryData(ctx *quark.Context) interface{} {
 	query.Count(&total)
 
 	// 获取列表
-	query.Limit(pageSize.(int)).Offset((page - 1) * pageSize.(int)).Find(&lists)
+	query.Limit(pageSize.(int)).Offset((current - 1) * pageSize.(int)).Find(&lists)
 
 	// 解析列表
 	result := p.performsList(ctx, lists)
 
 	return map[string]interface{}{
-		"page":            page,
+		"current":         current,
 		"pageSize":        pageSize,
 		"pageSizeOptions": pageSizeOptions,
 		"total":           total,

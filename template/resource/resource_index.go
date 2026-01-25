@@ -119,7 +119,7 @@ func (p *Template) IndexComponentRender(ctx *quark.Context, data interface{}) in
 	if reflect.TypeOf(pageSize).String() != "int" {
 		return table.SetDatasource(data)
 	} else {
-		current := data.(map[string]interface{})["page"]
+		current := data.(map[string]interface{})["current"]
 		pageSize := data.(map[string]interface{})["pageSize"]
 		pageSizeOptions := data.(map[string]interface{})["pageSizeOptions"]
 		total := data.(map[string]interface{})["total"]
