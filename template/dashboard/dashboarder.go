@@ -21,12 +21,6 @@ type Dashboarder interface {
 	// 内容
 	Cards(ctx *quark.Context) []interface{}
 
-	// 页面组件渲染
-	PageComponentRender(ctx *quark.Context, body interface{}) interface{}
-
-	// 页面容器组件渲染
-	PageContainerComponentRender(ctx *quark.Context, body interface{}) interface{}
-
 	// 组件渲染
 	Render(ctx *quark.Context) error
 }

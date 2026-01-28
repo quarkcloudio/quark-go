@@ -74,14 +74,6 @@ func (p *Template) Cards(ctx *quark.Context) []interface{} {
 	return nil
 }
 
-// 页面组件渲染
-func (p *Template) PageComponentRender(ctx *quark.Context, body interface{}) interface{} {
-	template := ctx.Template.(Dashboarder)
-
-	// 页面容器组件渲染
-	return template.PageContainerComponentRender(ctx, body)
-}
-
 // 页面容器组件渲染
 func (p *Template) PageContainerComponentRender(ctx *quark.Context, body interface{}) interface{} {
 	template := ctx.Template.(Dashboarder)
@@ -166,7 +158,5 @@ func (p *Template) Render(ctx *quark.Context) error {
 		body = append(body, row)
 	}
 
-	component := template.PageComponentRender(ctx, body)
-
-	return ctx.JSON(200, component)
+	return ctx.JSONOk("ok", body)
 }
