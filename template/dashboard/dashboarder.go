@@ -9,15 +9,6 @@ type Dashboarder interface {
 	// 模版接口
 	quark.Templater
 
-	// 获取页面标题
-	GetTitle() string
-
-	// 获取页面子标题
-	GetSubTitle() string
-
-	// 页面是否携带返回Icon
-	GetBackIcon() bool
-
 	// 内容
 	Cards(ctx *quark.Context) []interface{}
 

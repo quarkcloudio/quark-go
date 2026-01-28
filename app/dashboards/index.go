@@ -10,13 +10,6 @@ type Index struct {
 	dashboard.Template
 }
 
-// 初始化
-func (p *Index) Init(ctx *quark.Context) interface{} {
-	p.Title = "仪表盘"
-
-	return p
-}
-
 // 内容
 func (p *Index) Cards(ctx *quark.Context) []interface{} {
 	return []interface{}{

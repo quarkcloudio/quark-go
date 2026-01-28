@@ -7,7 +7,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v4/component/card"
 	"github.com/quarkcloudio/quark-go/v4/component/descriptions"
 	"github.com/quarkcloudio/quark-go/v4/component/grid"
-	"github.com/quarkcloudio/quark-go/v4/component/pagecontainer"
 	"github.com/quarkcloudio/quark-go/v4/component/statistic"
 	"github.com/quarkcloudio/quark-go/v4/dal/db"
 )
@@ -16,9 +15,6 @@ import (
 type Template struct {
 	quark.Template
 	IndexPath string // 路由路径
-	Title     string // 页面标题
-	SubTitle  string // 页面子标题
-	BackIcon  bool   // 页面是否携带返回Icon
 }
 
 // 启动模版
@@ -39,13 +35,6 @@ func (p *Template) LoadInitData(ctx *quark.Context) interface{} {
 
 	// 初始化数据对象
 	p.DB = db.Client
-
-	// 标题
-	p.Title = "仪表盘"
-
-	// 页面是否携带返回Icon
-	p.BackIcon = false
-
 	return p
 }
 
@@ -54,53 +43,9 @@ func (p *Template) Init(ctx *quark.Context) interface{} {
 	return p
 }
 
-// 获取页面标题
-func (p *Template) GetTitle() string {
-	return p.Title
-}
-
-// 获取页面子标题
-func (p *Template) GetSubTitle() string {
-	return p.SubTitle
-}
-
-// 页面是否携带返回Icon
-func (p *Template) GetBackIcon() bool {
-	return p.BackIcon
-}
-
 // 内容
 func (p *Template) Cards(ctx *quark.Context) []interface{} {
 	return nil
-}
-
-// 页面容器组件渲染
-func (p *Template) PageContainerComponentRender(ctx *quark.Context, body interface{}) interface{} {
-	template := ctx.Template.(Dashboarder)
-
-	// 页面标题
-	title := template.GetTitle()
-
-	// 页面子标题
-	subTitle := template.GetSubTitle()
-
-	// 页面是否携带返回Icon
-	backIcon := template.GetBackIcon()
-
-	// 设置头部
-	header := (&pagecontainer.PageHeader{}).
-		Init().
-		SetTitle(title).
-		SetSubTitle(subTitle)
-
-	if !backIcon {
-		header.SetBackIcon(false)
-	}
-
-	return (&pagecontainer.Component{}).
-		Init().
-		SetHeader(header).
-		SetBody(body)
 }
 
 // 组件渲染
