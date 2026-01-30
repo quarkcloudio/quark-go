@@ -28,7 +28,7 @@ type Menu struct {
 // 菜单表
 func (p *Menu) Seeder() {
 	seeders := []Menu{
-		{Id: 1, Name: "首页", GuardName: "admin", Icon: "ant-design:home-outlined", Type: 2, Pid: 0, Sort: 0, Path: "home", Query: "{\"api\":\"/api/admin/dashboard/index/index\"}", Component: "home/index", Visible: 1, PageType: 1, Status: 1, Permission: ""},
+		{Id: 1, Name: "首页", GuardName: "admin", Icon: "ant-design:home-outlined", Type: 2, Pid: 0, Sort: 0, Path: "home", Query: "{\"api\":\"/api/admin/dashboard/index/index\"}", Component: "", Visible: 1, PageType: 2, Status: 1, Permission: ""},
 		{Id: 3, Name: "用户管理", GuardName: "admin", Icon: "ant-design:usergroup-add-outlined", Type: 1, Pid: 0, Sort: 100, Path: "user", Query: "", Component: "", Visible: 1, PageType: 1, Status: 1, Permission: ""},
 		{Id: 4, Name: "用户列表", GuardName: "admin", Icon: "ant-design:user-add-outlined", Type: 2, Pid: 3, Sort: 0, Path: "user", Query: "{\"api\":\"/api/admin/user/index\"}", Component: "", Visible: 1, PageType: 2, Status: 1, Permission: ""},
 		{Id: 5, Name: "权限列表", GuardName: "admin", Icon: "ant-design:profile-outlined", Type: 2, Pid: 3, Sort: 0, Path: "permission", Query: "{\"api\":\"/api/admin/permission/index\"}", Component: "", Visible: 1, PageType: 2, Status: 1, Permission: ""},
