@@ -1,0 +1,1 @@
+import{_ as e}from"./pro-form-editor-BAWJdI4N.js";import{d as n,c as r,o as t}from"./index-BUbJm6vx.js";const p=n({name:"develop",__name:"index",setup(_){return(a,c)=>{const o=e;return t(),r(o)}}});export{p as default};
