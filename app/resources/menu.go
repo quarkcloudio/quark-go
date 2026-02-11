@@ -283,11 +283,13 @@ func (p *Menu) BeforeEditing(ctx *quark.Context, data map[string]interface{}) ma
 
 // 保存数据前回调
 func (p *Menu) BeforeSaving(ctx *quark.Context, submitData map[string]interface{}) (map[string]interface{}, error) {
-	if submitData["page_type"].(float64) == 2 {
-		submitData["query"] = fmt.Sprintf(`{"api":"%s"}`, submitData["api"])
-	}
-	if submitData["page_type"].(float64) == 4 {
-		submitData["query"] = fmt.Sprintf(`{"url":"%s"}`, submitData["url"])
+	if submitData["page_type"] != nil {
+		if submitData["page_type"].(float64) == 2 {
+			submitData["query"] = fmt.Sprintf(`{"api":"%s"}`, submitData["api"])
+		}
+		if submitData["page_type"].(float64) == 4 {
+			submitData["query"] = fmt.Sprintf(`{"url":"%s"}`, submitData["url"])
+		}
 	}
 
 	return submitData, nil
